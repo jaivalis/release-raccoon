@@ -1,0 +1,6 @@
+
+PyMySQL
+pylast
+python-dotenv
+
+SqlAlchemy
