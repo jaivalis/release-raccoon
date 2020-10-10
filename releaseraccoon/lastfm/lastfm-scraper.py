@@ -4,7 +4,7 @@ import time
 import pylast
 
 from releaseraccoon import settings
-from releaseraccoon.dao.artist import Artist
+from releaseraccoon.model.artist import Artist
 
 API_KEY = settings.lastfm_api_key
 API_SECRET = settings.lastfm_shared_secret
