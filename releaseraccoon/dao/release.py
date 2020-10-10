@@ -2,7 +2,7 @@ from datetime import time
 
 from sqlalchemy import Column, Integer
 
-from base import Base
+from releaseraccoon.base import Base
 
 
 class Release(Base):

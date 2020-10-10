@@ -4,3 +4,6 @@ pylast
 python-dotenv
 
 SqlAlchemy
+
+zope.app.interface
+zope
