@@ -1,10 +1,21 @@
 # coding=utf-8
-
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import database_exists, create_database
 
-engine = create_engine('postgresql://usr:pass@localhost:5432/sqlalchemy')
+from releaseraccoon.settings import db_username, db_password, db_host, db_port, db_name
+
+
+db_uri = f'mysql+pymysql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}'
+engine = create_engine(db_uri, pool_recycle=3600, echo=True)
+
+print(f'Looking for: {db_name} on {db_host}:{db_port}')
+if not database_exists(engine.url):
+    print(f'Database {db_name} not found, creating.')
+    create_database(engine.url)
+
+print(engine.table_names())
 Session = sessionmaker(bind=engine)
 
 Base = declarative_base()

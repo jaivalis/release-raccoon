@@ -1,9 +1,8 @@
 
-PyMySQL
 pylast
 python-dotenv
 
 SqlAlchemy
-
-zope.app.interface
-zope
+sqlalchemy_utils
+cryptography
+pymysql
