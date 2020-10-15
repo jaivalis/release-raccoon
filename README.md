@@ -11,7 +11,7 @@ You can copy that file into a new `.env` file and define them there.
 After defining the env vars source the file so they are available for starting the database.
 
 ### Starting the database
-For the db docker compoes us used like so:
+For the database docker compose is used like so:
 ```
 docker-compose up
 ```
