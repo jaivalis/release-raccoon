@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, Table
+from sqlalchemy import Column, ForeignKey, Integer, Table, String
 from sqlalchemy.orm import relationship
 
 from releaseraccoon.base import Base
@@ -13,9 +13,12 @@ user_artist_association = Table('user_artists', Base.metadata,
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
+    email = Column(String(64), nullable=False, unique=True)
+    lastfm_username = Column(String(64), unique=True)
+    
     artists = relationship('Artist', secondary=user_artist_association)
 
-    def __init__(self, email: str, ):
+    def __init__(self, email: str, lastfm_username: str):
         self.email = email
-        
-
+        self.lastfm_username = lastfm_username
+        self.artists = []
