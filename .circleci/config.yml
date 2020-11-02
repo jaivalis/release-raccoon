@@ -1,0 +1,36 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+orbs:
+  python: circleci/python@0.2.1
+  coverage-reporter: codacy/coverage-reporter@10.0.3
+  codecov: codecov/codecov@1.0.2
+
+jobs:
+  build-and-test:
+    executor: python/default
+    steps:
+      - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
+
+  codacy-coverage-report:
+    docker:
+      - image: 'circleci/python:3.7'
+    steps:
+      - checkout
+      - python/install-deps
+      - run: pip install coverage && coverage run -m unittest discover && coverage xml
+      - coverage-reporter/send_report:
+          coverage-reports: 'coverage.xml'
+          project-token: $CODACY_PROJECT_TOKEN
+
+workflows:
+  main:
+    jobs:
+      - build-and-test
+      - codacy-coverage-report
+  coverage-example:
+    jobs:
+      - codacy-coverage-report
