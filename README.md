@@ -1,0 +1,2 @@
+# release-raccoon
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9f7b06a4a03b447f8d09c1f5324db079)](https://app.codacy.com/gh/jaivalis/release-raccoon?utm_source=github.com&utm_medium=referral&utm_content=jaivalis/release-raccoon&utm_campaign=Badge_Grade)
