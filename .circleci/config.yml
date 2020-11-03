@@ -16,15 +16,15 @@ jobs:
       - python/save-cache
 
   codacy-coverage-report:
-    runs-on: ubuntu-latest
-    name: codacy-coverage-report
+    docker:
+      - image: 'circleci/python:3.7'
     steps:
-      - uses: actions/checkout@master
-      - name: Run codacy-coverage-report
-        uses: codacy/codacy-coverage-reporter-action@master
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      - export CODACY_API_BASE_URL=${CODACY_API_BASE_URL}
+      - python/install-deps
+      - run: pip install codacy-coverage && coverage run -m unittest discover ./tests && coverage xml
+      - coverage-reporter/send_report:
           coverage-reports: 'coverage.xml'
+          project-token: ${{ CODACY_PROJECT_TOKEN }}
 
 workflows:
   main:
