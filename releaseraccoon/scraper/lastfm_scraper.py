@@ -23,7 +23,7 @@ class LastFmScraper:
     @classmethod
     def _map_artist(cls, entry: TopItem) -> Artist:
         return Artist(name=entry.item.name)
-    
+
     def get_artists(self, api_call_result: tuple) -> Generator[Artist, None, None]:
         for row in api_call_result:
             artist = LastFmScraper._map_artist(row)

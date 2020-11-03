@@ -4,7 +4,7 @@ from releaseraccoon.model import Artist
 
 
 class IMusicScraper(Interface):
-    
+
     def scrape(user_name: str, limit: int):
         """Gets top artists."""
 

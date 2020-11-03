@@ -12,11 +12,11 @@ After defining the env vars source the file so they are available for starting t
 
 ### Starting the database
 For the database docker compose is used like so:
-```
+```bash
 docker-compose up
 ```
 
-```
+```bash
 # Check if the following is necessary:
 GRANT ALL PRIVILEGES ON releases.* TO `raccoon`@`localhost` IDENTIFIED BY `raccoon`;
 FLUSH PRIVILEGES;

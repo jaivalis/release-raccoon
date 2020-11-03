@@ -30,7 +30,7 @@ def init_db():
     from releaseraccoon.model.artist import Artist
     from releaseraccoon.model.release import Release
     from releaseraccoon.model.user import User
-    
+
     Base.metadata.create_all(bind=engine)
 
     print("Initialized the db")

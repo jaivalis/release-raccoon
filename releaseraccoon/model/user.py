@@ -15,7 +15,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String(64), nullable=False, unique=True)
     lastfm_username = Column(String(64), unique=True)
-    
+
     artists = relationship('Artist', secondary=user_artist_association)
 
     def __init__(self, email: str, lastfm_username: str):
