@@ -15,7 +15,7 @@ services:
   raccoon-adminer:
     image: adminer
     depends_on:
-      - mariadb
+      - raccoon-mariadb
     environment:
       ADMINER_DEFAULT_DB_DRIVER: mysql
       ADMINER_DEFAULT_DB_HOST: mariadb

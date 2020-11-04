@@ -1,5 +1,5 @@
 # coding=utf-8
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
@@ -18,19 +18,15 @@ if not database_exists(engine.url):
     print(f'Database {db_name} not found, creating.')
     create_database(engine.url)
 
-# metadata = MetaData(engine)
-# metadata.create_all(engine)
+metadata = MetaData(engine)
+metadata.create_all(engine)
 
-print(engine.table_names())
+print(f'Tables found {engine.table_names()}')
 Session = sessionmaker(bind=engine)
 session = Session()
 
 
 def init_db():
-    from releaseraccoon.model.artist import Artist
-    from releaseraccoon.model.release import Release
-    from releaseraccoon.model.user import User
-
     Base.metadata.create_all(bind=engine)
 
     print("Initialized the db")

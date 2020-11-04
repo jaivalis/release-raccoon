@@ -22,3 +22,6 @@ class User(Base):
         self.email = email
         self.lastfm_username = lastfm_username
         self.artists = []
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

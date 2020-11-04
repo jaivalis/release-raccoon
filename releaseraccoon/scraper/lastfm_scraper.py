@@ -32,7 +32,9 @@ class LastFmScraper:
 
     def scrape(self, limit: int):
         lastfm_user = self.network.get_user(self.user.lastfm_username)
-        return lastfm_user.get_top_artists(limit=limit, period='PERIOD_OVERALL')
+        api_call_result = lastfm_user.get_top_artists(limit=limit, period='PERIOD_OVERALL')
+        for artist in self.get_artists(api_call_result):
+            self.user.artists.append(artist)
 
 
 # start = time.time()
