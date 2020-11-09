@@ -1,20 +1,20 @@
-from sqlalchemy import Column, ForeignKey, Integer, Table, String
 from sqlalchemy.orm import relationship
 
-from releaseraccoon.base import Base
-
-user_artist_association = Table('user_artists', Base.metadata,
-                                Column('user_id', Integer, ForeignKey('users.id')),
-                                Column('artist_id', Integer, ForeignKey('artists.id')),
-                                Column('listens', Integer),
-                                )
+from releaseraccoon.app.app import db
 
 
-class User(Base):
+user_artist_association = db.Table('user_artists', db.Model.metadata,
+                                   db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+                                   db.Column('artist_id', db.Integer, db.ForeignKey('artists.id')),
+                                   db.Column('listens', db.Integer),
+                                   )
+
+
+class User(db.Model):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    email = Column(String(64), nullable=False, unique=True)
-    lastfm_username = Column(String(64), unique=True)
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(64), nullable=False, unique=True)
+    lastfm_username = db.Column(db.String(64), unique=True)
 
     artists = relationship('Artist', secondary=user_artist_association)
 

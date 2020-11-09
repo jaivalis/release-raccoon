@@ -5,15 +5,15 @@ from pylast import TopItem
 from zope.interface import implementer
 
 from releaseraccoon import settings
-from releaseraccoon.model.artist import Artist
-from releaseraccoon.model.user import User
-from releaseraccoon.scraper.scraper import IMusicScraper
+from releaseraccoon.model import Artist, User
+from releaseraccoon.scraper.scraper import IMusicReleaseScraper, IMusicTasteScraper
 
 API_KEY = settings.lastfm_api_key
 API_SECRET = settings.lastfm_shared_secret
 
 
-@implementer(IMusicScraper)
+@implementer(IMusicTasteScraper)
+@implementer(IMusicReleaseScraper)
 class LastFmScraper:
 
     def __init__(self, user: User):
@@ -30,12 +30,17 @@ class LastFmScraper:
             yield artist
             self.user.artists.append(artist)
 
-    def scrape(self, limit: int):
+    def scrape_taste(self, limit: int):
         lastfm_user = self.network.get_user(self.user.lastfm_username)
         api_call_result = lastfm_user.get_top_artists(limit=limit, period='PERIOD_OVERALL')
         for artist in self.get_artists(api_call_result):
             self.user.artists.append(artist)
 
+    def scrape_releases(self, limit: int):
+        lastfm_user = self.network.get_user(self.user.lastfm_username)
+        api_call_result = lastfm_user.get_top_artists(limit=limit, period='PERIOD_OVERALL')
+        for artist in self.get_artists(api_call_result):
+            self.user.artists.append(artist)
 
 # start = time.time()
 #

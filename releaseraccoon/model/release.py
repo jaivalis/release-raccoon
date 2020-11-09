@@ -1,14 +1,15 @@
 from datetime import time
 
-from sqlalchemy import Column, Integer
-
-from releaseraccoon.base import Base
+from releaseraccoon.app.app import db
 
 
-class Release(Base):
+class Release(db.Model):
     __tablename__ = 'releases'
-    id = Column(Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
 
     def __init__(self, name: str, release_date: time):
         self.name = name
         self.release_date = release_date
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

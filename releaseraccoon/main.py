@@ -1,13 +1,23 @@
-from releaseraccoon.base import session
-from releaseraccoon.model.user import User
-from releaseraccoon.scraper.lastfm_scraper import LastFmScraper
+import logging
+import sys
 
-LASTFM_USERNAME = 'Aiwa-Lee'
+from releaseraccoon.app.app import app, db
+# noinspection PyUnresolvedReferences
+from releaseraccoon.app.views import get_all_artists, get_all_users, register_user
+
+
+def create_tables():
+    # Create table for each model if it does not exist.
+    db.init_app(app)
+    db.drop_all()  # Use alembic or something similar for db migrations
+    db.create_all()
+
 
 if __name__ == '__main__':
-    user = User('nothing', LASTFM_USERNAME)
-    lastfm_scraper = LastFmScraper(user)
-    lastfm_scraper.scrape(10)
+    create_tables()
+    app.run()
 
-    session.add(user)
-    session.commit()
+    log_format = '%(asctime)s %(levelname)s %(name)s | %(message)s'
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=log_format)
+
+    app.run(host='0.0.0.0', port=9898, debug=True)

@@ -20,3 +20,7 @@ db_port = os.getenv('DB_PORT')
 lastfm_api_key = os.getenv('LASTFM_API_KEY')
 lastfm_application_name = os.getenv('LASTFM_APPLICATION_NAME')
 lastfm_shared_secret = os.getenv('LASTFM_SHARED_SECRET')
+
+# spotify
+spotify_client_id = os.getenv('SPOTIFY_CLIENT_ID')
+spotify_client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')

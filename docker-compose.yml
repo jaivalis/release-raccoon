@@ -18,7 +18,7 @@ services:
       - raccoon-mariadb
     environment:
       ADMINER_DEFAULT_DB_DRIVER: mysql
-      ADMINER_DEFAULT_DB_HOST: mariadb
+      ADMINER_DEFAULT_DB_HOST: raccoon-mariadb
       ADMINER_DEFAULT_DB_NAME: releases
       ADMINER_DESIGN: nette
       ADMINER_PLUGINS: tables-filter tinymce
