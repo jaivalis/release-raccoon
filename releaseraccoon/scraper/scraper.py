@@ -5,9 +5,7 @@ from datetime import date
 
 
 class IMusicReleaseScraper(Interface):
-    """
-    Scrapes external sources for music releases
-    """
+    """ Scrapes external sources for music releases """
     
     def scrape_releases(cal_date: date, limit: int):
         """
@@ -19,9 +17,7 @@ class IMusicReleaseScraper(Interface):
 
 
 class IMusicTasteScraper(Interface):
-    """
-    Scrapes external sources for music taste of a given user
-    """
+    """ Scrapes external sources for music taste of a given user """
 
     def scrape_taste(user_name: str, limit: int):
         """Gets top artists."""

@@ -63,10 +63,10 @@ class UserArtist(db.Model):
     user = db.relationship('User', backref='user_artist')
 
 
-# class ArtistRelease(db.Model):
-#     __tablename__ = 'artist_release'
-#     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), primary_key=True)
-#     release_id = db.Column(db.Integer, db.ForeignKey('release.id'), primary_key=True)
-#
-#     artist = db.relationship('Artist', backref='artist_release')
-#     release = db.relationship('Release', backref='artist_release')
+class ArtistRelease(db.Model):
+    __tablename__ = 'artist_release'
+    artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), primary_key=True)
+    release_id = db.Column(db.Integer, db.ForeignKey('releases.id'), primary_key=True)
+
+    artist = db.relationship('Artist', backref='artist_release')
+    release = db.relationship('Release', backref='artist_release')

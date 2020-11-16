@@ -47,15 +47,17 @@ class SpotifyScraper:
     
     def process_release(self, name: str, artists: tuple):
         """
-        The release needs to be registered into the db. For now we are interested only in releases of artists that are
-        already tracked by users. Other releases are discarded.
+        The release needs to be registered into the db.
+        
+        For now we are interested only in releases of artists that are already tracked by users. Other releases are
+        discarded.
         :param name: release name
         :param artists: names of artists involved
         :return: Void
         """
         for artist in artists:
             self._update_artist(artist)
-            
+
 
 if __name__ == '__main__':
     scraper = SpotifyScraper()
