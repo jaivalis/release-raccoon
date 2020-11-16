@@ -11,44 +11,37 @@ from releaseraccoon.scraper.scraper import IMusicReleaseScraper, IMusicTasteScra
 API_KEY = settings.lastfm_api_key
 API_SECRET = settings.lastfm_shared_secret
 
+OVERALL = 'PERIOD_OVERALL'
+DEFAULT_SCRAPE_HISTORY = 100
+
 
 @implementer(IMusicTasteScraper)
 @implementer(IMusicReleaseScraper)
 class LastFmScraper:
 
+    network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
+
     def __init__(self, user: User):
         self.user = user
-        self.network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
-
+    
     @classmethod
-    def _map_artist(cls, entry: TopItem) -> Artist:
-        return Artist(name=entry.item.name)
+    def _map_artist(cls, entry: TopItem) -> tuple:
+        return entry.item.name, int(entry.weight)
 
-    def get_artists(self, api_call_result: tuple) -> Generator[Artist, None, None]:
+    def get_artists(self, api_call_result: tuple) -> Generator[tuple, None, None]:
         for row in api_call_result:
-            artist = LastFmScraper._map_artist(row)
-            yield artist
-            self.user.artists.append(artist)
-
-    def scrape_taste(self, limit: int):
-        lastfm_user = self.network.get_user(self.user.lastfm_username)
-        api_call_result = lastfm_user.get_top_artists(limit=limit, period='PERIOD_OVERALL')
-        for artist in self.get_artists(api_call_result):
-            self.user.artists.append(artist)
-
+            artist, weight = LastFmScraper._map_artist(row)
+            yield artist, weight
+            # self.user.artists.append(artist)
+    
+    def scrape_taste(self, limit: int = DEFAULT_SCRAPE_HISTORY) -> list[list]:
+        lastfm_user = LastFmScraper.network.get_user(self.user.lastfm_username)
+        api_call_result = lastfm_user.get_top_artists(limit=limit, period=OVERALL)
+        ret = []
+        for artist, weight in self.get_artists(api_call_result):
+            # should update the existing entry and not add more with the same name
+            ret.append([artist, weight])
+        return ret
+    
     def scrape_releases(self, limit: int):
-        lastfm_user = self.network.get_user(self.user.lastfm_username)
-        api_call_result = lastfm_user.get_top_artists(limit=limit, period='PERIOD_OVERALL')
-        for artist in self.get_artists(api_call_result):
-            self.user.artists.append(artist)
-
-# start = time.time()
-#
-# scraper = LastFmScraper(User('nothing@nowhere.com', 'Aiwa-Lee'))
-# result = scraper.scrape(1000)
-# artists = [artist for artist in LastFmScraper.get_artists(result)]
-#
-# end = time.time()
-# print(f'Time elapsed {end - start} seconds')
-#
-# print(artists)
+        pass

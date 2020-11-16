@@ -18,11 +18,3 @@ For the database docker compose is used like so:
 ```bash
 docker-compose up
 ```
-
-```bash
-# Check if the following is necessary:
-GRANT ALL PRIVILEGES ON releases.* TO `raccoon`@`localhost` IDENTIFIED BY `raccoon`;
-FLUSH PRIVILEGES;
-SHOW GRANTS FOR `raccoon`@localhost;
-```
-

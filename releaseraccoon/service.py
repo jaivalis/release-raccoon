@@ -1,8 +1,9 @@
 import logging
 
 from releaseraccoon.app.app import session
-from releaseraccoon.model import Artist, User
+from releaseraccoon.model import Artist, User, UserArtist
 from releaseraccoon.scraper.lastfm_scraper import LastFmScraper
+from releaseraccoon.app.db_util import get_or_create
 
 LOG = logging.getLogger(__name__)
 
@@ -30,15 +31,36 @@ def handle_register_user(email: str, lastfm_username: str) -> bool:
     else:
         user = User(email, lastfm_username)
         lastfm_scraper = LastFmScraper(user)
-        lastfm_scraper.scrape_taste(10)
+        for artist_name, weight in lastfm_scraper.scrape_taste():
+            artist = get_or_create(session, Artist, name=artist_name)
+            user.user_artist.append(UserArtist(user=user, artist=artist, weight=0))
         session.add(user)
         session.commit()
         
     return user.as_dict()
 
 
-def handle_update_user(user: User):
-    lastfm_scraper = LastFmScraper(user)
-    lastfm_scraper.scrape_taste(10)
-    session.add(user)
+def update_users_taste() -> None:
+    """
+    All the users in the db are re-scraped and updated.
+    """
+    for user in session.query(User).all():
+        lastfm_scraper = LastFmScraper(user)
+        lastfm_scraper.scrape_taste()
     session.commit()
+
+
+def handle_release(artist_name: str, spotify_id=None):
+    """
+    A new release for a given artist means that the artist table needs to be updated with the flag set to True.
+    :param artist_name:
+    :param spotify_id:
+    :return:
+    """
+    artist = session.query(Artist).filter_by(name=artist_name).first()
+    
+    if not artist:
+        LOG.debug(f'Artist {artist_name} not found in the db.')
+        return
+
+    artist.has_new_release = True

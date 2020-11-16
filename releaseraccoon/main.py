@@ -20,4 +20,4 @@ if __name__ == '__main__':
     log_format = '%(asctime)s %(levelname)s %(name)s | %(message)s'
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=log_format)
 
-    app.run(host='0.0.0.0', port=9898, debug=True)
+    app.run(host='0.0.0.0', port=9898, debug=True,)
