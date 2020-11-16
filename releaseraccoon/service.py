@@ -23,8 +23,6 @@ def get_all_artists() -> list:
 
 
 def handle_register_user(email: str, lastfm_username: str) -> bool:
-    # lookup existing users
-    
     user = session.query(User).filter_by(email=email).first()
     if user is not None:
         LOG.debug(f'User with email {email} exists')
