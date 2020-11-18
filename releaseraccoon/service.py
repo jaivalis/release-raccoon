@@ -29,9 +29,12 @@ def handle_register_user(email: str, lastfm_username: str) -> bool:
     else:
         user = User(email, lastfm_username)
         lastfm_scraper = LastFmScraper(user)
+        max_weight = 0
         for artist_name, weight in lastfm_scraper.scrape_taste():
+            max_weight = max(max_weight, weight)
             artist = get_or_create(session, Artist, name=artist_name)
-            user.user_artist.append(UserArtist(user=user, artist=artist, weight=0))
+            user.user_artist.append(UserArtist(user=user, artist=artist, weight=weight))
+        user.normalize_weights(max_weight)
         session.add(user)
         session.commit()
         

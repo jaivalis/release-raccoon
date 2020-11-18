@@ -39,6 +39,16 @@ class User(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    
+    def normalize_weights(self, max_weight: int):
+        """
+        
+        :param max_weight:
+        :return:
+        """
+        assert max_weight > 0
+        for user_artist in self.user_artist:
+            user_artist.weight /= max_weight
 
 
 class Release(db.Model):
@@ -57,7 +67,7 @@ class UserArtist(db.Model):
     __tablename__ = 'user_artist'
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    weight = db.Column(db.Integer)
+    weight = db.Column(db.Float)
 
     artist = db.relationship('Artist', backref='user_artist')
     user = db.relationship('User', backref='user_artist')
