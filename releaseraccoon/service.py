@@ -4,7 +4,7 @@ from releaseraccoon.app.app import session
 from releaseraccoon.model import Artist, User, Release, UserArtist
 from releaseraccoon.scraper.lastfm_scraper import LastFmScraper
 from releaseraccoon.scraper.spotify_scraper import SpotifyScraper
-from releaseraccoon.db_util import get_or_create
+from releaseraccoon.db_util import get_one_or_create
 
 from releaseraccoon.scraper.scraper import (
     RELEASE_NAME_KEY,
@@ -44,7 +44,7 @@ def handle_register_user(email: str, lastfm_username: str) -> bool:
         max_weight = 0
         for artist_name, weight in lastfm_scraper.scrape_taste():
             max_weight = max(max_weight, weight)
-            artist = get_or_create(session, Artist, name=artist_name)
+            artist = get_one_or_create(session, Artist, name=artist_name)
             user.user_artist.append(UserArtist(user=user, artist=artist, weight=weight))
         user.normalize_weights(max_weight)
         session.add(user)
@@ -83,24 +83,25 @@ def update_artist_releases() -> None:
         release_date = release_entry[RELEASE_DATE_KEY]
 
         # todo implement this
-        # db_artists = extract_release_artists(release_entry[RELEASE_ARTISTS_KEY])
-        # db_release = extract_release_release()
+        db_artists = extract_release_artists(release_entry[RELEASE_ARTISTS_KEY])
+        db_release = extract_release_release()
     session.commit()
 
 
-def extract_release_artists(release_entry_artists: list) -> list[Artist]:
+def extract_release_artists(release_entry_artists: list) -> list:
     """
     Maps a release dict entry from one of the scrapers to
     :param release_entry_artists: artists as originating from the scraper pojo objects
     :return:
     """
+    artists = []
     for release_entry_artist in release_entry_artists:
-        r_name = release_entry_artists[RELEASE_ARTIST_NAME_KEY]
-        r_spotify_uri = release_entry_artists[RELEASE_ARTIST_SPOTIFY_URI_KEY]
+        r_name = release_entry_artist[RELEASE_ARTIST_NAME_KEY]
+        r_spotify_uri = release_entry_artist[RELEASE_ARTIST_SPOTIFY_URI_KEY]
 
-        # artist = get_or_create(session, Artist, name=artist_name)
-        # todo
-    return artist
+        artist = get_one_or_create(session, Artist, name=r_name, spotify_uri=r_spotify_uri)
+        artists.append(artist)
+    return artists
 
 
 def extract_release_release(release_entry_artists: list) -> Release:
@@ -113,7 +114,7 @@ def extract_release_release(release_entry_artists: list) -> Release:
 def fetch_all_releases() -> list:
     all_releases = []
     for scraper in RELEASE_SCRAPERS:
-        all_releases.append(scraper.scrape_releases())
+        all_releases.extend(scraper.scrape_releases())
     # todo: When more scrapers are added, we need to ensure uniqueness per release here.
     LOG.info(f'Scraped a total of {len(all_releases)} releases from {len(RELEASE_SCRAPERS)} sources.')
     return all_releases

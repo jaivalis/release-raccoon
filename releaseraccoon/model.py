@@ -9,6 +9,8 @@ class Artist(db.Model):
     __tablename__ = 'artists'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
+    spotify_uri = db.Column(db.String(64), unique=True)
+
     has_new_release = db.Column(db.Boolean)
 
     users = association_proxy('user_artist', 'user')

@@ -1,6 +1,12 @@
+from pymysql import IntegrityError
+from sqlalchemy.orm.exc import NoResultFound
 
 
-def get_or_create(session, model, **kwargs):
+def get_one_or_create(session,
+                      model,
+                      create_method='',
+                      create_method_kwargs=None,
+                      **kwargs):
     """
     A convenience method for looking up an object with the given kwargs (may be empty if your model has defaults for all
     fields), creating one if necessary.
@@ -10,17 +16,22 @@ def get_or_create(session, model, **kwargs):
     requests are made in parallel, and as a shortcut to boilerplatish code. For example:
 
     Important: This method is atomic assuming that the database enforces uniqueness of the keyword arguments.
+    https://skien.cc/blog/2014/01/15/sqlalchemy-and-race-conditions-implementing-get_one_or_create/
 
     :param session:
     :param model:
     :param kwargs:
     :return:
     """
-    instance = session.query(model).filter_by(**kwargs).first()
-    if instance:
-        return instance
-    else:
-        instance = model(**kwargs)
-        session.add(instance)
-        session.commit()
-        return instance
+    try:
+        return session.query(model).filter_by(**kwargs).one(), True
+    except NoResultFound:
+        kwargs.update(create_method_kwargs or {})
+        created = getattr(model, create_method, model)(**kwargs)
+        try:
+            session.add(created)
+            session.commit()
+            return created, False
+        except IntegrityError:
+            session.rollback()
+            return session.query(model).filter_by(**kwargs).one(), True

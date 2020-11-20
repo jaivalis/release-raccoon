@@ -20,6 +20,11 @@ def get_all_artists():
     return jsonify(service.get_all_artists())
 
 
+@app.route('/releases')
+def update_artist_releases():
+    return jsonify(service.update_artist_releases())
+
+
 @app.route('/register', methods=['POST'])
 def register_user():
     req_data = request.get_json(force=True)
