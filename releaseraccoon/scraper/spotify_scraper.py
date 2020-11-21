@@ -96,7 +96,7 @@ class SpotifyScraper:
             ret = {k: item[k] for k in SPOTIFY_KEY_FILTER}
 
             ret[RELEASE_ARTISTS_KEY] = []
-            for artist in item['artists']:
+            for artist in item[RELEASE_ARTISTS_KEY]:
                 ret[RELEASE_ARTISTS_KEY].append({k: artist[k] for k in SPOTIFY_ARTIST_KEY_FILTER})
 
             LOG.debug(f'Unpacked release: {ret}')
