@@ -7,7 +7,8 @@ def get_one_or_create(session,
                       create_method='',
                       create_method_kwargs=None,
                       **kwargs):
-    """ Convenience method
+    """
+    Convenience method
 
     A convenience method for looking up an object with the given kwargs (may be empty if your model has defaults for all
     fields), creating one if necessary.
