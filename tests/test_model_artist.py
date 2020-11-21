@@ -1,7 +1,11 @@
 import unittest
 
 
-class ArtistTest(unittest.TestCase):
+class TestArtist(unittest.TestCase):
 
-    def sample_test(self):
+    def test_sample(self):
         self.assertTrue(True)
+
+
+if __name__ == '__main__':
+    unittest.main()
