@@ -1,12 +1,10 @@
-from unittest import main, TestCase
+from unittest import TestCase
 from releaseraccoon.scraper.scraper import (
     RELEASE_ARTISTS_KEY,
     RELEASE_TYPE_KEY,
     RELEASE_NAME_KEY,
     RELEASE_DATE_KEY,
-    RELEASE_SPOTIFY_URI_KEY,
-    RELEASE_ARTIST_NAME_KEY,
-    RELEASE_ARTIST_SPOTIFY_URI_KEY,
+    RELEASE_SPOTIFY_URI_KEY
 )
 from releaseraccoon.scraper.spotify_scraper import SpotifyScraper
 
@@ -23,7 +21,7 @@ class TestSpotifyScraper(TestCase):
 
     def test_process_release(self):
         filtered = ''
-        
+
         release_dict = sp_dict.copy()
         release_dict[filtered] = ''
 
