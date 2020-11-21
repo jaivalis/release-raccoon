@@ -141,7 +141,7 @@ def extract_release_release(release_spotify_uri: str,
                                    date=release_date,
                                    spotify_uri=release_spotify_uri,
                                    release_type=release_type)
-                                   
+    return release
 
 
 def fetch_all_releases() -> list:

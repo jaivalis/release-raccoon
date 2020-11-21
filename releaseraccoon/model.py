@@ -16,6 +16,11 @@ class Artist(db.Model):
     users = association_proxy('user_artist', 'user')
 
     def __init__(self, name: str, spotify_uri: str = None, has_new_release: str = False):
+        """
+        :param name: Artist name
+        :param spotify_uri: Used for easy linking in the future.
+        :param has_new_release: Will determine if tracking users need an update.
+        """
         self.name = name
         self.spotify_uri = spotify_uri
         
@@ -69,6 +74,12 @@ class Release(db.Model):
                  date: str,
                  spotify_uri: str = None,
                  release_type: str = None):
+        """
+        :param name: Release name.
+        :param date: Date released, only interested in calendar date.
+        :param spotify_uri: Used for easy linking in the future.
+        :param release_type: Currently one of album/single.
+        """
         self.name = name
         self.date = dateparser.parse(date).date()
         self.release_type = release_type

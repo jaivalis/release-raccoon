@@ -61,7 +61,7 @@ class SpotifyScraper:
         sp_response = self.sp.new_releases()
         while sp_response:
             albums = sp_response['albums']
-            for i, item in enumerate(albums['items']):
+            for _, item in enumerate(albums['items']):
                 keeper = SpotifyScraper._process_release(item)
                 if keeper:
                     ret.append(keeper)
