@@ -1,18 +1,35 @@
 from zope.interface import Interface
 
 from releaseraccoon.model import Artist
-from datetime import date
+
+RELEASE_NAME_KEY = 'name'
+RELEASE_TYPE_KEY = 'album_type'
+RELEASE_DATE_KEY = 'release_date'
+RELEASE_SPOTIFY_URI_KEY = 'uri'
+RELEASE_ARTISTS_KEY = 'artists'
+
+RELEASE_ARTIST_NAME_KEY = 'name'
+RELEASE_ARTIST_SPOTIFY_URI_KEY = 'uri'
 
 
 class IMusicReleaseScraper(Interface):
+
     """ Scrapes external sources for music releases """
     
-    def scrape_releases(cal_date: date, limit: int):
+    def scrape_releases(limit: int = None):
+        """
+        Returns a list containing dicts as returned by _process_release.
+        :param limit: The max items to return, defaults to None.
+        :rtype: list
+        :return:
         """
 
-        :param cal_date: a calendar date
-        :param limit:
-        :return:
+    def _process_release(cls, item: dict) -> dict:
+        """
+        Filters a returned result unit (release) on the fields that interest us.
+
+        :param item: an item as returned from the API call.
+        :return: a dict including only the fields of interest.
         """
 
 

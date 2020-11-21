@@ -20,6 +20,11 @@ def get_all_artists():
     return jsonify(service.get_all_artists())
 
 
+@app.route('/releases')
+def get_all_releases():
+    return jsonify(service.get_all_releases())
+
+
 @app.route('/register', methods=['POST'])
 def register_user():
     req_data = request.get_json(force=True)
@@ -39,6 +44,11 @@ def register_user():
     else:
         # abort(404, {'message': 'Oops, something went wrong'})
         redirect('/register/failed')
+
+
+@app.route('/release-scrape')
+def update_artist_releases():
+    return jsonify(success=service.update_artist_releases())
 
 
 @app.route('/register/failed')

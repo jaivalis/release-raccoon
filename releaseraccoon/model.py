@@ -1,5 +1,5 @@
+import dateparser
 from sqlalchemy.ext.associationproxy import association_proxy
-from datetime import time
 
 from releaseraccoon.app.app import db
 
@@ -9,12 +9,22 @@ class Artist(db.Model):
     __tablename__ = 'artists'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
+    spotify_uri = db.Column(db.String(64), unique=True)
+
     has_new_release = db.Column(db.Boolean)
 
     users = association_proxy('user_artist', 'user')
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, spotify_uri: str = None, has_new_release: str = False):
+        """
+        :param name: Artist name
+        :param spotify_uri: Used for easy linking in the future.
+        :param has_new_release: Will determine if tracking users need an update.
+        """
         self.name = name
+        self.spotify_uri = spotify_uri
+        
+        self.has_new_release = has_new_release
 
     def __repr__(self):
         return f'{self.name}'
@@ -54,10 +64,26 @@ class User(db.Model):
 class Release(db.Model):
     __tablename__ = 'releases'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=False)
+    release_type = db.Column(db.String(10), unique=False)
+    spotify_uri = db.Column(db.String(64), unique=True)
+    date = db.Column(db.Date, unique=False)
 
-    def __init__(self, name: str, release_date: time):
+    def __init__(self,
+                 name: str,
+                 date: str,
+                 spotify_uri: str = None,
+                 release_type: str = None):
+        """
+        :param name: Release name.
+        :param date: Date released, only interested in calendar date.
+        :param spotify_uri: Used for easy linking in the future.
+        :param release_type: Currently one of album/single.
+        """
         self.name = name
-        self.release_date = release_date
+        self.date = dateparser.parse(date).date()
+        self.release_type = release_type
+        self.spotify_uri = spotify_uri
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

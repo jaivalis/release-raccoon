@@ -1,14 +1,41 @@
+import logging
+import sys
+from pprint import pprint
+
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
 from zope.interface import implementer
 
 from releaseraccoon import settings
-from releaseraccoon.scraper.scraper import IMusicReleaseScraper, IMusicTasteScraper
-from datetime import date
+from releaseraccoon.scraper.scraper import (
+    IMusicReleaseScraper,
+    IMusicTasteScraper,
+    RELEASE_ARTISTS_KEY,
+    RELEASE_TYPE_KEY,
+    RELEASE_NAME_KEY,
+    RELEASE_DATE_KEY,
+    RELEASE_SPOTIFY_URI_KEY,
+    RELEASE_ARTIST_NAME_KEY,
+    RELEASE_ARTIST_SPOTIFY_URI_KEY
+)
 
 SPOTIFY_CLIENT_ID = settings.spotify_client_id
 SPOTIFY_CLIENT_SECRET = settings.spotify_client_secret
+
+SPOTIFY_KEY_FILTER = [
+    RELEASE_NAME_KEY,
+    RELEASE_TYPE_KEY,
+    RELEASE_DATE_KEY,
+    RELEASE_SPOTIFY_URI_KEY,
+]
+
+SPOTIFY_ARTIST_KEY_FILTER = [
+    RELEASE_ARTIST_NAME_KEY,
+    RELEASE_ARTIST_SPOTIFY_URI_KEY
+]
+
+LOG = logging.getLogger(__name__)
 
 
 @implementer(IMusicTasteScraper)
@@ -21,45 +48,67 @@ class SpotifyScraper:
         self.sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
         self.release_types = ['album']
         
-    def scrape_releases(self, cal_date: date, limit: int):
-        response = self.sp.new_releases()
-    
-        while response:
-            albums = response['albums']
-            for i, item in enumerate(albums['items']):
-                if self._skip_release_item(item):
-                    continue
-                artists_str = ''
-                for artist in item['artists']:
-                    artists_str += artist['name'] + ' '
-                print(albums['offset'] + i, item['type'], item['name'], artists_str)
-        
+    def scrape_releases(self, limit: int = None) -> list:
+        """
+        Returns a list containing dicts as returned by _process_release.
+        :param limit: The max items to return, defaults to None.
+        :rtype: list
+        :return:
+        """
+        ret = []
+
+        # Hit spotify
+        sp_response = self.sp.new_releases()
+        while sp_response:
+            albums = sp_response['albums']
+            for _, item in enumerate(albums['items']):
+                keeper = SpotifyScraper._process_release(item)
+                if keeper:
+                    ret.append(keeper)
+
+                if limit is not None and len(ret) == limit:
+                    return ret
+
+            # The sp_response is paginated
             if albums['next']:
-                response = self.sp.next(albums)
+                sp_response = self.sp.next(albums)
             else:
-                response = None
-                
-    def _skip_release_item(self, item: dict):
-        return item['album_type'] in self.release_types
-    
-    def _update_artist(self, artist_name: str):
-        pass
-    
-    def process_release(self, name: str, artists: tuple):
+                sp_response = None
+        return ret
+
+    @classmethod
+    def _process_release(cls, item: dict) -> dict:
         """
-        The release needs to be registered into the db.
-        
-        For now we are interested only in releases of artists that are already tracked by users. Other releases are
-        discarded.
-        :param name: release name
-        :param artists: names of artists involved
-        :return: Void
+        Filters a spotify result dict on the fields that interest us.
+
+        Results in a dict looking like this:
+             {'album_type': 'single',
+              'artists': [{'name': 'ar1',
+                           'uri': 'spotify:artist:<HashID>'}],
+              'name': '<ReleaseName]',
+              'release_date': 'YYYY-MM-dd',
+              'uri': 'spotify:album:<HashId>'}
+        :param item: spotify originating dict
+        :return: a dict
         """
-        for artist in artists:
-            self._update_artist(artist)
+        ret = {}
+        try:
+            ret = {k: item[k] for k in SPOTIFY_KEY_FILTER}
+
+            ret[RELEASE_ARTISTS_KEY] = []
+            for artist in item[RELEASE_ARTISTS_KEY]:
+                ret[RELEASE_ARTISTS_KEY].append({k: artist[k] for k in SPOTIFY_ARTIST_KEY_FILTER})
+
+            LOG.debug(f'Unpacked release: {ret}')
+        except KeyError:
+            LOG.warning(f'Exception when processing release {item}', exc_info=True)
+        return ret
 
 
 if __name__ == '__main__':
-    scraper = SpotifyScraper()
-    scraper.scrape_releases(None, 0)
+    log_format = '%(asctime)s %(levelname)s %(name)s | %(message)s'
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format=log_format)
+
+    scraped = SpotifyScraper().scrape_releases()
+    LOG.info(f'Scraped {len(scraped)} releases: {pprint(scraped)}')
 
