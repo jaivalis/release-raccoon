@@ -65,7 +65,7 @@ class Release(db.Model):
     __tablename__ = 'releases'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=False)
-    release_type = db.Column(db.String(10), unique=False)
+    release_type = db.Column(db.String(20), unique=False)
     spotify_uri = db.Column(db.String(64), unique=True)
     date = db.Column(db.Date, unique=False)
 

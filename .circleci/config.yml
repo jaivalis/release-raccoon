@@ -31,6 +31,3 @@ workflows:
     jobs:
       - build-and-test
       - codacy-coverage-report
-  coverage-example:
-    jobs:
-      - codacy-coverage-report

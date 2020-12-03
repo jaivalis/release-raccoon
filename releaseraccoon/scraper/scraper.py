@@ -1,7 +1,5 @@
 from zope.interface import Interface
 
-from releaseraccoon.model import Artist
-
 RELEASE_NAME_KEY = 'name'
 RELEASE_TYPE_KEY = 'album_type'
 RELEASE_DATE_KEY = 'release_date'
@@ -37,7 +35,7 @@ class IMusicTasteScraper(Interface):
     """ Scrapes external sources for music taste of a given user """
 
     def scrape_taste(user_name: str, limit: int):
-        """Gets top artists."""
+        """ Gets top artists. """
 
-    def _map_artist(cls, entry: object) -> Artist:
-        """Maps an entry row originating from the API to an Artist object."""
+    def _map_artist(cls, entry: object) -> tuple:
+        """ Maps an entry row originating from the API to an artist [dict, weight] tuple. """

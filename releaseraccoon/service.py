@@ -48,7 +48,7 @@ def handle_register_user(email: str, lastfm_username: str) -> bool:
         LOG.debug(f'User with email {email} exists')
     else:
         user = User(email, lastfm_username)
-        lastfm_scraper = LastFmScraper(user)
+        lastfm_scraper = LastFmScraper(user.lastfm_username)
         max_weight = 0
         for artist_name, weight in lastfm_scraper.scrape_taste():
             max_weight = max(max_weight, weight)
