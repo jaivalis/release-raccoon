@@ -14,8 +14,8 @@ pip install virtualenv
 
 Once installed, create a virtual environment and activate it
 ```bash 
+virtualenv venv
 source venv/bin/activate
-python -m venv env_name
 ```
 
 Next, install the python dependencies on the virtual environment
