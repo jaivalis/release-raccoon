@@ -4,7 +4,7 @@
 [![CircleCI Docs Status](https://circleci.com/gh/jaivalis/release-raccoon/tree/develop.svg?style=svg)](https://circleci.com/gh/jaivalis/release-raccoon/tree/develop)
 ## Installation
 
-We recommend to use virtualenv for development:
+For development virtualenv is recommended.
 
 If you don't have it, start by installing it
 
@@ -12,9 +12,10 @@ If you don't have it, start by installing it
 pip install virtualenv
 ```
 
-Once installed, create a virtual environment
+Once installed, create a virtual environment and activate it
 ```bash 
 source venv/bin/activate
+python -m venv env_name
 ```
 
 Next, install the python dependencies on the virtual environment
