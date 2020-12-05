@@ -13,16 +13,13 @@ class Artist(db.Model):
 
     users = association_proxy('user_artist', 'user')
 
-    def __init__(self, name: str, spotify_uri: str = None, has_new_release: str = False):
+    def __init__(self, name: str, spotify_uri: str = None):
         """
         :param name: Artist name
         :param spotify_uri: Used for easy linking in the future.
-        :param has_new_release: Will determine if tracking users need an update.
         """
         self.name = name
         self.spotify_uri = spotify_uri
-
-        self.has_new_release = has_new_release
 
     def __repr__(self):
         return f'{self.name}'
@@ -93,12 +90,11 @@ class Release(db.Model):
 
 class UserArtist(db.Model):
     __tablename__ = 'user_artist'
-    id = db.Column(db.Integer, primary_key=True)
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     weight = db.Column(db.Float)
 
-    has_new_release = db.Column(db.Boolean, default=False)
+    has_new_release = db.Column(db.SmallInteger(), default='0')
 
     artist = db.relationship('Artist', backref='user_artist')
     user = db.relationship('User', backref='user_artist')
