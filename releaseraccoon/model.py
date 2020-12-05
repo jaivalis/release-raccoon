@@ -11,8 +11,6 @@ class Artist(db.Model):
     name = db.Column(db.String(64), nullable=False, unique=True)
     spotify_uri = db.Column(db.String(64), unique=True)
 
-    has_new_release = db.Column(db.Boolean)
-
     users = association_proxy('user_artist', 'user')
 
     def __init__(self, name: str, spotify_uri: str = None, has_new_release: str = False):
@@ -23,7 +21,7 @@ class Artist(db.Model):
         """
         self.name = name
         self.spotify_uri = spotify_uri
-        
+
         self.has_new_release = has_new_release
 
     def __repr__(self):
@@ -39,6 +37,10 @@ class User(db.Model):
     email = db.Column(db.String(64), nullable=False, unique=True)
     lastfm_username = db.Column(db.String(64), unique=True)
 
+    # To be updated per notification such that we don't notify too frequently
+    notified_on = db.Column(db.Date, unique=False)
+    notify_frequency_days = db.Column(db.Integer, unique=False, default=7)
+
     # association proxy of "user_artists" collection
     # to "artists" attribute
     artists = association_proxy('user_artist', 'artist')
@@ -49,10 +51,10 @@ class User(db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-    
+
     def normalize_weights(self, max_weight: int):
         """
-        
+
         :param max_weight:
         :return:
         """
@@ -91,9 +93,12 @@ class Release(db.Model):
 
 class UserArtist(db.Model):
     __tablename__ = 'user_artist'
+    id = db.Column(db.Integer, primary_key=True)
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'), primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     weight = db.Column(db.Float)
+
+    has_new_release = db.Column(db.Boolean, default=False)
 
     artist = db.relationship('Artist', backref='user_artist')
     user = db.relationship('User', backref='user_artist')

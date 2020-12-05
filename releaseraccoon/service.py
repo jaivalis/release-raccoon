@@ -5,7 +5,7 @@ from releaseraccoon.model import Artist, User, Release, UserArtist
 from releaseraccoon.scraper.lastfm_scraper import LastFmScraper
 from releaseraccoon.scraper.spotify_scraper import SpotifyScraper
 from releaseraccoon.db_util import get_one_or_create
-from sqlalchemy import exc
+from sqlalchemy import exc, update
 
 from releaseraccoon.scraper.scraper import (
     RELEASE_NAME_KEY,
@@ -57,7 +57,7 @@ def handle_register_user(email: str, lastfm_username: str) -> bool:
         user.normalize_weights(max_weight)
         session.add(user)
         session.commit()
-        
+
     return user.as_dict()
 
 
@@ -82,26 +82,43 @@ RELEASE_SCRAPERS = [
 
 def update_artist_releases() -> bool:
     """
-    Should hit all the release scraper sources to fetch all releases and update the db
+    Should hit all the release scraper sources to fetch all releases and update the db.
+
+    :return: True if operation successful.
     """
     try:
+        artists_ids_with_new_releases = set()
         for release_entry in fetch_all_releases():
             release_spotify_uri = release_entry[RELEASE_SPOTIFY_URI_KEY]
             release_name = release_entry[RELEASE_NAME_KEY]
             release_type = release_entry[RELEASE_TYPE_KEY]
             release_date = release_entry[RELEASE_DATE_KEY]
-    
-            extract_release_artists(release_entry[RELEASE_ARTISTS_KEY])
+
+            artists_ids_with_new_releases.update(
+                [artist.id for artist in extract_release_artists(release_entry[RELEASE_ARTISTS_KEY])]
+            )
             extract_release_release(
                 release_spotify_uri,
                 release_name,
                 release_type,
                 release_date
             )
-        session.commit()
-        return True
+        if update_userartists_has_new_release(artists_ids_with_new_releases):
+            session.commit()
+            return True
     except exc.SQLAlchemyError:
         LOG.warning('Exception occurred when updating artist releases', exc_info=True)
+        return False
+
+
+def update_userartists_has_new_release(artists_ids_with_new_releases: set) -> bool:
+    try:
+        session.query(UserArtist)\
+            .filter(UserArtist.artist_id.in_(artists_ids_with_new_releases))\
+            .update({UserArtist.has_new_release: True}, synchronize_session=False)
+        return True
+    except exc.SQLAlchemyError:
+        LOG.warning('Exception occurred when updating UserArtist table', exc_info=True)
         return False
 
 
@@ -117,9 +134,11 @@ def extract_release_artists(release_entry_artists: list) -> list:
         r_spotify_uri = release_entry_artist[RELEASE_ARTIST_SPOTIFY_URI_KEY]
 
         artist, _ = get_one_or_create(session, Artist,
-                                      name=r_name,
-                                      spotify_uri=r_spotify_uri)
-        artist.has_new_release = True
+                                      name=r_name)
+        # Extract a method out of the following update(s) if more interesting fields end up getting scraped
+        if r_spotify_uri is not None and artist.spotify_uri is None:
+            artist.spotify_uri = r_spotify_uri
+
         artists.append(artist)
     return artists
 
@@ -129,7 +148,7 @@ def extract_release_release(release_spotify_uri: str,
                             release_type: str,
                             release_date: str) -> Release:
     """
-    
+
     :param release_spotify_uri:
     :param release_name:
     :param release_type:
@@ -145,25 +164,14 @@ def extract_release_release(release_spotify_uri: str,
 
 
 def fetch_all_releases() -> list:
+    """
+    Traverse all scrapers, return all scraped releases
+
+    :return: list of dict with all releases.
+    """
     all_releases = []
     for scraper in RELEASE_SCRAPERS:
         all_releases.extend(scraper.scrape_releases())
     # todo: When more scrapers are added, we need to ensure uniqueness per release here.
     LOG.info(f'Scraped a total of {len(all_releases)} releases from {len(RELEASE_SCRAPERS)} sources.')
     return all_releases
-
-
-def handle_release(artist_name: str, spotify_id=None):
-    """
-    A new release for a given artist means that the artist table needs to be updated with the flag set to True.
-    :param artist_name:
-    :param spotify_id:
-    :return:
-    """
-    artist = session.query(Artist).filter_by(name=artist_name).first()
-    
-    if not artist:
-        LOG.debug(f'Artist {artist_name} not found in the db.')
-        return
-
-    artist.has_new_release = True
