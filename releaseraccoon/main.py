@@ -3,7 +3,8 @@ import sys
 
 from releaseraccoon.app.app import app, db
 # noinspection PyUnresolvedReferences
-from releaseraccoon.app.views import get_all_artists, get_all_users, register_user, update_artist_releases
+from releaseraccoon.app.views import (get_all_artists, get_all_users, notify_users, register_user,
+                                      update_artist_releases)
 
 
 def create_tables():

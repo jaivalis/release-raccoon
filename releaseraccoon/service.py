@@ -1,7 +1,7 @@
 import logging
 
 from releaseraccoon.app.app import session
-from releaseraccoon.model import Artist, User, Release, UserArtist
+from releaseraccoon.model import Artist, User, Release, ArtistRelease, UserArtist
 from releaseraccoon.scraper.lastfm_scraper import LastFmScraper
 from releaseraccoon.scraper.spotify_scraper import SpotifyScraper
 from releaseraccoon.db_util import get_one_or_create
@@ -80,6 +80,19 @@ RELEASE_SCRAPERS = [
 ]
 
 
+def already_processed(spotify_uri: str) -> bool:
+    """
+    Returns true if the release is already in the db.
+
+    Logic needs to be updated if new release scrapers are added.
+    :param spotify_uri: unique spotify identifier.
+    :return: boolean
+    """
+    return session.query(Release)\
+        .filter(Release.spotify_uri == spotify_uri)\
+        .first() is not None
+
+
 def update_artist_releases() -> bool:
     """
     Should hit all the release scraper sources to fetch all releases and update the db.
@@ -94,15 +107,22 @@ def update_artist_releases() -> bool:
             release_type = release_entry[RELEASE_TYPE_KEY]
             release_date = release_entry[RELEASE_DATE_KEY]
 
-            artists_ids_with_new_releases.update(
-                [artist.id for artist in extract_release_artists(release_entry[RELEASE_ARTISTS_KEY])]
-            )
-            extract_release_release(
+            if already_processed(release_spotify_uri):
+                continue
+
+            release_artists = extract_release_artists(release_entry[RELEASE_ARTISTS_KEY])
+            release = extract_release_release(
                 release_spotify_uri,
                 release_name,
                 release_type,
                 release_date
             )
+
+            for artist in release_artists:
+                artists_ids_with_new_releases.add(artist.id)
+                # Add ArtistRelease association entries:
+                release.artist_release.append(ArtistRelease(artist=artist, release=release))
+
         if update_userartists_has_new_release(artists_ids_with_new_releases):
             session.commit()
             return True
@@ -126,7 +146,7 @@ def extract_release_artists(release_entry_artists: list) -> list:
     """
     Maps a release dict entry from one of the scrapers to
     :param release_entry_artists: artists as originating from the scraper pojo objects
-    :return:
+    :return: tuple[Artist]
     """
     artists = []
     for release_entry_artist in release_entry_artists:
@@ -135,7 +155,7 @@ def extract_release_artists(release_entry_artists: list) -> list:
 
         artist, _ = get_one_or_create(session, Artist,
                                       name=r_name)
-        # Extract a method out of the following update(s) if more interesting fields end up getting scraped
+        # Extract a method out of the following update(s) if more relevant fields end up getting scraped
         if r_spotify_uri is not None and artist.spotify_uri is None:
             artist.spotify_uri = r_spotify_uri
 
@@ -172,6 +192,6 @@ def fetch_all_releases() -> list:
     all_releases = []
     for scraper in RELEASE_SCRAPERS:
         all_releases.extend(scraper.scrape_releases())
-    # todo: When more scrapers are added, we need to ensure uniqueness per release here.
+    # todo: When more release scrapers are added, we need to ensure uniqueness per release here.
     LOG.info(f'Scraped a total of {len(all_releases)} releases from {len(RELEASE_SCRAPERS)} sources.')
     return all_releases

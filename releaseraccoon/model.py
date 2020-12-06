@@ -84,6 +84,9 @@ class Release(db.Model):
         self.release_type = release_type
         self.spotify_uri = spotify_uri
 
+    def __repr__(self):
+        return f'{self.name}'
+
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
