@@ -1,22 +1,15 @@
 import logging
 
+from sqlalchemy import exc
+
 from releaseraccoon.app.app import session
-from releaseraccoon.model import Artist, User, Release, ArtistRelease, UserArtist
-from releaseraccoon.scraper.lastfm_scraper import LastFmScraper
-from releaseraccoon.scraper.spotify_scraper import SpotifyScraper
 from releaseraccoon.db_util import get_one_or_create
-from sqlalchemy import exc, update
-
-from releaseraccoon.scraper.scraper import (
-    RELEASE_NAME_KEY,
-    RELEASE_ARTISTS_KEY,
-    RELEASE_TYPE_KEY,
-    RELEASE_DATE_KEY,
-    RELEASE_SPOTIFY_URI_KEY,
-    RELEASE_ARTIST_NAME_KEY,
-    RELEASE_ARTIST_SPOTIFY_URI_KEY
-)
-
+from releaseraccoon.model import Artist, ArtistRelease, Release, User, UserArtist
+from releaseraccoon.scraper.lastfm_scraper import LastFmScraper
+from releaseraccoon.scraper.scraper import (RELEASE_ARTISTS_KEY, RELEASE_ARTIST_NAME_KEY,
+                                            RELEASE_ARTIST_SPOTIFY_URI_KEY, RELEASE_DATE_KEY, RELEASE_NAME_KEY,
+                                            RELEASE_SPOTIFY_URI_KEY, RELEASE_TYPE_KEY)
+from releaseraccoon.scraper.spotify_scraper import SpotifyScraper
 
 LOG = logging.getLogger(__name__)
 
