@@ -23,7 +23,7 @@ class NotifierService:
             .group_by(UserArtist.user_id).all()
 
     def get_artist_latest_releases_since(self, artist_id: int, day_frequency: int) -> list:
-        """ Joins ArtistRelease, Artist & Release tables to return all relevant info to be used to update users
+        """Joins ArtistRelease, Artist & Release tables to return all relevant info to be used to update users
 
         :param artist_id: artist to look for
         :param day_frequency: retrieve releases after `day_frequency` days ago.
@@ -78,7 +78,7 @@ class NotifierService:
         return True
 
     def _handle_user_notification(self, user: User, releases: list) -> None:
-        """ Attempts to update the user, if successful marks the UserArtist.has_new_release to False.
+        """Attempts to update the user, if successful marks the UserArtist.has_new_release to False.
 
         :param user: user to notify
         :param releases: tuple of [ArtistRelease, Artist, Release]
@@ -93,7 +93,7 @@ class NotifierService:
             raise
 
     def _notify_user(self, user: User, releases: list) -> None:
-        """ Call external utility function(s) to update user.
+        """Call external utility function(s) to update user.
 
         :param user: User to notify.
         :param releases: tuple of [ArtistRelease, Artist, Release].

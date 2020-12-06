@@ -29,15 +29,15 @@ def get_all_releases():
 @app.route('/register', methods=['POST'])
 def register_user():
     req_data = request.get_json(force=True)
-    
+
     try:
         email = req_data['email']
         lastfm_username = req_data['lastfm_username']
     except KeyError:
         return redirect('/register/failed')
-    
+
     LOG.debug(f'email: {email} lastfm_user: {lastfm_username}')
-    
+
     response = service.handle_register_user(email, lastfm_username)
     LOG.debug(response)
     if response:
@@ -49,9 +49,8 @@ def register_user():
 
 @app.route('/release-scrape')
 def update_artist_releases():
-    """
-    Using this for debugging purposes for now.
-    
+    """Using this for debugging purposes for now.
+
     :return:
     """
     return jsonify(success=service.update_artist_releases())
@@ -59,9 +58,8 @@ def update_artist_releases():
 
 @app.route('/notify-users')
 def notify_users():
-    """
-    Using this for debugging purposes for now.
-    
+    """Using this for debugging purposes for now.
+
     :return:
     """
     return jsonify(success=notifier_service.notify_users())
@@ -71,4 +69,3 @@ def notify_users():
 def register_failed():
     # session.pop('spotify_user_id', None)
     return 'Failed to register new user.'
-
