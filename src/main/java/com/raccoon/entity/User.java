@@ -1,41 +1,40 @@
 package com.raccoon.entity;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import lombok.Data;
 
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+@Data
 @Entity
-public class User extends PanacheEntity {
-
-    @Column(nullable = false)
-    private String name;
+public class User extends PanacheEntity implements Serializable {
 
     @NotNull
-    @Column
+    @Column(unique = true)
     private String email;
 
     @Column
     private String lastfmUsername;
 
     @Column
-    private Date lastNotified;
+    private LocalDate lastNotified;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "User_Artist",
-//            joinColumns = { @JoinColumn(name = "fk_user") },
-//            inverseJoinColumns = { @JoinColumn(name = "fk_artist")}
-//    )
-//    private List<Artist> artists = new ArrayList<>();
+    @JsonbTransient
+    @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL)
+    private Set<UserArtist> artists = new HashSet<>();
 
-    public static Optional<User> findByNameOptional(String name) {
-        return Optional.ofNullable(find("name", name).firstResult());
+    public static Optional<User> findbyEmailOptional(String email) {
+        return Optional.ofNullable(find("email", email).firstResult());
     }
 }

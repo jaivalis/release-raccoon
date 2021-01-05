@@ -14,16 +14,21 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+    <!-- quarkus -->
     <quarkus-plugin.version>1.10.5.Final</quarkus-plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.10.5.Final</quarkus.platform.version>
 
+    <!-- Scrapers -->
     <lastfm.client.version>0.1.2</lastfm.client.version>
     <spotify.client.version>6.5.1</spotify.client.version>
 
+    <!-- util -->
     <lombok.version>1.18.10</lombok.version>
+    <apache.commons.version>3.9</apache.commons.version>
 
+    <!-- plugins -->
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
   </properties>
 
@@ -39,6 +44,7 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
+    <!-- quarkus -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-jsonb</artifactId>
@@ -47,10 +53,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-mariadb</artifactId>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>io.quarkus</groupId>-->
-<!--      <artifactId>quarkus-hibernate-orm-panache</artifactId>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-micrometer</artifactId>
@@ -101,6 +103,11 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>${lombok.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${apache.commons.version}</version>
     </dependency>
   </dependencies>
 

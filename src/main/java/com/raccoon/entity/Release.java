@@ -7,7 +7,6 @@ import java.util.*;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -29,6 +29,10 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
     private Set<ArtistRelease> releases = new HashSet<>();
 
+    @JsonbTransient
+    @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
+    private Set<UserArtist> users = new HashSet<>();
+
     public static Artist findByName(String name) {
         return find("name", name).firstResult();
     }
