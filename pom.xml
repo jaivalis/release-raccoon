@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.raccoon</groupId>
-  <artifactId>release-raccoon</artifactId>
+  <artifactId>notRelease-raccoon</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
@@ -13,10 +13,17 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
     <quarkus-plugin.version>1.10.5.Final</quarkus-plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>1.10.5.Final</quarkus.platform.version>
+
+    <lastfm.client.version>0.1.2</lastfm.client.version>
+    <spotify.client.version>6.5.1</spotify.client.version>
+
+    <lombok.version>1.18.10</lombok.version>
+
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
   </properties>
 
@@ -58,6 +65,28 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
+    </dependency>
+
+    <!-- Scrapers -->
+    <dependency>
+      <groupId>de.u-mass</groupId>
+      <artifactId>lastfm-java</artifactId>
+      <version>${lastfm.client.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>se.michaelthelin.spotify</groupId>
+      <artifactId>spotify-web-api-java</artifactId>
+      <version>${spotify.client.version}</version>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
       <scope>test</scope>
     </dependency>
@@ -66,15 +95,15 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!-- util -->
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-openapi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>

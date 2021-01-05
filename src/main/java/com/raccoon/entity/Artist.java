@@ -1,25 +1,47 @@
 package com.raccoon.entity;
 
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import lombok.*;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-
+@Data
 @Entity
-public class Artist extends PanacheEntity {
+@NoArgsConstructor
+public class Artist extends PanacheEntityBase {
+
+    @Id
+    @Column(name = "artistId")
+    public Long id;
 
     @Column
-    private String name;
+    String name;
 
     @Column
-    private String spotifyUri;
+    String spotifyUri;
 
-    @ManyToMany(mappedBy = "artists")
-    private List<User> users = new ArrayList<>();
+//    @ManyToMany(mappedBy = "artists")
+//    List<User> users = new ArrayList<>();
+
+//    @ManyToMany
+//    @JoinTable(
+//            name = "User_Artist",
+//            joinColumns = { @JoinColumn(name = "fk_user") },
+//            inverseJoinColumns = { @JoinColumn(name = "fk_artist")}
+//    )
+    @OneToMany(mappedBy = "key.artist")
+    private Set<ArtistRelease> releases = new HashSet<>();
+
+    public static Artist findByName(String name) {
+        return find("name", name).firstResult();
+    }
+
+    public static Optional<Artist> findByNameOptional(String name) {
+        return Optional.ofNullable(find("name", name).firstResult());
+    }
+
 
 }
+
