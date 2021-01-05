@@ -1,27 +1,24 @@
 package com.raccoon.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 
 import javax.persistence.*;
-
-//@Table(name="User_Artist")
+import java.io.Serializable;
 
 @Data
-//@Entity
-//@Table(name = "ArtistRelease")
 @Entity
 @Table
-//@AssociationOverride(name = "key.artist", joinColumns = @JoinColumn(name = "artist_id"))
-//@AssociationOverrides({
-        @AssociationOverride(name = "key.artist", joinColumns = @JoinColumn(name = "artist_id"))
-        @AssociationOverride(name = "key.notRelease", joinColumns = @JoinColumn(name = "release_id"))
-//})
-public class ArtistRelease extends PanacheEntityBase {
+@AssociationOverride(name = "key.artist", joinColumns = @JoinColumn(name = "artist_id"))
+@AssociationOverride(name = "key.release", joinColumns = @JoinColumn(name = "release_id"))
+public class ArtistRelease extends PanacheEntityBase implements Serializable {
 
     @EmbeddedId
-    ArtistReleaseKey key;
+    @JsonIgnore
+    ArtistReleaseKey key = new ArtistReleaseKey();
 
+    @JsonIgnore
     public Artist getArtist() {
         return key.getArtist();
     }
@@ -30,28 +27,13 @@ public class ArtistRelease extends PanacheEntityBase {
         key.setArtist(artist);
     }
 
-    public NotRelease getNotRelease() {
-        return key.getNotRelease();
+    @JsonIgnore
+    public Release getRelease() {
+        return key.getRelease();
     }
 
-    public void getNotRelease(NotRelease notRelease) {
-        key.setNotRelease(notRelease);
+    public void setRelease(Release release) {
+        key.setRelease(release);
     }
-
-//    @ManyToOne
-//    @MapsId("artistId")
-//    @JoinColumn//(name = "artist_id")
-//    private Artist artist;
-
-//    @ManyToOne
-//    @MapsId("releaseId")
-//    @JoinColumn(name = "release_id")
-//    private Release release;
-
-//    @Id
-//    Long artistId;
-//
-//    @Id
-//    Long releaseId;
 
 }

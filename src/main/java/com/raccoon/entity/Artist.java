@@ -1,7 +1,9 @@
 package com.raccoon.entity;
 
+import java.io.Serializable;
 import java.util.*;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -10,10 +12,11 @@ import lombok.*;
 @Data
 @Entity
 @NoArgsConstructor
-public class Artist extends PanacheEntityBase {
+public class Artist extends PanacheEntityBase implements Serializable {
 
     @Id
     @Column(name = "artistId")
+    @GeneratedValue
     public Long id;
 
     @Column
@@ -22,16 +25,8 @@ public class Artist extends PanacheEntityBase {
     @Column
     String spotifyUri;
 
-//    @ManyToMany(mappedBy = "artists")
-//    List<User> users = new ArrayList<>();
-
-//    @ManyToMany
-//    @JoinTable(
-//            name = "User_Artist",
-//            joinColumns = { @JoinColumn(name = "fk_user") },
-//            inverseJoinColumns = { @JoinColumn(name = "fk_artist")}
-//    )
-    @OneToMany(mappedBy = "key.artist")
+    @JsonbTransient
+    @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
     private Set<ArtistRelease> releases = new HashSet<>();
 
     public static Artist findByName(String name) {
@@ -42,6 +37,4 @@ public class Artist extends PanacheEntityBase {
         return Optional.ofNullable(find("name", name).firstResult());
     }
 
-
 }
-

@@ -3,7 +3,8 @@ package com.raccoon.scraper;
 
 import com.raccoon.config.SpotifyConfig;
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.NotRelease;
+import com.raccoon.entity.ArtistRelease;
+import com.raccoon.entity.Release;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
@@ -18,6 +19,7 @@ import org.apache.hc.core5.http.ParseException;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -34,9 +36,6 @@ import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 @ApplicationScoped
 public class SpotifyScraper implements ReleaseScraper {
 
-//    @Inject
-//    SpotifyConfig config;
-
     private final String clientId;
     private final String clientSecret;
 
@@ -44,7 +43,7 @@ public class SpotifyScraper implements ReleaseScraper {
 
     private static ClientCredentialsRequest clientCredentialsRequest;
 
-    private static final int DEFAULT_LIMIT = 50;
+    private static final int DEFAULT_LIMIT = 10;
 
     public SpotifyScraper(SpotifyConfig config) {
         clientId = config.getClientId();
@@ -60,7 +59,7 @@ public class SpotifyScraper implements ReleaseScraper {
         clientCredentials();
     }
 
-    public static void clientCredentials() throws InterruptedException {
+    private static void clientCredentials() throws InterruptedException {
         try {
             clientCredentialsRequest = spotifyApi.clientCredentials()
                     .build();
@@ -126,20 +125,31 @@ public class SpotifyScraper implements ReleaseScraper {
                 }).collect(Collectors.toSet());
     }
 
-    private void persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
-        NotRelease notRelease = new NotRelease();
-        notRelease.setName(albumSimplified.getName());
-        notRelease.setType(albumSimplified.getAlbumType().toString());
-        notRelease.setSpotifyUri(albumSimplified.getUri());
+    private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
+        if (Release.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
+            final Release release = new Release();
+            release.setName(albumSimplified.getName());
+            release.setType(albumSimplified.getAlbumType().toString());
+            release.setSpotifyUri(albumSimplified.getUri());
+            release.setReleasedOn(LocalDate.parse(albumSimplified.getReleaseDate()));
 
-        persist(notRelease);
+            persist(release);  // do I need this many persists?
 
-//        release.setReleases(releaseArtists
-//                .stream()
-//                .map(artist -> {
-//                    return new ArtistRelease();
-//                }).collect(Collectors.toSet()));
-        persist(notRelease);
+            release.setReleases(releaseArtists
+                    .stream()
+                    .map(artist -> {
+                        ArtistRelease artistRelease = new ArtistRelease();
+                        artistRelease.setArtist(artist);
+                        artistRelease.setRelease(release);
 
+                        persist(artistRelease);
+                        return artistRelease;
+                    }).collect(Collectors.toList()));
+            persist(release);
+            return Optional.of(release);
+        }
+        return Optional.empty();
     }
+
+
 }
