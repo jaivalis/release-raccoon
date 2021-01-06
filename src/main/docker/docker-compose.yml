@@ -11,6 +11,8 @@ services:
       MYSQL_DATABASE: '${DB_NAME}'
     ports:
       - ${DB_PORT}:3306
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
 
   raccoon-adminer:
     image: adminer
