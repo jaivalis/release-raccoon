@@ -13,8 +13,8 @@ public class ReleaseScrapingResource {
     ReleaseScrapingService service;
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String register() {
+    @Produces(MediaType.APPLICATION_JSON)
+    public String scrapeReleases() {
         service.scrape();
         return "Scraped (?)";
     }

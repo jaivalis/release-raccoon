@@ -3,12 +3,10 @@ package com.raccoon.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -18,6 +16,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@ToString(exclude = "artists")
 public class User extends PanacheEntity implements Serializable {
 
     @NotNull
@@ -31,7 +30,7 @@ public class User extends PanacheEntity implements Serializable {
     private LocalDate lastNotified;
 
     @JsonbTransient
-    @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserArtist> artists = new HashSet<>();
 
     public static Optional<User> findbyEmailOptional(String email) {

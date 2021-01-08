@@ -1,8 +1,7 @@
-package com.raccoon;
+package com.raccoon.scraper.registration;
 
 import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.entity.User;
-import com.raccoon.scraper.taste.UserRegisteringService;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -17,10 +16,9 @@ public class UserRegisteringResource {
     UserRegisteringService service;
 
     @POST
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public User register(RegisterUserRequest request) {
-        service.register(request);
-        return null;
+        return service.register(request);
     }
 
 }

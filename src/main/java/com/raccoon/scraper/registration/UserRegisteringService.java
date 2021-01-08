@@ -1,9 +1,11 @@
-package com.raccoon.scraper.taste;
+package com.raccoon.scraper.registration;
 
 import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.factory.UserFactory;
+import com.raccoon.scraper.taste.TasteScrapers;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -44,8 +46,7 @@ public class UserRegisteringService {
             aggregateTaste.addAll(scraper.scrapeTaste(username, Optional.empty()));
         }
 
-        final User user = new User();
-        user.setEmail(email);
+        final User user = UserFactory.getOrCreateUser(email);
         user.setLastfmUsername(username);
         user.setArtists(
                 normalizeWeights(aggregateTaste).stream().map(pair -> {
