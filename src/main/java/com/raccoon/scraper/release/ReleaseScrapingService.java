@@ -18,7 +18,7 @@ public class ReleaseScrapingService {
     ReleaseScrapers releaseScrapers;
 
     @Transactional
-    public List<Release> scrape() throws ReleaseScrapeException {
+    public List<Release> scrape() throws ReleaseScrapeException, InterruptedException {
         List<Release> releases = new ArrayList<>();
 
         for (val scraper : releaseScrapers) {

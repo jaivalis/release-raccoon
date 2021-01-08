@@ -1,6 +1,5 @@
 package com.raccoon.scraper;
 
-
 import com.raccoon.config.SpotifyConfig;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.ArtistRelease;
@@ -17,6 +16,7 @@ import org.apache.hc.core5.http.ParseException;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.validation.constraints.Max;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -41,11 +41,12 @@ public class SpotifyScraper implements ReleaseScraper {
     private final String clientId;
     private final String clientSecret;
 
-    private static SpotifyApi spotifyApi;
+    private SpotifyApi spotifyApi;
 
-    private static ClientCredentialsRequest clientCredentialsRequest;
+    private long credentialsExpiryTs = 0L;
 
-    private static final int DEFAULT_LIMIT = 10;
+    @Max(50)
+    private static final int DEFAULT_LIMIT = 50;
 
     public SpotifyScraper(SpotifyConfig config) {
         clientId = config.getClientId();
@@ -53,21 +54,21 @@ public class SpotifyScraper implements ReleaseScraper {
     }
 
     @PostConstruct
-    private void init() throws InterruptedException {
+    private void init() {
         spotifyApi = new SpotifyApi.Builder()
                 .setClientId(clientId)
                 .setClientSecret(clientSecret)
                 .build();
-        clientCredentials();
     }
 
-    private static void clientCredentials() throws InterruptedException {
+    private void clientCredentials() throws InterruptedException {
         try {
-            clientCredentialsRequest = spotifyApi.clientCredentials()
+            ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials()
                     .build();
             final CompletableFuture<ClientCredentials> clientCredentialsFuture = clientCredentialsRequest.executeAsync();
 
             final ClientCredentials clientCredentials = clientCredentialsFuture.get();
+            credentialsExpiryTs = System.currentTimeMillis() + clientCredentials.getExpiresIn() * 1000;
 
             // Set access token for further "spotifyApi" object usage
             spotifyApi.setAccessToken(clientCredentials.getAccessToken());
@@ -81,15 +82,21 @@ public class SpotifyScraper implements ReleaseScraper {
         }
     }
 
-    @Override
-    public List<Release> scrapeReleases(Optional<Integer> limit) throws ReleaseScrapeException {
-        try {
-            final Paging<AlbumSimplified> albumSimplifiedPaging =
-                    spotifyApi.getListOfNewReleases()
-                            .limit(limit.orElse(DEFAULT_LIMIT))
-                            .build().execute();
+    private Paging<AlbumSimplified> executeRequest(int limit) throws ParseException, SpotifyWebApiException, IOException, InterruptedException {
+        if (System.currentTimeMillis() > credentialsExpiryTs) {
+            clientCredentials();
+        }
+        return spotifyApi.getListOfNewReleases()
+                        .limit(limit)
+                        .build().execute();
+    }
 
-            return Arrays.stream(albumSimplifiedPaging.getItems())
+    @Override
+    public List<Release> scrapeReleases(Optional<Integer> limit) throws ReleaseScrapeException, InterruptedException {
+        try {
+            final Paging<AlbumSimplified> response = executeRequest(limit.orElse(DEFAULT_LIMIT));
+
+            return Arrays.stream(response.getItems())
                     .map(this::processRelease)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
@@ -97,6 +104,9 @@ public class SpotifyScraper implements ReleaseScraper {
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             log.error("Something went wrong when fetching new albums.\n", e);
             throw new ReleaseScrapeException("Something went wrong when fetching new albums.", e);
+        } catch (InterruptedException e) {
+            log.error("", e);
+            throw e;
         }
     }
 
