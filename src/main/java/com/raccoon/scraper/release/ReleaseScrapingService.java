@@ -1,11 +1,14 @@
 package com.raccoon.scraper.release;
 
-import com.raccoon.entity.User;
+import com.raccoon.entity.Release;
+import com.raccoon.scraper.ReleaseScrapeException;
 import lombok.val;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -15,13 +18,14 @@ public class ReleaseScrapingService {
     ReleaseScrapers releaseScrapers;
 
     @Transactional
-    public User scrape() {
+    public List<Release> scrape() throws ReleaseScrapeException {
+        List<Release> releases = new ArrayList<>();
 
         for (val scraper : releaseScrapers) {
-            scraper.scrapeReleases(Optional.empty());
+            releases.addAll(scraper.scrapeReleases(Optional.empty()));
         }
 
-        return null;
+        return releases;
     }
 
 }

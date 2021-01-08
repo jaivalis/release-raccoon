@@ -44,6 +44,6 @@ public class LastfmScraper implements TasteScraper {
 
             return ArtistFactory.getOrCreateArtist(lastfmArtist.getName());
         }
-        throw new IllegalStateException("Got an object type that is not supported.");
+        throw new IllegalArgumentException("Got an object type that is not supported.");
     }
 }

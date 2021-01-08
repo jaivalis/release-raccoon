@@ -13,14 +13,16 @@ import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
 import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.hc.core5.http.ParseException;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -80,31 +82,36 @@ public class SpotifyScraper implements ReleaseScraper {
     }
 
     @Override
-    public void scrapeReleases(Optional<Integer> limit) {
+    public List<Release> scrapeReleases(Optional<Integer> limit) throws ReleaseScrapeException {
         try {
             final Paging<AlbumSimplified> albumSimplifiedPaging =
                     spotifyApi.getListOfNewReleases()
                             .limit(limit.orElse(DEFAULT_LIMIT))
                             .build().execute();
-            for (val release : albumSimplifiedPaging.getItems()) {
-                processRelease(release);
-            }
+
+            return Arrays.stream(albumSimplifiedPaging.getItems())
+                    .map(this::processRelease)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             log.error("Something went wrong when fetching new albums.\n", e);
+            throw new ReleaseScrapeException("Something went wrong when fetching new albums.", e);
         }
     }
 
     @Override
-    public void processRelease(Object release) {
+    public Optional<Release> processRelease(Object release) {
         if (release instanceof AlbumSimplified) {
-            processRelease((AlbumSimplified) release);
+            return processRelease((AlbumSimplified) release);
         }
+        throw new IllegalArgumentException("Got an object type that is not supported.");
     }
 
-    private void processRelease(AlbumSimplified albumSimplified) {
+    private Optional<Release> processRelease(AlbumSimplified albumSimplified) {
         log.debug("Processing release: {}", albumSimplified.getName());
         Set<Artist> releaseArtists = persistArtists(albumSimplified.getArtists());
-        persistRelease(albumSimplified, releaseArtists);
+        return persistRelease(albumSimplified, releaseArtists);
     }
 
     private Set<Artist> persistArtists(ArtistSimplified[] artists) {
