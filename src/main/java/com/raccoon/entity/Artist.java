@@ -11,6 +11,9 @@ import lombok.*;
 
 @Data
 @Entity
+@Table(indexes = {
+        @Index(columnList = "spotifyUri")
+})
 @NoArgsConstructor
 public class Artist extends PanacheEntityBase implements Serializable {
 

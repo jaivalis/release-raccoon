@@ -16,6 +16,9 @@ import java.util.Set;
 
 @Data
 @Entity
+@Table(indexes = {
+        @Index(columnList = "email")
+})
 @ToString(exclude = "artists")
 public class User extends PanacheEntity implements Serializable {
 

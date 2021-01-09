@@ -13,8 +13,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@ToString
+@ToString(exclude = "releases")
 @Entity(name = "Releases")
+@Table(indexes = {
+        @Index(columnList = "spotifyUri")
+})
 @NoArgsConstructor
 public class Release extends PanacheEntityBase implements Serializable {
 
@@ -41,7 +44,7 @@ public class Release extends PanacheEntityBase implements Serializable {
 
     @JsonbTransient
     @OneToMany(mappedBy = "key.release", cascade = CascadeType.ALL)
-    List<ArtistRelease> releases = new ArrayList<>();
+    private List<ArtistRelease> releases = new ArrayList<>();
 
     public static Optional<Release> findByNameOptional(String name) {
         return Optional.ofNullable(find("name", name).firstResult());

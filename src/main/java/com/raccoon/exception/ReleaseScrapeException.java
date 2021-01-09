@@ -1,4 +1,4 @@
-package com.raccoon.scraper;
+package com.raccoon.exception;
 
 public class ReleaseScrapeException extends Exception {
 
