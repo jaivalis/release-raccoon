@@ -3,8 +3,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.raccoon</groupId>
-  <artifactId>release-raccoon</artifactId>
+  <artifactId>release-raccoon-parent</artifactId>
+  <packaging>pom</packaging>
   <version>0.0.1-SNAPSHOT</version>
+
+  <modules>
+    <module>raccoon-entities</module>
+    <module>scraping</module>
+    <module>release-raccoon</module>
+  </modules>
 
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
@@ -27,6 +34,7 @@
     <!-- util -->
     <lombok.version>1.18.10</lombok.version>
     <apache.commons.version>3.9</apache.commons.version>
+    <rest.assured.version>4.3.3</rest.assured.version>
 
     <!-- plugins -->
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
@@ -41,109 +49,143 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <!-- submodules -->
+      <dependency>
+        <groupId>com.raccoon</groupId>
+        <artifactId>raccoon-entities</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.raccoon</groupId>
+        <artifactId>scraping</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.raccoon</groupId>
+        <artifactId>release.raccoon</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <!-- quarkus -->
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-rest-client-jsonb</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-jdbc-mariadb</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-micrometer</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-arc</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-resteasy-jackson</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-smallrye-openapi</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+
+      <!-- Scrapers -->
+      <dependency>
+        <groupId>de.u-mass</groupId>
+        <artifactId>lastfm-java</artifactId>
+        <version>${lastfm.client.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>se.michaelthelin.spotify</groupId>
+        <artifactId>spotify-web-api-java</artifactId>
+        <version>${spotify.client.version}</version>
+      </dependency>
+
+      <!-- Testing -->
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-junit5</artifactId>
+        <version>${quarkus-plugin.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${rest.assured.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- util -->
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${apache.commons.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
-  <dependencies>
-    <!-- quarkus -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-rest-client-jsonb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-mariadb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-micrometer</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-arc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-openapi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
-    </dependency>
-
-    <!-- Scrapers -->
-    <dependency>
-      <groupId>de.u-mass</groupId>
-      <artifactId>lastfm-java</artifactId>
-      <version>${lastfm.client.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>se.michaelthelin.spotify</groupId>
-      <artifactId>spotify-web-api-java</artifactId>
-      <version>${spotify.client.version}</version>
-    </dependency>
-
-    <!-- Testing -->
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- util -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>${lombok.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${apache.commons.version}</version>
-    </dependency>
-  </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus-plugin.version}</version>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-              <goal>generate-code</goal>
-              <goal>generate-code-tests</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire-plugin.version}</version>
-        <configuration>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <maven.home>${maven.home}</maven.home>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${quarkus-plugin.version}</version>
+          <extensions>true</extensions>
+<!--          <executions>-->
+<!--            <execution>-->
+<!--              <goals>-->
+<!--                <goal>build</goal>-->
+<!--                <goal>generate-code</goal>-->
+<!--                <goal>generate-code-tests</goal>-->
+<!--              </goals>-->
+<!--            </execution>-->
+<!--          </executions>-->
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${compiler-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire-plugin.version}</version>
+          <configuration>
+            <systemPropertyVariables>
+              <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+              <maven.home>${maven.home}</maven.home>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
+
   <profiles>
     <profile>
       <id>native</id>
