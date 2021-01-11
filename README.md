@@ -20,7 +20,7 @@ The application can be packaged using:
 ./mvnw package
 ```
 
-It produces the `release.com.raccoon-0.0.1-SNAPSHOT-runner.jar` file in the `/target` directory. Be
+It produces the `release.raccoon-0.0.1-SNAPSHOT-runner.jar` file in the `/target` directory. Be
 aware that it’s not an _über-jar_ as the dependencies are copied into the `target/lib` directory.
 
 If you want to build an _über-jar_, execute the following command:
@@ -29,7 +29,7 @@ If you want to build an _über-jar_, execute the following command:
 ./mvnw package -Dquarkus.package.type=uber-jar
 ```
 
-The application is now runnable using `java -jar target/release.com.raccoon-0.0.1-SNAPSHOT-runner.jar`.
+The application is now runnable using `java -jar target/release.raccoon-0.0.1-SNAPSHOT-runner.jar`.
 
 ## Creating a native executable
 
@@ -58,12 +58,7 @@ consult https://quarkus.io/guides/maven-tooling.html.
 Guide: https://quarkus.io/guides/rest-json
 
 # Starting the db using the .env file
-
+From the root of the project run:
 ```shell script
-docker-compose --env-file .env -f src/main/docker/docker-compose.yml up
+docker-compose --env-file ./release-raccoon.env -f src/main/docker/docker-compose.yml up
 ``` 
-
-# Check if the following is necessary:
-GRANT ALL PRIVILEGES ON `raccoondb`.* TO `raccoon`@`localhost` IDENTIFIED BY 'raccoon';
-FLUSH PRIVILEGES;
-SHOW GRANTS FOR `raccoon`@localhost;
