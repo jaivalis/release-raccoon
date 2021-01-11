@@ -1,4 +1,4 @@
-package com.raccoon.scraper.taste;
+package com.raccoon.taste;
 
 import com.raccoon.dto.RegisterUserRequest;
 import org.apache.commons.lang3.NotImplementedException;

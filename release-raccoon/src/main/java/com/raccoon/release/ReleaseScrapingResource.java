@@ -1,4 +1,4 @@
-package com.raccoon.scraper.release;
+package com.raccoon.release;
 
 import com.raccoon.entity.Release;
 

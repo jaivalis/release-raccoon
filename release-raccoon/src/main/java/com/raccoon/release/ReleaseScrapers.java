@@ -1,4 +1,7 @@
-package com.raccoon.scraper;
+package com.raccoon.release;
+
+import com.raccoon.scraper.ReleaseScraper;
+import com.raccoon.scraper.SpotifyScraper;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

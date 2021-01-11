@@ -1,9 +1,9 @@
-package com.raccoon.scraper.release;
+package com.raccoon.release;
 
 import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.exception.ReleaseScrapeException;
-import com.raccoon.scraper.ReleaseScrapers;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ApplicationScoped
 public class ReleaseScrapingService {
 
@@ -33,9 +34,8 @@ public class ReleaseScrapingService {
             for (val scraper : releaseScrapers) {
                 releases.addAll(scraper.scrapeReleases(Optional.empty()));
             }
-            userTransaction.commit();
-
             updateHasNewRelease(releases);
+            userTransaction.commit();
 
             return releases;
         } catch (Exception e) {
@@ -47,7 +47,8 @@ public class ReleaseScrapingService {
         Collection<Long> artistIds = releases.stream()
                 .flatMap(release -> release.getArtists().stream().map(artist -> artist.id))
                 .collect(Collectors.toList());
-        UserArtist.markNewRelease(artistIds);
+        List<UserArtist> userArtists = UserArtist.markNewRelease(artistIds);
+        log.info("Updated {} `UserArtist`.", userArtists.size());
     }
 
 }

@@ -1,4 +1,4 @@
-package com.raccoon.scraper.registration;
+package com.raccoon.registration;
 
 import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.entity.User;

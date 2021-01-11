@@ -1,4 +1,7 @@
-package com.raccoon.scraper;
+package com.raccoon.taste;
+
+import com.raccoon.scraper.LastfmScraper;
+import com.raccoon.scraper.TasteScraper;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

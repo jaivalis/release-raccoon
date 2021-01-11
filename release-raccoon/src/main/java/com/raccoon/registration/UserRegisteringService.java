@@ -1,11 +1,11 @@
-package com.raccoon.scraper.registration;
+package com.raccoon.registration;
 
 import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
-import com.raccoon.scraper.TasteScrapers;
+import com.raccoon.taste.TasteScrapers;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.tuple.MutablePair;
