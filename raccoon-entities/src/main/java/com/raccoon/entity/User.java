@@ -17,11 +17,11 @@ import java.util.Optional;
 import java.util.Set;
 
 @Data
+@ToString(exclude = "artists")
 @Entity
 @Table(indexes = {
         @Index(columnList = "email")
 })
-@ToString(exclude = "artists")
 public class User extends PanacheEntity implements Serializable {
 
     @NotNull

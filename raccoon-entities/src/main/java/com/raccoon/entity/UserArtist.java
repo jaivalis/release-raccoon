@@ -1,17 +1,23 @@
 package com.raccoon.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.quarkus.panache.common.Parameters;
-import lombok.Data;
-import lombok.ToString;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.persistence.AssociationOverride;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import lombok.Data;
+import lombok.ToString;
 
 @Data
 @ToString
@@ -61,14 +67,15 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
                 .filter(ua -> artistIds.contains(ua.getArtist().id))
                 .peek(userArtist -> userArtist.setHasNewRelease(Boolean.TRUE))
                 .collect(Collectors.toList());
-        UserArtist.persist(collect);
+        persist(collect);
         return collect;
     }
 
-    public static List<UserArtist> getUserArtistsWithNewReleaseGroupedByArtist() {
+    public static List<UserArtist> getUserArtistsWithNewRelease() {
 //        Stream<UserArtist> stream = find("select ua from UserArtist group by UserArtist.user_id").stream();
-        Stream<UserArtist> stream = UserArtist.find("hasNewRelease = :param", Parameters.with("param", "true").map())
-                 .project(UserArtist.class).stream();
+        Stream<UserArtist> stream = find("hasNewRelease", true)
+                .stream();
+//                .project(UserArtist.class).stream();
 
         return stream.collect(Collectors.toList());
     }

@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
-@ToString(exclude = "releases")
 @Entity(name = "Releases")
 @Table(indexes = {
         @Index(columnList = "spotifyUri")
@@ -44,6 +43,7 @@ public class Release extends PanacheEntityBase implements Serializable {
     @Column
     LocalDate releasedOn;
 
+    @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.release", cascade = CascadeType.ALL)
     private List<ArtistRelease> releases = new ArrayList<>();

@@ -3,6 +3,7 @@ package com.raccoon.entity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Data
+@ToString
 @Entity
 @Table(indexes = {
         @Index(columnList = "spotifyUri")
@@ -30,10 +32,12 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @Column
     String spotifyUri;
 
+    @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
     private Set<ArtistRelease> releases = new HashSet<>();
 
+    @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
     private Set<UserArtist> users = new HashSet<>();
