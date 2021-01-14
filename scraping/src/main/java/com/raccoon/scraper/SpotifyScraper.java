@@ -11,20 +11,27 @@ import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
 import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.hc.core5.http.ParseException;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.validation.constraints.Max;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.validation.constraints.Max;
+
+import lombok.extern.slf4j.Slf4j;
 
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 
@@ -99,10 +106,10 @@ public class SpotifyScraper implements ReleaseScraper {
                 response = executeRequest(offset);
                 releases.addAll(
                         Arrays.stream(response.getItems())
-                        .map(this::processRelease)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .collect(Collectors.toList())
+                                .map(this::processRelease)
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .collect(Collectors.toList())
                 );
                 offset = response.getOffset() + response.getLimit();
             } while(response.getNext() != null);
@@ -148,7 +155,7 @@ public class SpotifyScraper implements ReleaseScraper {
                 }).collect(Collectors.toSet());
     }
 
-    private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
+    private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists)  {
         if (Release.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
             final Release release = new Release();
             release.setName(albumSimplified.getName());
