@@ -3,6 +3,7 @@ package com.raccoon.notify;
 import com.raccoon.entity.User;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -17,7 +18,8 @@ public class NotifyingResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> scrapeReleases() throws Exception {
+    @Transactional
+    public List<User> scrapeReleases() {
         return service.notifyUsers();
     }
 }

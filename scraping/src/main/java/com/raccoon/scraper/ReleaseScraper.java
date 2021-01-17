@@ -2,7 +2,6 @@ package com.raccoon.scraper;
 
 import com.raccoon.entity.Release;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;

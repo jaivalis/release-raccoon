@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 import static java.util.Collections.EMPTY_LIST;
 
 @Slf4j
@@ -25,8 +26,10 @@ public class NotifyService {
         userArtists.stream()
                 .collect(Collectors.groupingBy(UserArtist::getUser))
                 .forEach((user, userArtistList) -> notifyUser(user, getLatestReleases(userArtistList)));
-
-        // mark UserArtists hasNewRelease as false after user was notified.
+        // mark processed
+        userArtists
+                .forEach(userArtist -> userArtist.setHasNewRelease(false));
+        persist(userArtists);
 
         return EMPTY_LIST;
     }
@@ -40,8 +43,8 @@ public class NotifyService {
         Set<Artist> artists = userArtistAssociations.stream()
                 .map(UserArtist::getArtist)
                 .collect(Collectors.toSet());
-        final List<Release> relevantReleases = Release.findByArtistsSinceDays(artists, 7);
-        log.info("Found {} releases to report on: {}", relevantReleases.size(), relevantReleases);
+        final List<Release> relevantReleases = Release.findByArtistsSinceDays(artists, 40);
+        log.info("Found {} releases from {} to report on: {}", relevantReleases.size(), artists, relevantReleases);
 
         return relevantReleases;
     }

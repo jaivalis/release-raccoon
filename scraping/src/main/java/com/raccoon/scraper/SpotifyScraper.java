@@ -143,15 +143,16 @@ public class SpotifyScraper implements ReleaseScraper {
                 .map(artistSimplified -> {
                     final String name = artistSimplified.getName();
                     Optional<Artist> byNameOptional = Artist.findByNameOptional(name);
-                    if (byNameOptional.isEmpty()) {
-                        Artist artist = new Artist();
-                        artist.setName(name);
-                        artist.setSpotifyUri(artistSimplified.getUri());
 
-                        persist(artist);
-                        return artist;
+                    Artist artist = byNameOptional.isEmpty() ? new Artist() : byNameOptional.get();
+                    if (byNameOptional.isEmpty()) {
+                        artist.setName(name);
                     }
-                    return byNameOptional.get();
+                    if (artist.getSpotifyUri() == null || artist.getSpotifyUri().isEmpty()) {
+                        artist.setSpotifyUri(artistSimplified.getUri());
+                    }
+                    persist(artist);
+                    return artist;
                 }).collect(Collectors.toSet());
     }
 
