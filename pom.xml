@@ -107,6 +107,11 @@
         <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
         <version>${quarkus-plugin.version}</version>
       </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-mailer</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
 
       <!-- Scrapers -->
       <dependency>
@@ -127,6 +132,12 @@
         <version>${quarkus-plugin.version}</version>
         <scope>test</scope>
       </dependency>
+<!--      <dependency>-->
+<!--        <groupId>io.quarkus</groupId>-->
+<!--        <artifactId>quarkus-panache-mock</artifactId>-->
+<!--        <version>${rest.assured.version}</version>-->
+<!--        <scope>test</scope>-->
+<!--      </dependency>-->
       <dependency>
         <groupId>io.rest-assured</groupId>
         <artifactId>rest-assured</artifactId>

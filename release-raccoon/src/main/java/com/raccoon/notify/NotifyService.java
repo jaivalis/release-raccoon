@@ -20,9 +20,9 @@ import static java.util.Collections.EMPTY_LIST;
 @ApplicationScoped
 public class NotifyService {
 
-    MailSender sender;
+    MailingService sender;
 
-    public NotifyService(final MailSender sender) {
+    public NotifyService(final MailingService sender) {
         this.sender = sender;
     }
 
@@ -33,12 +33,10 @@ public class NotifyService {
                 .collect(Collectors.groupingBy(UserArtist::getUser))
                 .forEach((user, userArtistList) -> {
                     if (notifyUser(user, getLatestReleases(userArtistList))) {
+                        // mark processed
                         userArtistList.forEach(userArtist -> userArtist.setHasNewRelease(false));
                     }
                 });
-        // mark processed
-//        userArtists
-//                .forEach(userArtist -> userArtist.setHasNewRelease(false));
         persist(userArtists);
 
         return EMPTY_LIST;
@@ -60,12 +58,13 @@ public class NotifyService {
     }
 
     /**
-     * Call an external lib that will notify.
+     * Call an external lib that will send emails.
      * @param user who needs to be notified.
      * @param releases what should be in the notification.
      */
     private boolean notifyUser(User user, List<Release> releases) {
-        log.info("No-op notifier for user {} for releases {}", user, releases);
-        return this.sender.send(user.getEmail());
+        log.info("Notifying user {} for releases {}", user, releases);
+        return this.sender.send(user.getEmail(), user, releases);
     }
+
 }

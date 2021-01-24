@@ -61,6 +61,7 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
      * @param artistIds Collection of artistIds.
      * @return a list of updated UserArtist entries.
      */
+    // FIXME
     public static List<UserArtist> markNewRelease(Collection<Long> artistIds) {
         Stream<UserArtist> stream = streamAll();
         List<UserArtist> collect = stream

@@ -57,11 +57,20 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-mailer</artifactId>
+        </dependency>
 
         <!-- Testing -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-panache-mock</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -101,7 +110,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <appArtifact>${groupId}:${artifactId}</appArtifact>
+                    <appArtifact>${project.groupId}:${project.artifactId}</appArtifact>
                 </configuration>
             </plugin>
         </plugins>
