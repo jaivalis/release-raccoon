@@ -35,6 +35,7 @@
     <lombok.version>1.18.10</lombok.version>
     <apache.commons.version>3.9</apache.commons.version>
     <rest.assured.version>4.3.3</rest.assured.version>
+    <mail.version></mail.version>
 
     <!-- plugins -->
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
@@ -143,6 +144,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${apache.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.5.0-b01</version>
       </dependency>
 
     </dependencies>
