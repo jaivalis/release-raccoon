@@ -1,0 +1,57 @@
+<!--{@com.raccoon.entity.User user}-->
+<!--{@org.acme.Item item}-->
+<!doctype html>
+<html lang="en">
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+
+<!--    &lt;!&ndash; CSS ... &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="...">-->
+
+<!--    <title>My Todos</title>-->
+<!--</head>-->
+<body>
+<div class="container">
+    <h1>Your new Releases</h1>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th scope="col" >id</th>
+            <th scope="col" >Artist</th>
+            <th scope="col" class="fit">Name</th>
+            <th scope="col" class="fit">Released on</th>
+        </tr>
+        </thead>
+
+        {#if todos.size == 0}
+        <tr>
+            <td colspan="3">No data found.</td>
+        </tr>
+        {#else}
+
+        {#for release in releases}
+        <tr>
+            <th scope="row">#{count}</th>
+            <td>
+                {#each release.artists}
+                    {it.name}
+                    {#if it.hasNext}
+                        ,
+                    {/if}
+                {/each}
+            </td>
+            <td>
+                {release.name}
+            </td>
+            <td>
+                {release.releasedOn}
+            </td>
+
+        </tr>
+        {/for}
+        {/if}
+    </table>
+</div>
+</body>
+</html>
