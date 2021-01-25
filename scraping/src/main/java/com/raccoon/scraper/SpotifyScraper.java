@@ -77,7 +77,7 @@ public class SpotifyScraper implements ReleaseScraper {
             // Set access token for further "spotifyApi" object usage
             spotifyApi.setAccessToken(clientCredentials.getAccessToken());
 
-            log.info("Spotify client credentials expire in: " + clientCredentials.getExpiresIn());
+            log.info("Spotify client credentials expire in: {}", clientCredentials.getExpiresIn());
         } catch (CompletionException | CancellationException | ExecutionException e) {
             log.error("", e);
         } catch (InterruptedException e) {

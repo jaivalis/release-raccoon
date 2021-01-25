@@ -36,4 +36,5 @@ public class MailingService {
     private String formatMailSubject(List<Release> releases) {
         return String.format(MAIL_SUBJECT_FORMAT, releases.size());
     }
+
 }
