@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.persistence.AssociationOverride;
@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.ToString;
+
+import static java.util.stream.Collectors.toList;
 
 @Data
 @ToString
@@ -61,24 +63,29 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
      * @param artistIds Collection of artistIds.
      * @return a list of updated UserArtist entries.
      */
-    // FIXME
-    public static List<UserArtist> markNewRelease(Collection<Long> artistIds) {
+    public static List<UserArtist> markNewRelease(final Collection<Long> artistIds) {
         Stream<UserArtist> stream = streamAll();
         List<UserArtist> collect = stream
                 .filter(ua -> artistIds.contains(ua.getArtist().id))
                 .peek(userArtist -> userArtist.setHasNewRelease(Boolean.TRUE))
-                .collect(Collectors.toList());
+                .collect(toList());
         persist(collect);
         return collect;
     }
 
     public static List<UserArtist> getUserArtistsWithNewRelease() {
-//        Stream<UserArtist> stream = find("select ua from UserArtist group by UserArtist.user_id").stream();
         Stream<UserArtist> stream = find("hasNewRelease", true)
                 .stream();
-//                .project(UserArtist.class).stream();
 
-        return stream.collect(Collectors.toList());
+        return stream.collect(toList());
+    }
+
+    public static Optional<PanacheEntityBase> findByUserArtist(final long userId, final long artistId) {
+        return find("(user_id = ?1 and artist_id = ?2) ", userId, artistId).stream().findAny();
+    }
+
+    public static List<PanacheEntityBase> findByUserId(final long userId) {
+        return find("user_id = ?1", userId).stream().collect(toList());
     }
 
 }

@@ -60,5 +60,6 @@ Guide: https://quarkus.io/guides/rest-json
 # Starting the db using the .env file
 From the root of the project run:
 ```shell script
-docker-compose --env-file ./release-raccoon.env -f src/main/docker/docker-compose.yml up
+source release-raccoon/.env
+docker-compose --env-file ./release-raccoon/.env -f docker/docker-compose.yml up
 ``` 

@@ -1,11 +1,17 @@
 package com.raccoon.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serializable;
+
+import javax.persistence.AssociationOverride;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 @Data
 @Entity

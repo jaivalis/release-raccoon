@@ -1,0 +1,24 @@
+Artist:
+  - artistId: 100
+    name: "existentArtist"
+    spotifyUri: "uri1"
+
+ArtistRelease:
+  - release_id: 100
+    artist_id: 100
+
+Releases:
+  - releaseId: 100
+    name: "newRelease"
+    type: "ALBUM"
+
+User:
+  - id: 100
+    email: "something@existent.com"
+    lastfmUsername: "username1"
+
+UserArtist:
+  - user_id: 100
+    artist_id: 100
+    hasNewRelease: false
+

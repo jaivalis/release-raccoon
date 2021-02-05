@@ -2,6 +2,7 @@ package com.raccoon.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -18,6 +19,7 @@ import java.util.Set;
 @Table(indexes = {
         @Index(columnList = "spotifyUri")
 })
+@EqualsAndHashCode
 @NoArgsConstructor
 public class Artist extends PanacheEntityBase implements Serializable {
 

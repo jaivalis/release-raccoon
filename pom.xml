@@ -31,11 +31,14 @@
     <lastfm.client.version>0.1.2</lastfm.client.version>
     <spotify.client.version>6.5.1</spotify.client.version>
 
+    <!-- tests -->
+    <testcontainers.version>1.15.1</testcontainers.version>
+    <rider.version>1.21.1</rider.version>
+
     <!-- util -->
     <lombok.version>1.18.10</lombok.version>
     <apache.commons.version>3.9</apache.commons.version>
     <rest.assured.version>4.3.3</rest.assured.version>
-    <mail.version></mail.version>
 
     <!-- plugins -->
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
@@ -132,18 +135,68 @@
         <version>${quarkus-plugin.version}</version>
         <scope>test</scope>
       </dependency>
-<!--      <dependency>-->
-<!--        <groupId>io.quarkus</groupId>-->
-<!--        <artifactId>quarkus-panache-mock</artifactId>-->
-<!--        <version>${rest.assured.version}</version>-->
-<!--        <scope>test</scope>-->
-<!--      </dependency>-->
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-panache-mock</artifactId>
+        <version>${quarkus-plugin.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-junit5-mockito</artifactId>
+        <version>${quarkus-plugin.version}</version>
+        <scope>test</scope>
+      </dependency>
       <dependency>
         <groupId>io.rest-assured</groupId>
         <artifactId>rest-assured</artifactId>
         <version>${rest.assured.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers</artifactId>
+        <version>${testcontainers.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>mariadb</artifactId>
+        <version>${testcontainers.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${testcontainers.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.github.database-rider</groupId>
+        <artifactId>rider-core</artifactId>
+        <version>${rider.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.github.database-rider</groupId>
+        <artifactId>rider-cdi</artifactId>
+        <version>${rider.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+          </exclusion>
+        </exclusions>
+
+      </dependency>
+
 
       <!-- util -->
       <dependency>
