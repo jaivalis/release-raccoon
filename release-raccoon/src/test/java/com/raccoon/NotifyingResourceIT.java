@@ -6,7 +6,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.notify.MailingService;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
@@ -15,8 +14,6 @@ import org.junit.jupiter.api.*;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.transaction.Transactional;
-
-import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
