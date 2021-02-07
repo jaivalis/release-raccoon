@@ -80,7 +80,7 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
         return stream.collect(toList());
     }
 
-    public static Optional<PanacheEntityBase> findByUserArtist(final long userId, final long artistId) {
+    public static Optional<PanacheEntityBase> findByUserArtistOptional(final long userId, final long artistId) {
         return find("(user_id = ?1 and artist_id = ?2) ", userId, artistId).stream().findAny();
     }
 
