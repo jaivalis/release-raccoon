@@ -5,7 +5,7 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
-import com.raccoon.scraper.SpotifyScraper;
+import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;

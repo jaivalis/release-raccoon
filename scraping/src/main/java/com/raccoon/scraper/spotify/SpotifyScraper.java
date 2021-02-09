@@ -1,8 +1,10 @@
-package com.raccoon.scraper;
+package com.raccoon.scraper.spotify;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
+import com.raccoon.scraper.ReleaseScraper;
+import com.raccoon.scraper.TasteScraper;
 import com.raccoon.scraper.config.SpotifyConfig;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -12,15 +14,12 @@ import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
 import com.wrapper.spotify.model_objects.specification.Paging;
 import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -40,21 +39,25 @@ import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
  */
 @Slf4j
 @ApplicationScoped
-public class SpotifyScraper implements ReleaseScraper {
+public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
     private final String clientId;
     private final String clientSecret;
 
     private SpotifyApi spotifyApi;
 
+    private SpotifyUserAuth auth;
+
     private long credentialsExpiryTs = 0L;
 
     @Max(50)
     private static final int DEFAULT_LIMIT = 50;
 
-    public SpotifyScraper(SpotifyConfig config) {
+    public SpotifyScraper(final SpotifyConfig config,
+                          final SpotifyUserAuth auth) {
         clientId = config.getClientId();
         clientSecret = config.getClientSecret();
+        this.auth = auth;
     }
 
     @PostConstruct
@@ -86,7 +89,9 @@ public class SpotifyScraper implements ReleaseScraper {
         }
     }
 
-    private Paging<AlbumSimplified> executeRequest(int offset) throws ParseException, SpotifyWebApiException, IOException, InterruptedException {
+    // ============================================= ReleaseScraper API ============================================= //
+    private Paging<AlbumSimplified> executeGetListOfNewReleasesRequest(final int offset)
+            throws ParseException, SpotifyWebApiException, IOException, InterruptedException {
         if (System.currentTimeMillis() > credentialsExpiryTs) {
             clientCredentials();
         }
@@ -103,7 +108,7 @@ public class SpotifyScraper implements ReleaseScraper {
         Paging<AlbumSimplified> response;
         try {
             do {
-                response = executeRequest(offset);
+                response = executeGetListOfNewReleasesRequest(offset);
                 releases.addAll(
                         Arrays.stream(response.getItems())
                                 .map(this::processRelease)
@@ -156,7 +161,7 @@ public class SpotifyScraper implements ReleaseScraper {
                 }).collect(Collectors.toSet());
     }
 
-    private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists)  {
+    private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
         if (Release.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
             final Release release = new Release();
             release.setName(albumSimplified.getName());
@@ -181,6 +186,52 @@ public class SpotifyScraper implements ReleaseScraper {
         }
         return Optional.empty();
     }
+    // ========================================== End of ReleaseScraper API ========================================= //
+    // ============================================== TasteScraper API ============================================== //
+    private Paging<com.wrapper.spotify.model_objects.specification.Artist> executeGetUsersTopArtists(final int offset)
+            throws ParseException, SpotifyWebApiException, IOException, InterruptedException {
+        if (System.currentTimeMillis() > credentialsExpiryTs) {
+            clientCredentials();
+        }
+        return spotifyApi.getUsersTopArtists()
+                .offset(offset)
+                .limit(DEFAULT_LIMIT)
+                .build().execute();
+    }
+
+    @Override
+    public Collection<MutablePair<Artist, Float>> scrapeTaste(final String username,
+                                                              final Optional<Integer> limit) {
+        auth.authorizationCodeUri_Sync();
+        List<MutablePair<Artist, Float>> releases = new ArrayList<>();
+        int offset = 0;
+        Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
+        try {
+            do {
+                response = executeGetUsersTopArtists(offset);
+                releases.addAll(
+                        Arrays.stream(response.getItems())
+                                .map(artistObj ->
+                                        MutablePair.of(processArtist(artistObj), (float) 1) //(float) artistObj.getPlaycount())
+                                ).collect(Collectors.toList())
+                );
+                offset = response.getOffset() + response.getLimit();
+            } while(response.getNext() != null);
+        } catch (IOException | SpotifyWebApiException | ParseException e) {
+            log.error("Something went wrong when fetching new albums ", e);
+//            throw new IOException("Something went wrong when fetching new albums.", e);
+        } catch (InterruptedException e) {
+            log.error("", e);
+//            throw e;
+        }
+        return releases;
+    }
+
+    @Override
+    public Artist processArtist(Object entry) {
+        return null;
+    }
+    // =========================================== End of TasteScraper API ========================================== //
 
 
 }

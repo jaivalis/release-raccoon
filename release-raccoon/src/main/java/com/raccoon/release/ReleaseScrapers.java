@@ -2,7 +2,7 @@ package com.raccoon.release;
 
 import com.raccoon.entity.Release;
 import com.raccoon.scraper.ReleaseScraper;
-import com.raccoon.scraper.SpotifyScraper;
+import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

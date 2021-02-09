@@ -2,6 +2,7 @@ package com.raccoon.taste;
 
 import com.raccoon.scraper.LastfmScraper;
 import com.raccoon.scraper.TasteScraper;
+import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,12 +19,15 @@ public class TasteScrapers implements Iterable<TasteScraper> {
 
     @Inject
     Instance<LastfmScraper> lastfmScraper;
+    @Inject
+    Instance<SpotifyScraper> spotifyScraper;
 
     List<TasteScraper> scrapers = new ArrayList<>();
 
     @PostConstruct
     private void init() {
         scrapers.add(lastfmScraper.get());
+        scrapers.add(spotifyScraper.get());
     }
 
     @Override
