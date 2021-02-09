@@ -15,7 +15,8 @@ import java.util.List;
 @ApplicationScoped
 public class MailingService {
 
-    static final String MAIL_SUBJECT_FORMAT = "%d New Releases from your favorite artists!";
+    static final String MAIL_SUBJECT_FORMAT_SINGULAR = "%d New Release for you";
+    static final String MAIL_SUBJECT_FORMAT_PLURAL = "%d New Releases for you";
 
     @Inject
     Mailer mailer;
@@ -34,7 +35,9 @@ public class MailingService {
     }
 
     private String formatMailSubject(List<Release> releases) {
-        return String.format(MAIL_SUBJECT_FORMAT, releases.size());
+        String template = releases.size() == 1 ?
+                MAIL_SUBJECT_FORMAT_SINGULAR : MAIL_SUBJECT_FORMAT_PLURAL;
+        return String.format(template, releases.size());
     }
 
 }

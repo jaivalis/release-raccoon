@@ -48,7 +48,7 @@ public class LastfmScraper implements TasteScraper {
 
     @Override
     public com.raccoon.entity.Artist processArtist(Object artistObj) {
-        log.info("{}", artistObj);
+        log.debug("{}", artistObj);
         if (artistObj instanceof de.umass.lastfm.Artist) {
             de.umass.lastfm.Artist lastfmArtist = (de.umass.lastfm.Artist) artistObj;
 
