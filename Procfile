@@ -1,0 +1,1 @@
+web: java -Dquarkus.http.port=$PORT -jar release-raccoon/target/release.raccoon-0.0.1-SNAPSHOT-runner.jar
