@@ -24,3 +24,6 @@ lastfm_shared_secret = os.getenv('LASTFM_SHARED_SECRET')
 # spotify
 spotify_client_id = os.getenv('SPOTIFY_CLIENT_ID')
 spotify_client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+
+# sendinblue
+sendinblue_api_key = os.getenv('SENDINBLUE_API_KEY')
