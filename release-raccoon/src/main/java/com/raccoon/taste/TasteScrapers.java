@@ -17,8 +17,8 @@ import java.util.function.Consumer;
 @ApplicationScoped
 public class TasteScrapers implements Iterable<TasteScraper> {
 
-    @Inject
-    Instance<LastfmScraper> lastfmScraper;
+//    @Inject
+//    Instance<LastfmScraper> lastfmScraper;
     @Inject
     Instance<SpotifyScraper> spotifyScraper;
 
@@ -26,7 +26,7 @@ public class TasteScrapers implements Iterable<TasteScraper> {
 
     @PostConstruct
     private void init() {
-        scrapers.add(lastfmScraper.get());
+//        scrapers.add(lastfmScraper.get());
         scrapers.add(spotifyScraper.get());
     }
 

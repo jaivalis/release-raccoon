@@ -202,28 +202,29 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     @Override
     public Collection<MutablePair<Artist, Float>> scrapeTaste(final String username,
                                                               final Optional<Integer> limit) {
+        // This should be async. The SpotifyAuthResource should invoke the rest of the method once auth is complete for the user
         auth.authorizationCodeUri_Sync();
         List<MutablePair<Artist, Float>> releases = new ArrayList<>();
-        int offset = 0;
-        Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
-        try {
-            do {
-                response = executeGetUsersTopArtists(offset);
-                releases.addAll(
-                        Arrays.stream(response.getItems())
-                                .map(artistObj ->
-                                        MutablePair.of(processArtist(artistObj), (float) 1) //(float) artistObj.getPlaycount())
-                                ).collect(Collectors.toList())
-                );
-                offset = response.getOffset() + response.getLimit();
-            } while(response.getNext() != null);
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
-            log.error("Something went wrong when fetching new albums ", e);
-//            throw new IOException("Something went wrong when fetching new albums.", e);
-        } catch (InterruptedException e) {
-            log.error("", e);
-//            throw e;
-        }
+//        int offset = 0;
+//        Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
+//        try {
+//            do {
+//                response = executeGetUsersTopArtists(offset);
+//                releases.addAll(
+//                        Arrays.stream(response.getItems())
+//                                .map(artistObj ->
+//                                        MutablePair.of(processArtist(artistObj), (float) 1) //(float) artistObj.getPlaycount())
+//                                ).collect(Collectors.toList())
+//                );
+//                offset = response.getOffset() + response.getLimit();
+//            } while(response.getNext() != null);
+//        } catch (IOException | SpotifyWebApiException | ParseException e) {
+//            log.error("Something went wrong when fetching new albums ", e);
+////            throw new IOException("Something went wrong when fetching new albums.", e);
+//        } catch (InterruptedException e) {
+//            log.error("", e);
+////            throw e;
+//        }
         return releases;
     }
 
