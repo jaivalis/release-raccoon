@@ -36,7 +36,7 @@ public class ReleaseScrapingService {
 
             return releases;
         } catch (Exception e) {
-           throw new ReleaseScrapeException("Exception thrown while scraping releases.", e);
+            throw new ReleaseScrapeException("Exception thrown while scraping releases.", e);
         }
     }
 

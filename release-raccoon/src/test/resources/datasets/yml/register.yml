@@ -14,7 +14,7 @@ Releases:
 
 User:
   - id: 100
-    email: "something@existent.com"
+    email: "someone@mail.com"
     lastfmUsername: "username1"
 
 UserArtist:

@@ -31,7 +31,8 @@ public class LastfmScraper implements TasteScraper {
     }
 
     @Override
-    public Collection<MutablePair<Artist, Float>> scrapeTaste(String username, Optional<Integer> limit) {
+    public Collection<MutablePair<Artist, Float>> scrapeTaste(final String username,
+                                                              final Optional<Integer> limit) {
         final Set<de.umass.lastfm.Artist> topArtists = new HashSet<>();
         final Set<String> seenNames = new HashSet<>();
         mergeArtists(topArtists, User.getTopArtists(username, Period.OVERALL, apiKey), seenNames);

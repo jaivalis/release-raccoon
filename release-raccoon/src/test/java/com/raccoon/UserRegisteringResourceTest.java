@@ -4,7 +4,6 @@ import com.raccoon.entity.Artist;
 import com.raccoon.scraper.LastfmScraper;
 
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -55,6 +54,7 @@ class UserRegisteringResourceTest {
         String body = new JsonObject()
                 .put("email", "someone@email.com")
                 .put("lastfmUsername", EXISTING_USERNAME)
+                .put("spotifyEnabled", "false")
                 .toString();
 
         given()
@@ -75,6 +75,7 @@ class UserRegisteringResourceTest {
         String body = new JsonObject()
                 .put("email", "someone@email.com")
                 .put("lastfmUsername", EXISTING_USERNAME)
+                .put("spotifyEnabled", "false")
                 .toString();
 
         given()

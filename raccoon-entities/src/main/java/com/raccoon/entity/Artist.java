@@ -1,17 +1,27 @@
 package com.raccoon.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 @Data
 @ToString
@@ -34,11 +44,13 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @Column
     String spotifyUri;
 
+    @JsonIgnore
     @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
     private Set<ArtistRelease> releases = new HashSet<>();
 
+    @JsonIgnore
     @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)

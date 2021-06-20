@@ -1,0 +1,35 @@
+Artist:
+  - artistId: 100
+    name: "artist1"
+    spotifyUri: "uri1"
+  - artistId: 101
+    name: "artist2"
+    spotifyUri: "uri1"
+
+ArtistRelease:
+  - release_id: 100
+    artist_id: 100
+
+Releases:
+  - releaseId: 100
+    name: "newRelease"
+    type: "ALBUM"
+
+User:
+  - id: 100
+    email: "user1@mail.com"
+    lastfmUsername: "username1"
+  - id: 101
+    email: "user2@mail.com"
+    lastfmUsername: "username2"
+
+UserArtist:
+  - user_id: 100
+    artist_id: 100
+    hasNewRelease: true
+  - user_id: 100
+    artist_id: 101
+    hasNewRelease: false
+  - user_id: 101
+    artist_id: 101
+    hasNewRelease: false
