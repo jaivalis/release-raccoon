@@ -2,19 +2,26 @@ package com.raccoon;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.scraper.LastfmScraper;
+
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Mockito;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.transaction.Transactional;
+
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 import io.vertx.core.json.JsonObject;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.Collections;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_CONFLICT;
@@ -47,6 +54,7 @@ class UserRegisteringResourceTest {
         String body = new JsonObject()
                 .put("email", "someone@email.com")
                 .put("lastfmUsername", EXISTING_USERNAME)
+                .put("spotifyEnabled", "false")
                 .toString();
 
         given()
@@ -67,6 +75,7 @@ class UserRegisteringResourceTest {
         String body = new JsonObject()
                 .put("email", "someone@email.com")
                 .put("lastfmUsername", EXISTING_USERNAME)
+                .put("spotifyEnabled", "false")
                 .toString();
 
         given()

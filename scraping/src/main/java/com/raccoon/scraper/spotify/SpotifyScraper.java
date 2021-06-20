@@ -12,14 +12,18 @@ import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
 import com.wrapper.spotify.model_objects.specification.Paging;
-import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -28,10 +32,12 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.validation.constraints.Max;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.raccoon.entity.factory.ArtistFactory.getOrCreateArtist;
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 
 /**
@@ -45,7 +51,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     private final String clientSecret;
 
     private SpotifyApi spotifyApi;
-
+    @Inject
     private SpotifyUserAuth auth;
 
     private long credentialsExpiryTs = 0L;
@@ -70,11 +76,11 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
     private void clientCredentials() throws InterruptedException {
         try {
-            ClientCredentialsRequest clientCredentialsRequest = spotifyApi.clientCredentials()
+            var clientCredentialsRequest = spotifyApi.clientCredentials()
                     .build();
             final CompletableFuture<ClientCredentials> clientCredentialsFuture = clientCredentialsRequest.executeAsync();
 
-            final ClientCredentials clientCredentials = clientCredentialsFuture.get();
+            final var clientCredentials = clientCredentialsFuture.get();
             credentialsExpiryTs = System.currentTimeMillis() + clientCredentials.getExpiresIn() * 1000;
 
             // Set access token for further "spotifyApi" object usage
@@ -104,7 +110,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     @Override
     public List<Release> scrapeReleases(Optional<Integer> limit) throws IOException, InterruptedException {
         List<Release> releases = new ArrayList<>();
-        int offset = 0;
+        var offset = 0;
         Paging<AlbumSimplified> response;
         try {
             do {
@@ -163,7 +169,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
     private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
         if (Release.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
-            final Release release = new Release();
+            final var release = new Release();
             release.setName(albumSimplified.getName());
             release.setType(albumSimplified.getAlbumType().toString());
             release.setSpotifyUri(albumSimplified.getUri());
@@ -174,7 +180,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
             release.setReleases(releaseArtists
                     .stream()
                     .map(artist -> {
-                        ArtistRelease artistRelease = new ArtistRelease();
+                        var artistRelease = new ArtistRelease();
                         artistRelease.setArtist(artist);
                         artistRelease.setRelease(release);
 
@@ -188,48 +194,43 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     }
     // ========================================== End of ReleaseScraper API ========================================= //
     // ============================================== TasteScraper API ============================================== //
-    private Paging<com.wrapper.spotify.model_objects.specification.Artist> executeGetUsersTopArtists(final int offset)
-            throws ParseException, SpotifyWebApiException, IOException, InterruptedException {
-        if (System.currentTimeMillis() > credentialsExpiryTs) {
-            clientCredentials();
+    @Override
+    public Collection<MutablePair<Artist, Float>> scrapeTaste(String username, Optional<Integer> limit) {
+        // Not used, to be thrown away (also from the interface)
+        return null;
+    }
+
+    public List<MutablePair<Artist, Float>> fetchTopArtists() {
+        List<MutablePair<Artist, Float>> artists = new ArrayList<>();
+        var offset = 0;
+        Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
+        try {
+            do {
+                response = auth.executeGetUsersTopArtists(offset);
+                artists.addAll(
+                        Arrays.stream(response.getItems())
+                                .map(artistObj ->
+                                        MutablePair.of(processArtist(artistObj), (float) 1) //(float) artistObj.getPlaycount())
+                                ).collect(Collectors.toList())
+                );
+                offset = response.getOffset() + response.getLimit();
+            } while(response.getNext() != null);
+        } catch (IOException | ParseException | SpotifyWebApiException e) {
+            log.error("Something went wrong when fetching Spotify artists ", e);
         }
-        return spotifyApi.getUsersTopArtists()
-                .offset(offset)
-                .limit(DEFAULT_LIMIT)
-                .build().execute();
+        return artists;
     }
 
-    @Override
-    public Collection<MutablePair<Artist, Float>> scrapeTaste(final String username,
-                                                              final Optional<Integer> limit) {
-        // This should be async. The SpotifyAuthResource should invoke the rest of the method once auth is complete for the user
-        auth.authorizationCodeUri_Sync();
-        List<MutablePair<Artist, Float>> releases = new ArrayList<>();
-//        int offset = 0;
-//        Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
-//        try {
-//            do {
-//                response = executeGetUsersTopArtists(offset);
-//                releases.addAll(
-//                        Arrays.stream(response.getItems())
-//                                .map(artistObj ->
-//                                        MutablePair.of(processArtist(artistObj), (float) 1) //(float) artistObj.getPlaycount())
-//                                ).collect(Collectors.toList())
-//                );
-//                offset = response.getOffset() + response.getLimit();
-//            } while(response.getNext() != null);
-//        } catch (IOException | SpotifyWebApiException | ParseException e) {
-//            log.error("Something went wrong when fetching new albums ", e);
-////            throw new IOException("Something went wrong when fetching new albums.", e);
-//        } catch (InterruptedException e) {
-//            log.error("", e);
-////            throw e;
-//        }
-        return releases;
-    }
-
-    @Override
     public Artist processArtist(Object entry) {
+        log.info("Got entry: {}", entry);
+        if (entry instanceof com.wrapper.spotify.model_objects.specification.Artist) {
+            var spotifyArtist = (com.wrapper.spotify.model_objects.specification.Artist) entry;
+            var artist = getOrCreateArtist(spotifyArtist.getName());
+            artist.setSpotifyUri(spotifyArtist.getUri());
+            persist(artist);
+
+            return artist;
+        }
         return null;
     }
     // =========================================== End of TasteScraper API ========================================== //

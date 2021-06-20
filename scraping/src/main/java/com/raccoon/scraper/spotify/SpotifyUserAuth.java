@@ -4,11 +4,8 @@ import com.raccoon.scraper.config.SpotifyConfig;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.SpotifyHttpManager;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import com.wrapper.spotify.model_objects.specification.Artist;
 import com.wrapper.spotify.model_objects.specification.Paging;
-import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
-import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 
 import org.apache.hc.core5.http.ParseException;
 
@@ -26,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ApplicationScoped
 public class SpotifyUserAuth {
+    public static final URI SPOTIFY_AUTH_CALLBACK_URI = URI.create("http://localhost:8080/spotify-auth-callback/");
     // https://github.com/thelinmichael/spotify-web-api-java/blob/master/examples/authorization/authorization_code/AuthorizationCodeUriExample.java
     // https://developer.spotify.com/documentation/general/guides/authorization-guide/
 
@@ -52,14 +50,19 @@ public class SpotifyUserAuth {
 
     // ============================== Spotify util code ==============================
 
-    public URI authorizationCodeUri_Sync() {
-        AuthorizationCodeUriRequest authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
-                .state("x4xkmn9pu3j6ukrs8n")
+    /**
+     *
+     * @param userId used to propagate the userId on consecutive auth calls
+     * @return
+     */
+    public URI authorizationCodeUriSync(String userId) {
+        var authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
+                .state(userId)
                 .scope("user-top-read")
-                .redirect_uri(URI.create("http://localhost:8080/spotify-auth-callback/"))
+                .redirect_uri(SPOTIFY_AUTH_CALLBACK_URI)
                 .show_dialog(true)
                 .build();
-        final URI uri = authorizationCodeUriRequest.execute();
+        final var uri = authorizationCodeUriRequest.execute();
 
         log.info("URI: {}", uri.toString());
 
@@ -72,7 +75,7 @@ public class SpotifyUserAuth {
                     spotifyApi.authorizationCodeUri()
                             .state(email)
                             .scope("user-top-read")
-                            .redirect_uri(URI.create("http://localhost:8080/spotify-auth-callback/"))
+                            .redirect_uri(SPOTIFY_AUTH_CALLBACK_URI)
                             .show_dialog(true)
                             .build();
             final CompletableFuture<URI> uriFuture = authorizationCodeUriRequest.executeAsync();
@@ -80,9 +83,9 @@ public class SpotifyUserAuth {
             // Thread free to do other tasks...
 
             // Example Only. Never block in production code.
-            final URI uri = uriFuture.join();
+            final var uri = uriFuture.join();
 
-            log.info("URI: " + uri.toString());
+            log.info("URI: {}", uri.toString());
         } catch (CompletionException e) {
             log.error("Error: {}", e.getCause().getMessage(), e);
         } catch (CancellationException e) {
@@ -94,7 +97,7 @@ public class SpotifyUserAuth {
         var authorizationCodeRequest =
                 spotifyApi
                         .authorizationCode(code)
-                        .redirect_uri(URI.create("http://localhost:8080/spotify-auth-callback/"))
+                        .redirect_uri(SPOTIFY_AUTH_CALLBACK_URI)
                         .build();
 
         try {
@@ -112,7 +115,6 @@ public class SpotifyUserAuth {
         return spotifyApi.getAccessToken();
     }
     // ============================== Spotify util code ==============================
-
     public Paging<Artist> executeGetUsersTopArtists(final int offset)
             throws IOException, ParseException, SpotifyWebApiException {
 //        if (System.currentTimeMillis() > credentialsExpiryTs) {
