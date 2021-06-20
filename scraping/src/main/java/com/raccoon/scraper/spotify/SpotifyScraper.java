@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.validation.constraints.Max;
 
 import lombok.extern.slf4j.Slf4j;
@@ -51,19 +50,15 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     private final String clientSecret;
 
     private SpotifyApi spotifyApi;
-    @Inject
-    private SpotifyUserAuth auth;
 
     private long credentialsExpiryTs = 0L;
 
     @Max(50)
     private static final int DEFAULT_LIMIT = 50;
 
-    public SpotifyScraper(final SpotifyConfig config,
-                          final SpotifyUserAuth auth) {
+    public SpotifyScraper(final SpotifyConfig config) {
         clientId = config.getClientId();
         clientSecret = config.getClientSecret();
-        this.auth = auth;
     }
 
     @PostConstruct
@@ -196,17 +191,16 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     // ============================================== TasteScraper API ============================================== //
     @Override
     public Collection<MutablePair<Artist, Float>> scrapeTaste(String username, Optional<Integer> limit) {
-        // Not used, to be thrown away (also from the interface)
-        return null;
+        throw new UnsupportedOperationException("Invoked asynchronously from the Spotify OAuth cycle instead.");
     }
 
-    public List<MutablePair<Artist, Float>> fetchTopArtists() {
+    public List<MutablePair<Artist, Float>> fetchTopArtists(final SpotifyUserAuthorizer authorizer) {
         List<MutablePair<Artist, Float>> artists = new ArrayList<>();
         var offset = 0;
         Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
         try {
             do {
-                response = auth.executeGetUsersTopArtists(offset);
+                response = authorizer.executeGetUsersTopArtists(offset);
                 artists.addAll(
                         Arrays.stream(response.getItems())
                                 .map(artistObj ->

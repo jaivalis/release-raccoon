@@ -2,7 +2,7 @@ package com.raccoon.taste.spotify;
 
 import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.entity.User;
-import com.raccoon.scraper.spotify.SpotifyUserAuth;
+import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
 
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
@@ -22,12 +22,12 @@ import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Path("/spotify-auth-callback")
 @Slf4j
+@Path("/spotify-auth-callback")
 public class SpotifyAuthResource {
 
     @Inject
-    SpotifyUserAuth spotifyAuthService;
+    SpotifyUserAuthorizer spotifyAuthService;
     @Inject
     SpotifyTasteUpdatingService spotifyTasteUpdatingService;
 

@@ -22,17 +22,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-public class SpotifyUserAuth {
-    public static final URI SPOTIFY_AUTH_CALLBACK_URI = URI.create("http://localhost:8080/spotify-auth-callback/");
+public class SpotifyUserAuthorizer {
+
+    private static final URI SPOTIFY_AUTH_CALLBACK_URI = URI.create("http://localhost:8080/spotify-auth-callback/");
+    private static final URI SPOTIFY_REDIRECT_URI = SpotifyHttpManager.makeUri("https://example.com/spotify-redirect");
+
     // https://github.com/thelinmichael/spotify-web-api-java/blob/master/examples/authorization/authorization_code/AuthorizationCodeUriExample.java
     // https://developer.spotify.com/documentation/general/guides/authorization-guide/
 
     private final String clientId;
     private final String clientSecret;
 
-    private static final URI redirectUri = SpotifyHttpManager.makeUri("https://example.com/spotify-redirect");
-
-    public SpotifyUserAuth(SpotifyConfig config) {
+    public SpotifyUserAuthorizer(SpotifyConfig config) {
         clientId = config.getClientId();
         clientSecret = config.getClientSecret();
     }
@@ -44,7 +45,7 @@ public class SpotifyUserAuth {
         spotifyApi = new SpotifyApi.Builder()
                 .setClientId(clientId)
                 .setClientSecret(clientSecret)
-                .setRedirectUri(redirectUri)
+                .setRedirectUri(SPOTIFY_REDIRECT_URI)
                 .build();
     }
 
@@ -81,7 +82,6 @@ public class SpotifyUserAuth {
             final CompletableFuture<URI> uriFuture = authorizationCodeUriRequest.executeAsync();
 
             // Thread free to do other tasks...
-
             // Example Only. Never block in production code.
             final var uri = uriFuture.join();
 
@@ -115,11 +115,7 @@ public class SpotifyUserAuth {
         return spotifyApi.getAccessToken();
     }
     // ============================== Spotify util code ==============================
-    public Paging<Artist> executeGetUsersTopArtists(final int offset)
-            throws IOException, ParseException, SpotifyWebApiException {
-//        if (System.currentTimeMillis() > credentialsExpiryTs) {
-//            clientCredentials();
-//        }
+    public Paging<Artist> executeGetUsersTopArtists(final int offset) throws IOException, ParseException, SpotifyWebApiException {
         return spotifyApi.getUsersTopArtists()
                 .offset(offset)
                 .limit(10)

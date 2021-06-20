@@ -73,11 +73,11 @@ public class User extends PanacheEntity implements Serializable {
     }
 
     public boolean isLastfmScrapeRequired(int scrapeIntervalDays) {
-        return lastLastFmScrape == null || isLastLastfmScrapeLt(scrapeIntervalDays);
+        return lastLastFmScrape == null || !isLastLastfmScrapeLt(scrapeIntervalDays);
     }
 
     public boolean isSpotifyScrapeRequired(int scrapeIntervalDays) {
-        return lastSpotifyScrape == null || isLastSpotifyScrapeLt(scrapeIntervalDays);
+        return lastSpotifyScrape == null || !isLastSpotifyScrapeLt(scrapeIntervalDays);
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

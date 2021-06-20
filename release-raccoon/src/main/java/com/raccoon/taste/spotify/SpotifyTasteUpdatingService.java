@@ -3,7 +3,7 @@ package com.raccoon.taste.spotify;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.scraper.spotify.SpotifyScraper;
-import com.raccoon.scraper.spotify.SpotifyUserAuth;
+import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 
@@ -29,7 +29,7 @@ import static com.raccoon.entity.factory.UserArtistFactory.getOrCreateUserArtist
 public class SpotifyTasteUpdatingService {
 
     @Inject
-    SpotifyUserAuth spotifyUserAuthService;
+    SpotifyUserAuthorizer spotifyUserAuthorizer;
     @Inject
     SpotifyScraper spotifyScraper;
 
@@ -59,15 +59,12 @@ public class SpotifyTasteUpdatingService {
 
         log.info("Redirecting user with id {} to spotify auth service", userId);
         return Response
-                .temporaryRedirect(spotifyUserAuthService.authorizationCodeUriSync(String.valueOf(userId)))
+                .temporaryRedirect(spotifyUserAuthorizer.authorizationCodeUriSync(String.valueOf(userId)))
                 .build();
     }
 
     public User updateTaste(final User user) {
-        final Collection<MutablePair<Artist, Float>> spotifyTaste =
-                spotifyScraper.fetchTopArtists();
-
-        // todo: Aggregate existing user taste with current spotifyTaste
+        final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(spotifyUserAuthorizer);
 
         user.setArtists(
                 normalizeWeights(spotifyTaste)
