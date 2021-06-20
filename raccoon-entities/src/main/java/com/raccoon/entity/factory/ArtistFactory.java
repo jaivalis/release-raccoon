@@ -19,7 +19,7 @@ public class ArtistFactory {
         Optional<Artist> existing = Artist.findByNameOptional(name);
 
         if (existing.isEmpty()) {
-            Artist artist = new Artist();
+            var artist = new Artist();
             artist.setName(name);
             persist(artist);
             return artist;

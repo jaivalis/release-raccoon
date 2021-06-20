@@ -20,7 +20,7 @@ public class UserFactory {
         if (existing.isPresent()) {
             return existing.get();
         }
-        User user = new User();
+        var user = new User();
         user.setEmail(email);
         persist(user);
         return user;

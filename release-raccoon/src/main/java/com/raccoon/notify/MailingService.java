@@ -2,14 +2,16 @@ package com.raccoon.notify;
 
 import com.raccoon.entity.Release;
 import com.raccoon.entity.User;
+
+import java.util.List;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.qute.Template;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.List;
 
 @Slf4j
 @ApplicationScoped
@@ -23,8 +25,6 @@ public class MailingService {
 
     @Inject
     Template digest;
-
-    public MailingService() {}
 
     public boolean send(final String to, final User user, List<Release> releases) {
         final String subject = formatMailSubject(releases);

@@ -41,10 +41,6 @@ public class Release extends PanacheEntityBase implements Serializable {
 
     @Column
     String type;
-    //  enum?:
-    //    ALBUM("album"),
-    //    COMPILATION("compilation"),
-    //    SINGLE("single");
 
     @Column(unique = true)
     String spotifyUri;
@@ -76,7 +72,7 @@ public class Release extends PanacheEntityBase implements Serializable {
 
         return Release.list("releasedOn > ?1", leastDate)
                 .stream()
-                .map(entity -> (Release) entity)
+                .map(Release.class::cast)
                 .filter(release -> release.getArtists().stream().anyMatch(artists::contains))
                 .collect(Collectors.toList());
 

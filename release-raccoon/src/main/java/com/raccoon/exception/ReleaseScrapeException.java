@@ -8,7 +8,4 @@ public class ReleaseScrapeException extends Exception {
         super(message, cause);
     }
 
-//    public ErrorCode getCode() {
-//        return this.code;
-//    }
 }
