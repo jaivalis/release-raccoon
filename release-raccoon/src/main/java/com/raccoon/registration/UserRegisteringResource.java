@@ -2,10 +2,10 @@ package com.raccoon.registration;
 
 import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.entity.User;
+import com.raccoon.entity.factory.UserFactory;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.POST;
@@ -23,9 +23,6 @@ import static javax.ws.rs.core.Response.Status.CONFLICT;
 @Slf4j
 public class UserRegisteringResource {
 
-    @Inject
-    UserRegisteringService service;
-
     @Transactional
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -35,8 +32,10 @@ public class UserRegisteringResource {
             log.info("User with email {} exists.", request.getEmail());
             return Response.status(CONFLICT).build();
         }
+        var user = UserFactory.getOrCreateUser(request.getEmail());
+        user.setLastfmUsername(request.getLastfmUsername());
+        user.setSpotifyEnabled(request.getSpotifyEnabled());
 
-        final User user = service.registerNewUser(request.getEmail(), request.getLastfmUsername());
         return Response.ok(user).build();
     }
 

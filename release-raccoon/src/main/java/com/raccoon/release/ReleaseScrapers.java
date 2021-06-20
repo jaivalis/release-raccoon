@@ -2,10 +2,7 @@ package com.raccoon.release;
 
 import com.raccoon.entity.Release;
 import com.raccoon.scraper.ReleaseScraper;
-import com.raccoon.scraper.SpotifyScraper;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -15,6 +12,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import lombok.val;
 

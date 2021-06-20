@@ -14,4 +14,6 @@ public class RegisterUserRequest {
 
     String lastfmUsername;
 
+    Boolean spotifyEnabled;
+
 }
