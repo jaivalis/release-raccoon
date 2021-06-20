@@ -6,18 +6,20 @@ import com.raccoon.scraper.config.LastFmConfig;
 
 import de.umass.lastfm.Period;
 import de.umass.lastfm.User;
-import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 @Slf4j
 @ApplicationScoped

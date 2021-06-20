@@ -42,6 +42,15 @@
 
     <!-- plugins -->
     <surefire-plugin.version>2.22.1</surefire-plugin.version>
+    <heroku-plugin.version>3.0.3</heroku-plugin.version>
+
+    <!-- sonar -->
+    <sonar.organization>jaivalis</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+    <sonar.language>java</sonar.language>
   </properties>
 
   <dependencyManagement>
@@ -252,8 +261,41 @@
             </systemPropertyVariables>
           </configuration>
         </plugin>
+
+<!--        <plugin>-->
+<!--          <groupId>com.heroku.sdk</groupId>-->
+<!--          <artifactId>heroku-maven-plugin</artifactId>-->
+<!--          <version>${heroku-plugin.version}</version>-->
+<!--          <configuration>-->
+<!--            <processTypes>-->
+<!--              <web>java $JAVA_OPTS -cp release-raccoon/target/release.raccoon-0.0.1-SNAPSHOT-runner.jar</web>-->
+<!--            </processTypes>-->
+<!--          </configuration>-->
+<!--        </plugin>-->
+
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.9</version>
+        <configuration>
+          <destFile>${sonar.jacoco.reportPath}</destFile>
+          <append>true</append>
+        </configuration>
+        <executions>
+          <execution>
+            <id>report</id>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>
