@@ -126,6 +126,21 @@
         <artifactId>quarkus-mailer</artifactId>
         <version>${quarkus-plugin.version}</version>
       </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-oidc</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-keycloak-authorization</artifactId>
+        <version>${quarkus-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus.keycloak</groupId>
+        <artifactId>quarkus-keycloak-adapter</artifactId>
+        <version>1.0.0.Alpha1</version>
+      </dependency>
 
       <!-- Scrapers -->
       <dependency>
@@ -205,9 +220,7 @@
             <artifactId>stax-api</artifactId>
           </exclusion>
         </exclusions>
-
       </dependency>
-
 
       <!-- util -->
       <dependency>

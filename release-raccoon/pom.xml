@@ -55,6 +55,18 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-mailer</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-keycloak-authorization</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus.keycloak</groupId>
+            <artifactId>quarkus-keycloak-adapter</artifactId>
+        </dependency>
 
         <!-- Testing -->
         <dependency>

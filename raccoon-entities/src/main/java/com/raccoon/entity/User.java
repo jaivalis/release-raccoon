@@ -38,6 +38,9 @@ public class User extends PanacheEntity implements Serializable {
     private String email;
 
     @Column
+    private String username;
+
+    @Column
     private String lastfmUsername;
 
     @Column
