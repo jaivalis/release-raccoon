@@ -134,17 +134,18 @@
             <plugin>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
-                <extensions>true</extensions>
+<!--                <extensions>true</extensions>-->
                 <executions>
                     <execution>
                         <goals>
                             <goal>build</goal>
-                            <goal>generate-code</goal>
-                            <goal>generate-code-tests</goal>
+<!--                            <goal>generate-code</goal>-->
+<!--                            <goal>generate-code-tests</goal>-->
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
+                    <skip>false</skip>
                     <appArtifact>${project.groupId}:${project.artifactId}</appArtifact>
                 </configuration>
             </plugin>
