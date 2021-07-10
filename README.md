@@ -1,4 +1,4 @@
-# release.com.raccoon project
+# ReleaseRaccoon
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
@@ -63,3 +63,7 @@ From the root of the project run:
 source release-raccoon/.env
 docker-compose --env-file ./release-raccoon/.env -f docker/docker-compose.yml up
 ``` 
+
+## Setting up Keycloak
+Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the docker-compose.yml.
+Import the [realm](resources/realm-export.json) to create a realm named `RaccoonRealm`.

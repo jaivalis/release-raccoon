@@ -21,14 +21,11 @@ import lombok.val;
 @ApplicationScoped
 public class ReleaseScrapers implements Iterable<ReleaseScraper> {
 
-    @Inject
-    SpotifyScraper spotifyScraper;
-
     List<ReleaseScraper> scrapers;
 
-    public ReleaseScrapers(SpotifyScraper lastfmScraper) {
-        this.spotifyScraper = lastfmScraper;
-        scrapers = List.of(lastfmScraper);
+    @Inject
+    public ReleaseScrapers(SpotifyScraper spotifyScraper) {
+        scrapers = List.of(spotifyScraper);
     }
 
     public Set<Release> scrape() throws IOException, InterruptedException {

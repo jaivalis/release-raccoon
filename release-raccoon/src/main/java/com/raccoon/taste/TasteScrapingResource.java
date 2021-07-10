@@ -5,6 +5,7 @@ import com.raccoon.entity.UserArtist;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 import com.raccoon.taste.spotify.SpotifyTasteUpdatingService;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
 import java.util.Collection;
@@ -19,6 +20,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.quarkus.oidc.IdToken;
+import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.entity.User.findByEmailOptional;
@@ -31,6 +35,11 @@ import static com.raccoon.entity.User.findByEmailOptional;
 public class TasteScrapingResource {
 
     @Inject
+    SecurityIdentity identity;
+    @IdToken
+    JsonWebToken idToken;
+
+    @Inject
     LastfmTasteUpdatingService lastfmService;
     @Inject
     SpotifyTasteUpdatingService spotifyTasteUpdatingService;
@@ -38,20 +47,24 @@ public class TasteScrapingResource {
     @GET
     @Path("lastfm")
     @Produces(MediaType.TEXT_PLAIN)
+    @Authenticated
     @Transactional
-    public Collection<UserArtist> scrapeLastfmTaste(@QueryParam("email") final String email) {
+    public Collection<UserArtist> scrapeLastfmTaste() {
+        final String email = idToken.getClaim("email");
         var existing = getUser(email);
         final var updated = lastfmService.updateTaste(existing);
-
         return updated.getArtists();
     }
 
     @GET
     @Path("spotify")
     @Produces(MediaType.TEXT_PLAIN)
+    @Authenticated
     @Transactional
-    public Response scrapeSpotifyTaste(@QueryParam("userId") final Long userId) {
-        return spotifyTasteUpdatingService.scrapeTaste(userId);
+    public Response scrapeSpotifyTaste() {
+        final String email = idToken.getClaim("email");
+        var existing = getUser(email);
+        return spotifyTasteUpdatingService.scrapeTaste(existing.id);
     }
 
     private User getUser(@QueryParam("email") String email) {

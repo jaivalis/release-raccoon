@@ -53,6 +53,7 @@ public class Release extends PanacheEntityBase implements Serializable {
     @OneToMany(mappedBy = "key.release", cascade = CascadeType.ALL)
     private List<ArtistRelease> releases = new ArrayList<>();
 
+    @JsonbTransient
     public List<Artist> getArtists() {
         return releases.stream()
                 .map(ArtistRelease::getArtist)
