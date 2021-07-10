@@ -1,11 +1,13 @@
 package com.raccoon;
 
 import com.raccoon.entity.Artist;
+import com.raccoon.registration.UserRegisteringResource;
 import com.raccoon.scraper.LastfmScraper;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -17,23 +19,30 @@ import java.util.Collections;
 
 import javax.transaction.Transactional;
 
+import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.security.TestSecurity;
+import io.quarkus.test.security.oidc.Claim;
+import io.quarkus.test.security.oidc.OidcSecurity;
 import io.restassured.http.ContentType;
-import io.vertx.core.json.JsonObject;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_CONFLICT;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-@Testcontainers
 @QuarkusTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Testcontainers
+@TestMethodOrder(OrderAnnotation.class)
+@TestHTTPEndpoint(UserRegisteringResource.class)
 @Transactional
 class UserRegisteringResourceTest {
+
+    final String EXISTING_USERNAME = "the coon";
 
     @InjectMock
     LastfmScraper mock;
@@ -43,48 +52,50 @@ class UserRegisteringResourceTest {
         QuarkusMock.installMockForType(mock, LastfmScraper.class);
     }
 
-    final String EXISTING_USERNAME = "username";
-
     @Test
     @Order(1)
-    void test_register_empty_results() {
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = "email", value = "user@gmail.com")
+    })
+    @DisplayName("successful registration")
+    void successfulRegistration() {
         Collection<MutablePair<Artist, Float>> mockTaste = Collections.emptyList();
         Mockito.when(mock.scrapeTaste(eq(EXISTING_USERNAME), any())).thenReturn(mockTaste);
 
-        String body = new JsonObject()
-                .put("email", "someone@email.com")
-                .put("lastfmUsername", EXISTING_USERNAME)
-                .put("spotifyEnabled", "false")
-                .toString();
-
         given()
                 .contentType(ContentType.JSON)
-                .body(body)
-                .when()
-                .post("/register")
+                .when().get()
                 .then()
                 .statusCode(SC_OK);
     }
 
     @Test
     @Order(2)
-    void test_register_existing_email() {
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = "email", value = "user@gmail.com")
+    })
+    @DisplayName("existing email should yield 409")
+    void existingEmail() {
         Collection<MutablePair<Artist, Float>> mockTaste = Collections.emptyList();
         Mockito.when(mock.scrapeTaste(eq(EXISTING_USERNAME), any())).thenReturn(mockTaste);
 
-        String body = new JsonObject()
-                .put("email", "someone@email.com")
-                .put("lastfmUsername", EXISTING_USERNAME)
-                .put("spotifyEnabled", "false")
-                .toString();
-
         given()
                 .contentType(ContentType.JSON)
-                .body(body)
-                .when()
-                .post("/register")
+                .when().get()
                 .then()
                 .statusCode(SC_CONFLICT);
+    }
+
+    @Test
+    @DisplayName("no bearer toke, unauthorized")
+    void unauthorized() {
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_UNAUTHORIZED);
     }
 
 }

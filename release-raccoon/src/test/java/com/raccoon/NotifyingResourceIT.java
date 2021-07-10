@@ -6,20 +6,31 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.notify.MailingService;
-import io.quarkus.test.junit.QuarkusMock;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.transaction.Transactional;
 
+import io.quarkus.test.junit.QuarkusMock;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
+import io.restassured.http.ContentType;
+
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @Testcontainers
 @QuarkusTest
@@ -41,6 +52,7 @@ class NotifyingResourceIT {
     @Test
     @Order(1)
     @DataSet(value = "datasets/yml/notify.yml")
+    @DisplayName("should notify unset UserArtist.hasNewRelease")
     void test_should_notify_user_artist_hasNewRelease() {
         given()
                 .contentType(ContentType.JSON)

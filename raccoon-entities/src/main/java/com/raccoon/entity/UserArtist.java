@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.AssociationOverride;
@@ -64,12 +65,12 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
      * @return a list of updated UserArtist entries.
      */
     public static List<UserArtist> markNewRelease(final Collection<Long> artistIds) {
-        Stream<UserArtist> stream = streamAll();
-        List<UserArtist> collect = stream
-                .filter(ua -> artistIds.contains(ua.getArtist().id))
-                .peek(userArtist -> userArtist.setHasNewRelease(Boolean.TRUE))
-                .collect(toList());
-        persist(collect);
+        List<UserArtist> collect = findByArtistIds(artistIds);
+        collect.stream()
+                .forEach(ua -> {
+                    ua.setHasNewRelease(Boolean.TRUE);
+                    ua.persist();
+                });
         return collect;
     }
 
@@ -88,4 +89,8 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
         return find("user_id = ?1", userId).stream().collect(toList());
     }
 
+    public static List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
+        Stream<UserArtist> stream = find("artist_id in ?1", artistIds).stream();
+        return stream.collect(Collectors.toList());
+    }
 }
