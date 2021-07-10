@@ -42,7 +42,7 @@ import static org.mockito.ArgumentMatchers.eq;
 @Transactional
 class UserRegisteringResourceTest {
 
-    final String EXISTING_USERNAME = "the coon";
+    static final String EXISTING_USERNAME = "the coon";
 
     @InjectMock
     LastfmScraper mock;
