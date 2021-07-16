@@ -269,59 +269,16 @@
     <build>
         <pluginManagement>
             <plugins>
-<!--                <plugin>-->
-<!--                    <groupId>io.quarkus</groupId>-->
-<!--                    <artifactId>quarkus-maven-plugin</artifactId>-->
-<!--                    <version>${quarkus.platform.version}</version>-->
-<!--                    <extensions>true</extensions>-->
-<!--                    &lt;!&ndash;          <configuration>&ndash;&gt;-->
-<!--                    &lt;!&ndash;            <skip>true</skip>&ndash;&gt;-->
-<!--                    &lt;!&ndash;          </configuration>&ndash;&gt;-->
-<!--                    <configuration>-->
-
-<!--                    </configuration>-->
-<!--                    <executions>-->
-<!--                        <execution>-->
-<!--                            <goals>-->
-<!--                                <goal>build</goal>-->
-<!--                            </goals>-->
-<!--                        </execution>-->
-<!--                    </executions>-->
-
-<!--                </plugin>-->
 
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${compiler-plugin.version}</version>
                 </plugin>
 
-
-                <!--        <plugin>-->
-                <!--          <groupId>com.heroku.sdk</groupId>-->
-                <!--          <artifactId>heroku-maven-plugin</artifactId>-->
-                <!--          <version>${heroku-plugin.version}</version>-->
-                <!--          <configuration>-->
-                <!--            <processTypes>-->
-                <!--              <web>java $JAVA_OPTS -cp release-raccoon/target/release.raccoon-0.0.1-SNAPSHOT-runner.jar</web>-->
-                <!--            </processTypes>-->
-                <!--          </configuration>-->
-                <!--        </plugin>-->
-
             </plugins>
         </pluginManagement>
 
         <plugins>
-            <!--      <plugin>-->
-            <!--        <groupId>io.quarkus</groupId>-->
-            <!--        <artifactId>quarkus-maven-plugin</artifactId>-->
-            <!--        <executions>-->
-            <!--          <execution>-->
-            <!--            <goals>-->
-            <!--              <goal>build</goal>-->
-            <!--            </goals>-->
-            <!--          </execution>-->
-            <!--        </executions>-->
-            <!--      </plugin>-->
 
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -343,48 +300,5 @@
             </plugin>
         </plugins>
     </build>
-
-<!--    <profiles>-->
-<!--        <profile>-->
-<!--            <id>native</id>-->
-<!--            <activation>-->
-<!--                <property>-->
-<!--                    <name>native</name>-->
-<!--                </property>-->
-<!--            </activation>-->
-<!--            <build>-->
-<!--                <plugins>-->
-<!--                    <plugin>-->
-<!--                        <artifactId>maven-failsafe-plugin</artifactId>-->
-<!--                        <version>${surefire-plugin.version}</version>-->
-<!--                        <executions>-->
-<!--                            <execution>-->
-<!--                                <goals>-->
-<!--                                    <goal>integration-test</goal>-->
-<!--                                    <goal>verify</goal>-->
-<!--                                </goals>-->
-<!--                                <configuration>-->
-<!--                                    <systemPropertyVariables>-->
-<!--                                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>-->
-<!--                                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>-->
-<!--                                        <maven.home>${maven.home}</maven.home>-->
-<!--                                        <version>${failsafe-plugin.version}</version>-->
-
-<!--                                        &lt;!&ndash; keycloak &ndash;&gt;-->
-<!--                                        <keycloak.version>14.0.0</keycloak.version>-->
-<!--                                        <keycloak.use.https>false</keycloak.use.https>-->
-
-<!--                                    </systemPropertyVariables>-->
-<!--                                </configuration>-->
-<!--                            </execution>-->
-<!--                        </executions>-->
-<!--                    </plugin>-->
-<!--                </plugins>-->
-<!--            </build>-->
-<!--            <properties>-->
-<!--                <quarkus.package.type>native</quarkus.package.type>-->
-<!--            </properties>-->
-<!--        </profile>-->
-<!--    </profiles>-->
 
 </project>
