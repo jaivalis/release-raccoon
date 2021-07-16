@@ -20,17 +20,14 @@
         <dependency>
             <groupId>com.raccoon</groupId>
             <artifactId>raccoon-entities</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.raccoon</groupId>
             <artifactId>scraping</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.raccoon</groupId>
             <artifactId>release-raccoon-app</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- quarkus -->

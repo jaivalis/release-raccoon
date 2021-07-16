@@ -75,13 +75,11 @@
                 <groupId>com.raccoon</groupId>
                 <artifactId>raccoon-entities</artifactId>
                 <version>${project.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.raccoon</groupId>
                 <artifactId>scraping</artifactId>
                 <version>${project.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.raccoon</groupId>
@@ -261,6 +259,7 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
