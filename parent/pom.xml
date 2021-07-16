@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>release-raccoon</artifactId>
+        <groupId>com.raccoon</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>parent</artifactId>
+    <name>parent</name>
+
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <compiler-plugin.version>3.8.1</compiler-plugin.version>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- quarkus -->
+        <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
+        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+        <quarkus.platform.version>2.0.2.Final</quarkus.platform.version>
+
+        <!-- Scrapers -->
+        <lastfm.client.version>0.1.2</lastfm.client.version>
+        <spotify.client.version>6.5.1</spotify.client.version>
+
+        <!-- tests -->
+        <testcontainers.version>1.15.3</testcontainers.version>
+        <testcontainers-keycloak.version>1.7.1</testcontainers-keycloak.version>
+        <rider.version>1.21.1</rider.version>
+        <awaitility.version>4.0.3</awaitility.version>
+
+        <!-- util -->
+        <lombok.version>1.18.10</lombok.version>
+        <apache.commons.version>3.9</apache.commons.version>
+        <rest.assured.version>4.3.3</rest.assured.version>
+
+        <!-- plugins -->
+        <surefire-plugin.version>2.22.1</surefire-plugin.version>
+        <failsafe-plugin.version>3.0.0-M1</failsafe-plugin.version>
+        <heroku-plugin.version>3.0.3</heroku-plugin.version>
+
+        <!-- sonar -->
+        <sonar.organization>jaivalis</sonar.organization>
+        <sonar.projectKey>jaivalis_release-raccoon</sonar.projectKey>
+        <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.language>java</sonar.language>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>${quarkus.platform.artifact-id}</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- submodules -->
+            <dependency>
+                <groupId>com.raccoon</groupId>
+                <artifactId>raccoon-entities</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.raccoon</groupId>
+                <artifactId>scraping</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.raccoon</groupId>
+                <artifactId>release-raccoon-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- quarkus -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-rest-client-jsonb</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-jdbc-mariadb</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-micrometer</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-arc</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-resteasy-jackson</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-smallrye-openapi</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-mailer</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-oidc</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-keycloak-authorization</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus.keycloak</groupId>
+                <artifactId>quarkus-keycloak-adapter</artifactId>
+                <version>1.0.0.Alpha1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-arc-deployment</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+
+            <!-- Scrapers -->
+            <dependency>
+                <groupId>de.u-mass</groupId>
+                <artifactId>lastfm-java</artifactId>
+                <version>${lastfm.client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>se.michaelthelin.spotify</groupId>
+                <artifactId>spotify-web-api-java</artifactId>
+                <version>${spotify.client.version}</version>
+            </dependency>
+
+            <!-- Testing -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-junit5</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-panache-mock</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-junit5-mockito</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>${rest.assured.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>mariadb</artifactId>
+                <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.database-rider</groupId>
+                <artifactId>rider-core</artifactId>
+                <version>${rider.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>stax</groupId>
+                        <artifactId>stax-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.database-rider</groupId>
+                <artifactId>rider-cdi</artifactId>
+                <version>${rider.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>stax</groupId>
+                        <artifactId>stax-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <scope>test</scope>
+                <version>${awaitility.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock-jre8</artifactId>
+                <scope>test</scope>
+                <version>2.28.1</version>
+            </dependency>
+            <!-- https://quarkus.io/guides/security-openid-connect -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-test-keycloak-server</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-test-security-oidc</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- util -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>mail</artifactId>
+                <version>1.5.0-b01</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+<!--                <plugin>-->
+<!--                    <groupId>io.quarkus</groupId>-->
+<!--                    <artifactId>quarkus-maven-plugin</artifactId>-->
+<!--                    <version>${quarkus.platform.version}</version>-->
+<!--                    <extensions>true</extensions>-->
+<!--                    &lt;!&ndash;          <configuration>&ndash;&gt;-->
+<!--                    &lt;!&ndash;            <skip>true</skip>&ndash;&gt;-->
+<!--                    &lt;!&ndash;          </configuration>&ndash;&gt;-->
+<!--                    <configuration>-->
+
+<!--                    </configuration>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <goals>-->
+<!--                                <goal>build</goal>-->
+<!--                            </goals>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+
+<!--                </plugin>-->
+
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${compiler-plugin.version}</version>
+                </plugin>
+
+
+                <!--        <plugin>-->
+                <!--          <groupId>com.heroku.sdk</groupId>-->
+                <!--          <artifactId>heroku-maven-plugin</artifactId>-->
+                <!--          <version>${heroku-plugin.version}</version>-->
+                <!--          <configuration>-->
+                <!--            <processTypes>-->
+                <!--              <web>java $JAVA_OPTS -cp release-raccoon/target/release.raccoon-0.0.1-SNAPSHOT-runner.jar</web>-->
+                <!--            </processTypes>-->
+                <!--          </configuration>-->
+                <!--        </plugin>-->
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <!--      <plugin>-->
+            <!--        <groupId>io.quarkus</groupId>-->
+            <!--        <artifactId>quarkus-maven-plugin</artifactId>-->
+            <!--        <executions>-->
+            <!--          <execution>-->
+            <!--            <goals>-->
+            <!--              <goal>build</goal>-->
+            <!--            </goals>-->
+            <!--          </execution>-->
+            <!--        </executions>-->
+            <!--      </plugin>-->
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                    <append>true</append>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            <id>native</id>-->
+<!--            <activation>-->
+<!--                <property>-->
+<!--                    <name>native</name>-->
+<!--                </property>-->
+<!--            </activation>-->
+<!--            <build>-->
+<!--                <plugins>-->
+<!--                    <plugin>-->
+<!--                        <artifactId>maven-failsafe-plugin</artifactId>-->
+<!--                        <version>${surefire-plugin.version}</version>-->
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <goals>-->
+<!--                                    <goal>integration-test</goal>-->
+<!--                                    <goal>verify</goal>-->
+<!--                                </goals>-->
+<!--                                <configuration>-->
+<!--                                    <systemPropertyVariables>-->
+<!--                                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>-->
+<!--                                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>-->
+<!--                                        <maven.home>${maven.home}</maven.home>-->
+<!--                                        <version>${failsafe-plugin.version}</version>-->
+
+<!--                                        &lt;!&ndash; keycloak &ndash;&gt;-->
+<!--                                        <keycloak.version>14.0.0</keycloak.version>-->
+<!--                                        <keycloak.use.https>false</keycloak.use.https>-->
+
+<!--                                    </systemPropertyVariables>-->
+<!--                                </configuration>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+<!--                    </plugin>-->
+<!--                </plugins>-->
+<!--            </build>-->
+<!--            <properties>-->
+<!--                <quarkus.package.type>native</quarkus.package.type>-->
+<!--            </properties>-->
+<!--        </profile>-->
+<!--    </profiles>-->
+
+</project>

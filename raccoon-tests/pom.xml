@@ -2,24 +2,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>release-raccoon-parent</artifactId>
-        <groupId>com.raccoon</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>release-raccoon</artifactId>
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>com.raccoon</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>raccoon-tests</artifactId>
+    <name>raccoon-tests</name>
+    <version>0.0.1-SNAPSHOT</version>
 
     <dependencies>
         <!-- submodules -->
         <dependency>
             <groupId>com.raccoon</groupId>
             <artifactId>raccoon-entities</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.raccoon</groupId>
             <artifactId>scraping</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.raccoon</groupId>
+            <artifactId>release-raccoon-app</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- quarkus -->
@@ -66,6 +77,10 @@
         <dependency>
             <groupId>io.quarkus.keycloak</groupId>
             <artifactId>quarkus-keycloak-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc-deployment</artifactId>
         </dependency>
 
         <!-- Testing -->
@@ -148,24 +163,26 @@
 
     <build>
         <plugins>
+
             <plugin>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-maven-plugin</artifactId>
-<!--                <extensions>true</extensions>-->
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build</goal>
-<!--                            <goal>generate-code</goal>-->
-<!--                            <goal>generate-code-tests</goal>-->
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire-plugin.version}</version>
                 <configuration>
-                    <skip>false</skip>
-                    <appArtifact>${project.groupId}:${project.artifactId}</appArtifact>
+                    <systemProperties>
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                        <!--                            <maven.home>${maven.home}</maven.home>-->
+                        <!--                            <maven.settings>${session.topLevelProject.basedir.absolutePath}</maven.settings>-->
+
+<!--                        <quarkus.bootstrap.effective-model-builder>true</quarkus.bootstrap.effective-model-builder>-->
+
+                        <!-- or, alternatively, configure 'keycloak.version' -->
+                        <keycloak.version>14.0.0</keycloak.version>
+                        <keycloak.use.https>false</keycloak.use.https>
+
+                    </systemProperties>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
