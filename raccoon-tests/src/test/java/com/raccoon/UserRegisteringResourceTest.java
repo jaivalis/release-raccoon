@@ -89,7 +89,7 @@ class UserRegisteringResourceTest {
     }
 
     @Test
-    @DisplayName("no bearer toke, unauthorized")
+    @DisplayName("no bearer token, unauthorized")
     void unauthorized() {
         given()
                 .contentType(ContentType.JSON)

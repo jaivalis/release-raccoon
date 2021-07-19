@@ -45,7 +45,7 @@ public class ReleaseScrapingService {
                 .flatMap(release -> release.getArtists().stream().map(artist -> artist.id))
                 .collect(Collectors.toList());
         List<UserArtist> userArtists = UserArtist.markNewRelease(artistIds);
-        log.info("Updated {} UserArtist.", userArtists.size());
+        log.info("Updated {} UserArtists.", userArtists.size());
     }
 
 }
