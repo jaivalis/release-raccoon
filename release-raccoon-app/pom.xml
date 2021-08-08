@@ -161,7 +161,7 @@
                 <artifactId>quarkus-maven-plugin</artifactId>
                 <version>${quarkus.platform.version}</version>
                 <configuration>
-                    <buildDir>../../build</buildDir>
+                    <buildDir>../build</buildDir>
                     <finalName>${project.artifactId}-${project.version}</finalName>
                 </configuration>
                 <executions>
