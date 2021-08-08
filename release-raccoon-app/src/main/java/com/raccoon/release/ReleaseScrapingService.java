@@ -25,7 +25,7 @@ public class ReleaseScrapingService {
     @Inject
     UserTransaction userTransaction;
 
-    public Set<Release> scrape() throws ReleaseScrapeException {
+    public Set<Release> scrape() throws ReleaseScrapeException, InterruptedException {
         try {
             // Could optimize the txs by localizing and batching.
             userTransaction.setTransactionTimeout(3600);
@@ -35,6 +35,9 @@ public class ReleaseScrapingService {
             userTransaction.commit();
 
             return releases;
+        } catch (InterruptedException e) {
+            log.warn("Interrupted!", e);
+            throw e;
         } catch (Exception e) {
             throw new ReleaseScrapeException("Exception thrown while scraping releases.", e);
         }
