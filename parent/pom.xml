@@ -308,10 +308,10 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
-<!--                <configuration>-->
-<!--                    <destFile>${sonar.jacoco.reportPath}</destFile>-->
-<!--                    <append>true</append>-->
-<!--                </configuration>-->
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                    <append>true</append>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
