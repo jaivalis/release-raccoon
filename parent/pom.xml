@@ -45,9 +45,9 @@
         <rest.assured.version>4.3.3</rest.assured.version>
 
         <!-- plugins -->
-        <surefire-plugin.version>2.22.1</surefire-plugin.version>
-        <failsafe-plugin.version>3.0.0-M1</failsafe-plugin.version>
-        <heroku-plugin.version>3.0.3</heroku-plugin.version>
+        <surefire-plugin.version>2.22.0</surefire-plugin.version>
+        <failsafe-plugin.version>2.22.0</failsafe-plugin.version>
+        <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
 
     </properties>
 
@@ -275,6 +275,30 @@
                     <version>${compiler-plugin.version}</version>
                 </plugin>
 
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <version>${surefire-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.junit.platform</groupId>
+                            <artifactId>junit-platform-surefire-provider</artifactId>
+                            <version>1.2.0-M1</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter-engine</artifactId>
+                            <version>5.2.0-M1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${failsafe-plugin.version}</version>
+                </plugin>
+
             </plugins>
         </pluginManagement>
 
@@ -283,21 +307,29 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
-                <configuration>
-                    <destFile>${sonar.jacoco.reportPath}</destFile>
-                    <append>true</append>
-                </configuration>
+                <version>${jacoco-maven-plugin.version}</version>
+<!--                <configuration>-->
+<!--                    <destFile>${sonar.jacoco.reportPath}</destFile>-->
+<!--                    <append>true</append>-->
+<!--                </configuration>-->
                 <executions>
                     <execution>
-                        <id>report</id>
+                        <id>prepare-agent</id>
                         <goals>
-                            <goal>report-aggregate</goal>
+                            <goal>prepare-agent</goal>
                         </goals>
-                        <phase>verify</phase>
                     </execution>
+
+                    <!--                    <execution>-->
+<!--                        <id>report</id>-->
+<!--                        <goals>-->
+<!--                            <goal>report-aggregate</goal>-->
+<!--                        </goals>-->
+<!--                        <phase>verify</phase>-->
+<!--                    </execution>-->
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 

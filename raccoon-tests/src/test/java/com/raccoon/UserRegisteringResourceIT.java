@@ -40,7 +40,7 @@ import static org.mockito.ArgumentMatchers.eq;
 @TestMethodOrder(OrderAnnotation.class)
 @TestHTTPEndpoint(UserRegisteringResource.class)
 @Transactional
-class UserRegisteringResourceTest {
+class UserRegisteringResourceIT {
 
     static final String EXISTING_USERNAME = "the coon";
 

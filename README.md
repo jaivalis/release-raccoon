@@ -9,7 +9,7 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 You can run your application in dev mode that enables live coding using:
 
 ```shell script
-./mvnw compile quarkus:dev
+./mvnw compile quarkus:dev -pl release-raccoon-ap
 ```
 
 ## Packaging and running the application
@@ -44,6 +44,7 @@ using:
 
 ```shell script
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
+./mvnw package -Pnative -pl release-raccoon-app
 ```
 
 You can then execute your native executable with: `./target/release.com.raccoon-0.0.1-SNAPSHOT-runner`
