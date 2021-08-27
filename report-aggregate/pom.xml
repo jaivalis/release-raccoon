@@ -8,6 +8,7 @@
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>report-aggregate</artifactId>
