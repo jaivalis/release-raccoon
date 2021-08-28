@@ -72,10 +72,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-<!--                <configuration>-->
-<!--                    <destFile>${sonar.jacoco.reportPath}</destFile>-->
-<!--                    <append>true</append>-->
-<!--                </configuration>-->
                 <executions>
                     <execution>
                         <id>report-aggregate</id>
@@ -93,15 +89,6 @@
                     </execution>
                 </executions>
 
-                <!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>report</id>-->
-<!--                        <goals>-->
-<!--                            <goal>report-aggregate</goal>-->
-<!--                        </goals>-->
-<!--                        <phase>verify</phase>-->
-<!--                    </execution>-->
-<!--                </executions>-->
             </plugin>
 
         </plugins>

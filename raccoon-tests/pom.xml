@@ -164,16 +164,9 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <groupId>org.apache.maven.plugins</groupId>
-<!--                <version>${surefire-plugin.version}</version>-->
                 <configuration>
                     <systemProperties>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                        <!--                            <maven.home>${maven.home}</maven.home>-->
-                        <!--                            <maven.settings>${session.topLevelProject.basedir.absolutePath}</maven.settings>-->
-
-<!--                        <quarkus.bootstrap.effective-model-builder>true</quarkus.bootstrap.effective-model-builder>-->
-
-                        <!-- or, alternatively, configure 'keycloak.version' -->
                         <keycloak.version>14.0.0</keycloak.version>
                         <keycloak.use.https>false</keycloak.use.https>
 
