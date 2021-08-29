@@ -3,16 +3,24 @@ package com.raccoon.entity.factory;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.UserArtistRepository;
 
 import java.util.Optional;
+
+import javax.enterprise.context.ApplicationScoped;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 
+@ApplicationScoped
 public class UserArtistFactory {
 
-    private UserArtistFactory() {}
+    UserArtistRepository repository;
+
+    UserArtistFactory(UserArtistRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Creates an Artist if it is not found in the database, or returns already existing artist.
@@ -20,7 +28,7 @@ public class UserArtistFactory {
      * @param artist
      * @return
      */
-    public static UserArtist getOrCreateUserArtist(final User user,
+    public UserArtist getOrCreateUserArtist(final User user,
                                                    final Artist artist) {
         Optional<PanacheEntityBase> existing = UserArtist.findByUserArtistOptional(user.id, artist.id);
         if (existing.isEmpty()) {

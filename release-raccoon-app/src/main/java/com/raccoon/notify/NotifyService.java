@@ -4,42 +4,53 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
-import lombok.extern.slf4j.Slf4j;
+import com.raccoon.entity.repository.ReleaseRepository;
+import com.raccoon.entity.repository.UserArtistRepository;
 
-import javax.enterprise.context.ApplicationScoped;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
-import static java.util.Collections.EMPTY_LIST;
+import javax.enterprise.context.ApplicationScoped;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
 public class NotifyService {
 
     MailingService sender;
+    ReleaseRepository releaseRepository;
+    UserArtistRepository userArtistRepository;
 
-    public NotifyService(final MailingService sender) {
+    public NotifyService(final ReleaseRepository releaseRepository,
+                         final UserArtistRepository userArtistRepository,
+                         final MailingService sender) {
+        this.userArtistRepository = userArtistRepository;
+        this.releaseRepository = releaseRepository;
         this.sender = sender;
     }
 
     public List<User> notifyUsers() {
-        final List<UserArtist> userArtists = UserArtist.getUserArtistsWithNewRelease();
+        final List<User> usersNotified = new ArrayList<>();
 
+        final List<UserArtist> userArtists = userArtistRepository.getUserArtistsWithNewRelease();
         userArtists.stream()
                 .collect(Collectors.groupingBy(UserArtist::getUser))
                 .forEach((user, userArtistList) -> {
                     if (notifyUser(user, getLatestReleases(userArtistList))) {
                         // mark processed
                         userArtistList.forEach(userArtist -> userArtist.setHasNewRelease(false));
+                        usersNotified.add(user);
                     }
                 });
-        persist(userArtists);
+        if (!usersNotified.isEmpty()) {
+            userArtistRepository.persist(userArtists);
+        }
 
-        return EMPTY_LIST;
+        return usersNotified;
     }
 
     /**
@@ -51,7 +62,7 @@ public class NotifyService {
         Set<Artist> artists = userArtistAssociations.stream()
                 .map(UserArtist::getArtist)
                 .collect(Collectors.toSet());
-        final List<Release> relevantReleases = Release.findByArtistsSinceDays(artists, 40);
+        final List<Release> relevantReleases = releaseRepository.findByArtistsSinceDays(artists, 40);
         log.info("Found {} releases from {} to report on: {}", relevantReleases.size(), artists, relevantReleases);
 
         return relevantReleases;

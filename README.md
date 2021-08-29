@@ -62,7 +62,7 @@ Guide: https://quarkus.io/guides/rest-json
 From the root of the project run:
 ```shell script
 source release-raccoon/.env
-docker-compose --env-file ./release-raccoon/.env -f docker/docker-compose.yml up
+docker-compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.yml up
 ``` 
 
 ## Setting up Keycloak

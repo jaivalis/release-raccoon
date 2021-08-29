@@ -2,6 +2,7 @@ package com.raccoon.taste.spotify;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
+import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
 
@@ -20,13 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.entity.User.findByIdOptional;
 import static com.raccoon.entity.User.persist;
-import static com.raccoon.entity.factory.UserArtistFactory.getOrCreateUserArtist;
 import static com.raccoon.taste.Util.normalizeWeights;
 
 @Slf4j
 @ApplicationScoped
 public class SpotifyTasteUpdatingService {
 
+    @Inject
+    UserArtistFactory userArtistFactory;
     @Inject
     SpotifyUserAuthorizer spotifyUserAuthorizer;
     @Inject
@@ -69,7 +71,7 @@ public class SpotifyTasteUpdatingService {
                 normalizeWeights(spotifyTaste)
                         .stream()
                         .map(pair -> {
-                            final var userArtist = getOrCreateUserArtist(user, pair.left);
+                            final var userArtist = userArtistFactory.getOrCreateUserArtist(user, pair.left);
                             userArtist.setWeight(pair.right);
                             return userArtist;
                         }).collect(Collectors.toSet())

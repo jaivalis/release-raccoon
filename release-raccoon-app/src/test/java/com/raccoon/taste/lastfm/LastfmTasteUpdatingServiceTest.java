@@ -3,10 +3,8 @@ package com.raccoon.taste.lastfm;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -19,11 +17,6 @@ class LastfmTasteUpdatingServiceTest {
     LastfmTasteUpdatingService service = new LastfmTasteUpdatingService();
 
     User user = new User();
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     @DisplayName("No lastFm username should do nothing")

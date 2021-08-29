@@ -2,6 +2,7 @@ package com.raccoon.taste.lastfm;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
+import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.scraper.LastfmScraper;
 
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -19,13 +20,14 @@ import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.entity.User.persist;
-import static com.raccoon.entity.factory.UserArtistFactory.getOrCreateUserArtist;
 import static com.raccoon.taste.Util.normalizeWeights;
 
 @Slf4j
 @ApplicationScoped
 public class LastfmTasteUpdatingService {
 
+    @Inject
+    UserArtistFactory userArtistFactory;
     @Inject
     LastfmScraper lastfmScraper;
 
@@ -46,7 +48,7 @@ public class LastfmTasteUpdatingService {
                 normalizeWeights(aggregateTaste)
                         .stream()
                         .map(pair -> {
-                            final var userArtist = getOrCreateUserArtist(user, pair.left);
+                            final var userArtist = userArtistFactory.getOrCreateUserArtist(user, pair.left);
                             userArtist.setWeight(pair.right);
                             return userArtist;
                         }).collect(Collectors.toSet())

@@ -3,6 +3,7 @@ package com.raccoon.scraper.spotify;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
+import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.scraper.ReleaseScraper;
 import com.raccoon.scraper.TasteScraper;
 import com.raccoon.scraper.config.SpotifyConfig;
@@ -46,6 +47,8 @@ import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 @ApplicationScoped
 public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
+    ReleaseRepository releaseRepository;
+
     private final String clientId;
     private final String clientSecret;
 
@@ -56,9 +59,11 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     @Max(50)
     private static final int DEFAULT_LIMIT = 50;
 
-    public SpotifyScraper(final SpotifyConfig config) {
+    public SpotifyScraper(final SpotifyConfig config,
+                          final ReleaseRepository releaseRepository) {
         clientId = config.getClientId();
         clientSecret = config.getClientSecret();
+        this.releaseRepository = releaseRepository;
     }
 
     @PostConstruct
@@ -163,7 +168,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     }
 
     private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
-        if (Release.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
+        if (releaseRepository.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
             final var release = new Release();
             release.setName(albumSimplified.getName());
             release.setType(albumSimplified.getAlbumType().toString());
