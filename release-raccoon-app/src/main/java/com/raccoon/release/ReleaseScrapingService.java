@@ -2,6 +2,7 @@ package com.raccoon.release;
 
 import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.exception.ReleaseScrapeException;
 
 import java.util.Collection;
@@ -25,6 +26,9 @@ public class ReleaseScrapingService {
     @Inject
     UserTransaction userTransaction;
 
+    @Inject
+    UserArtistRepository userArtistRepository;
+
     public Set<Release> scrape() throws ReleaseScrapeException, InterruptedException {
         try {
             // Could optimize the txs by localizing and batching.
@@ -47,7 +51,7 @@ public class ReleaseScrapingService {
         Collection<Long> artistIds = releases.stream()
                 .flatMap(release -> release.getArtists().stream().map(artist -> artist.id))
                 .collect(Collectors.toList());
-        List<UserArtist> userArtists = UserArtist.markNewRelease(artistIds);
+        List<UserArtist> userArtists = userArtistRepository.markNewRelease(artistIds);
         log.info("Updated {} UserArtists.", userArtists.size());
     }
 

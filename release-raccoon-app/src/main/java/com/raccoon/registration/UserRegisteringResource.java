@@ -36,7 +36,9 @@ public class UserRegisteringResource {
     @GET
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerCallback() {
+    public Response registerCallback(@QueryParam("state") final String state,
+                                     @QueryParam("session_state") final String sessionState,
+                                     @QueryParam("code") final String code) {
         final String username = idToken.getClaim("preferred_username");
         final String email = idToken.getClaim("email");
         final String lastfmUsername = idToken.getClaim("lastfm_username");

@@ -3,11 +3,6 @@ package com.raccoon.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
@@ -19,8 +14,6 @@ import javax.persistence.Table;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.ToString;
-
-import static java.util.stream.Collectors.toList;
 
 @Data
 @ToString
@@ -58,39 +51,4 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
         key.setArtist(artist);
     }
 
-    /**
-     * For a given collection of artistIds find all UserArtist entries that are referred (by `artist_id`) and set
-     * `hasNewRelease` to true.
-     * @param artistIds Collection of artistIds.
-     * @return a list of updated UserArtist entries.
-     */
-    public static List<UserArtist> markNewRelease(final Collection<Long> artistIds) {
-        List<UserArtist> collect = findByArtistIds(artistIds);
-        collect.stream()
-                .forEach(ua -> {
-                    ua.setHasNewRelease(Boolean.TRUE);
-                    ua.persist();
-                });
-        return collect;
-    }
-
-//    public static List<UserArtist> getUserArtistsWithNewRelease() {
-//        Stream<UserArtist> stream = find("hasNewRelease", true)
-//                .stream();
-//
-//        return stream.collect(toList());
-//    }
-
-    public static Optional<PanacheEntityBase> findByUserArtistOptional(final long userId, final long artistId) {
-        return find("(user_id = ?1 and artist_id = ?2) ", userId, artistId).stream().findAny();
-    }
-
-    public static List<PanacheEntityBase> findByUserId(final long userId) {
-        return find("user_id = ?1", userId).stream().collect(toList());
-    }
-
-    public static List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
-        Stream<UserArtist> stream = find("artist_id in ?1", artistIds).stream();
-        return stream.collect(Collectors.toList());
-    }
 }

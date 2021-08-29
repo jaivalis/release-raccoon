@@ -29,8 +29,8 @@ public class UserArtistFactory {
      * @return
      */
     public UserArtist getOrCreateUserArtist(final User user,
-                                                   final Artist artist) {
-        Optional<PanacheEntityBase> existing = UserArtist.findByUserArtistOptional(user.id, artist.id);
+                                            final Artist artist) {
+        Optional<PanacheEntityBase> existing = repository.findByUserArtistOptional(user.id, artist.id);
         if (existing.isEmpty()) {
             var userArtist = new UserArtist();
             userArtist.setArtist(artist);

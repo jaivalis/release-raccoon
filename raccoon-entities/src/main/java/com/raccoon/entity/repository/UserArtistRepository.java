@@ -18,10 +18,6 @@ import static java.util.stream.Collectors.toList;
 @ApplicationScoped
 public class UserArtistRepository implements PanacheRepository<UserArtist> {
 
-//    public static void persist(Iterable<UserArtist> entities) {
-//        UserArtist.persist(entities);
-//    }
-
     public List<UserArtist> getUserArtistsWithNewRelease() {
         Stream<UserArtist> stream = find("hasNewRelease", true)
                 .stream();
@@ -29,18 +25,33 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         return stream.collect(toList());
     }
 
-    public static Optional<PanacheEntityBase> findByUserArtistOptional(final long userId, final long artistId) {
+    /**
+     * For a given collection of artistIds find all UserArtist entries that are referred (by `artist_id`) and set
+     * `hasNewRelease` to true.
+     * @param artistIds Collection of artistIds.
+     * @return a list of updated UserArtist entries.
+     */
+    public List<UserArtist> markNewRelease(final Collection<Long> artistIds) {
+        List<UserArtist> collect = findByArtistIds(artistIds);
+        collect.stream()
+                .forEach(ua -> {
+                    ua.setHasNewRelease(Boolean.TRUE);
+                    ua.persist();
+                });
+        return collect;
+    }
+
+    public Optional<PanacheEntityBase> findByUserArtistOptional(final long userId, final long artistId) {
         return UserArtist.find("(user_id = ?1 and artist_id = ?2) ", userId, artistId).stream().findAny();
     }
 
-    public static List<PanacheEntityBase> findByUserId(final long userId) {
+    public List<PanacheEntityBase> findByUserId(final long userId) {
         return UserArtist.find("user_id = ?1", userId).stream().collect(toList());
     }
 
-    public static List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
+    public List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
         Stream<UserArtist> stream = UserArtist.find("artist_id in ?1", artistIds).stream();
         return stream.collect(Collectors.toList());
     }
-
 
 }

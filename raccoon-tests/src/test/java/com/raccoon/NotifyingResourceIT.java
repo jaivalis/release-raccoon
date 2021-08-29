@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.notify.MailingService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import io.quarkus.test.junit.QuarkusMock;
@@ -42,6 +44,8 @@ class NotifyingResourceIT {
 
     @InjectMock
     MailingService mailingServiceMock;
+    @Inject
+    UserArtistRepository userArtistRepository;
 
     @BeforeEach
     public void setup() {
@@ -66,7 +70,7 @@ class NotifyingResourceIT {
                 .send(anyString(), any(User.class), any());
         verify(mailingServiceMock, times(1))
                 .send(eq("user1@mail.com"), any(User.class), any());
-        UserArtist userArtist = (UserArtist) UserArtist.findByUserArtistOptional(100, 100).get();
+        UserArtist userArtist = (UserArtist) userArtistRepository.findByUserArtistOptional(100, 100).get();
         assertThat("Release should be marked processed", !userArtist.getHasNewRelease());
     }
 

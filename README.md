@@ -68,3 +68,5 @@ docker-compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.ym
 ## Setting up Keycloak
 Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the docker-compose.yml.
 Import the [realm](resources/realm-export.json) to create a realm named `RaccoonRealm`.
+
+In case the redirect back from keycloak doesn't work in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the `application.properties` file.

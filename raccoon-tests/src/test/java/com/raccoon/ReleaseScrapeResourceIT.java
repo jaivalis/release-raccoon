@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.release.ReleaseScrapingResource;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 
@@ -19,6 +20,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.IOException;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -44,12 +47,14 @@ import static org.mockito.ArgumentMatchers.any;
 @DBUnit(caseSensitiveTableNames = true)
 class ReleaseScrapeResourceIT {
 
+    @Inject
+    UserArtistRepository userArtistRepository;
     @InjectMock
-    SpotifyScraper mock;
+    SpotifyScraper mockScraper;
 
     @BeforeEach
     public void setup() {
-        QuarkusMock.installMockForType(mock, SpotifyScraper.class);
+        QuarkusMock.installMockForType(mockScraper, SpotifyScraper.class);
     }
 
     @Test
@@ -61,7 +66,7 @@ class ReleaseScrapeResourceIT {
         List<Release> mockReleases = List.of(
                 scrapedRelease
         );
-        Mockito.when(mock.scrapeReleases(any())).thenReturn(mockReleases);
+        Mockito.when(mockScraper.scrapeReleases(any())).thenReturn(mockReleases);
 
         final ValidatableResponse response = given()
                 .when().get()
@@ -69,7 +74,7 @@ class ReleaseScrapeResourceIT {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body(containsString(scrapedRelease.getName()));
-        final List<PanacheEntityBase> byUser = UserArtist.findByUserId(100L);
+        final List<PanacheEntityBase> byUser = userArtistRepository.findByUserId(100L);
         assertEquals(1, byUser.size());
         assertTrue(((UserArtist) byUser.get(0)).getHasNewRelease());
     }
@@ -79,7 +84,7 @@ class ReleaseScrapeResourceIT {
     @DataSet(value = "datasets/yml/release-scrape.yml")
     @DisplayName("no new releases should return empty list")
     void releaseScrape_emptyList() throws IOException, InterruptedException {
-        Mockito.when(mock.scrapeReleases(any())).thenReturn(emptyList());
+        Mockito.when(mockScraper.scrapeReleases(any())).thenReturn(emptyList());
 
         Release[] result = given()
                 .when().get()

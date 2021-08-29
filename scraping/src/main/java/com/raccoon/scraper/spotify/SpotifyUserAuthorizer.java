@@ -33,12 +33,12 @@ public class SpotifyUserAuthorizer {
     private final String clientId;
     private final String clientSecret;
 
+    SpotifyApi spotifyApi;
+
     public SpotifyUserAuthorizer(SpotifyConfig config) {
         clientId = config.getClientId();
         clientSecret = config.getClientSecret();
     }
-
-    private SpotifyApi spotifyApi;
 
     @PostConstruct
     private void init() {

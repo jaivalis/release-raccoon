@@ -52,7 +52,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     private final String clientId;
     private final String clientSecret;
 
-    private SpotifyApi spotifyApi;
+    SpotifyApi spotifyApi;
 
     private long credentialsExpiryTs = 0L;
 
