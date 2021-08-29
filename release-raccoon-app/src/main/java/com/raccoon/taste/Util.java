@@ -1,7 +1,5 @@
 package com.raccoon.taste;
 
-import com.raccoon.entity.Artist;
-
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.Collection;
@@ -15,7 +13,7 @@ public class Util {
         // hide implicit constructor
     }
 
-    public static Collection<MutablePair<Artist, Float>> normalizeWeights(Collection<MutablePair<Artist, Float>> taste) {
+    public static <T> Collection<MutablePair<T, Float>>  normalizeWeights(Collection<MutablePair<T, Float>> taste) {
         float max = 0;
         for (val pair : taste) {
             max = Math.max(max, pair.getRight());
