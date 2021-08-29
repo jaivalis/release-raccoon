@@ -3,7 +3,6 @@ package com.raccoon.taste;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import lombok.val;
 
@@ -19,10 +18,11 @@ public class Util {
             max = Math.max(max, pair.getRight());
         }
         if (max == 0) {
-            return Collections.emptyList();
+            taste.forEach(pair -> pair.setRight(1.0f));
+        } else {
+            final float maxWeight = max;
+            taste.forEach(pair -> pair.setRight(pair.right / maxWeight));
         }
-        final float maxWeight = max;
-        taste.forEach(pair -> pair.setRight(pair.right / maxWeight));
         return taste;
     }
 
