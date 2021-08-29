@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -74,7 +73,7 @@ class ReleaseScrapeResourceIT {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .body(containsString(scrapedRelease.getName()));
-        final List<PanacheEntityBase> byUser = userArtistRepository.findByUserId(100L);
+        var byUser = userArtistRepository.findByUserId(100L);
         assertEquals(1, byUser.size());
         assertTrue(((UserArtist) byUser.get(0)).getHasNewRelease());
     }
