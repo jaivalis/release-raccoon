@@ -1,12 +1,20 @@
 package com.raccoon.entity.factory;
 
 import com.raccoon.entity.User;
+import com.raccoon.entity.repository.UserRepository;
 
 import java.util.Optional;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 
+@ApplicationScoped
 public class UserFactory {
+
+    @Inject
+    UserRepository userRepository;
 
     private UserFactory() {}
 
@@ -15,8 +23,8 @@ public class UserFactory {
      * @param email
      * @return
      */
-    public static User getOrCreateUser(final String email) {
-        Optional<User> existing = User.findByEmailOptional(email);
+    public User getOrCreateUser(final String email) {
+        Optional<User> existing = userRepository.findByEmailOptional(email);
         if (existing.isPresent()) {
             return existing.get();
         }

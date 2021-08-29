@@ -3,6 +3,7 @@ package com.raccoon.taste.lastfm;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.factory.UserArtistFactory;
+import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.scraper.LastfmScraper;
 
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -29,7 +30,17 @@ public class LastfmTasteUpdatingService {
     @Inject
     UserArtistFactory userArtistFactory;
     @Inject
+    UserRepository userRepository;
+    @Inject
     LastfmScraper lastfmScraper;
+
+    public LastfmTasteUpdatingService(final UserArtistFactory userArtistFactory,
+                                      final UserRepository userRepository,
+                                      final LastfmScraper lastfmScraper) {
+        this.userArtistFactory = userArtistFactory;
+        this.userRepository = userRepository;
+        this.lastfmScraper = lastfmScraper;
+    }
 
     public User updateTaste(final User user) {
         if (StringUtil.isNullOrEmpty(user.getLastfmUsername())) {
@@ -37,7 +48,7 @@ public class LastfmTasteUpdatingService {
             return user;
         }
 
-        if (!user.isLastfmScrapeRequired(1)) {
+        if (!userRepository.isLastfmScrapeRequired(1, user.getLastLastFmScrape())) {
             log.info("User was lastfm scraped not long ago, skipping.");
             return user;
         }

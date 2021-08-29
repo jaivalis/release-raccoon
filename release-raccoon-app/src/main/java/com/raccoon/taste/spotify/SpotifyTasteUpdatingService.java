@@ -3,6 +3,7 @@ package com.raccoon.taste.spotify;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.factory.UserArtistFactory;
+import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
 
@@ -19,7 +20,6 @@ import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.entity.User.findByIdOptional;
 import static com.raccoon.entity.User.persist;
 import static com.raccoon.taste.Util.normalizeWeights;
 
@@ -30,9 +30,22 @@ public class SpotifyTasteUpdatingService {
     @Inject
     UserArtistFactory userArtistFactory;
     @Inject
+    UserRepository userRepository;
+
+    @Inject
     SpotifyUserAuthorizer spotifyUserAuthorizer;
     @Inject
     SpotifyScraper spotifyScraper;
+
+    public SpotifyTasteUpdatingService(final UserArtistFactory userArtistFactory,
+                                       final UserRepository userRepository,
+                                       final SpotifyUserAuthorizer spotifyUserAuthorizer,
+                                       final SpotifyScraper spotifyScraper) {
+        this.userArtistFactory = userArtistFactory;
+        this.userRepository = userRepository;
+        this.spotifyUserAuthorizer = spotifyUserAuthorizer;
+        this.spotifyScraper = spotifyScraper;
+    }
 
     /**
      * Responds with a redirect to spotify auth service is
@@ -41,7 +54,7 @@ public class SpotifyTasteUpdatingService {
      * @return HTTP Redirect or NoContent
      */
     public Response scrapeTaste(Long userId) {
-        final var byIdOptional = findByIdOptional(userId);
+        final var byIdOptional = userRepository.findByIdOptional(userId);
         if (byIdOptional.isEmpty()) {
             throw new NotFoundException(String.format("User with id %s not found", userId));
         }
@@ -53,7 +66,7 @@ public class SpotifyTasteUpdatingService {
             return Response.noContent().build();
         }
 
-        if (!user.isSpotifyScrapeRequired(1)) {
+        if (!userRepository.isSpotifyScrapeRequired(1, user.getLastSpotifyScrape())) {
             log.info("User with id {} spotify taste was scraped not long ago, skipping.", userId);
             return Response.noContent().build();
         }

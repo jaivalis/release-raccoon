@@ -2,6 +2,7 @@ package com.raccoon.taste;
 
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 import com.raccoon.taste.spotify.SpotifyTasteUpdatingService;
 
@@ -25,8 +26,6 @@ import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.entity.User.findByEmailOptional;
-
 /**
  * Utility class to scrape taste. When deployed this service will be invoked into a cron-job.
  */
@@ -43,6 +42,9 @@ public class TasteScrapingResource {
     LastfmTasteUpdatingService lastfmService;
     @Inject
     SpotifyTasteUpdatingService spotifyTasteUpdatingService;
+
+    @Inject
+    UserRepository userRepository;
 
     @GET
     @Path("lastfm")
@@ -68,7 +70,7 @@ public class TasteScrapingResource {
     }
 
     private User getUser(@QueryParam("email") String email) {
-        Optional<User> existing = findByEmailOptional(email);
+        Optional<User> existing = userRepository.findByEmailOptional(email);
         if (existing.isEmpty()) {
             log.warn("User with email {} not found.", email);
             throw new NotFoundException("Unknown user with email: " + email);
