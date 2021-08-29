@@ -21,6 +21,8 @@ import java.util.Optional;
 import javax.ws.rs.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -52,9 +54,9 @@ class SpotifyTasteUpdatingServiceTest {
 
     @Test
     void testScrapeTasteSpotifyDisabled() {
-        User u = new User();
-        u.setSpotifyEnabled(false);
-        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(u));
+        User user = new User();
+        user.setSpotifyEnabled(false);
+        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(user));
 
         final var response = service.scrapeTaste(0L);
 
@@ -63,14 +65,41 @@ class SpotifyTasteUpdatingServiceTest {
 
     @Test
     void testScrapeTasteRecentlyScraped() {
-        User u = new User();
-        u.setSpotifyEnabled(true);
-        u.setLastSpotifyScrape(LocalDateTime.now());
-        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(u));
+        User user = new User();
+        user.setSpotifyEnabled(true);
+        user.setLastSpotifyScrape(LocalDateTime.now());
+        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(user));
 
         final var response = service.scrapeTaste(0L);
 
         assertEquals(HttpStatus.SC_NO_CONTENT, response.getStatus());
+    }
+
+    @Test
+    void testScrapeTasteShouldRedirect() {
+        User user = new User();
+        user.setSpotifyEnabled(true);
+        user.setLastSpotifyScrape(LocalDateTime.MIN);
+        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(user));
+        when(userRepository.isSpotifyScrapeRequired(anyInt(), any(LocalDateTime.class))).thenReturn(Boolean.TRUE);
+
+        final var response = service.scrapeTaste(0L);
+
+        assertEquals(HttpStatus.SC_TEMPORARY_REDIRECT, response.getStatus());
+    }
+
+    @Test
+    void testUpdateTaste() {
+        // placeholder
+//        User user = new User();
+//        user.setSpotifyEnabled(true);
+//        user.setLastSpotifyScrape(LocalDateTime.MIN);
+//        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(user));
+//        when(userRepository.isSpotifyScrapeRequired(anyInt(), any(LocalDateTime.class))).thenReturn(Boolean.TRUE);
+
+//        final var response = service.updateTaste(user);
+
+//        assertEquals(HttpStatus.SC_TEMPORARY_REDIRECT, response.getStatus());
     }
 
 }

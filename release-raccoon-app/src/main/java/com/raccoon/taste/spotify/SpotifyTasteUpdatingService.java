@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.entity.User.persist;
 import static com.raccoon.taste.Util.normalizeWeights;
 
 @Slf4j
@@ -91,7 +90,7 @@ public class SpotifyTasteUpdatingService {
         );
         user.setLastSpotifyScrape(LocalDateTime.now());
 
-        persist(user);
+        userRepository.persist(user);
         return user;
     }
 
