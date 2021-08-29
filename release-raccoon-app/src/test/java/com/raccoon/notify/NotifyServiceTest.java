@@ -62,12 +62,30 @@ class NotifyServiceTest {
         when(mockMailingService.send(any(), any(User.class), any())).thenReturn(Boolean.TRUE);
 
         notifyService = new NotifyService(mockReleaseRepository, mockUserArtistRepository, mockMailingService);
-
         final var usersNotified = notifyService.notifyUsers();
 
         assertEquals(1, usersNotified.size());
         verify(mockMailingService, times(1)).send(any(), any(User.class), any());
         verify(mockUserArtistRepository, times(1)).persist(any(Iterable.class));
+    }
+
+    @Test
+    @DisplayName("A message send failure should result in the empty list returned")
+    void notifyUserFailure() {
+        User user = new User();
+        Artist artist = new Artist();
+        UserArtist ua = new UserArtist();
+        ua.setUser(user);
+        ua.setArtist(artist);
+        when(mockUserArtistRepository.getUserArtistsWithNewRelease()).thenReturn(List.of(ua));
+        when(mockMailingService.send(any(), any(User.class), any())).thenReturn(Boolean.FALSE);
+
+        notifyService = new NotifyService(mockReleaseRepository, mockUserArtistRepository, mockMailingService);
+        final var usersNotified = notifyService.notifyUsers();
+
+        assertEquals(0, usersNotified.size());
+        verify(mockMailingService, times(1)).send(any(), any(User.class), any());
+        verify(mockUserArtistRepository, times(0)).persist(any(Iterable.class));
     }
 
 }
