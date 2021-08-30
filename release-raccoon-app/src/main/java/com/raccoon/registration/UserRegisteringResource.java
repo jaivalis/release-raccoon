@@ -1,6 +1,5 @@
 package com.raccoon.registration;
 
-import com.raccoon.entity.User;
 import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserRepository;
 
@@ -22,13 +21,13 @@ import io.quarkus.oidc.IdToken;
 import io.quarkus.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
 
-import static javax.ws.rs.core.Response.Status.CONFLICT;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-
 @Path("/register")
 @Slf4j
 @Authenticated
 public class UserRegisteringResource {
+
+    @Inject
+    RegisteringService service;
 
     @Inject
     UserFactory userFactory;
@@ -47,16 +46,7 @@ public class UserRegisteringResource {
         final String lastfmUsername = idToken.getClaim("lastfm_username");
         final Boolean spotifyEnabled = Boolean.parseBoolean(idToken.getClaim("spotify_enabled"));
 
-        Optional<User> existing = userRepository.findByEmailOptional(email);
-        if (existing.isPresent()) {
-            log.info("User with email {} exists.", email);
-            return Response.status(CONFLICT).build();
-        }
-        var user = userFactory.getOrCreateUser(email);
-        user.setLastfmUsername(lastfmUsername);
-        user.setSpotifyEnabled(spotifyEnabled);
-        user.setUsername(username);
-        user.persist();
+        var user = service.registerUser(username, email, lastfmUsername, spotifyEnabled);
 
         return Response.ok(user).build();
     }
@@ -66,19 +56,11 @@ public class UserRegisteringResource {
     @Path("/enableServices")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public Response setLastfmUsername(@QueryParam("lastfmUsername") final Optional<String> lastfmUsernameOpt,
-                                      @QueryParam("enableSpotify") final Optional<Boolean> enableSpotifyOpt) {
+    public Response enableTasteSources(@QueryParam("lastfmUsername") final Optional<String> lastfmUsernameOpt,
+                                       @QueryParam("enableSpotify") final Optional<Boolean> enableSpotifyOpt) {
         final String email = idToken.getClaim("email");
 
-        Optional<User> existing = userRepository.findByEmailOptional(email);
-        if (existing.isEmpty()) {
-            log.info("User does not exist.");
-            return Response.status(NOT_FOUND).build();
-        }
-        var user = userFactory.getOrCreateUser(email);
-        lastfmUsernameOpt.ifPresent(user::setLastfmUsername);
-        enableSpotifyOpt.ifPresent(user::setSpotifyEnabled);
-        user.persist();
+        var user = service.enableTasteSources(email, lastfmUsernameOpt, enableSpotifyOpt);
 
         return Response.ok(user).build();
     }
