@@ -54,7 +54,7 @@ public class RegisteringService {
             log.info("User does not exist.");
             throw new NotFoundException("User not found");
         }
-        var user = userFactory.getOrCreateUser(email);
+        var user = existing.get();
         lastfmUsernameOpt.ifPresent(user::setLastfmUsername);
         enableSpotifyOpt.ifPresent(user::setSpotifyEnabled);
 

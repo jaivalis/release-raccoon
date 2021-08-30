@@ -17,8 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,7 +54,7 @@ class RegisteringServiceTest {
     @Test
     @DisplayName("successful registration")
     void registrationSuccess() {
-        var email = "user@gmail.com";
+        var email = "user@mail.com";
         var userStub = new User();
         userStub.setEmail(email);
         Mockito.when(userRepositoryMock.findByEmailOptional(email)).thenReturn(Optional.empty());
@@ -67,7 +69,38 @@ class RegisteringServiceTest {
     }
 
     @Test
-    void enableTasteSources() {
-        // todo
+    @DisplayName("user not found, returns 404")
+    void enableSourceNotExistent() {
+        var email = "user@mail.com";
+        Mockito.when(userRepositoryMock.findByEmailOptional(email)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+                () -> service.enableTasteSources(email, Optional.of("lastfm"), Optional.empty()));
+    }
+
+    @Test
+    void enableLastfm() {
+        var email = "user@mail.com";
+        var userStub = new User();
+        userStub.setEmail(email);
+        Mockito.when(userRepositoryMock.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
+
+        final var user = service.enableTasteSources(email, Optional.of("lastfm"), Optional.empty());
+
+        assertEquals("lastfm", user.getLastfmUsername());
+        assertNull(user.getSpotifyEnabled());
+    }
+
+    @Test
+    void enableSpotify() {
+        var email = "user@mail.com";
+        var userStub = new User();
+        userStub.setEmail(email);
+        Mockito.when(userRepositoryMock.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
+
+        final var user = service.enableTasteSources(email, Optional.empty(), Optional.of(Boolean.TRUE));
+
+        assertNull(user.getLastfmUsername());
+        assertEquals(Boolean.TRUE, user.getSpotifyEnabled());
     }
 }
