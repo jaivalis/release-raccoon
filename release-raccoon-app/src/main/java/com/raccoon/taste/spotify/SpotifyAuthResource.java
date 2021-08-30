@@ -2,6 +2,7 @@ package com.raccoon.taste.spotify;
 
 import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.entity.User;
+import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
 
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
@@ -26,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @Path("/spotify-auth-callback")
 public class SpotifyAuthResource {
 
+    @Inject
+    UserRepository userRepository;
     @Inject
     SpotifyUserAuthorizer spotifyAuthService;
     @Inject
@@ -60,7 +63,7 @@ public class SpotifyAuthResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public User getUserTopArtists(@QueryParam("userId") final String userId) {
-        Optional<User> existing = User.findByIdOptional(Long.valueOf(userId));
+        Optional<User> existing = userRepository.findByIdOptional(Long.valueOf(userId));
         if (existing.isEmpty()) {
             throw new NotFoundException("User not found");
         }

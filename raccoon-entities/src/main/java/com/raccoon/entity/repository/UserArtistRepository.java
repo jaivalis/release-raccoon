@@ -40,16 +40,16 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         return collect;
     }
 
-    public Optional<PanacheEntityBase> findByUserArtistOptional(final long userId, final long artistId) {
-        return UserArtist.find("(user_id = ?1 and artist_id = ?2) ", userId, artistId).stream().findAny();
+    public Optional<UserArtist> findByUserArtistOptional(final long userId, final long artistId) {
+        return find("(user_id = ?1 and artist_id = ?2) ", userId, artistId).stream().findAny();
     }
 
     public List<PanacheEntityBase> findByUserId(final long userId) {
-        return UserArtist.find("user_id = ?1", userId).stream().collect(toList());
+        return find("user_id = ?1", userId).stream().collect(toList());
     }
 
     public List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
-        Stream<UserArtist> stream = UserArtist.find("artist_id in ?1", artistIds).stream();
+        Stream<UserArtist> stream = find("artist_id in ?1", artistIds).stream();
         return stream.collect(Collectors.toList());
     }
 

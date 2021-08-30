@@ -74,8 +74,10 @@ class RegisteringServiceTest {
         var email = "user@mail.com";
         Mockito.when(userRepositoryMock.findByEmailOptional(email)).thenReturn(Optional.empty());
 
+        var arg1 = Optional.of("lastfm");
+        Optional<Boolean> arg2 = Optional.empty();
         assertThrows(NotFoundException.class,
-                () -> service.enableTasteSources(email, Optional.of("lastfm"), Optional.empty()));
+                () -> service.enableTasteSources(email, arg1, arg2));
     }
 
     @Test

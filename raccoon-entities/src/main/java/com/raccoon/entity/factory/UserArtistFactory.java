@@ -9,8 +9,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 
 @ApplicationScoped
@@ -30,7 +28,7 @@ public class UserArtistFactory {
      */
     public UserArtist getOrCreateUserArtist(final User user,
                                             final Artist artist) {
-        Optional<PanacheEntityBase> existing = repository.findByUserArtistOptional(user.id, artist.id);
+        Optional<UserArtist> existing = repository.findByUserArtistOptional(user.id, artist.id);
         if (existing.isEmpty()) {
             var userArtist = new UserArtist();
             userArtist.setArtist(artist);
