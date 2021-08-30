@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.entity.User.persist;
 import static com.raccoon.taste.Util.normalizeWeights;
 
 @Slf4j
@@ -66,7 +65,7 @@ public class LastfmTasteUpdatingService {
         );
         user.setLastLastFmScrape(LocalDateTime.now());
 
-        persist(user);
+        userRepository.persist(user);
         return user;
     }
 
