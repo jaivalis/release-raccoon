@@ -13,6 +13,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<User> {
 
+    @Override
     public Optional<User> findByIdOptional(Long id) {
         return Optional.ofNullable(find("id", id).firstResult());
     }

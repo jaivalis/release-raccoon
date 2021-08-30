@@ -23,7 +23,6 @@ import javax.ws.rs.NotFoundException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +47,7 @@ class SpotifyTasteUpdatingServiceTest {
 
     @Test
     void testScrapeTasteUserNotFound() {
-        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.empty());
+        when(userRepository.findByIdOptional(0L)).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () -> service.scrapeTaste(0L));
     }
 
@@ -56,7 +55,7 @@ class SpotifyTasteUpdatingServiceTest {
     void testScrapeTasteSpotifyDisabled() {
         User user = new User();
         user.setSpotifyEnabled(false);
-        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(user));
+        when(userRepository.findByIdOptional(0L)).thenReturn(Optional.of(user));
 
         final var response = service.scrapeTaste(0L);
 
@@ -68,7 +67,7 @@ class SpotifyTasteUpdatingServiceTest {
         User user = new User();
         user.setSpotifyEnabled(true);
         user.setLastSpotifyScrape(LocalDateTime.now());
-        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(user));
+        when(userRepository.findByIdOptional(0L)).thenReturn(Optional.of(user));
 
         final var response = service.scrapeTaste(0L);
 
@@ -80,7 +79,7 @@ class SpotifyTasteUpdatingServiceTest {
         User user = new User();
         user.setSpotifyEnabled(true);
         user.setLastSpotifyScrape(LocalDateTime.MIN);
-        when(userRepository.findByIdOptional(eq(0L))).thenReturn(Optional.of(user));
+        when(userRepository.findByIdOptional(0L)).thenReturn(Optional.of(user));
         when(userRepository.isSpotifyScrapeRequired(anyInt(), any(LocalDateTime.class))).thenReturn(Boolean.TRUE);
 
         final var response = service.scrapeTaste(0L);
