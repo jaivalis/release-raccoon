@@ -64,7 +64,7 @@ class LastfmTasteUpdatingServiceTest {
 
     @Test
     @DisplayName("If scrape took place not to long ago, should do nothing")
-    void scrapeJustScraped() {
+    void scrapeAfterJustScraped() {
         Set<UserArtist> artists = Set.of(
                 new UserArtist()
         );
@@ -80,7 +80,7 @@ class LastfmTasteUpdatingServiceTest {
 
     @Test
     @DisplayName("Scrape should update user artists")
-    void scrapeScrape() {
+    void testScrape() {
         user.setLastfmUsername("username");
         user.setLastLastFmScrape(LocalDateTime.now());
 

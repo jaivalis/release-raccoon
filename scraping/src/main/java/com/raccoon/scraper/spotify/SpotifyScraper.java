@@ -199,7 +199,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
         throw new UnsupportedOperationException("Invoked asynchronously from the Spotify OAuth cycle instead.");
     }
 
-    public List<MutablePair<Artist, Float>> fetchTopArtists(final SpotifyUserAuthorizer authorizer) {
+    public Collection<MutablePair<Artist, Float>> fetchTopArtists(final SpotifyUserAuthorizer authorizer) {
         List<MutablePair<Artist, Float>> artists = new ArrayList<>();
         var offset = 0;
         Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
