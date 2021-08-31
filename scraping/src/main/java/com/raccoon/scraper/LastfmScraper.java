@@ -25,11 +25,15 @@ import lombok.val;
 @ApplicationScoped
 public class LastfmScraper implements TasteScraper {
 
+    ArtistFactory artistFactory;
+
     final String apiKey;
 
     @Inject
-    public LastfmScraper(LastFmConfig config) {
+    public LastfmScraper(final LastFmConfig config,
+                         final ArtistFactory artistFactory) {
         this.apiKey = config.getApiKey();
+        this.artistFactory = artistFactory;
     }
 
     @Override
@@ -55,7 +59,7 @@ public class LastfmScraper implements TasteScraper {
         if (artistObj instanceof de.umass.lastfm.Artist) {
             var lastfmArtist = (de.umass.lastfm.Artist) artistObj;
 
-            return ArtistFactory.getOrCreateArtist(lastfmArtist.getName());
+            return artistFactory.getOrCreateArtist(lastfmArtist.getName());
         }
         throw new IllegalArgumentException("Got an object type that is not supported.");
     }

@@ -3,21 +3,23 @@ package com.raccoon.entity.factory;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
-
 @ApplicationScoped
 public class UserArtistFactory {
 
-    UserArtistRepository repository;
+    ArtistRepository artistRepository;
+    UserArtistRepository userArtistRepository;
 
-    UserArtistFactory(UserArtistRepository repository) {
-        this.repository = repository;
+    UserArtistFactory(final ArtistRepository artistRepository,
+                      final UserArtistRepository repository) {
+        this.artistRepository = artistRepository;
+        this.userArtistRepository = repository;
     }
 
     /**
@@ -28,14 +30,16 @@ public class UserArtistFactory {
      */
     public UserArtist getOrCreateUserArtist(final User user,
                                             final Artist artist) {
-        Optional<UserArtist> existing = repository.findByUserArtistOptional(user.id, artist.id);
+        Optional<UserArtist> existing = (user.id != null && artist.id != null) ?
+                userArtistRepository.findByUserArtistOptional(user.id, artist.id)
+                : Optional.empty();
         if (existing.isEmpty()) {
             var userArtist = new UserArtist();
             userArtist.setArtist(artist);
             userArtist.setUser(user);
-            persist(artist);
+            artistRepository.persist(artist);
             return userArtist;
         }
-        return (UserArtist) existing.get();
+        return existing.get();
     }
 }
