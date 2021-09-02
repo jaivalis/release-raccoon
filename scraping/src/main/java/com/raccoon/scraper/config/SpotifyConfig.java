@@ -1,14 +1,14 @@
 package com.raccoon.scraper.config;
 
-import io.quarkus.arc.config.ConfigProperties;
+import javax.resource.spi.ConfigProperty;
+
+import io.smallrye.config.ConfigMapping;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.resource.spi.ConfigProperty;
-
 @Data
 @NoArgsConstructor
-@ConfigProperties(prefix = "spotify")
+@ConfigMapping(prefix = "spotify")
 public class SpotifyConfig {
 
     @ConfigProperty
