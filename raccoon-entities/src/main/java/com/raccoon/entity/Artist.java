@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.json.bind.annotation.JsonbTransient;
@@ -12,6 +11,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
@@ -35,7 +35,7 @@ public class Artist extends PanacheEntityBase implements Serializable {
 
     @Id
     @Column(name = "artistId")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
     @Column
@@ -55,13 +55,5 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
     private Set<UserArtist> users = new HashSet<>();
-
-    public static Artist findByName(String name) {
-        return find("name", name).firstResult();
-    }
-
-    public static Optional<Artist> findByNameOptional(String name) {
-        return Optional.ofNullable(find("name", name).firstResult());
-    }
 
 }

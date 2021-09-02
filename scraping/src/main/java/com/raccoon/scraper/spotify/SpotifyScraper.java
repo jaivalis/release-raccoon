@@ -3,6 +3,9 @@ package com.raccoon.scraper.spotify;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
+import com.raccoon.entity.factory.ArtistFactory;
+import com.raccoon.entity.repository.ArtistRepository;
+import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.scraper.ReleaseScraper;
 import com.raccoon.scraper.TasteScraper;
 import com.raccoon.scraper.config.SpotifyConfig;
@@ -36,7 +39,6 @@ import javax.validation.constraints.Max;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.entity.factory.ArtistFactory.getOrCreateArtist;
 import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 
 /**
@@ -46,19 +48,25 @@ import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 @ApplicationScoped
 public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
+    ArtistFactory artistFactory;
+    ArtistRepository artistRepository;
+    ReleaseRepository releaseRepository;
+
     private final String clientId;
     private final String clientSecret;
 
-    private SpotifyApi spotifyApi;
+    SpotifyApi spotifyApi;
 
     private long credentialsExpiryTs = 0L;
 
     @Max(50)
     private static final int DEFAULT_LIMIT = 50;
 
-    public SpotifyScraper(final SpotifyConfig config) {
+    public SpotifyScraper(final SpotifyConfig config,
+                          final ReleaseRepository releaseRepository) {
         clientId = config.getClientId();
         clientSecret = config.getClientSecret();
+        this.releaseRepository = releaseRepository;
     }
 
     @PostConstruct
@@ -148,7 +156,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
                 .distinct()
                 .map(artistSimplified -> {
                     final String name = artistSimplified.getName();
-                    Optional<Artist> byNameOptional = Artist.findByNameOptional(name);
+                    Optional<Artist> byNameOptional = artistRepository.findByNameOptional(name);
 
                     Artist artist = byNameOptional.isEmpty() ? new Artist() : byNameOptional.get();
                     if (byNameOptional.isEmpty()) {
@@ -163,7 +171,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     }
 
     private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
-        if (Release.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
+        if (releaseRepository.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
             final var release = new Release();
             release.setName(albumSimplified.getName());
             release.setType(albumSimplified.getAlbumType().toString());
@@ -194,7 +202,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
         throw new UnsupportedOperationException("Invoked asynchronously from the Spotify OAuth cycle instead.");
     }
 
-    public List<MutablePair<Artist, Float>> fetchTopArtists(final SpotifyUserAuthorizer authorizer) {
+    public Collection<MutablePair<Artist, Float>> fetchTopArtists(final SpotifyUserAuthorizer authorizer) {
         List<MutablePair<Artist, Float>> artists = new ArrayList<>();
         var offset = 0;
         Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
@@ -219,7 +227,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
         log.info("Got entry: {}", entry);
         if (entry instanceof com.wrapper.spotify.model_objects.specification.Artist) {
             var spotifyArtist = (com.wrapper.spotify.model_objects.specification.Artist) entry;
-            var artist = getOrCreateArtist(spotifyArtist.getName());
+            var artist = artistFactory.getOrCreateArtist(spotifyArtist.getName());
             artist.setSpotifyUri(spotifyArtist.getUri());
             persist(artist);
 

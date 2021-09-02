@@ -6,9 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.json.bind.annotation.JsonbTransient;
@@ -38,6 +36,9 @@ public class User extends PanacheEntity implements Serializable {
     private String email;
 
     @Column
+    private String username;
+
+    @Column
     private String lastfmUsername;
 
     @Column
@@ -63,31 +64,5 @@ public class User extends PanacheEntity implements Serializable {
     @JsonbTransient
     @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserArtist> artists = new HashSet<>();
-
-    public static Optional<User> findByIdOptional(Long id) {
-        return Optional.ofNullable(find("id", id).firstResult());
-    }
-
-    public static Optional<User> findByEmailOptional(String email) {
-        return Optional.ofNullable(find("email", email).firstResult());
-    }
-
-    public boolean isLastfmScrapeRequired(int scrapeIntervalDays) {
-        return lastLastFmScrape == null || !isLastLastfmScrapeLt(scrapeIntervalDays);
-    }
-
-    public boolean isSpotifyScrapeRequired(int scrapeIntervalDays) {
-        return lastSpotifyScrape == null || !isLastSpotifyScrapeLt(scrapeIntervalDays);
-    }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private boolean isLastLastfmScrapeLt(int days) {
-        return ChronoUnit.DAYS.between(getLastLastFmScrape(), LocalDateTime.now()) < days;
-    }
-
-    private boolean isLastSpotifyScrapeLt(int days) {
-        return ChronoUnit.DAYS.between(getLastSpotifyScrape(), LocalDateTime.now()) < days;
-    }
 
 }

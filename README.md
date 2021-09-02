@@ -1,4 +1,4 @@
-# release.com.raccoon project
+# ReleaseRaccoon
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
@@ -9,7 +9,7 @@ If you want to learn more about Quarkus, please visit its website: https://quark
 You can run your application in dev mode that enables live coding using:
 
 ```shell script
-./mvnw compile quarkus:dev
+./mvnw compile quarkus:dev -pl release-raccoon-ap
 ```
 
 ## Packaging and running the application
@@ -44,6 +44,7 @@ using:
 
 ```shell script
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
+./mvnw package -Pnative -pl release-raccoon-app
 ```
 
 You can then execute your native executable with: `./target/release.com.raccoon-0.0.1-SNAPSHOT-runner`
@@ -61,5 +62,11 @@ Guide: https://quarkus.io/guides/rest-json
 From the root of the project run:
 ```shell script
 source release-raccoon/.env
-docker-compose --env-file ./release-raccoon/.env -f docker/docker-compose.yml up
+docker-compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.yml up
 ``` 
+
+## Setting up Keycloak
+Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the docker-compose.yml.
+Import the [realm](resources/realm-export.json) to create a realm named `RaccoonRealm`.
+
+In case the redirect back from keycloak doesn't work in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the `application.properties` file.

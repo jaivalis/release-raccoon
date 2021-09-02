@@ -3,16 +3,24 @@ package com.raccoon.entity.factory;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.ArtistRepository;
+import com.raccoon.entity.repository.UserArtistRepository;
 
 import java.util.Optional;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import javax.enterprise.context.ApplicationScoped;
 
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
-
+@ApplicationScoped
 public class UserArtistFactory {
 
-    private UserArtistFactory() {}
+    ArtistRepository artistRepository;
+    UserArtistRepository userArtistRepository;
+
+    UserArtistFactory(final ArtistRepository artistRepository,
+                      final UserArtistRepository repository) {
+        this.artistRepository = artistRepository;
+        this.userArtistRepository = repository;
+    }
 
     /**
      * Creates an Artist if it is not found in the database, or returns already existing artist.
@@ -20,16 +28,18 @@ public class UserArtistFactory {
      * @param artist
      * @return
      */
-    public static UserArtist getOrCreateUserArtist(final User user,
-                                                   final Artist artist) {
-        Optional<PanacheEntityBase> existing = UserArtist.findByUserArtistOptional(user.id, artist.id);
+    public UserArtist getOrCreateUserArtist(final User user,
+                                            final Artist artist) {
+        Optional<UserArtist> existing = (user.id != null && artist.id != null) ?
+                userArtistRepository.findByUserArtistOptional(user.id, artist.id)
+                : Optional.empty();
         if (existing.isEmpty()) {
             var userArtist = new UserArtist();
             userArtist.setArtist(artist);
             userArtist.setUser(user);
-            persist(artist);
+            artistRepository.persist(artist);
             return userArtist;
         }
-        return (UserArtist) existing.get();
+        return existing.get();
     }
 }
