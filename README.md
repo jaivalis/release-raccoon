@@ -70,3 +70,22 @@ Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin
 Import the [realm](resources/realm-export.json) to create a realm named `RaccoonRealm`.
 
 In case the redirect back from keycloak doesn't work in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the `application.properties` file.
+
+## Deploying the image to heroku (manually)
+
+Build the project to get the jar
+```shell
+./mvnw package -Pnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
+```
+
+Build the docker image, push it to the heroku repository and deploy to heroku:
+```shell
+cp build/release-raccoon-app-0.0.1-SNAPSHOT-runner && pushd docker && docker build -f Dockerfile.native -t registry.heroku.com/release-raccoon/web .
+docker push registry.heroku.com/release-raccoon/web
+heroku container:release web --app release-raccoon && popd
+```
+
+Check the logs for a successful start.
+```shell
+heroku logs --app release-raccoon
+```

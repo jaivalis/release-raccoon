@@ -3,11 +3,11 @@
 #
 # Before building the container image run:
 #
-# ./mvnw package -Pnative
+# ./mvnw package -Pnative -pl release-raccoon-app
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/release.com.raccoon .
+# docker build -f src/main/docker/Dockerfile.native -t jaivalis/release-raccoon:0.0.1 . --file build/*runner
 #
 # Then run the container using:
 #
@@ -19,7 +19,10 @@ WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
     && chown 1001:root /work
-COPY --chown=1001:root target/*-runner /work/application
+CMD pwd
+COPY --chown=1001:root release-raccoon-app-0.0.1-SNAPSHOT-runner /work/application
+
+RUN chmod +x /work/application
 
 EXPOSE 8080
 USER 1001
