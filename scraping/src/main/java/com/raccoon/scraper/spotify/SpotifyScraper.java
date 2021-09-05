@@ -63,9 +63,11 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     private static final int DEFAULT_LIMIT = 50;
 
     public SpotifyScraper(final SpotifyConfig config,
+                          final ArtistFactory artistFactory,
                           final ReleaseRepository releaseRepository) {
         clientId = config.getClientId();
         clientSecret = config.getClientSecret();
+        this.artistFactory = artistFactory;
         this.releaseRepository = releaseRepository;
     }
 
