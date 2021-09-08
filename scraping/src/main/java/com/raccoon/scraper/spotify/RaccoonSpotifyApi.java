@@ -6,6 +6,7 @@ import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
 import com.wrapper.spotify.model_objects.specification.Paging;
+import com.wrapper.spotify.requests.data.browse.GetListOfNewReleasesRequest;
 
 import org.apache.hc.core5.http.ParseException;
 
@@ -43,10 +44,14 @@ public class RaccoonSpotifyApi {
         if (System.currentTimeMillis() > credentialsExpiryTs) {
             validateClientCredentials();
         }
+        return createNewReleasesRequest(offset).execute();
+    }
+
+    private GetListOfNewReleasesRequest createNewReleasesRequest(int offset) {
         return spotifyApi.getListOfNewReleases()
                 .offset(offset)
                 .limit(DEFAULT_LIMIT)
-                .build().execute();
+                .build();
     }
 
     private void validateClientCredentials() throws InterruptedException {
