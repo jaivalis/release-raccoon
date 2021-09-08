@@ -54,6 +54,8 @@ class SpotifyScraperTest {
 
     @Mock
     Paging<AlbumSimplified> albumSimplifiedPagingMock;
+    @Mock
+    SpotifyUserAuthorizer authorizer;
 
     @BeforeEach
     void setUp() {
@@ -112,6 +114,26 @@ class SpotifyScraperTest {
     }
 
     @Test
+    void scrapeReleasesException() throws ParseException, IOException, InterruptedException, SpotifyWebApiException {
+        final var limit = 10;
+        when(raccoonSpotifyApiMock.fetchNewReleasesPaginated(anyInt()))
+                .thenThrow(IOException.class);
+
+        assertThrows(IOException.class,
+                () -> scraper.scrapeReleases(Optional.of(limit)));
+    }
+
+    @Test
+    void scrapeReleasesInterruptedException() throws ParseException, IOException, InterruptedException, SpotifyWebApiException {
+        final var limit = 10;
+        when(raccoonSpotifyApiMock.fetchNewReleasesPaginated(anyInt()))
+                .thenThrow(InterruptedException.class);
+
+        assertThrows(InterruptedException.class,
+                () -> scraper.scrapeReleases(Optional.of(limit)));
+    }
+
+    @Test
     void processRelease() {
         scraper.processRelease(mockSpotifyAlbum(100));
 
@@ -142,7 +164,15 @@ class SpotifyScraperTest {
     // ============================================== TasteScraper API ============================================== //
 
     @Test
-    void processSuccessful() {
+    void testFetchTopArtists() throws IOException, ParseException, SpotifyWebApiException {
+        when(authorizer.executeGetUsersTopArtists(anyInt()))
+                .thenThrow(IOException.class);
+
+        assertEquals(0, scraper.fetchTopArtists(authorizer).size());
+    }
+
+    @Test
+    void processArtistSuccessful() {
         var uri = "test-uri";
         var name = "test-name";
         Artist artistStub = new Artist();
@@ -165,7 +195,7 @@ class SpotifyScraperTest {
 
     @Test
     @DisplayName("IllegalArgumentException if type is not com.wrapper.spotify.model_objects.specification.Artist")
-    void processNonSpotifyType() {
+    void processArtistNonSpotifyType() {
         Object wrongType = new Object();
 
         assertThrows(IllegalArgumentException.class,
