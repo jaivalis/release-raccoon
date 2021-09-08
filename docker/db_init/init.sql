@@ -1,6 +1,6 @@
 -- CREATE DATABASE IF NOT EXISTS `${DB_NAME}`;
 -- GRANT ALL ON `${DB_NAME}`.* TO '${MYSQL_USER}'@'%';
 
-
+CREATE USER 'raccoon'@'%';
 CREATE DATABASE IF NOT EXISTS `raccoondb`;
-GRANT ALL ON `raccoondb`.* TO 'raccoon'@'%';
+GRANT ALL PRIVILEGES ON `raccoondb`.* TO 'raccoon'@'%';
