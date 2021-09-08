@@ -1,15 +1,12 @@
 # ReleaseRaccoon
-
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+A music release newsletter application built on quarkus.
 
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
 
 ```shell script
-./mvnw compile quarkus:dev -pl release-raccoon-ap
+./mvnw compile quarkus:dev -pl release-raccoon-app
 ```
 
 ## Packaging and running the application
@@ -52,24 +49,25 @@ You can then execute your native executable with: `./target/release.com.raccoon-
 If you want to learn more about building native executables, please
 consult https://quarkus.io/guides/maven-tooling.html.
 
-# RESTEasy JAX-RS
+# Starting the db and keycloak using the .env file
+Create a .env file containing all the environment variables that are referred to from the [docker-compose](docker/docker-compose.yml) file.
+Place that file under [release-raccoon-app](release-raccoon-app).
 
-<p>A Hello World RESTEasy resource</p>
-
-Guide: https://quarkus.io/guides/rest-json
-
-# Starting the db using the .env file
 From the root of the project run:
 ```shell script
 source release-raccoon-app/.env
 docker-compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.yml up
-``` 
+```
 
 ## Setting up Keycloak
-Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the docker-compose.yml.
-Import the [realm](resources/realm-export.json) to create a realm named `RaccoonRealm`.
+Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the [docker-compose](docker/docker-compose.yml).
+The realm we will be using is `RaccoonRealm` and is defined in [realm](docker/keycloak_init/realm-export.json).
+It is mounted to the container on start time.
+You will need to create a new user in order to connect.
+You also need to create a secret (Clients > release-raccoon > Credentials > Regenerate Secret) which you will need to pass as `quarkus.oidc.credentials.secret` to the [properties](release-raccoon-app/src/main/resources/application.properties).
+You should be good to start the quarkus app.
 
-In case the redirect back from keycloak doesn't work in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the `application.properties` file.
+> In case after a docker restart the redirect back from keycloak stops working in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the [properties](release-raccoon-app/src/main/resources/application.properties) again.
 
 ## Deploying the image to heroku (manually)
 
