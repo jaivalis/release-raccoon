@@ -34,8 +34,8 @@ public class RaccoonSpotifyApi {
 
     public RaccoonSpotifyApi(final SpotifyConfig config) {
         spotifyApi = new SpotifyApi.Builder()
-                .setClientId(config.getClientId())
-                .setClientSecret(config.getClientSecret())
+                .setClientId(config.clientId())
+                .setClientSecret(config.clientSecret())
                 .build();
     }
 
