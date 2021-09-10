@@ -42,6 +42,9 @@ public class Artist extends PanacheEntityBase implements Serializable {
     String name;
 
     @Column
+    String lastfmUri;
+
+    @Column
     String spotifyUri;
 
     @JsonIgnore
