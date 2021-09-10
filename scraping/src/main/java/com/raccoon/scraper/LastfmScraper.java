@@ -2,6 +2,7 @@ package com.raccoon.scraper;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.factory.ArtistFactory;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.scraper.config.LastFmConfig;
 
 import de.umass.lastfm.Period;
@@ -26,14 +27,17 @@ import lombok.val;
 public class LastfmScraper implements TasteScraper {
 
     ArtistFactory artistFactory;
+    ArtistRepository artistRepository;
 
     final String apiKey;
 
     @Inject
     public LastfmScraper(final LastFmConfig config,
-                         final ArtistFactory artistFactory) {
+                         final ArtistFactory artistFactory,
+                         final ArtistRepository artistRepository) {
         this.apiKey = config.apiKey();
         this.artistFactory = artistFactory;
+        this.artistRepository = artistRepository;
     }
 
     @Override
@@ -58,8 +62,11 @@ public class LastfmScraper implements TasteScraper {
         log.debug("{}", artistObj);
         if (artistObj instanceof de.umass.lastfm.Artist) {
             var lastfmArtist = (de.umass.lastfm.Artist) artistObj;
+            var artist = artistFactory.getOrCreateArtist(lastfmArtist.getName());
+            artist.setLastfmUri(lastfmArtist.getUrl());
+            artistRepository.persist(artist);
 
-            return artistFactory.getOrCreateArtist(lastfmArtist.getName());
+            return artist;
         }
         throw new IllegalArgumentException("Got an object type that is not supported.");
     }
