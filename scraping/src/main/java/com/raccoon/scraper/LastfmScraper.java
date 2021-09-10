@@ -32,7 +32,7 @@ public class LastfmScraper implements TasteScraper {
     @Inject
     public LastfmScraper(final LastFmConfig config,
                          final ArtistFactory artistFactory) {
-        this.apiKey = config.getApiKey();
+        this.apiKey = config.apiKey();
         this.artistFactory = artistFactory;
     }
 

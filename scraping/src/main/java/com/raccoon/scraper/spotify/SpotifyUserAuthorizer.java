@@ -36,8 +36,8 @@ public class SpotifyUserAuthorizer {
     SpotifyApi spotifyApi;
 
     public SpotifyUserAuthorizer(SpotifyConfig config) {
-        clientId = config.getClientId();
-        clientSecret = config.getClientSecret();
+        clientId = config.clientId();
+        clientSecret = config.clientSecret();
     }
 
     @PostConstruct

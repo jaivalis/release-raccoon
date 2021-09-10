@@ -1,23 +1,14 @@
 package com.raccoon.scraper.config;
 
-import io.quarkus.arc.config.ConfigProperties;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import io.smallrye.config.ConfigMapping;
 
-import javax.resource.spi.ConfigProperty;
+@ConfigMapping(prefix = "last.fm")
+public interface LastFmConfig {
 
-@Data
-@NoArgsConstructor
-@ConfigProperties(prefix = "last.fm")
-public class LastFmConfig {
+    String apiKey();
 
-    @ConfigProperty
-    String apiKey;
+    String applicationName();
 
-    @ConfigProperty
-    String applicationName;
-
-    @ConfigProperty
-    String sharedSecret;
+    String sharedSecret();
 
 }
