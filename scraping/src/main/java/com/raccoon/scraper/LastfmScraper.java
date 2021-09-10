@@ -35,7 +35,7 @@ public class LastfmScraper implements TasteScraper {
     public LastfmScraper(final LastFmConfig config,
                          final ArtistFactory artistFactory,
                          final ArtistRepository artistRepository) {
-        this.apiKey = config.getApiKey();
+        this.apiKey = config.apiKey();
         this.artistFactory = artistFactory;
         this.artistRepository = artistRepository;
     }
