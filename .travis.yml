@@ -1,7 +1,7 @@
 language: java
 
 jdk:
-  - oraclejdk11
+  - oraclejdk16
 
 before_cache:
   - rm -rf $HOME/.m2/repository/**/*-SNAPSHOT

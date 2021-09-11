@@ -18,9 +18,8 @@
 
     <properties>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
+        <maven.compiler.release>16</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -40,7 +39,7 @@
         <awaitility.version>4.0.3</awaitility.version>
 
         <!-- util -->
-        <lombok.version>1.18.10</lombok.version>
+        <lombok.version>1.18.20</lombok.version>
         <apache.commons.version>3.9</apache.commons.version>
         <rest.assured.version>4.3.3</rest.assured.version>
 
@@ -256,11 +255,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${apache.commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>mail</artifactId>
-                <version>1.5.0-b01</version>
             </dependency>
 
         </dependencies>

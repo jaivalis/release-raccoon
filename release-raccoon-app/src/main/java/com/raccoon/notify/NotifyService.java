@@ -34,6 +34,7 @@ public class NotifyService {
     }
 
     public List<User> notifyUsers() {
+        log.info("Notifying users");
         final List<User> usersNotified = new ArrayList<>();
 
         final List<UserArtist> userArtists = userArtistRepository.getUserArtistsWithNewRelease();
@@ -50,6 +51,7 @@ public class NotifyService {
             userArtistRepository.persist(userArtists);
         }
 
+        log.info("Notified {} users", usersNotified.size());
         return usersNotified;
     }
 
