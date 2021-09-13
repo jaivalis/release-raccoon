@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -55,7 +54,7 @@ public class Release extends PanacheEntityBase implements Serializable {
     public List<Artist> getArtists() {
         return releases.stream()
                 .map(ArtistRelease::getArtist)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

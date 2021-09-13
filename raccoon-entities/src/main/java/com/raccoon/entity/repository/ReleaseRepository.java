@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -27,6 +26,6 @@ public class ReleaseRepository implements PanacheRepository<Release> {
                 .stream()
                 .map(Release.class::cast)
                 .filter(release -> release.getArtists().stream().anyMatch(artists::contains))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

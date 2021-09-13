@@ -5,15 +5,11 @@ import com.raccoon.entity.UserArtist;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-
-import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
 public class UserArtistRepository implements PanacheRepository<UserArtist> {
@@ -22,7 +18,7 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         Stream<UserArtist> stream = find("hasNewRelease", true)
                 .stream();
 
-        return stream.collect(toList());
+        return stream.toList();
     }
 
     /**
@@ -44,13 +40,12 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         return find("(user_id = ?1 and artist_id = ?2) ", userId, artistId).stream().findAny();
     }
 
-    public List<PanacheEntityBase> findByUserId(final long userId) {
-        return find("user_id = ?1", userId).stream().collect(toList());
+    public List<UserArtist> findByUserId(final long userId) {
+        return find("user_id = ?1", userId).stream().toList();
     }
 
     public List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
-        Stream<UserArtist> stream = find("artist_id in ?1", artistIds).stream();
-        return stream.collect(Collectors.toList());
+        return find("artist_id in ?1", artistIds).stream().toList();
     }
 
 }
