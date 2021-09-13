@@ -1,12 +1,11 @@
-package com.raccoon.scraper;
+package com.raccoon.scraper.lastfm;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.factory.ArtistFactory;
 import com.raccoon.entity.repository.ArtistRepository;
-import com.raccoon.scraper.config.LastFmConfig;
+import com.raccoon.scraper.TasteScraper;
 
 import de.umass.lastfm.Period;
-import de.umass.lastfm.User;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 
@@ -14,7 +13,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,15 +27,15 @@ public class LastfmScraper implements TasteScraper {
     ArtistFactory artistFactory;
     ArtistRepository artistRepository;
 
-    final String apiKey;
+    final RaccoonLastfmApi lastfmApi;
 
     @Inject
-    public LastfmScraper(final LastFmConfig config,
-                         final ArtistFactory artistFactory,
-                         final ArtistRepository artistRepository) {
-        this.apiKey = config.apiKey();
+    public LastfmScraper(final ArtistFactory artistFactory,
+                         final ArtistRepository artistRepository,
+                         final RaccoonLastfmApi lastfmApi) {
         this.artistFactory = artistFactory;
         this.artistRepository = artistRepository;
+        this.lastfmApi = lastfmApi;
     }
 
     @Override
@@ -45,23 +43,21 @@ public class LastfmScraper implements TasteScraper {
                                                               final Optional<Integer> limit) {
         final Set<de.umass.lastfm.Artist> topArtists = new HashSet<>();
         final Set<String> seenNames = new HashSet<>();
-        mergeArtists(topArtists, User.getTopArtists(username, Period.OVERALL, apiKey), seenNames);
-        mergeArtists(topArtists, User.getTopArtists(username, Period.TWELVE_MONTHS, apiKey), seenNames);
-        mergeArtists(topArtists, User.getTopArtists(username, Period.SIX_MONTHS, apiKey), seenNames);
-        mergeArtists(topArtists, User.getTopArtists(username, Period.THREE_MONTHS, apiKey), seenNames);
-        mergeArtists(topArtists, User.getTopArtists(username, Period.ONE_MONTH, apiKey), seenNames);
-        mergeArtists(topArtists, User.getTopArtists(username, Period.WEEK, apiKey), seenNames);
+
+        for (Period period : Period.values()) {
+            mergeArtists(topArtists, lastfmApi.getUserTopArtists(username, period), seenNames);
+        }
 
         return topArtists.stream()
-                .map(artistObj -> MutablePair.of(processArtist(artistObj), (float) artistObj.getPlaycount()))
-                .collect(Collectors.toList());
+                .map(artistObj ->
+                        MutablePair.of(processArtist(artistObj), (float) artistObj.getPlaycount()))
+                .toList();
     }
 
     @Override
     public com.raccoon.entity.Artist processArtist(Object artistObj) {
         log.debug("{}", artistObj);
-        if (artistObj instanceof de.umass.lastfm.Artist) {
-            var lastfmArtist = (de.umass.lastfm.Artist) artistObj;
+        if (artistObj instanceof de.umass.lastfm.Artist lastfmArtist) {
             var artist = artistFactory.getOrCreateArtist(lastfmArtist.getName());
             artist.setLastfmUri(lastfmArtist.getUrl());
             artistRepository.persist(artist);

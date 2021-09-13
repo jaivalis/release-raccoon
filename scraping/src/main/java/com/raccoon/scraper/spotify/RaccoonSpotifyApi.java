@@ -21,6 +21,9 @@ import javax.validation.constraints.Max;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Holds logic for querying spotify
+ */
 @Slf4j
 @ApplicationScoped
 public class RaccoonSpotifyApi {

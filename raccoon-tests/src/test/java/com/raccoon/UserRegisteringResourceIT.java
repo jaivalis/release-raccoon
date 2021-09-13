@@ -2,7 +2,7 @@ package com.raccoon;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.registration.UserRegisteringResource;
-import com.raccoon.scraper.LastfmScraper;
+import com.raccoon.scraper.lastfm.LastfmScraper;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.jupiter.api.BeforeEach;

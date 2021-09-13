@@ -4,7 +4,7 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.entity.repository.UserRepository;
-import com.raccoon.scraper.LastfmScraper;
+import com.raccoon.scraper.lastfm.LastfmScraper;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 

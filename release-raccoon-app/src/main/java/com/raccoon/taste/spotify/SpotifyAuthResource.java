@@ -37,7 +37,7 @@ public class SpotifyAuthResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response authorizeSpotify(@Valid RegisterUserRequest request) {
-        spotifyAuthService.authorizationCodeUriAsync(request.getEmail());
+        spotifyAuthService.authorizationCodeUriAsync(request.email());
         return Response.noContent().build();
     }
 
