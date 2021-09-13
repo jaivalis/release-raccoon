@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import io.quarkus.scheduler.Scheduled;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,6 +32,12 @@ public class NotifyService {
         this.userArtistRepository = userArtistRepository;
         this.releaseRepository = releaseRepository;
         this.sender = sender;
+    }
+
+    @Scheduled(cron="{notify.cron.expr}")
+    public void notifyCronJob() {
+        log.info("Notifying cronjob triggered");
+        notifyUsers();
     }
 
     public List<User> notifyUsers() {

@@ -19,9 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class NotifyServiceTest {
@@ -38,6 +36,16 @@ class NotifyServiceTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void notifyCronJob() {
+        NotifyService notifyService = mock(NotifyService.class);
+        doCallRealMethod().when(notifyService).notifyCronJob();
+
+        notifyService.notifyCronJob();
+
+        verify(notifyService, times(1)).notifyUsers();
     }
 
     @Test
