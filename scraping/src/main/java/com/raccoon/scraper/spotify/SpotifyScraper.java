@@ -72,7 +72,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
                                 .map(this::processRelease)
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
-                                .collect(Collectors.toList())
+                                .toList()
                 );
                 offset = response.getOffset() + response.getLimit();
             } while(response.getNext() != null);
@@ -88,8 +88,8 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
     @Override
     public Optional<Release> processRelease(Object release) {
-        if (release instanceof AlbumSimplified) {
-            return processRelease((AlbumSimplified) release);
+        if (release instanceof AlbumSimplified album) {
+            return processRelease(album);
         }
         throw new IllegalArgumentException("Got an object type that is not supported.");
     }
@@ -138,7 +138,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
                         artistReleaseRepository.persist(artistRelease);
                         return artistRelease;
-                    }).collect(Collectors.toList()));
+                    }).toList());
             releaseRepository.persist(release);
             return Optional.of(release);
         }
@@ -162,7 +162,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
                         Arrays.stream(response.getItems())
                                 .map(artistObj ->
                                         MutablePair.of(processArtist(artistObj), (float) 1) //(float) artistObj.getPlaycount())
-                                ).collect(Collectors.toList())
+                                ).toList()
                 );
                 offset = response.getOffset() + response.getLimit();
             } while(response.getNext() != null);
@@ -174,8 +174,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
     public Artist processArtist(Object entry) {
         log.info("Got entry: {}", entry);
-        if (entry instanceof com.wrapper.spotify.model_objects.specification.Artist) {
-            var spotifyArtist = (com.wrapper.spotify.model_objects.specification.Artist) entry;
+        if (entry instanceof com.wrapper.spotify.model_objects.specification.Artist spotifyArtist) {
             var artist = artistFactory.getOrCreateArtist(spotifyArtist.getName());
             artist.setSpotifyUri(spotifyArtist.getUri());
             artistRepository.persist(artist);

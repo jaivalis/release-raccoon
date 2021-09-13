@@ -1,19 +1,10 @@
 package com.raccoon.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-public class RegisterUserRequest {
-
-    @NotNull
-    String email;
-
-    String lastfmUsername;
-
-    Boolean spotifyEnabled;
-
-}
+public record RegisterUserRequest(
+        @JsonProperty @NotNull String email,
+        @JsonProperty String lastfmUsername,
+        @JsonProperty Boolean spotifyEnabled) {}
