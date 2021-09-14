@@ -17,9 +17,9 @@ public class UserArtistFactory {
     UserArtistRepository userArtistRepository;
 
     UserArtistFactory(final ArtistRepository artistRepository,
-                      final UserArtistRepository repository) {
+                      final UserArtistRepository userArtistRepository) {
         this.artistRepository = artistRepository;
-        this.userArtistRepository = repository;
+        this.userArtistRepository = userArtistRepository;
     }
 
     /**
@@ -33,11 +33,13 @@ public class UserArtistFactory {
         Optional<UserArtist> existing = (user.id != null && artist.id != null) ?
                 userArtistRepository.findByUserArtistOptional(user.id, artist.id)
                 : Optional.empty();
+
         if (existing.isEmpty()) {
             var userArtist = new UserArtist();
             userArtist.setArtist(artist);
             userArtist.setUser(user);
             artistRepository.persist(artist);
+            userArtistRepository.persist(userArtist);
             return userArtist;
         }
         return existing.get();

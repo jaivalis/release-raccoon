@@ -4,7 +4,6 @@ import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.entity.User;
-import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.notify.MailingService;
 
@@ -70,7 +69,7 @@ class NotifyingResourceIT {
                 .send(anyString(), any(User.class), any());
         verify(mailingServiceMock, times(1))
                 .send(eq("user1@mail.com"), any(User.class), any());
-        UserArtist userArtist = (UserArtist) userArtistRepository.findByUserArtistOptional(100, 100).get();
+        var userArtist = userArtistRepository.findByUserArtistOptional(100L, 100L).get();
         assertThat("Release should be marked processed", !userArtist.getHasNewRelease());
     }
 

@@ -6,8 +6,6 @@ import com.raccoon.entity.repository.ArtistRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.validation.constraints.NotNull;
 
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
-
 @ApplicationScoped
 public class ArtistFactory {
 
@@ -28,7 +26,7 @@ public class ArtistFactory {
         if (existing.isEmpty()) {
             var artist = new Artist();
             artist.setName(name);
-            persist(artist);
+            artistRepository.persist(artist);
             return artist;
         }
         return existing.get();

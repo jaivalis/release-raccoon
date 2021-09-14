@@ -6,20 +6,18 @@ import com.raccoon.entity.repository.UserRepository;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import static io.quarkus.hibernate.orm.panache.PanacheEntityBase.persist;
 
 @ApplicationScoped
 public class UserFactory {
 
-    @Inject
     UserRepository userRepository;
 
-    private UserFactory() {}
+    public UserFactory(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
-     * Creates a User if it is not found in the database, or returns already existing artist.
+     * Creates a User if it is not found in the database, or returns already existing user.
      * @param email
      * @return
      */
@@ -30,7 +28,7 @@ public class UserFactory {
         }
         var user = new User();
         user.setEmail(email);
-        persist(user);
+        userRepository.persist(user);
         return user;
     }
 }
