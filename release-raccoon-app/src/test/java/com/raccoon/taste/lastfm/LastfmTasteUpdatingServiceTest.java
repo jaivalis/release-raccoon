@@ -25,7 +25,6 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,7 +70,6 @@ class LastfmTasteUpdatingServiceTest {
         user.setLastfmUsername("username");
         user.setLastLastFmScrape(LocalDateTime.now());
         user.setArtists(artists);
-        when(userRepositoryMock.isLastfmScrapeRequired(anyInt(), any(LocalDateTime.class))).thenReturn(false);
 
         service.updateTaste(user);
 
@@ -82,11 +80,10 @@ class LastfmTasteUpdatingServiceTest {
     @DisplayName("Scrape should update user artists")
     void testScrape() {
         user.setLastfmUsername("username");
-        user.setLastLastFmScrape(LocalDateTime.now());
+        user.setLastLastFmScrape(LocalDateTime.now().minusDays(20));
 
         Artist stubArtist = new Artist();
         stubArtist.setName("stub artist");
-        when(userRepositoryMock.isLastfmScrapeRequired(anyInt(), any(LocalDateTime.class))).thenReturn(true);
         Collection<MutablePair<Artist, Float>> stubTaste = List.of(
                 new MutablePair<>(stubArtist, 100F)
         );
