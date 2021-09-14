@@ -1,6 +1,6 @@
 package com.raccoon.entity.repository;
 
-import com.raccoon.entity.Artist;
+import com.raccoon.entity.User;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,31 +16,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
-class ArtistRepositoryTest {
+class UserRepositoryTest {
 
     @Inject
-    ArtistRepository repository;
+    UserRepository repository;
 
     @Test
     @Transactional
-    void findByNameEmpty() {
-        var name = "does not exist";
+    void findByEmailEmpty() {
+        var email = "does not exist";
 
-        assertTrue(repository.findByNameOptional(name).isEmpty());
+        assertTrue(repository.findByEmailOptional(email).isEmpty());
     }
 
     @Test
     @Transactional
-    void findByNameOptional() {
-        var name = "name";
-        var artist = new Artist();
-        artist.setName(name);
-        repository.persist(artist);
+    void findByEmailOptional() {
+        var email = "email@mail.com";
+        var user = new User();
+        user.setEmail(email);
+        repository.persist(user);
 
-        final var found = repository.findByNameOptional(name);
+        final var found = repository.findByEmailOptional(email);
 
         assertTrue(found.isPresent());
-        assertEquals(name, found.get().getName());
+        assertEquals(email, found.get().getEmail());
     }
 
 }
