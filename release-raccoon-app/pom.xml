@@ -79,6 +79,18 @@
             <artifactId>quarkus-scheduler</artifactId>
         </dependency>
 
+        <!-- Native image build fixes -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.security.jacc</groupId>
+            <artifactId>jboss-jacc-api_1.5_spec</artifactId>
+            <!-- Fixes: ClassNotFoundException: javax.security.jacc.PolicyContextException -->
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <!-- Fixes: ClassNotFoundException: com.sun.jna.LastErrorException -->
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>io.quarkus</groupId>
