@@ -266,6 +266,18 @@
                 <version>${quarkus.platform.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-test-h2</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-jdbc-h2</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
 
             <!-- util -->
             <dependency>
