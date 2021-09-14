@@ -44,4 +44,5 @@ class ArtistRepositoryTest {
         assertTrue(found.isPresent());
         assertEquals(name, found.get().getName());
     }
+
 }
