@@ -98,18 +98,18 @@ class UserArtistRepositoryTest {
         assertTrue(userArtists.isEmpty());
     }
 
-    @Test
-    @Transactional
-    void findByUserId() {
-        var userArtist1 = stubUserArtist("user1", "artist1");
-        var userArtist2 = stubUserArtist("user2", "artist2");
-        repository.persist(userArtist1, userArtist2);
-        var id = userArtist1.getArtist().id;
-
-        var userArtists = repository.findByUserId(id);
-
-        assertEquals(1, userArtists.size());
-    }
+//    @Test
+//    @Transactional
+//    void findByUserId() {
+//        var userArtist1 = stubUserArtist("user1", "artist1");
+//        var userArtist2 = stubUserArtist("user2", "artist2");
+//        repository.persist(userArtist1, userArtist2);
+//        var id = userArtist1.getArtist().id;
+//
+//        var userArtists = repository.findByUserId(id);
+//
+//        assertEquals(1, userArtists.size());
+//    }
 
     @Test
     @Transactional
