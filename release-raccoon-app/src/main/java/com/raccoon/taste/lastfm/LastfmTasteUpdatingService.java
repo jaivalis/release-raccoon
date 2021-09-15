@@ -47,7 +47,7 @@ public class LastfmTasteUpdatingService {
             return user;
         }
 
-        if (!userRepository.isLastfmScrapeRequired(1, user.getLastLastFmScrape())) {
+        if (!user.isLastfmScrapeRequired(1)) {
             log.info("User was lastfm scraped not long ago, skipping.");
             return user;
         }

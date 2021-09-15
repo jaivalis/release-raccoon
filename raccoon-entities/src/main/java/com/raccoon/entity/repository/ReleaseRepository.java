@@ -19,6 +19,12 @@ public class ReleaseRepository implements PanacheRepository<Release> {
         return Optional.ofNullable(find("spotifyUri", uri).firstResult());
     }
 
+    /**
+     * Returns all releases by specific artists, released less than {@code days} amount of days ago
+     * @param artists collection of artists to query for
+     * @param days amount of days to limit the search by
+     * @return list of releases.
+     */
     public List<Release> findByArtistsSinceDays(Collection<Artist> artists, int days) {
         LocalDate leastDate = LocalDate.now().minusDays(days);
 

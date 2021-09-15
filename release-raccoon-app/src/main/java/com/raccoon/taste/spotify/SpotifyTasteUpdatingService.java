@@ -65,7 +65,7 @@ public class SpotifyTasteUpdatingService {
             return Response.noContent().build();
         }
 
-        if (!userRepository.isSpotifyScrapeRequired(1, user.getLastSpotifyScrape())) {
+        if (!user.isSpotifyScrapeRequired(1)) {
             log.info("User with id {} spotify taste was scraped not long ago, skipping.", userId);
             return Response.noContent().build();
         }

@@ -6,6 +6,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,5 +65,23 @@ public class User extends PanacheEntity implements Serializable {
     @JsonbTransient
     @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserArtist> artists = new HashSet<>();
+
+    public boolean isLastfmScrapeRequired(int scrapeIntervalDays) {
+        return lastLastFmScrape == null || !isLastLastfmScrapeLt(scrapeIntervalDays, lastLastFmScrape);
+    }
+
+    public boolean isSpotifyScrapeRequired(int scrapeIntervalDays) {
+        return lastSpotifyScrape == null || !isLastSpotifyScrapeLt(scrapeIntervalDays, lastSpotifyScrape);
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private boolean isLastLastfmScrapeLt(int days, LocalDateTime lastLastFmScrape) {
+        return ChronoUnit.DAYS.between(lastLastFmScrape, LocalDateTime.now()) < days;
+    }
+
+    private boolean isLastSpotifyScrapeLt(int days, LocalDateTime lastSpotifyScrape) {
+        return ChronoUnit.DAYS.between(lastSpotifyScrape, LocalDateTime.now()) < days;
+    }
 
 }

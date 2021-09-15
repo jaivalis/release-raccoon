@@ -28,7 +28,6 @@ import javax.ws.rs.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -88,7 +87,6 @@ class SpotifyTasteUpdatingServiceTest {
         user.setSpotifyEnabled(true);
         user.setLastSpotifyScrape(LocalDateTime.MIN);
         when(userRepositoryMock.findByIdOptional(0L)).thenReturn(Optional.of(user));
-        when(userRepositoryMock.isSpotifyScrapeRequired(anyInt(), any(LocalDateTime.class))).thenReturn(Boolean.TRUE);
 
         final var response = service.scrapeTaste(0L);
 
