@@ -19,14 +19,16 @@ import javax.enterprise.context.ApplicationScoped;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * More documentation on the auth flow:
+ * https://developer.spotify.com/documentation/general/guides/authorization-guide/
+ *
+ * Relevant code snippets:
+ * https://github.com/thelinmichael/spotify-web-api-java/blob/master/examples/authorization/authorization_code/AuthorizationCodeUriExample.java
+ */
 @Slf4j
 @ApplicationScoped
 public class SpotifyUserAuthorizer {
-
-//    private static final URI SPOTIFY_REDIRECT_URI = SpotifyHttpManager.makeUri("https://example.com/spotify-redirect");
-
-    // https://github.com/thelinmichael/spotify-web-api-java/blob/master/examples/authorization/authorization_code/AuthorizationCodeUriExample.java
-    // https://developer.spotify.com/documentation/general/guides/authorization-guide/
 
     private final String clientId;
     private final String clientSecret;
