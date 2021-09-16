@@ -78,12 +78,12 @@ Build the project to get the jar
 
 Build the docker image, push it to the heroku repository and deploy to heroku:
 ```shell
-cp build/release-raccoon-app-0.0.1-SNAPSHOT-runner && pushd docker && docker build -f Dockerfile.native -t registry.heroku.com/release-raccoon/web .
+cp build/release-raccoon-app-0.0.1-SNAPSHOT-runner ./docker && pushd docker && docker build -f Dockerfile.native -t registry.heroku.com/release-raccoon/web .
 docker push registry.heroku.com/release-raccoon/web
 heroku container:release web --app release-raccoon && popd
 ```
 
 Check the logs for a successful start.
 ```shell
-heroku logs --app release-raccoon
+heroku logs --app release-raccoon --tail
 ```

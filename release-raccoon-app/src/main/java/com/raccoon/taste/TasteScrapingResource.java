@@ -39,7 +39,7 @@ public class TasteScrapingResource {
     JsonWebToken idToken;
 
     @Inject
-    LastfmTasteUpdatingService lastfmService;
+    LastfmTasteUpdatingService lastfmTasteUpdatingService;
     @Inject
     SpotifyTasteUpdatingService spotifyTasteUpdatingService;
 
@@ -54,7 +54,7 @@ public class TasteScrapingResource {
     public Collection<UserArtist> scrapeLastfmTaste() {
         final String email = idToken.getClaim("email");
         var existing = getUser(email);
-        final var updated = lastfmService.updateTaste(existing);
+        final var updated = lastfmTasteUpdatingService.updateTaste(existing);
         return updated.getArtists();
     }
 
