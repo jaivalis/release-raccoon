@@ -2,7 +2,6 @@ package com.raccoon.scraper.spotify;
 
 import com.raccoon.scraper.config.SpotifyConfig;
 import com.wrapper.spotify.SpotifyApi;
-import com.wrapper.spotify.SpotifyHttpManager;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.Artist;
 import com.wrapper.spotify.model_objects.specification.Paging;
@@ -24,20 +23,21 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class SpotifyUserAuthorizer {
 
-    private static final URI SPOTIFY_AUTH_CALLBACK_URI = URI.create("http://localhost:8080/spotify-auth-callback/");
-    private static final URI SPOTIFY_REDIRECT_URI = SpotifyHttpManager.makeUri("https://example.com/spotify-redirect");
+//    private static final URI SPOTIFY_REDIRECT_URI = SpotifyHttpManager.makeUri("https://example.com/spotify-redirect");
 
     // https://github.com/thelinmichael/spotify-web-api-java/blob/master/examples/authorization/authorization_code/AuthorizationCodeUriExample.java
     // https://developer.spotify.com/documentation/general/guides/authorization-guide/
 
     private final String clientId;
     private final String clientSecret;
+    private final URI authCallbackUri;
 
     SpotifyApi spotifyApi;
 
     public SpotifyUserAuthorizer(SpotifyConfig config) {
         clientId = config.clientId();
         clientSecret = config.clientSecret();
+        authCallbackUri = URI.create(config.authCallbackUri());
     }
 
     @PostConstruct
@@ -45,7 +45,7 @@ public class SpotifyUserAuthorizer {
         spotifyApi = new SpotifyApi.Builder()
                 .setClientId(clientId)
                 .setClientSecret(clientSecret)
-                .setRedirectUri(SPOTIFY_REDIRECT_URI)
+                .setRedirectUri(authCallbackUri)
                 .build();
     }
 
@@ -60,7 +60,7 @@ public class SpotifyUserAuthorizer {
         var authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
                 .state(userId)
                 .scope("user-top-read")
-                .redirect_uri(SPOTIFY_AUTH_CALLBACK_URI)
+                .redirect_uri(authCallbackUri)
                 .show_dialog(true)
                 .build();
         final var uri = authorizationCodeUriRequest.execute();
@@ -76,7 +76,7 @@ public class SpotifyUserAuthorizer {
                     spotifyApi.authorizationCodeUri()
                             .state(email)
                             .scope("user-top-read")
-                            .redirect_uri(SPOTIFY_AUTH_CALLBACK_URI)
+                            .redirect_uri(authCallbackUri)
                             .show_dialog(true)
                             .build();
             final CompletableFuture<URI> uriFuture = authorizationCodeUriRequest.executeAsync();
@@ -97,7 +97,7 @@ public class SpotifyUserAuthorizer {
         var authorizationCodeRequest =
                 spotifyApi
                         .authorizationCode(code)
-                        .redirect_uri(SPOTIFY_AUTH_CALLBACK_URI)
+                        .redirect_uri(authCallbackUri)
                         .build();
 
         try {

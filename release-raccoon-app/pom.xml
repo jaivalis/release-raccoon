@@ -79,6 +79,13 @@
             <artifactId>quarkus-scheduler</artifactId>
         </dependency>
 
+        <!-- database -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
+            <version>${quarkus.platform.version}</version>
+        </dependency>
+
         <!-- Native image build fixes -->
         <dependency>
             <groupId>org.jboss.spec.javax.security.jacc</groupId>

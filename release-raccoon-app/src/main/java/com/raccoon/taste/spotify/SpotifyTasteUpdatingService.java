@@ -47,7 +47,7 @@ public class SpotifyTasteUpdatingService {
     }
 
     /**
-     * Responds with a redirect to spotify auth service is
+     * Responds with a redirect to spotify auth service
      *
      * @param userId userId as extracted from the Request
      * @return HTTP Redirect or NoContent

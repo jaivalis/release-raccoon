@@ -3,6 +3,7 @@ package com.raccoon.taste.spotify;
 import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.entity.User;
 import com.raccoon.entity.repository.UserRepository;
+import com.raccoon.scraper.config.SpotifyConfig;
 import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
 
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
@@ -33,6 +34,8 @@ public class SpotifyAuthResource {
     SpotifyUserAuthorizer spotifyAuthService;
     @Inject
     SpotifyTasteUpdatingService spotifyTasteUpdatingService;
+    @Inject
+    SpotifyConfig config;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -41,20 +44,28 @@ public class SpotifyAuthResource {
         return Response.noContent().build();
     }
 
+    /**
+     * Gets invoked by spotify auth as a callback to complete auth flow.
+     *
+     * @param code
+     * @param state Provided by {@code com.raccoon.scraper.spotify.SpotifyUserAuthorizer#authorizationCodeUriSync}, currently set as the userId
+     * @param error Should be null
+     * @return
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response completeAuth(@QueryParam("code") final String code,
                                  @QueryParam("state") final String state,
                                  @QueryParam("error") final String error) {
-        log.info("Received GET {} {} {}", code, state, error);
+        log.info("Received GET code: {}, state: {}, error: {}", code, state, error);
         if (error != null) {
-            log.error("An error occurred with Spotify authentication");
+            log.error("An error occurred with Spotify authentication: {}", error);
             return Response.noContent().build();
         }
 
         // Request access and refresh tokens
         spotifyAuthService.requestAuthorization(code);
-        var redirect = URI.create("http://localhost:8080/spotify-auth-callback/user-top-artists?userId=" + state);
+        var redirect = URI.create(config.authCallbackUri() + "user-top-artists?userId=" + state);
         return Response.temporaryRedirect(redirect).build();
     }
 
