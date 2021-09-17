@@ -173,8 +173,8 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     }
 
     public Artist processArtist(Object entry) {
-        log.info("Got entry: {}", entry);
         if (entry instanceof com.wrapper.spotify.model_objects.specification.Artist spotifyArtist) {
+            log.info("Got spotify artist: {}", spotifyArtist.getName());
             var artist = artistFactory.getOrCreateArtist(spotifyArtist.getName());
             artist.setSpotifyUri(spotifyArtist.getUri());
             artistRepository.persist(artist);

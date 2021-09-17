@@ -92,12 +92,6 @@
         </tr>
         </thead>
 
-        {#if todos.size == 0}
-        <tr>
-            <td colspan="3">No data found.</td>
-        </tr>
-        {#else}
-
         {#for release in releases}
         <tr>
             <th scope="row">#{count}</th>
@@ -118,7 +112,6 @@
 
         </tr>
         {/for}
-        {/if}
     </table>
 </div>
 </body>
