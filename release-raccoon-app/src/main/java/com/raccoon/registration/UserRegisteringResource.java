@@ -1,8 +1,5 @@
 package com.raccoon.registration;
 
-import com.raccoon.entity.factory.UserFactory;
-import com.raccoon.entity.repository.UserRepository;
-
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
@@ -29,10 +26,6 @@ public class UserRegisteringResource {
     @Inject
     RegisteringService service;
 
-    @Inject
-    UserFactory userFactory;
-    @Inject
-    UserRepository userRepository;
     @IdToken
     JsonWebToken idToken;
 

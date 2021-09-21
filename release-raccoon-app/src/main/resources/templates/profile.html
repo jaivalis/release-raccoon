@@ -101,13 +101,6 @@
         }
 
     </style>
-<!--    <script>-->
-<!--        var tag = document.getElementById('demo');-->
-<!--        var button = document.querySelector('button');-->
-<!--        button.addEventListener('click', function() {-->
-<!--            tag.classList.toggle('demo');-->
-<!--        });-->
-<!--    </script>-->
 </head>
 
 <body>
@@ -115,18 +108,24 @@
     <div>
         <div class="banner lead">
             {#if !isSpotifyEnabled}
-                Enable <a href="/scrape-taste/spotify" class="path-link" target="_blank">spotify</a></br>
+                Enable
+                <a href="/scrape-taste/spotify" class="path-link" target="_blank">
+                    spotify
+                    <img height="30px" src="resources/spotify.icon.svg"/>
+                </a>
+                </br>
             {#else}
                 Spotify enabled ⛓</br>
             {/if}
             {#if !isLastfmEnabled}
-            Enable
-            <a href="/register" class="path-link" target="_blank">
-                last.fm
-            </a>
-            </br>
+            Your Last.fm username is
+                <form method="GET" action="/register/enableServices">
+                    <input type="text" id="lastfmname" name="lastfmUsername">
+                    <input type="submit" class="path-link" value="enable">
+                </form>
+                </br>
             {#else}
-            Last.fm scraping enabled ⛓</br>
+                Last.fm scraping enabled ⛓</br>
             {/if}
         </div>
 
@@ -138,16 +137,25 @@
                 {#for artist in artistsFollowed}
                     <tr>
                         <td>{artist.artist.name}</td>
-                        <!-- TODO: Add lastfm icon on url href -->
-                        <td>{artist.artist.lastfmUri}</td>
-                        <!-- TODO: Add spotify icon on url href -->
-                        <td>{artist.artist.spotifyUri}</td>
+                        <td>
+                            {#if artist.artist.lastfmUri != null}
+                            <a href="{artist.artist.lastfmUri}" class="path-link" target="_blank">
+                                <img height="30px" src="resources/lastfm.icon.svg"/>
+                            </a>
+                            {/if}
+                        </td>
+                        <td>
+                            {#if artist.artist.spotifyUri != null}
+                            <a href="{artist.artist.spotifyUri}" class="path-link" target="_blank">
+                                <img height="30px" src="resources/spotify.icon.svg"/>
+                            </a>
+                            {/if}
+                        </td>
                     </tr>
                 {/for}
             </tr>
         </table>
     </div>
-
 
 </body>
 </html>

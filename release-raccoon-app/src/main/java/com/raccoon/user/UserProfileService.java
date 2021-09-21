@@ -25,9 +25,11 @@ public class UserProfileService {
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
-                              final UserArtistRepository userArtistRepository) {
+                              final UserArtistRepository userArtistRepository,
+                              final Template profile) {
         this.userRepository = userRepository;
         this.userArtistRepository = userArtistRepository;
+        this.profile = profile;
     }
 
 
