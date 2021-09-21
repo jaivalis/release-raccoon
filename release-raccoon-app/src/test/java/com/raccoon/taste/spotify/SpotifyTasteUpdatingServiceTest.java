@@ -59,17 +59,6 @@ class SpotifyTasteUpdatingServiceTest {
     }
 
     @Test
-    void testScrapeTasteSpotifyDisabled() {
-        User user = new User();
-        user.setSpotifyEnabled(false);
-        when(userRepositoryMock.findByIdOptional(0L)).thenReturn(Optional.of(user));
-
-        final var response = service.scrapeTaste(0L);
-
-        assertEquals(HttpStatus.SC_NO_CONTENT, response.getStatus());
-    }
-
-    @Test
     void testScrapeTasteRecentlyScraped() {
         User user = new User();
         user.setSpotifyEnabled(true);

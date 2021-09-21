@@ -46,7 +46,7 @@ class IndexServiceTest {
         when(releaseRepository.count()).thenReturn(3333L);
         when(templateMock.data(anyString(), eq("2222"), anyString(), eq("3333"))).thenReturn(templateInstanceMock);
 
-        service.getTemplate();
+        service.getTemplateInstance();
 
         verify(templateMock, times(1)).data(anyString(), anyString(), anyString(), anyString());
     }

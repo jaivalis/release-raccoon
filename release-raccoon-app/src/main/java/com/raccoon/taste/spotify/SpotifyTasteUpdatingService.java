@@ -60,11 +60,7 @@ public class SpotifyTasteUpdatingService {
 
         final var user = byIdOptional.get();
 
-        if (Boolean.FALSE.equals(user.getSpotifyEnabled())) {
-            log.warn("User with id {} has spotify disabled, skipping.", userId);
-            return Response.noContent().build();
-        }
-
+        user.setSpotifyEnabled(true);
         if (!user.isSpotifyScrapeRequired(1)) {
             log.info("User with id {} spotify taste was scraped not long ago, skipping.", userId);
             return Response.noContent().build();

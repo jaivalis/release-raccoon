@@ -26,7 +26,7 @@
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>2.2.2.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.2.3.Final</quarkus.platform.version>
 
         <!-- Native image build fixes -->
         <jboss-jacc.version>1.0.2.Final</jboss-jacc.version>
@@ -145,6 +145,16 @@
             <dependency>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-scheduler</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-resteasy-qute</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-qute</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
 

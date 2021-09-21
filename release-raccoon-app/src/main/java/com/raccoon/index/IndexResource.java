@@ -16,7 +16,7 @@ public class IndexResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response scrapeReleases() {
-        return Response.ok(service.getTemplate()).build();
+        return Response.ok(service.getTemplateInstance()).build();
     }
 
 }

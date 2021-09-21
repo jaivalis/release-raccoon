@@ -26,7 +26,7 @@ public class IndexService {
         this.index = index;
     }
 
-    public String getTemplate() {
+    public String getTemplateInstance() {
         return index.data(
                 "artistCount", String.valueOf(artistRepository.count()),
                 "releaseCount", String.valueOf(releaseRepository.count())

@@ -3,6 +3,7 @@ package com.raccoon.entity.repository;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.factory.UserFactory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class UserArtistRepositoryTest {
     @Inject
     ArtistRepository artistRepository;
     @Inject
-    UserRepository userRepository;
+    UserFactory userFactory;
 
     @BeforeEach
     @Transactional
@@ -119,6 +120,23 @@ class UserArtistRepositoryTest {
         assertTrue(userArtists.isEmpty());
     }
 
+    @Test
+    @Transactional
+    void findByUserIdByWeight() {
+        var user1Artist1 = stubUserArtist("user1", "artist1");
+        var user1Artist2 = stubUserArtist("user1", "artist2");
+        var user2Artist1 = stubUserArtist("user2", "artist1");
+        user1Artist1.setWeight(0.60f);
+        user1Artist2.setWeight(0.65f);
+        user2Artist1.setWeight(0.10f);
+        repository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
+
+        var byWeight = repository.findByUserIdByWeight(user1Artist1.getUser().id);
+
+        assertEquals(2, byWeight.size());
+        assertEquals("artist2", byWeight.get(0).getArtist().getName());
+        assertEquals("artist1", byWeight.get(1).getArtist().getName());
+    }
 
     // Move to some helper class if needed
     UserArtist stubUserArtist(String username, String artistName) {
@@ -132,11 +150,8 @@ class UserArtistRepositoryTest {
         return userArtist;
     }
 
-    User stubUser(String name) {
-        var user = new User();
-        user.setUsername(name);
-        userRepository.persist(user);
-        return user;
+    User stubUser(String email) {
+        return userFactory.getOrCreateUser(email);
     }
 
     Artist stubArtist(String name) {
