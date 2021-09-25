@@ -138,6 +138,20 @@ class UserArtistRepositoryTest {
         assertEquals("artist1", byWeight.get(1).getArtist().getName());
     }
 
+    @Test
+    @Transactional
+    void deleteAssociation() {
+        var userArtist = stubUserArtist("user1", "artist1");
+        var userId = userArtist.getUser().id;
+        var artistIdNotExistent = userArtist.getArtist().id;
+        assertEquals(1, repository.findAll().stream().count());
+
+        repository.deleteAssociation(userId, artistIdNotExistent);
+
+        assertEquals(0, repository.findAll().stream().count());
+    }
+
+
     // Move to some helper class if needed
     UserArtist stubUserArtist(String username, String artistName) {
         var user = stubUser(username);

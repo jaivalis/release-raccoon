@@ -38,7 +38,7 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     }
 
     public Optional<UserArtist> findByUserArtistOptional(final Long userId, final Long artistId) {
-        return find("(user_id = ?1 and artist_id = ?2) ", userId, artistId).stream().findAny();
+        return find("(user_id = ?1 and artist_id = ?2)", userId, artistId).stream().findAny();
     }
 
     public List<UserArtist> findByUserId(final long userId) {
@@ -52,6 +52,10 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
 
     public List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
         return find("artist_id in ?1", artistIds).stream().toList();
+    }
+
+    public void deleteAssociation(Long userId, Long artistId) {
+        delete("user_id = ?1 and artist_id = ?2", userId, artistId);
     }
 
 }

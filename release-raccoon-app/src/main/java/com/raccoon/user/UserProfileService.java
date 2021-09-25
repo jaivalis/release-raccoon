@@ -33,7 +33,7 @@ public class UserProfileService {
     }
 
 
-    public List<UserArtist> getUserArtists(User user) {
+    public List<UserArtist> getUserArtists(final User user) {
         return userArtistRepository.findByUserIdByWeight(user.id);
     }
 
@@ -49,7 +49,13 @@ public class UserProfileService {
         ).render();
     }
     
-    public void unfollowArtist() {
-
+    public void unfollowArtist(final String userEmail, final Long artistId) {
+        var user = userRepository.findByEmail(userEmail);
+        userArtistRepository.deleteAssociation(user.id, artistId);
     }
+
+//    public void followArtist(final String userEmail, final Long artistId) {
+//        var user = userRepository.findByEmail(userEmail);
+//        userArtistRepository.followArtist(user.id, artistName);
+//    }
 }

@@ -30,14 +30,14 @@ class UserProfileServiceTest {
     @Mock
     UserRepository mockUserRepository;
     @Mock
-    Template templateMock;
+    Template mockTemplate;
     @Mock
     TemplateInstance templateInstanceMock;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        service = new UserProfileService(mockUserRepository, mockUserArtistRepository, templateMock);
+        service = new UserProfileService(mockUserRepository, mockUserArtistRepository, mockTemplate);
     }
 
     @Test
@@ -58,7 +58,7 @@ class UserProfileServiceTest {
         user.setLastfmUsername(null);
         user.id = 1L;
         when(mockUserRepository.findByEmail(any())).thenReturn(user);
-        when(templateMock
+        when(mockTemplate
                 .data(
                         anyString(), any(),
                         anyString(), any(),
@@ -68,14 +68,21 @@ class UserProfileServiceTest {
 
         service.getTemplateInstance("some@email.com");
 
-        verify(templateMock, times(1))
+        verify(mockTemplate, times(1))
                 .data(anyString(), any(),
                         anyString(), any(),
                         anyString(), any(),
                         anyString(), any());
     }
 
-//    @Test
-//    void unfollowArtist() {
-//    }
+    @Test
+    void unfollowArtist() {
+        var user = new User();
+        user.id = 1L;
+        when(mockUserRepository.findByEmail(any())).thenReturn(user);
+
+        service.unfollowArtist("some@mail.com", 2L);
+
+        verify(mockUserArtistRepository).deleteAssociation(1L, 2L);
+    }
 }

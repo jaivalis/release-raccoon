@@ -134,22 +134,27 @@
             <tr>
                 <th>Artist Name</th>
                 <th></th>
-                {#for artist in artistsFollowed}
+                {#for userArtist in artistsFollowed}
                     <tr>
-                        <td>{artist.artist.name}</td>
+                        <td>{userArtist.artist.name}</td>
                         <td>
-                            {#if artist.artist.lastfmUri != null}
+                            {#if userArtist.artist.lastfmUri != null}
                             <a href="{artist.artist.lastfmUri}" class="path-link" target="_blank">
                                 <img height="30px" src="resources/lastfm.icon.svg"/>
                             </a>
                             {/if}
                         </td>
                         <td>
-                            {#if artist.artist.spotifyUri != null}
+                            {#if userArtist.artist.spotifyUri != null}
                             <a href="{artist.artist.spotifyUri}" class="path-link" target="_blank">
                                 <img height="30px" src="resources/spotify.icon.svg"/>
                             </a>
                             {/if}
+                        </td>
+                        <td>
+                            <a href="/me/unfollow/{userArtist.artist.id}" class="path-link" target="_blank">
+                                unfollow
+                            </a>
                         </td>
                     </tr>
                 {/for}
