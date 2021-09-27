@@ -96,7 +96,7 @@
             display: inline-block;
         }
 
-        a:hover, a:active {
+        a:hover, a:active, pathlink {
             background-color: red;
         }
 
@@ -109,7 +109,7 @@
         <div class="banner lead">
             {#if !isSpotifyEnabled}
                 Enable
-                <a href="/scrape-taste/spotify" class="path-link" target="_blank">
+                <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
                     spotify
                     <img height="30px" src="resources/spotify.icon.svg"/>
                 </a>
@@ -119,7 +119,7 @@
             {/if}
             {#if !isLastfmEnabled}
             Your Last.fm username is
-                <form method="GET" action="/register/enableServices">
+                <form method="GET" action="/me/enableServices">
                     <input type="text" id="lastfmname" name="lastfmUsername">
                     <input type="submit" class="path-link" value="enable">
                 </form>
@@ -133,28 +133,30 @@
         <table class="horizaligned">
             <tr>
                 <th>Artist Name</th>
+
                 <th></th>
+
                 {#for userArtist in artistsFollowed}
                     <tr>
                         <td>{userArtist.artist.name}</td>
                         <td>
                             {#if userArtist.artist.lastfmUri != null}
-                            <a href="{artist.artist.lastfmUri}" class="path-link" target="_blank">
+                            <a href="{userArtist.artist.lastfmUri}" class="path-link" target="_blank">
                                 <img height="30px" src="resources/lastfm.icon.svg"/>
                             </a>
                             {/if}
                         </td>
                         <td>
                             {#if userArtist.artist.spotifyUri != null}
-                            <a href="{artist.artist.spotifyUri}" class="path-link" target="_blank">
+                            <a href="{userArtist.artist.spotifyUri}" class="path-link" target="_blank">
                                 <img height="30px" src="resources/spotify.icon.svg"/>
                             </a>
                             {/if}
                         </td>
                         <td>
-                            <a href="/me/unfollow/{userArtist.artist.id}" class="path-link" target="_blank">
-                                unfollow
-                            </a>
+                            <form method="POST" action="/me/unfollow/{userArtist.artist.id}">
+                                <input type="submit" class="path-link" value="unfollow">
+                            </form>
                         </td>
                     </tr>
                 {/for}

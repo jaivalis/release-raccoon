@@ -2,9 +2,6 @@ package com.raccoon.registration;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.cache.NoCache;
-import org.jboss.resteasy.annotations.jaxrs.QueryParam;
-
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -40,20 +37,6 @@ public class UserRegisteringResource {
         final Boolean spotifyEnabled = Boolean.parseBoolean(idToken.getClaim("spotify_enabled"));
 
         var user = service.registerUser(username, email, lastfmUsername, spotifyEnabled);
-
-        return Response.ok(user).build();
-    }
-
-    @Transactional
-    @GET
-    @Path("/enableServices")
-    @NoCache
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response enableTasteSources(@QueryParam("lastfmUsername") final Optional<String> lastfmUsernameOpt,
-                                       @QueryParam("enableSpotify") final Optional<Boolean> enableSpotifyOpt) {
-        final String email = idToken.getClaim("email");
-
-        var user = service.enableTasteSources(email, lastfmUsernameOpt, enableSpotifyOpt);
 
         return Response.ok(user).build();
     }

@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,20 +45,22 @@ public class RegisteringService {
         return user;
     }
 
-    public User enableTasteSources(final String email,
-                                   final Optional<String> lastfmUsernameOpt,
-                                   final Optional<Boolean> enableSpotifyOpt) {
+    public User completeRegistration(final String username,
+                                     final String email,
+                                     final String lastfmUsername,
+                                     final Boolean spotifyEnabled) {
         Optional<User> existing = userRepository.findByEmailOptional(email);
         if (existing.isEmpty()) {
-            log.info("User does not exist.");
-            throw new NotFoundException("User not found");
-        }
-        var user = existing.get();
-        lastfmUsernameOpt.ifPresent(user::setLastfmUsername);
-        enableSpotifyOpt.ifPresent(user::setSpotifyEnabled);
+            log.info("User with email {} exists.", email);
 
-        userRepository.persist(user);
-        return user;
+            var user = userFactory.getOrCreateUser(email);
+            user.setLastfmUsername(lastfmUsername);
+            user.setSpotifyEnabled(spotifyEnabled);
+            user.setUsername(username);
+            userRepository.persist(user);
+            return user;
+        }
+        return existing.get();
     }
 
 }
