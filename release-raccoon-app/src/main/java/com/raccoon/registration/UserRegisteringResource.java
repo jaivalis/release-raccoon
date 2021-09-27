@@ -15,6 +15,11 @@ import io.quarkus.oidc.IdToken;
 import io.quarkus.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.raccoon.Constants.EMAIL_CLAIM;
+import static com.raccoon.Constants.LASTFM_USERNAME_CLAIM;
+import static com.raccoon.Constants.SPOTIFY_ENABLED_CLAIM;
+import static com.raccoon.Constants.USERNAME_CLAIM;
+
 @Path("/register")
 @Slf4j
 @Authenticated
@@ -31,10 +36,10 @@ public class UserRegisteringResource {
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerCallback() {
-        final String username = idToken.getClaim("preferred_username");
-        final String email = idToken.getClaim("email");
-        final String lastfmUsername = idToken.getClaim("lastfm_username");
-        final Boolean spotifyEnabled = Boolean.parseBoolean(idToken.getClaim("spotify_enabled"));
+        final String username = idToken.getClaim(USERNAME_CLAIM);
+        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String lastfmUsername = idToken.getClaim(LASTFM_USERNAME_CLAIM);
+        final Boolean spotifyEnabled = Boolean.parseBoolean(idToken.getClaim(SPOTIFY_ENABLED_CLAIM));
 
         var user = service.registerUser(username, email, lastfmUsername, spotifyEnabled);
 
