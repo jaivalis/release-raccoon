@@ -49,18 +49,12 @@ public class RegisteringService {
                                      final String email,
                                      final String lastfmUsername,
                                      final Boolean spotifyEnabled) {
-        Optional<User> existing = userRepository.findByEmailOptional(email);
-        if (existing.isEmpty()) {
-            log.info("User with email {} exists.", email);
-
-            var user = userFactory.getOrCreateUser(email);
-            user.setLastfmUsername(lastfmUsername);
-            user.setSpotifyEnabled(spotifyEnabled);
-            user.setUsername(username);
-            userRepository.persist(user);
-            return user;
-        }
-        return existing.get();
+        var user = userFactory.getOrCreateUser(email);
+        user.setLastfmUsername(lastfmUsername);
+        user.setSpotifyEnabled(spotifyEnabled);
+        user.setUsername(username);
+        userRepository.persist(user);
+        return user;
     }
 
 }
