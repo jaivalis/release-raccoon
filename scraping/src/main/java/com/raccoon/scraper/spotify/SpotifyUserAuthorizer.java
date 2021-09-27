@@ -67,7 +67,7 @@ public class SpotifyUserAuthorizer {
                 .build();
         final var uri = authorizationCodeUriRequest.execute();
 
-        log.info("URI: {}", uri.toString());
+        log.info("Spotify auth URI: {}", uri.toString());
 
         return uri;
     }

@@ -51,12 +51,10 @@ public class UserProfileService {
         var canScrapeSpotify = isSpotifyEnabled && user.isSpotifyScrapeRequired(7);
         var canScrapeLastFm = !StringUtil.isNullOrEmpty(lastFmUsername) && user.isLastfmScrapeRequired(7);
         return profile.data(
-                "isSpotifyEnabled", isSpotifyEnabled,
-//                "scrapeSpotifyButton", canScrapeSpotify,
-                "isLastfmEnabled", lastFmUsername != null,
-//                "scrapeLastfmButton", canScrapeLastFm,
-                "lastfmUsername", lastFmUsername,
-                "artistsFollowed", getUserArtists(user)
+                "user", user,
+                "artistsFollowed", getUserArtists(user),
+                "showScrapeSpotifyButton", canScrapeSpotify,
+                "showScrapeLastfmButton", canScrapeLastFm
         ).render();
     }
     

@@ -73,13 +73,16 @@ public class SpotifyAuthResource {
     @Path("/user-top-artists")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public User getUserTopArtists(@QueryParam("userId") final String userId) {
+    public Response getUserTopArtists(@QueryParam("userId") final String userId) {
         Optional<User> existing = userRepository.findByIdOptional(Long.valueOf(userId));
         if (existing.isEmpty()) {
             throw new NotFoundException("User not found");
         }
+        // update taste
+        spotifyTasteUpdatingService.updateTaste(existing.get());
 
-        return spotifyTasteUpdatingService.updateTaste(existing.get());
+        // redirect to profile
+        return Response.temporaryRedirect(URI.create("/me")).build();
     }
 
 }

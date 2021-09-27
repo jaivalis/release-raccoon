@@ -83,7 +83,8 @@ class UserProfileServiceTest {
         service.getTemplateInstance("some@email.com");
 
         verify(mockTemplate, times(1))
-                .data(anyString(), any(),
+                .data(
+                        anyString(), any(),
                         anyString(), any(),
                         anyString(), any(),
                         anyString(), any());

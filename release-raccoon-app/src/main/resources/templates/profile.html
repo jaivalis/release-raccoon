@@ -1,7 +1,8 @@
-<!--{@java.lang.Boolean isSpotifyEnabled}-->
-<!--{@java.lang.Boolean isLastfmEnabled}-->
-<!--{@java.lang.String lastfmUsername}-->
+<!--{@com.raccoon.entity.User user}-->
 <!--{@java.util.List<com.raccoon.entity.UserArtist> artistsFollowed}-->
+<!--{@java.lang.Boolean canScrapeSpotify}-->
+<!--{@java.lang.Boolean canScrapeLastFm}-->
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -107,7 +108,7 @@
     <h1>Your Release Raccoon</h1>
     <div>
         <div class="banner lead">
-            {#if !isSpotifyEnabled}
+            {#if !user.getSpotifyEnabled()}
                 Enable
                 <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
                     spotify
@@ -115,9 +116,16 @@
                 </a>
                 </br>
             {#else}
-                Spotify enabled ⛓</br>
+                Spotify enabled ⛓
+                {#if showScrapeSpotifyButton}
+                    <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
+                        scrape
+                        <img height="30px" src="resources/spotify.icon.svg"/>
+                    </a>
+                {/if}
+                </br>
             {/if}
-            {#if !isLastfmEnabled}
+            {#if user.lastfmUsername == null}
             Your Last.fm username is
                 <form method="GET" action="/me/enableServices">
                     <input type="text" id="lastfmname" name="lastfmUsername">
@@ -125,7 +133,8 @@
                 </form>
                 </br>
             {#else}
-                Last.fm scraping enabled ⛓</br>
+                Last.fm scraping enabled ⛓
+                </br>
             {/if}
         </div>
 
