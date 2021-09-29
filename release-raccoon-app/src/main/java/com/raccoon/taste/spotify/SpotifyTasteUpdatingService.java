@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -72,7 +73,13 @@ public class SpotifyTasteUpdatingService {
                 .build();
     }
 
-    public User updateTaste(final User user) {
+    public User updateTaste(final Long userId) {
+        Optional<User> existing = userRepository.findByIdOptional(userId);
+        if (existing.isEmpty()) {
+            throw new NotFoundException("User not found");
+        }
+        var user = existing.get();
+
         final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(spotifyUserAuthorizer);
 
         user.setArtists(
