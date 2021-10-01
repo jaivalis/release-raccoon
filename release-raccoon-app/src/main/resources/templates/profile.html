@@ -108,7 +108,7 @@
     <h1>Your Release Raccoon</h1>
     <div>
         <div class="banner lead">
-            {#if !user.getSpotifyEnabled()}
+            {#if user.getSpotifyEnabled() == false}
                 Enable
                 <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
                     spotify
@@ -125,7 +125,7 @@
                 {/if}
                 </br>
             {/if}
-            {#if user.lastfmUsername == null}
+            {#if user.getLastfmUsername() == null}
             Your Last.fm username is
                 <form method="GET" action="/me/enableServices">
                     <input type="text" id="lastfmname" name="lastfmUsername">
