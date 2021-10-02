@@ -5,6 +5,7 @@ import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
+import com.raccoon.templatedata.ProfileContents;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,14 +53,18 @@ public class UserProfileService {
         var canScrapeLastFm = !StringUtil.isNullOrEmpty(lastFmUsername) && user.isLastfmScrapeRequired(7);
         log.info("lastFmUsername {}, isSpotifyEnabled {}, showScrapeSpotifyButton {}, showScrapeLastfmButton {}",
                 lastFmUsername, isSpotifyEnabled, canScrapeSpotify, canScrapeLastFm);
+        ProfileContents contents = ProfileContents.builder()
+                .spotifyEnabled(isSpotifyEnabled)
+                .canScrapeSpotify(canScrapeSpotify)
+                .lastfmEnabled(lastFmUsername != null)
+                .canScrapeLastfm(canScrapeLastFm)
+                .artistsFollowed(getUserArtists(user))
+                .build();
         return profile.data(
-                "user", user,
-                "artistsFollowed", getUserArtists(user),
-                "showScrapeSpotifyButton", canScrapeSpotify,
-                "showScrapeLastfmButton", canScrapeLastFm
+                "contents", contents
         ).render();
     }
-    
+
     public void unfollowArtist(final String userEmail, final Long artistId) {
         var user = userRepository.findByEmail(userEmail);
         userArtistRepository.deleteAssociation(user.id, artistId);

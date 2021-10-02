@@ -4,7 +4,6 @@ import com.raccoon.registration.RegisteringService;
 import com.raccoon.user.UserProfileResource;
 import com.raccoon.user.UserProfileService;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
@@ -42,10 +41,6 @@ class UserProfileResourceIT {
     UserProfileService userProfileService;
     @Inject
     RegisteringService registeringService;
-
-    @BeforeEach
-    public void setup() {
-    }
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")

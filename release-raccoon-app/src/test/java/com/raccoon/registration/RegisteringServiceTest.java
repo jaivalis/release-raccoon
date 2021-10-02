@@ -74,12 +74,10 @@ class RegisteringServiceTest {
         userStub.setEmail(email);
         Mockito.when(userFactoryMock.getOrCreateUser(email)).thenReturn(userStub);
 
-        final var user = service.completeRegistration("name", email, "lastfm", false);
+        final var user = service.completeRegistration(email);
 
         assertEquals(userStub.getEmail(), user.getEmail());
-        assertEquals("lastfm", userStub.getLastfmUsername());
-        assertEquals(false, userStub.getSpotifyEnabled());
-        verify(userRepositoryMock, times(1)).persist(user);
+        verify(userFactoryMock, times(1)).getOrCreateUser(email);
     }
 
 }

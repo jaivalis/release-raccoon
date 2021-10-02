@@ -43,7 +43,7 @@ public class User extends PanacheEntity implements Serializable {
     private String lastfmUsername;
 
     @Column
-    private Boolean spotifyEnabled;
+    private Boolean spotifyEnabled = Boolean.FALSE;
 
     @Column
     private LocalDate lastNotified;

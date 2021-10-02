@@ -26,9 +26,6 @@ import io.quarkus.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.Constants.EMAIL_CLAIM;
-import static com.raccoon.Constants.LASTFM_USERNAME_CLAIM;
-import static com.raccoon.Constants.SPOTIFY_ENABLED_CLAIM;
-import static com.raccoon.Constants.USERNAME_CLAIM;
 
 @Path("/me")
 @Slf4j
@@ -47,11 +44,8 @@ public class UserProfileResource {
     @Produces(MediaType.TEXT_HTML)
     @Transactional
     public Response registerCallback() {
-        final String username = idToken.getClaim(USERNAME_CLAIM);
         final String email = idToken.getClaim(EMAIL_CLAIM);
-        final String lastfmUsername = idToken.getClaim(LASTFM_USERNAME_CLAIM);
-        final Boolean spotifyEnabled = Boolean.parseBoolean(idToken.getClaim(SPOTIFY_ENABLED_CLAIM));
-        registeringService.completeRegistration(username, email, lastfmUsername, spotifyEnabled);
+        registeringService.completeRegistration(email);
 
         return Response.ok(service.getTemplateInstance(email)).build();
     }

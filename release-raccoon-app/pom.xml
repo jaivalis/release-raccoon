@@ -86,6 +86,14 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-qute</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-qute</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus.qute</groupId>
+            <artifactId>qute-core</artifactId>
+        </dependency>
 
         <!-- database -->
         <dependency>

@@ -22,6 +22,8 @@ public class MailingService {
     static final String MAIL_SUBJECT_FORMAT_PLURAL = "%d New Releases for you";
 
     Mailer mailer;
+
+    @Inject
     Template digest;
 
     @Inject

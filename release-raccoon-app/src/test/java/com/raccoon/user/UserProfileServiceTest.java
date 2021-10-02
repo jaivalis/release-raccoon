@@ -21,6 +21,7 @@ import javax.ws.rs.NotFoundException;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
+import static io.smallrye.common.constraint.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -72,22 +73,12 @@ class UserProfileServiceTest {
         user.setLastfmUsername(null);
         user.id = 1L;
         when(mockUserRepository.findByEmail(any())).thenReturn(user);
-        when(mockTemplate
-                .data(
-                        anyString(), any(),
-                        anyString(), any(),
-                        anyString(), any(),
-                        anyString(), any())
-        ).thenReturn(templateInstanceMock);
+        when(mockTemplate.data(anyString(), any())).thenReturn(templateInstanceMock);
 
         service.getTemplateInstance("some@email.com");
 
         verify(mockTemplate, times(1))
-                .data(
-                        anyString(), any(),
-                        anyString(), any(),
-                        anyString(), any(),
-                        anyString(), any());
+                .data(anyString(), any());
     }
 
     @Test
@@ -123,7 +114,7 @@ class UserProfileServiceTest {
         final var user = service.enableTasteSources(email, Optional.of("lastfm"), Optional.empty());
 
         assertEquals("lastfm", user.getLastfmUsername());
-        assertNull(user.getSpotifyEnabled());
+        assertFalse(user.getSpotifyEnabled());
     }
 
     @Test

@@ -45,16 +45,8 @@ public class RegisteringService {
         return user;
     }
 
-    public User completeRegistration(final String username,
-                                     final String email,
-                                     final String lastfmUsername,
-                                     final Boolean spotifyEnabled) {
-        var user = userFactory.getOrCreateUser(email);
-        user.setLastfmUsername(lastfmUsername);
-        user.setSpotifyEnabled(spotifyEnabled);
-        user.setUsername(username);
-        userRepository.persist(user);
-        return user;
+    public User completeRegistration(final String email) {
+        return userFactory.getOrCreateUser(email);
     }
 
 }

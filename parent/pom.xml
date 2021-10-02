@@ -325,6 +325,11 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${compiler-plugin.version}</version>
+                    <configuration>
+                        <!-- Fixes Qute template issue:
+                             https://github.com/quarkusio/quarkus/issues/11091 -->
+                        <parameters>true</parameters>
+                    </configuration>
                 </plugin>
 
                 <plugin>

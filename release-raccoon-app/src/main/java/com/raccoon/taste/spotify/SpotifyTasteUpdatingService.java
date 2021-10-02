@@ -91,6 +91,7 @@ public class SpotifyTasteUpdatingService {
                             return userArtist;
                         }).collect(Collectors.toSet())
         );
+        user.setSpotifyEnabled(true);
         user.setLastSpotifyScrape(LocalDateTime.now());
 
         userRepository.persist(user);
