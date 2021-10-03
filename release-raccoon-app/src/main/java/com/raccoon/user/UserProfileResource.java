@@ -21,7 +21,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.quarkus.oidc.IdToken;
 import io.quarkus.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,12 +31,18 @@ import static com.raccoon.Constants.EMAIL_CLAIM;
 @Authenticated
 public class UserProfileResource {
 
-    @Inject
-    UserProfileService service;
-    @Inject
+    UserProfileService userProfileService;
     RegisteringService registeringService;
-    @IdToken
     JsonWebToken idToken;
+
+    @Inject
+    public UserProfileResource(final UserProfileService userProfileService,
+                               final RegisteringService registeringService,
+                               final JsonWebToken idToken) {
+        this.userProfileService = userProfileService;
+        this.registeringService = registeringService;
+        this.idToken = idToken;
+    }
 
     @GET
     @NoCache
@@ -47,7 +52,7 @@ public class UserProfileResource {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         registeringService.completeRegistration(email);
 
-        return Response.ok(service.getTemplateInstance(email)).build();
+        return Response.ok(userProfileService.getTemplateInstance(email)).build();
     }
 
     @Path("/unfollow/{artistId}")
@@ -59,9 +64,9 @@ public class UserProfileResource {
     public Response unfollowArtist(@NotNull @PathParam("artistId") Long artistId) {
         log.info("Unfollowing artist {}", artistId);
         final String email = idToken.getClaim(EMAIL_CLAIM);
-        service.unfollowArtist(email, artistId);
+        userProfileService.unfollowArtist(email, artistId);
 
-        return Response.ok(service.getTemplateInstance(email)).build();
+        return Response.ok(userProfileService.getTemplateInstance(email)).build();
     }
 
     @GET
@@ -73,7 +78,7 @@ public class UserProfileResource {
                                        @QueryParam("enableSpotify") final Optional<Boolean> enableSpotifyOpt) {
         final String email = idToken.getClaim(EMAIL_CLAIM);
 
-        service.enableTasteSources(email, lastfmUsernameOpt, enableSpotifyOpt);
+        userProfileService.enableTasteSources(email, lastfmUsernameOpt, enableSpotifyOpt);
 
         return Response.temporaryRedirect(URI.create("/me")).build();
     }

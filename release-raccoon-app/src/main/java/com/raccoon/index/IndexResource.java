@@ -10,12 +10,16 @@ import javax.ws.rs.core.Response;
 @Path("/")
 public class IndexResource {
 
-    @Inject
     IndexService service;
+
+    @Inject
+    public IndexResource(IndexService service) {
+        this.service = service;
+    }
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response scrapeReleases() {
+    public Response index() {
         return Response.ok(service.getTemplateInstance()).build();
     }
 
