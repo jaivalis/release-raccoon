@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <link rel="icon" type="image/ico" href="images/favicon.ico"/>
     <title>ReleaseRaccoon | Profile</title>
     <style>
         html,
@@ -109,7 +110,7 @@
                 Enable
                 <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
                     spotify
-                    <img height="30px" src="resources/spotify.icon.svg"/>
+                    <img height="30px" src="images/spotify.icon.svg"/>
                 </a>
                 </br>
             {#else}
@@ -117,7 +118,7 @@
                 {#if contents.isCanScrapeSpotify()}
                     <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
                         scrape
-                        <img height="30px" src="resources/spotify.icon.svg"/>
+                        <img height="30px" src="images/spotify.icon.svg"/>
                     </a>
                 {/if}
                 </br>
@@ -148,14 +149,14 @@
                         <td>
                             {#if userArtist.artist.lastfmUri != null}
                             <a href="{userArtist.artist.lastfmUri}" class="path-link" target="_blank">
-                                <img height="30px" src="resources/lastfm.icon.svg"/>
+                                <img height="30px" src="images/lastfm.icon.svg"/>
                             </a>
                             {/if}
                         </td>
                         <td>
                             {#if userArtist.artist.spotifyUri != null}
                             <a href="{userArtist.artist.spotifyUri}" class="path-link" target="_blank">
-                                <img height="30px" src="resources/spotify.icon.svg"/>
+                                <img height="30px" src="images/spotify.icon.svg"/>
                             </a>
                             {/if}
                         </td>

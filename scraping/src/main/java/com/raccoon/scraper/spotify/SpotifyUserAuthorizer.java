@@ -43,7 +43,7 @@ public class SpotifyUserAuthorizer {
     }
 
     @PostConstruct
-    private void init() {
+    void init() {
         spotifyApi = new SpotifyApi.Builder()
                 .setClientId(clientId)
                 .setClientSecret(clientSecret)

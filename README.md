@@ -75,9 +75,12 @@ Build the project to get the jar
 ```shell
 ./mvnw package -Pnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
 ```
+> This needs to be run from the project root otherwise the following property (pointing to the resource dir) needs to be configured accordingly in [application.properties](release-raccoon-app/src/main/resources/application.properties):
+> -H:IncludeResources='${PWD}/release-raccoon-app/src/main/resources/META-INF/resources/.*'
 
-Build the docker image, push it to the heroku repository and deploy to heroku:
+(Login to heroku docker registry if you haven't already), build the docker image, push it to the heroku repository and deploy to heroku:
 ```shell
+heroku container:login
 cp build/release-raccoon-app-0.0.1-SNAPSHOT-runner ./docker && pushd docker && docker build -f Dockerfile.native -t registry.heroku.com/release-raccoon/web .
 docker push registry.heroku.com/release-raccoon/web
 heroku container:release web --app release-raccoon && popd

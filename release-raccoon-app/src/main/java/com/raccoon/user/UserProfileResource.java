@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.quarkus.oidc.IdToken;
 import io.quarkus.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,15 +34,14 @@ public class UserProfileResource {
 
     UserProfileService userProfileService;
     RegisteringService registeringService;
+    @IdToken
     JsonWebToken idToken;
 
     @Inject
     public UserProfileResource(final UserProfileService userProfileService,
-                               final RegisteringService registeringService,
-                               final JsonWebToken idToken) {
+                               final RegisteringService registeringService) {
         this.userProfileService = userProfileService;
         this.registeringService = registeringService;
-        this.idToken = idToken;
     }
 
     @GET
