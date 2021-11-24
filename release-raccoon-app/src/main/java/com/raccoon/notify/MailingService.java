@@ -10,9 +10,12 @@ import javax.inject.Inject;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
+import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.raccoon.templatedata.TemplateLoader.DIGEST_TEMPLATE_ID;
 
 @Slf4j
 @ApplicationScoped
@@ -22,15 +25,13 @@ public class MailingService {
     static final String MAIL_SUBJECT_FORMAT_PLURAL = "%d New Releases for you";
 
     Mailer mailer;
-
-    @Inject
     Template digest;
 
     @Inject
     public MailingService(final Mailer mailer,
-                          final Template digest) {
+                          final Engine engine) {
         this.mailer = mailer;
-        this.digest = digest;
+        this.digest = engine.getTemplate(DIGEST_TEMPLATE_ID);
     }
 
     public boolean send(final String to, final User user, List<Release> releases) {

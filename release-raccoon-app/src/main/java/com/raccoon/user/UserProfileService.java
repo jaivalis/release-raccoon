@@ -15,8 +15,11 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 
 import io.netty.util.internal.StringUtil;
+import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.raccoon.templatedata.TemplateLoader.PROFILE_TEMPLATE_ID;
 
 @Slf4j
 @ApplicationScoped
@@ -25,19 +28,17 @@ public class UserProfileService {
     UserRepository userRepository;
     UserArtistRepository userArtistRepository;
     LastfmTasteUpdatingService lastfmTasteUpdatingService;
-
-    @Inject
     Template profile;
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
                               final UserArtistRepository userArtistRepository,
                               final LastfmTasteUpdatingService lastfmTasteUpdatingService,
-                              final Template profile) {
+                              final Engine engine) {
         this.userRepository = userRepository;
         this.userArtistRepository = userArtistRepository;
         this.lastfmTasteUpdatingService = lastfmTasteUpdatingService;
-        this.profile = profile;
+        this.profile = engine.getTemplate(PROFILE_TEMPLATE_ID);
     }
 
 

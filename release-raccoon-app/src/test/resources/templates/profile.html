@@ -1,0 +1,175 @@
+<!--{@com.raccoon.templatedata.ProfileContents contents}-->
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/ico" href="images/favicon.ico"/>
+    <title>ReleaseRaccoon | Profile</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 15%;
+            background: linear-gradient(45deg, #49a09d, #5f2c82);
+            font-family: sans-serif;
+            font-weight: 100;
+            color: white;
+        }
+
+        .horizaligned {
+            horiz-align: center;
+        }
+
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .banner {
+            font-size: 2.7rem;
+            margin: 0;
+            padding: 2rem 1rem;
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            text-align: center;
+            font-weight: bolder;
+        }
+
+        .content {
+            font-size: 2.7rem;
+            margin: 0;
+            padding: 2rem 1rem;
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            text-align: center;
+            font-weight: bolder;
+        }
+
+        .lead {
+            font-weight: 300;
+            font-size: 2rem;
+        }
+
+        table {
+            margin-top: 5%;
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            padding: 15px;
+            color: #fff;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            background-color: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        th {
+            text-align: left;
+        }
+
+        thead {
+            th {
+                background-color: #55608f;
+            }
+        }
+
+        a:link, a:visited {
+            background-color: #f44336;
+            color: white;
+            padding: 14px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        a:hover, a:active, pathlink {
+            background-color: red;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Your Release Raccoon</h1>
+    <div>
+        <div class="banner lead">
+            {#if contents.isSpotifyEnabled() == false}
+                Enable
+                <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
+                    spotify
+                    <img height="30px" src="images/spotify.icon.svg"/>
+                </a>
+                </br>
+            {#else}
+                Spotify enabled ⛓
+                {#if contents.isCanScrapeSpotify()}
+                    <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
+                        scrape
+                        <img height="30px" src="images/spotify.icon.svg"/>
+                    </a>
+                {/if}
+                </br>
+            {/if}
+            {#if contents.isLastfmEnabled() == false}
+            Your Last.fm username is
+                <form method="GET" action="/me/enableServices">
+                    <input type="text" id="lastfmname" name="lastfmUsername">
+                    <input type="submit" class="path-link" value="enable">
+                </form>
+                </br>
+            {#else}
+                Last.fm scraping enabled ⛓
+                </br>
+            {/if}
+        </div>
+
+        Artists tracked:
+        <table class="horizaligned">
+            <tr>
+                <th>Artist Name</th>
+
+                <th></th>
+
+                {#for userArtist in contents.getArtistsFollowed()}
+                    <tr>
+                        <td>{userArtist.artist.name}</td>
+                        <td>
+                            {#if userArtist.artist.lastfmUri != null}
+                            <a href="{userArtist.artist.lastfmUri}" class="path-link" target="_blank">
+                                <img height="30px" src="images/lastfm.icon.svg"/>
+                            </a>
+                            {/if}
+                        </td>
+                        <td>
+                            {#if userArtist.artist.spotifyUri != null}
+                            <a href="{userArtist.artist.spotifyUri}" class="path-link" target="_blank">
+                                <img height="30px" src="images/spotify.icon.svg"/>
+                            </a>
+                            {/if}
+                        </td>
+                        <td>
+                            <form method="POST" action="/me/unfollow/{userArtist.artist.id}">
+                                <input type="submit" class="path-link" value="unfollow">
+                            </form>
+                        </td>
+                    </tr>
+                {/for}
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

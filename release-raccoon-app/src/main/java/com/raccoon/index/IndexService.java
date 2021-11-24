@@ -6,24 +6,25 @@ import com.raccoon.entity.repository.ReleaseRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
+
+import static com.raccoon.templatedata.TemplateLoader.INDEX_TEMPLATE_ID;
 
 @ApplicationScoped
 public class IndexService {
 
     ArtistRepository artistRepository;
     ReleaseRepository releaseRepository;
-
-    @Inject
     Template index;
 
     @Inject
     public IndexService(final ArtistRepository artistRepository,
                         final ReleaseRepository releaseRepository,
-                        final Template index) {
+                        final Engine engine) {
         this.artistRepository = artistRepository;
         this.releaseRepository = releaseRepository;
-        this.index = index;
+        this.index = engine.getTemplate(INDEX_TEMPLATE_ID);
     }
 
     public String getTemplateInstance() {

@@ -1,13 +1,14 @@
 package com.raccoon.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import java.io.Serializable;
-import java.util.Objects;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Embeddable
@@ -15,10 +16,10 @@ import java.util.Objects;
 public class UserArtistPK implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private User user;
+    User user;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    private Artist artist;
+    Artist artist;
 
     @Override
     public boolean equals(Object o) {

@@ -14,10 +14,12 @@ import java.util.List;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
+import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateException;
 import io.quarkus.qute.TemplateInstance;
 
+import static com.raccoon.templatedata.TemplateLoader.DIGEST_TEMPLATE_ID;
 import static io.smallrye.common.constraint.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,6 +34,8 @@ class MailingServiceTest {
     @Mock
     Mailer mailerMock;
     @Mock
+    Engine engineMock;
+    @Mock
     Template templateMock;
     @Mock
     TemplateInstance templateInstanceMock;
@@ -40,7 +44,9 @@ class MailingServiceTest {
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        service = new MailingService(mailerMock, templateMock);
+        when(engineMock.getTemplate(DIGEST_TEMPLATE_ID)).thenReturn(templateMock);
+
+        service = new MailingService(mailerMock, engineMock);
     }
 
     @Test

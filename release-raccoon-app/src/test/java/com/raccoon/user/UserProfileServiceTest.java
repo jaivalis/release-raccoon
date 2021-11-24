@@ -18,9 +18,11 @@ import java.util.Optional;
 
 import javax.ws.rs.NotFoundException;
 
+import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
+import static com.raccoon.templatedata.TemplateLoader.PROFILE_TEMPLATE_ID;
 import static io.smallrye.common.constraint.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -45,13 +47,17 @@ class UserProfileServiceTest {
     @Mock
     Template mockTemplate;
     @Mock
+    Engine mockEngine;
+    @Mock
     TemplateInstance templateInstanceMock;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+        when(mockEngine.getTemplate(PROFILE_TEMPLATE_ID)).thenReturn(mockTemplate);
+
         service = new UserProfileService(
-                mockUserRepository, mockUserArtistRepository, mockLastfmTasteUpdatingService, mockTemplate
+                mockUserRepository, mockUserArtistRepository, mockLastfmTasteUpdatingService, mockEngine
         );
     }
 
