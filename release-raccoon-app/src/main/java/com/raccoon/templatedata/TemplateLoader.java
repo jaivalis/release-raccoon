@@ -25,9 +25,9 @@ public class TemplateLoader {
     @Inject
     Engine engine;
 
-    final String DIGEST_HTML_STR = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/digest.html")), UTF_8);
-    final String INDEX_HTML_STR = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/index.html")), UTF_8);
-    final String PROFILE_HTML_STR = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/profile.html")), UTF_8);
+    final String digestContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/digest.html")), UTF_8);
+    final String indexContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/index.html")), UTF_8);
+    final String profileContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/profile.html")), UTF_8);
 
     public static final String DIGEST_TEMPLATE_ID = "digest";
     public static final String INDEX_TEMPLATE_ID = "index";
@@ -38,9 +38,9 @@ public class TemplateLoader {
     }
 
     void onStart(@Observes StartupEvent event) {
-        engine.putTemplate(DIGEST_TEMPLATE_ID, engine.parse(DIGEST_HTML_STR));
-        engine.putTemplate(INDEX_TEMPLATE_ID, engine.parse(INDEX_HTML_STR));
-        engine.putTemplate(PROFILE_TEMPLATE_ID, engine.parse(PROFILE_HTML_STR));
+        engine.putTemplate(DIGEST_TEMPLATE_ID, engine.parse(digestContents));
+        engine.putTemplate(INDEX_TEMPLATE_ID, engine.parse(indexContents));
+        engine.putTemplate(PROFILE_TEMPLATE_ID, engine.parse(profileContents));
     }
 
 }

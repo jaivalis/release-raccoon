@@ -127,6 +127,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-test-security-oidc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
@@ -180,10 +185,10 @@
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
                 <includes>
+                    <include>**/*.properties</include>
                     <include>**/*.html</include>
                     <include>**/*.ico</include>
                     <include>**/*.json</include>
-                    <include>**/*.properties</include>
                     <include>**/*.sql</include>
                     <include>**/*.svg</include>
                 </includes>
