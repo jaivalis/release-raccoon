@@ -11,6 +11,9 @@
     <packaging>pom</packaging>
 
     <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+
         <!-- sonar -->
         <sonar.organization>jaivalis</sonar.organization>
         <sonar.projectKey>jaivalis_release-raccoon</sonar.projectKey>
@@ -22,7 +25,6 @@
             ${project.basedir}/../report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
-
     </properties>
 
     <modules>
