@@ -18,6 +18,10 @@
         <!-- submodules -->
         <dependency>
             <groupId>com.raccoon</groupId>
+            <artifactId>raccoon-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raccoon</groupId>
             <artifactId>raccoon-entities</artifactId>
         </dependency>
         <dependency>

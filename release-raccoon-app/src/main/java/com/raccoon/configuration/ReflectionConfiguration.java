@@ -1,6 +1,7 @@
 package com.raccoon.configuration;
 
 import com.neovisionaries.i18n.CountryCode;
+import com.raccoon.common.ExcludeFromJacocoGeneratedReport;
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
@@ -12,5 +13,5 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
         AlbumSimplified.class,
         CountryCode.class
 })
-public class ReflectionConfiguration {
-}
+@ExcludeFromJacocoGeneratedReport
+public class ReflectionConfiguration {}
