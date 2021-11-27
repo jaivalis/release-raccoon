@@ -51,12 +51,12 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
-    Set<ArtistRelease> releases = new HashSet<>();
+    private Set<ArtistRelease> releases = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
-    Set<UserArtist> users = new HashSet<>();
+    private Set<UserArtist> users = new HashSet<>();
 
 }

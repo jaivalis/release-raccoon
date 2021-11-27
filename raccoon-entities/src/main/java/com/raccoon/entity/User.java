@@ -64,7 +64,7 @@ public class User extends PanacheEntity implements Serializable {
 
     @JsonbTransient
     @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    Set<UserArtist> artists = new HashSet<>();
+    private Set<UserArtist> artists = new HashSet<>();
 
     public boolean isLastfmScrapeRequired(int scrapeIntervalDays) {
         return lastLastFmScrape == null || !isLastLastfmScrapeLt(scrapeIntervalDays, lastLastFmScrape);
