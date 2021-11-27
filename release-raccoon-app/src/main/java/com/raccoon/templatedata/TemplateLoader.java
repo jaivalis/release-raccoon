@@ -22,8 +22,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class TemplateLoader {
 
-    @Inject
     Engine engine;
+
+    @Inject
+    public TemplateLoader(Engine engine) throws IOException {
+        this.engine = engine;
+    }
 
     final String digestContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/digest.html")), UTF_8);
     final String indexContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/index.html")), UTF_8);
@@ -32,10 +36,6 @@ public class TemplateLoader {
     public static final String DIGEST_TEMPLATE_ID = "digest";
     public static final String INDEX_TEMPLATE_ID = "index";
     public static final String PROFILE_TEMPLATE_ID = "profile";
-
-    public TemplateLoader() throws IOException {
-        // no-op
-    }
 
     void onStart(@Observes StartupEvent event) {
         engine.putTemplate(DIGEST_TEMPLATE_ID, engine.parse(digestContents));
