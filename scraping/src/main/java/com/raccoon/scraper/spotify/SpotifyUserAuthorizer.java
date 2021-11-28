@@ -43,7 +43,7 @@ public class SpotifyUserAuthorizer {
     }
 
     @PostConstruct
-    private void init() {
+    void init() {
         spotifyApi = new SpotifyApi.Builder()
                 .setClientId(clientId)
                 .setClientSecret(clientSecret)
@@ -67,7 +67,7 @@ public class SpotifyUserAuthorizer {
                 .build();
         final var uri = authorizationCodeUriRequest.execute();
 
-        log.info("URI: {}", uri.toString());
+        log.info("Spotify auth URI: {}", uri.toString());
 
         return uri;
     }

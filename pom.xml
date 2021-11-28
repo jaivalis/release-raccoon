@@ -5,12 +5,15 @@
 
     <groupId>com.raccoon</groupId>
     <artifactId>release-raccoon</artifactId>
-    <name>root</name>
+    <name>release-raccoon</name>
     <version>0.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
     <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+
         <!-- sonar -->
         <sonar.organization>jaivalis</sonar.organization>
         <sonar.projectKey>jaivalis_release-raccoon</sonar.projectKey>
@@ -22,7 +25,6 @@
             ${project.basedir}/../report-aggregate/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
-
     </properties>
 
     <modules>
@@ -32,6 +34,7 @@
         <module>raccoon-tests</module>
         <module>release-raccoon-app</module>
         <module>report-aggregate</module>
+        <module>raccoon-common</module>
     </modules>
 
 </project>

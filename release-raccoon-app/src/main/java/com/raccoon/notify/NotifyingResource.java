@@ -14,8 +14,12 @@ import javax.ws.rs.core.MediaType;
 @Path("/notify-users")
 public class NotifyingResource {
 
-    @Inject
     NotifyService service;
+
+    @Inject
+    public NotifyingResource(NotifyService service) {
+        this.service = service;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -10,9 +10,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
+import static com.raccoon.templatedata.TemplateLoader.INDEX_TEMPLATE_ID;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -33,11 +35,15 @@ class IndexServiceTest {
 
     @Mock
     TemplateInstance templateInstanceMock;
+    @Mock
+    Engine mockEngine;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        service = new IndexService(artistRepositoryMock, releaseRepository, templateMock);
+        when(mockEngine.getTemplate(INDEX_TEMPLATE_ID)).thenReturn(templateMock);
+
+        service = new IndexService(artistRepositoryMock, releaseRepository, mockEngine);
     }
 
     @Test
@@ -46,7 +52,7 @@ class IndexServiceTest {
         when(releaseRepository.count()).thenReturn(3333L);
         when(templateMock.data(anyString(), eq("2222"), anyString(), eq("3333"))).thenReturn(templateInstanceMock);
 
-        service.getTemplate();
+        service.getTemplateInstance();
 
         verify(templateMock, times(1)).data(anyString(), anyString(), anyString(), anyString());
     }

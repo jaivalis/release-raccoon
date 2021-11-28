@@ -1,8 +1,8 @@
 package com.raccoon.entity.repository;
 
-import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
-import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.UserArtistStubFactory;
+import com.raccoon.entity.factory.ArtistFactory;
+import com.raccoon.entity.factory.UserFactory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,14 +27,17 @@ class UserArtistRepositoryTest {
     UserArtistRepository repository;
 
     @Inject
-    ArtistRepository artistRepository;
+    ArtistFactory artistFactory;
     @Inject
-    UserRepository userRepository;
+    UserFactory userFactory;
+
+    UserArtistStubFactory stubFactory;
 
     @BeforeEach
     @Transactional
     void setup() {
         repository.deleteAll();
+        stubFactory = new UserArtistStubFactory(repository, userFactory, artistFactory);
     }
 
     @Test
@@ -46,8 +49,8 @@ class UserArtistRepositoryTest {
     @Test
     @Transactional
     void getUserArtistsWithNewRelease() {
-        var userArtist1 = stubUserArtist("user1", "artist1");
-        var userArtist2 = stubUserArtist("user2", "artist2");
+        var userArtist1 = stubFactory.stubUserArtist("user1", "artist1");
+        var userArtist2 = stubFactory.stubUserArtist("user2", "artist2");
         // set the flag for one of the two entries
         userArtist1.setHasNewRelease(true);
         userArtist2.setHasNewRelease(false);
@@ -61,8 +64,8 @@ class UserArtistRepositoryTest {
     @Test
     @Transactional
     void markNewReleaseForArtist() {
-        var userArtist1 = stubUserArtist("user1", "artist1");
-        var userArtist2 = stubUserArtist("user2", "artist2");
+        var userArtist1 = stubFactory.stubUserArtist("user1", "artist1");
+        var userArtist2 = stubFactory.stubUserArtist("user2", "artist2");
         repository.persist(userArtist1, userArtist2);
         var id = userArtist1.getArtist().id;
 
@@ -80,7 +83,7 @@ class UserArtistRepositoryTest {
     @Test
     @Transactional
     void findByUserArtistOptional() {
-        var userArtist = stubUserArtist("user1", "artist1");
+        var userArtist = stubFactory.stubUserArtist("user1", "artist1");
         repository.persist(userArtist);
         var artistId = userArtist.getArtist().id;
         var userId = userArtist.getUser().id;
@@ -119,31 +122,35 @@ class UserArtistRepositoryTest {
         assertTrue(userArtists.isEmpty());
     }
 
+    @Test
+    @Transactional
+    void findByUserIdByWeight() {
+        var user1Artist1 = stubFactory.stubUserArtist("user1", "artist1");
+        var user1Artist2 = stubFactory.stubUserArtist("user1", "artist2");
+        var user2Artist1 = stubFactory.stubUserArtist("user2", "artist1");
+        user1Artist1.setWeight(0.60f);
+        user1Artist2.setWeight(0.65f);
+        user2Artist1.setWeight(0.10f);
+        repository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
 
-    // Move to some helper class if needed
-    UserArtist stubUserArtist(String username, String artistName) {
-        var user = stubUser(username);
-        var artist = stubArtist(artistName);
+        var byWeight = repository.findByUserIdByWeight(user1Artist1.getUser().id);
 
-        var userArtist = new UserArtist();
-        userArtist.setUser(user);
-        userArtist.setArtist(artist);
-        repository.persist(userArtist);
-        return userArtist;
+        assertEquals(2, byWeight.size());
+        assertEquals("artist2", byWeight.get(0).getArtist().getName());
+        assertEquals("artist1", byWeight.get(1).getArtist().getName());
     }
 
-    User stubUser(String name) {
-        var user = new User();
-        user.setUsername(name);
-        userRepository.persist(user);
-        return user;
-    }
+    @Test
+    @Transactional
+    void deleteAssociation() {
+        var userArtist = stubFactory.stubUserArtist("user1", "artist1");
+        var userId = userArtist.getUser().id;
+        var artistIdNotExistent = userArtist.getArtist().id;
+        assertEquals(1, repository.findAll().stream().count());
 
-    Artist stubArtist(String name) {
-        var artist = new Artist();
-        artist.setName(name);
-        artistRepository.persist(artist);
-        return artist;
+        repository.deleteAssociation(userId, artistIdNotExistent);
+
+        assertEquals(0, repository.findAll().stream().count());
     }
 
 }

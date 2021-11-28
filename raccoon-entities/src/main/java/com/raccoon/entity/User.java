@@ -34,33 +34,33 @@ public class User extends PanacheEntity implements Serializable {
 
     @NotNull
     @Column(unique = true)
-    private String email;
+    String email;
 
     @Column
-    private String username;
+    String username;
 
     @Column
-    private String lastfmUsername;
+    String lastfmUsername;
 
     @Column
-    private Boolean spotifyEnabled;
+    Boolean spotifyEnabled = Boolean.FALSE;
 
     @Column
-    private LocalDate lastNotified;
+    LocalDate lastNotified;
 
     @CreationTimestamp
     @Column(name = "create_date")
-    private LocalDateTime createDate;
+    LocalDateTime createDate;
 
     @UpdateTimestamp
     @Column(name = "modify_date")
-    private LocalDateTime modifyDate;
+    LocalDateTime modifyDate;
 
     @Column
-    private LocalDateTime lastSpotifyScrape;
+    LocalDateTime lastSpotifyScrape;
 
     @Column
-    private LocalDateTime lastLastFmScrape;
+     LocalDateTime lastLastFmScrape;
 
     @JsonbTransient
     @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

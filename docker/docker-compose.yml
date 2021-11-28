@@ -15,19 +15,6 @@ services:
     volumes:
       - ./db_init/:/docker-entrypoint-initdb.d
 
-  raccoon-adminer:
-    image: adminer:4.7.8
-    depends_on:
-      - raccoon-mariadb
-    environment:
-      ADMINER_DEFAULT_DB_DRIVER: mysql
-      ADMINER_DEFAULT_DB_HOST: com.raccoon-mariadb
-      ADMINER_DEFAULT_DB_NAME: releases
-      ADMINER_DESIGN: nette
-      ADMINER_PLUGINS: tables-filter tinymce
-    ports:
-      - 8888:8080
-
   keycloak:
     image: quay.io/keycloak/keycloak:14.0.0
     environment:

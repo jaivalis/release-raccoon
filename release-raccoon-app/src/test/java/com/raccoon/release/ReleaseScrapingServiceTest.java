@@ -44,7 +44,6 @@ class ReleaseScrapingServiceTest {
     void setUp() {
         service = new ReleaseScrapingService(
                 releaseScrapersMock,
-                userTransactionMock,
                 userArtistRepositoryMock
         );
     }
@@ -88,8 +87,6 @@ class ReleaseScrapingServiceTest {
         service.scrape();
         
         verify(releaseScrapersMock, times(1)).scrape();
-        verify(userTransactionMock, times(1)).begin();
-        verify(userTransactionMock, times(1)).commit();
     }
 
     @Test

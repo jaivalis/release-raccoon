@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -26,6 +27,7 @@ import lombok.ToString;
         @Index(columnList = "spotifyUri")
 })
 @NoArgsConstructor
+@RegisterForReflection
 public class Release extends PanacheEntityBase implements Serializable {
 
     @Id

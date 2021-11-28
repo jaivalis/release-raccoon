@@ -10,7 +10,6 @@ import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,7 @@ import java.util.Optional;
 import javax.ws.rs.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -55,18 +55,7 @@ class SpotifyTasteUpdatingServiceTest {
     @Test
     void testScrapeTasteUserNotFound() {
         when(userRepositoryMock.findByIdOptional(0L)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NotFoundException.class, () -> service.scrapeTaste(0L));
-    }
-
-    @Test
-    void testScrapeTasteSpotifyDisabled() {
-        User user = new User();
-        user.setSpotifyEnabled(false);
-        when(userRepositoryMock.findByIdOptional(0L)).thenReturn(Optional.of(user));
-
-        final var response = service.scrapeTaste(0L);
-
-        assertEquals(HttpStatus.SC_NO_CONTENT, response.getStatus());
+        assertThrows(NotFoundException.class, () -> service.scrapeTaste(0L));
     }
 
     @Test
@@ -94,6 +83,14 @@ class SpotifyTasteUpdatingServiceTest {
     }
 
     @Test
+    @DisplayName("NotFoundException")
+    void testScrapeNotFound() {
+        when(userRepositoryMock.findByIdOptional(any())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> service.updateTaste(100L));
+    }
+
+    @Test
     @DisplayName("Scrape should update user artists")
     void testScrape() {
         User user = new User();
@@ -111,8 +108,9 @@ class SpotifyTasteUpdatingServiceTest {
         userArtist.setArtist(stubArtist);
         userArtist.setUser(user);
         when(userArtistFactoryMock.getOrCreateUserArtist(user, stubArtist)).thenReturn(userArtist);
+        when(userRepositoryMock.findByIdOptional(any())).thenReturn(Optional.of(user));
 
-        service.updateTaste(user);
+        service.updateTaste(user.id);
 
         assertEquals(1, user.getArtists().size());
         assertEquals(LocalDateTime.now().getDayOfMonth(), user.getLastSpotifyScrape().getDayOfMonth());

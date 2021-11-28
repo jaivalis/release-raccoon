@@ -17,7 +17,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <maven.compiler.release>16</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,7 +25,7 @@
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>2.2.2.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.4.1.Final</quarkus.platform.version>
 
         <!-- Native image build fixes -->
         <jboss-jacc.version>1.0.2.Final</jboss-jacc.version>
@@ -34,7 +33,7 @@
 
         <!-- Scrapers -->
         <lastfm.client.version>0.1.2</lastfm.client.version>
-        <spotify.client.version>6.5.1</spotify.client.version>
+        <spotify.client.version>6.5.4</spotify.client.version>
 
         <!-- tests -->
         <testcontainers.version>1.15.3</testcontainers.version>
@@ -48,10 +47,12 @@
         <rest.assured.version>4.3.3</rest.assured.version>
 
         <!-- plugins -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <surefire-plugin.version>2.22.0</surefire-plugin.version>
         <failsafe-plugin.version>2.22.0</failsafe-plugin.version>
         <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
 
+        <jandex-maven-plugin.version>1.1.0</jandex-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -65,6 +66,11 @@
             </dependency>
 
             <!-- submodules -->
+            <dependency>
+                <groupId>com.raccoon</groupId>
+                <artifactId>raccoon-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.raccoon</groupId>
                 <artifactId>raccoon-entities</artifactId>
@@ -145,6 +151,21 @@
             <dependency>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-scheduler</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-resteasy-qute</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-qute</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-container-image-jib</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
 
@@ -314,7 +335,12 @@
 
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${compiler-plugin.version}</version>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <!-- Fixes Qute template issue:
+                             https://github.com/quarkusio/quarkus/issues/11091 -->
+                        <parameters>true</parameters>
+                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -339,6 +365,14 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>${failsafe-plugin.version}</version>
+                </plugin>
+
+                <!-- Need this configured in all modules per docs:
+                     https://quarkus.io/guides/maven-tooling#multi-module-maven -->
+                <plugin>
+                    <groupId>org.jboss.jandex</groupId>
+                    <artifactId>jandex-maven-plugin</artifactId>
+                    <version>${jandex-maven-plugin.version}</version>
                 </plugin>
 
             </plugins>

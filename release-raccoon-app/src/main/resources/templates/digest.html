@@ -80,7 +80,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Your new Releases</h1>
+    <h1>We found {releases.size} new Release(s) for you</h1>
 
     <table class="table table-striped table-bordered">
         <thead>
@@ -92,21 +92,12 @@
         </tr>
         </thead>
 
-        {#if todos.size == 0}
-        <tr>
-            <td colspan="3">No data found.</td>
-        </tr>
-        {#else}
-
         {#for release in releases}
         <tr>
             <th scope="row">#{count}</th>
             <td>
                 {#each release.artists}
-                    {it.name}
-                    {#if it.hasNext}
-                        ,
-                    {/if}
+                {it.name}
                 {/each}
             </td>
             <td>
@@ -118,7 +109,6 @@
 
         </tr>
         {/for}
-        {/if}
     </table>
 </div>
 </body>

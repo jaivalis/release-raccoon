@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -60,11 +61,7 @@ public class SpotifyTasteUpdatingService {
 
         final var user = byIdOptional.get();
 
-        if (Boolean.FALSE.equals(user.getSpotifyEnabled())) {
-            log.warn("User with id {} has spotify disabled, skipping.", userId);
-            return Response.noContent().build();
-        }
-
+        user.setSpotifyEnabled(true);
         if (!user.isSpotifyScrapeRequired(1)) {
             log.info("User with id {} spotify taste was scraped not long ago, skipping.", userId);
             return Response.noContent().build();
@@ -76,7 +73,13 @@ public class SpotifyTasteUpdatingService {
                 .build();
     }
 
-    public User updateTaste(final User user) {
+    public User updateTaste(final Long userId) {
+        Optional<User> existing = userRepository.findByIdOptional(userId);
+        if (existing.isEmpty()) {
+            throw new NotFoundException("User not found");
+        }
+        var user = existing.get();
+
         final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(spotifyUserAuthorizer);
 
         user.setArtists(
@@ -88,6 +91,7 @@ public class SpotifyTasteUpdatingService {
                             return userArtist;
                         }).collect(Collectors.toSet())
         );
+        user.setSpotifyEnabled(true);
         user.setLastSpotifyScrape(LocalDateTime.now());
 
         userRepository.persist(user);

@@ -11,7 +11,6 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.UserTransaction;
 
 import io.quarkus.scheduler.Scheduled;
 import lombok.extern.slf4j.Slf4j;
@@ -21,15 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ReleaseScrapingService {
 
     ReleaseScrapers releaseScrapers;
-    UserTransaction userTransaction;
     UserArtistRepository userArtistRepository;
 
     @Inject
     ReleaseScrapingService(final ReleaseScrapers releaseScrapers,
-                           final UserTransaction userTransaction,
                            final UserArtistRepository userArtistRepository) {
         this.releaseScrapers = releaseScrapers;
-        this.userTransaction = userTransaction;
         this.userArtistRepository = userArtistRepository;
     }
 
@@ -42,11 +38,8 @@ public class ReleaseScrapingService {
     public Set<Release> scrape() throws ReleaseScrapeException, InterruptedException {
         try {
             // Could optimize the txs by localizing and batching.
-            userTransaction.setTransactionTimeout(3600);
-            userTransaction.begin();
             Set<Release> releases = releaseScrapers.scrape();
             updateHasNewRelease(releases);
-            userTransaction.commit();
 
             return releases;
         } catch (InterruptedException e) {

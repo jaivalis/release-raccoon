@@ -28,10 +28,10 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
     UserArtistPK key = new UserArtistPK();
 
     @Column
-    private Float weight;
+    Float weight;
 
     @Column
-    private Boolean hasNewRelease = false;
+    Boolean hasNewRelease = false;
 
     @JsonIgnore
     public User getUser() {

@@ -23,8 +23,9 @@ import javax.ws.rs.core.Response;
 
 import io.quarkus.oidc.IdToken;
 import io.quarkus.security.Authenticated;
-import io.quarkus.security.identity.SecurityIdentity;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.raccoon.Constants.EMAIL_CLAIM;
 
 /**
  * Utility class to scrape taste. When deployed this service will be invoked into a cron-job.
@@ -33,8 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 @Path("/scrape-taste")
 public class TasteScrapingResource {
 
-    @Inject
-    SecurityIdentity identity;
     @IdToken
     JsonWebToken idToken;
 
@@ -52,7 +51,7 @@ public class TasteScrapingResource {
     @Authenticated
     @Transactional
     public Collection<UserArtist> scrapeLastfmTaste() {
-        final String email = idToken.getClaim("email");
+        final String email = idToken.getClaim(EMAIL_CLAIM);
         var existing = getUser(email);
         final var updated = lastfmTasteUpdatingService.updateTaste(existing);
         return updated.getArtists();
@@ -64,7 +63,7 @@ public class TasteScrapingResource {
     @Authenticated
     @Transactional
     public Response scrapeSpotifyTaste() {
-        final String email = idToken.getClaim("email");
+        final String email = idToken.getClaim(EMAIL_CLAIM);
         var existing = getUser(email);
         return spotifyTasteUpdatingService.scrapeTaste(existing.id);
     }

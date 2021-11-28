@@ -4,7 +4,6 @@ import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.entity.Release;
-import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.release.ReleaseScrapingResource;
 import com.raccoon.scraper.spotify.SpotifyScraper;
@@ -75,7 +74,7 @@ class ReleaseScrapeResourceIT {
                 .body(containsString(scrapedRelease.getName()));
         var byUser = userArtistRepository.findByUserId(100L);
         assertEquals(1, byUser.size());
-        assertTrue(((UserArtist) byUser.get(0)).getHasNewRelease());
+        assertTrue((byUser.get(0)).getHasNewRelease());
     }
 
     @Test

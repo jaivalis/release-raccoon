@@ -3,7 +3,7 @@
 #
 # Before building the container image run:
 #
-# ./mvnw package -Pnative -pl release-raccoon-app
+# ./mvnw package -Pnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true -pl release-raccoon-app
 #
 # Then, build the image with:
 #
@@ -20,7 +20,7 @@ RUN chown 1001 /work \
     && chmod "g+rwX" /work \
     && chown 1001:root /work
 CMD pwd
-COPY --chown=1001:root release-raccoon-app-0.0.1-SNAPSHOT-runner /work/application
+COPY --chown=1001:root raccoon/release-raccoon-app-0.0.1-SNAPSHOT-runner /work/application
 
 RUN chmod +x /work/application
 

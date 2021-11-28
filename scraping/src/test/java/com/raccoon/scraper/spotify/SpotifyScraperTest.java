@@ -18,12 +18,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -70,20 +71,13 @@ class SpotifyScraperTest {
         );
     }
 
-    private static final SecureRandom random = new SecureRandom();
-
-    public static <T extends Enum<?>> T randomEnum(Class<T> clazz){
-        int x = random.nextInt(clazz.getEnumConstants().length);
-        return clazz.getEnumConstants()[x];
-    }
-
-    private AlbumSimplified[] mockSpotifyAlbums(int startInclusive, int endExclusive) {
+    private AlbumSimplified[] mockSpotifyAlbums(int startInclusive, int endExclusive, AlbumType type) {
         return IntStream.range(startInclusive, endExclusive)
-                .mapToObj(this::mockSpotifyAlbum)
+                .mapToObj(i -> mockSpotifyAlbum(i, type))
                 .toArray(AlbumSimplified[]::new);
     }
 
-    private AlbumSimplified mockSpotifyAlbum(int i) {
+    private AlbumSimplified mockSpotifyAlbum(int i, AlbumType type) {
         return new AlbumSimplified.Builder()
                 .setId(String.valueOf(i))
                 .setArtists(
@@ -93,20 +87,21 @@ class SpotifyScraperTest {
                                 .build()
                 )
                 .setType(ModelObjectType.ALBUM)
-                .setAlbumType(randomEnum(AlbumType.class))
+                .setAlbumType(type)
                 .setUri("releaseUri" + i)
                 .setReleaseDate(LocalDate.now().toString())
                 .build();
     }
 
     // ============================================= ReleaseScraper API ============================================= //
-    @Test
-    void scrapeReleases() throws IOException, InterruptedException, ParseException, SpotifyWebApiException {
+    @ParameterizedTest
+    @EnumSource(AlbumType.class)
+    void scrapeReleases(AlbumType type) throws Exception {
         final var limit = 10;
         when(raccoonSpotifyApiMock.fetchNewReleasesPaginated(anyInt()))
                 .thenReturn(albumSimplifiedPagingMock);
         when(albumSimplifiedPagingMock.getItems())
-                .thenReturn(mockSpotifyAlbums(0, limit));
+                .thenReturn(mockSpotifyAlbums(0, limit, type));
 
         final var releases = scraper.scrapeReleases(Optional.of(limit));
 
@@ -133,18 +128,20 @@ class SpotifyScraperTest {
                 () -> scraper.scrapeReleases(Optional.of(limit)));
     }
 
-    @Test
-    void processRelease() {
-        scraper.processRelease(mockSpotifyAlbum(100));
+    @ParameterizedTest
+    @EnumSource(AlbumType.class)
+    void processRelease(AlbumType type) {
+        scraper.processRelease(mockSpotifyAlbum(100, type));
 
         verify(artistRepositoryMock).findByNameOptional("artistName" + 100);
         verify(artistRepositoryMock).persist(any(Artist.class));
     }
 
-    @Test
     @DisplayName("Return empty if url is present")
-    void processExistingRelease() {
-        var album = mockSpotifyAlbum(100);
+    @ParameterizedTest
+    @EnumSource(AlbumType.class)
+    void processExistingRelease(AlbumType type) {
+        var album = mockSpotifyAlbum(100, type);
         when(releaseRepositoryMock.findBySpotifyUriOptional(album.getUri()))
                 .thenReturn(Optional.of(new Release()));
 

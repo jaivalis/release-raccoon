@@ -18,6 +18,10 @@
         <!-- submodules -->
         <dependency>
             <groupId>com.raccoon</groupId>
+            <artifactId>raccoon-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.raccoon</groupId>
             <artifactId>raccoon-entities</artifactId>
         </dependency>
         <dependency>
@@ -78,6 +82,18 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-scheduler</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-qute</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-qute</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus.qute</groupId>
+            <artifactId>qute-core</artifactId>
+        </dependency>
 
         <!-- database -->
         <dependency>
@@ -112,6 +128,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5-mockito</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-test-security-oidc</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -163,6 +184,40 @@
             </plugin>
 
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.html</include>
+                    <include>**/*.ico</include>
+                    <include>**/*.json</include>
+                    <include>**/*.sql</include>
+                    <include>**/*.svg</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.ico</include>
+                    <include>**/*.svg</include>
+                    <include>**/*.html</include>
+                    <include>**/*.json</include>
+                </includes>
+            </testResource>
+        </testResources>
+
     </build>
 
     <profiles>
@@ -209,6 +264,19 @@
 
                                     </systemProperties>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.jboss.jandex</groupId>
+                        <artifactId>jandex-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>make-index</id>
+                                <goals>
+                                    <goal>jandex</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
