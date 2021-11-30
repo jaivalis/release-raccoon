@@ -44,6 +44,10 @@ public class UserProfileResource {
         this.registeringService = registeringService;
     }
 
+    /**
+     * Is called by the oidc service to complete the user registration.
+     * @return The rendered user profile qute-template
+     */
     @GET
     @NoCache
     @Produces(MediaType.TEXT_HTML)

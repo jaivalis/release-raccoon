@@ -5,3 +5,5 @@
 * Welcome to release-raccoon email upon signup
 * Add `Unsubscribe` link to emails
 * `Delete account` functionality
+* Adding an artist to user taste should potentially trigger an update email
+

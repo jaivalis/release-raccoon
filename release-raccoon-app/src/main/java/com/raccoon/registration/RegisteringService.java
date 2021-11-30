@@ -4,6 +4,7 @@ import com.raccoon.entity.User;
 import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.exception.ConflictException;
+import com.raccoon.mail.RaccoonMailer;
 
 import java.util.Optional;
 
@@ -16,15 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class RegisteringService {
 
-    @Inject
     UserFactory userFactory;
-    @Inject
     UserRepository userRepository;
+    RaccoonMailer mailer;
 
+    @Inject
     public RegisteringService(final UserFactory userFactory,
-                              final UserRepository userRepository) {
+                              final UserRepository userRepository,
+                              final RaccoonMailer mailer) {
         this.userFactory = userFactory;
         this.userRepository = userRepository;
+        this.mailer = mailer;
     }
 
     public User registerUser(final String username,
@@ -45,8 +48,17 @@ public class RegisteringService {
         return user;
     }
 
+    /**
+     * Fetches the user from the database.
+     * @param email unique user identifier
+     * @return user from the database.
+     */
     public User completeRegistration(final String email) {
-        return userFactory.getOrCreateUser(email);
+        User user = userFactory.getOrCreateUser(email);
+
+        mailer.sendWelcome(user);
+
+        return user;
     }
 
 }

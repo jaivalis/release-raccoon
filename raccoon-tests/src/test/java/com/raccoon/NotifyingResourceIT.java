@@ -3,9 +3,7 @@ package com.raccoon;
 import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.raccoon.entity.User;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.notify.MailingService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,20 +16,15 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import io.quarkus.test.junit.QuarkusMock;
+import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 @QuarkusTest
@@ -41,21 +34,21 @@ import static org.mockito.Mockito.when;
 @DBUnit(caseSensitiveTableNames = true)
 class NotifyingResourceIT {
 
-    @InjectMock
-    MailingService mailingServiceMock;
     @Inject
     UserArtistRepository userArtistRepository;
 
+    @Inject
+    MockMailbox mailbox;
+
     @BeforeEach
     public void setup() {
-        QuarkusMock.installMockForType(mailingServiceMock, MailingService.class);
-        when(mailingServiceMock.send(any(), any(User.class), any())).thenReturn(true);
+        mailbox.clear();
     }
 
     @Test
     @Order(1)
     @DataSet(value = "datasets/yml/notify.yml")
-    @DisplayName("should notify unset UserArtist.hasNewRelease")
+    @DisplayName("Given 1 release from yesterday, notify user and unset UserArtist.hasNewRelease")
     void test_should_notify_user_artist_hasNewRelease() {
         given()
                 .contentType(ContentType.JSON)
@@ -64,13 +57,10 @@ class NotifyingResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        // exactly once with the expected params
-        verify(mailingServiceMock, times(1))
-                .send(anyString(), any(User.class), any());
-        verify(mailingServiceMock, times(1))
-                .send(eq("user1@mail.com"), any(User.class), any());
-        var userArtist = userArtistRepository.findByUserArtistOptional(100L, 100L).get();
-        assertThat("Release should be marked processed", !userArtist.getHasNewRelease());
+        assertEquals(1, mailbox.getMessagesSentTo("user100@mail.com").size());
+        var uaOptional = userArtistRepository.findByUserArtistOptional(100L, 100L);
+        assertTrue(uaOptional.isPresent());
+        assertThat("Release should be marked processed", !uaOptional.get().getHasNewRelease());
     }
 
 }

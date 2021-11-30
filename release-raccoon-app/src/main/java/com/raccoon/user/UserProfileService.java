@@ -19,7 +19,7 @@ import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.templatedata.TemplateLoader.PROFILE_TEMPLATE_ID;
+import static com.raccoon.templatedata.QuteTemplateLoader.PROFILE_TEMPLATE_ID;
 
 @Slf4j
 @ApplicationScoped

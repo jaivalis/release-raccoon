@@ -94,6 +94,10 @@
             <groupId>io.quarkus.qute</groupId>
             <artifactId>qute-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-mutiny</artifactId>
+        </dependency>
 
         <!-- database -->
         <dependency>

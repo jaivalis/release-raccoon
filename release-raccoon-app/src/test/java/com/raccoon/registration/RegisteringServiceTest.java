@@ -4,6 +4,7 @@ import com.raccoon.entity.User;
 import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.exception.ConflictException;
+import com.raccoon.mail.RaccoonMailer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,20 +31,22 @@ class RegisteringServiceTest {
     RegisteringService service;
 
     @Mock
-    UserRepository userRepositoryMock;
+    UserRepository mockUserRepository;
     @Mock
-    UserFactory userFactoryMock;
+    UserFactory mockUserFactory;
+    @Mock
+    RaccoonMailer mockMailer;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        service = new RegisteringService(userFactoryMock, userRepositoryMock);
+        service = new RegisteringService(mockUserFactory, mockUserRepository, mockMailer);
     }
 
     @Test
     @DisplayName("Existing user registration by email should return 409")
     void registrationConflict() {
-        Mockito.when(userRepositoryMock.findByEmailOptional("user@gmail.com")).thenReturn(Optional.of(new User()));
+        Mockito.when(mockUserRepository.findByEmailOptional("user@gmail.com")).thenReturn(Optional.of(new User()));
 
         assertThrows(ConflictException.class,
                 () -> service.registerUser("name", "user@gmail.com", "lastfm", false));
@@ -55,15 +58,15 @@ class RegisteringServiceTest {
         var email = "user@mail.com";
         var userStub = new User();
         userStub.setEmail(email);
-        Mockito.when(userRepositoryMock.findByEmailOptional(email)).thenReturn(Optional.empty());
-        Mockito.when(userFactoryMock.getOrCreateUser(email)).thenReturn(userStub);
+        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
+        Mockito.when(mockUserFactory.getOrCreateUser(email)).thenReturn(userStub);
 
         final var user = service.registerUser("name", email, "lastfm", false);
 
         assertEquals(userStub.getEmail(), user.getEmail());
         assertEquals("lastfm", userStub.getLastfmUsername());
         assertEquals(false, userStub.getSpotifyEnabled());
-        verify(userRepositoryMock, times(1)).persist(user);
+        verify(mockUserRepository, times(1)).persist(user);
     }
 
     @Test
@@ -72,12 +75,12 @@ class RegisteringServiceTest {
         var email = "user@mail.com";
         var userStub = new User();
         userStub.setEmail(email);
-        Mockito.when(userFactoryMock.getOrCreateUser(email)).thenReturn(userStub);
+        Mockito.when(mockUserFactory.getOrCreateUser(email)).thenReturn(userStub);
 
         final var user = service.completeRegistration(email);
 
         assertEquals(userStub.getEmail(), user.getEmail());
-        verify(userFactoryMock, times(1)).getOrCreateUser(email);
+        verify(mockUserFactory, times(1)).getOrCreateUser(email);
     }
 
 }

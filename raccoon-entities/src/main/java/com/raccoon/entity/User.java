@@ -60,7 +60,7 @@ public class User extends PanacheEntity implements Serializable {
     LocalDateTime lastSpotifyScrape;
 
     @Column
-     LocalDateTime lastLastFmScrape;
+    LocalDateTime lastLastFmScrape;
 
     @JsonbTransient
     @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

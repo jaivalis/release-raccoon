@@ -1,15 +1,11 @@
 package com.raccoon.notify;
 
-import com.raccoon.entity.User;
-
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+
+import io.smallrye.mutiny.Uni;
 
 @Path("/notify-users")
 public class NotifyingResource {
@@ -22,9 +18,9 @@ public class NotifyingResource {
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public List<User> notifyUsers() {
+    public Uni<Boolean> notifyUsers() {
         return service.notifyUsers();
     }
 

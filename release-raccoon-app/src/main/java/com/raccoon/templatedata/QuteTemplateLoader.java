@@ -19,28 +19,33 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * This class loads the templates in advance per a suggestion found here:
  *      https://groups.google.com/g/quarkus-dev/c/q5kaomkjMWA
  * As stated in the thread, with this solution the templates are not validated during the build.
+ *
+ * todo: look into @Location as replacement for this.
  */
-public class TemplateLoader {
+public class QuteTemplateLoader {
 
     Engine engine;
 
     @Inject
-    public TemplateLoader(Engine engine) throws IOException {
+    public QuteTemplateLoader(Engine engine) throws IOException {
         this.engine = engine;
     }
 
-    final String digestContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/digest.html")), UTF_8);
+    final String digestEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/digest.html")), UTF_8);
     final String indexContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/index.html")), UTF_8);
     final String profileContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/profile.html")), UTF_8);
+    final String welcomeEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/welcome.html")), UTF_8);
 
-    public static final String DIGEST_TEMPLATE_ID = "digest";
+    public static final String DIGEST_EMAIL_TEMPLATE_ID = "digest";
     public static final String INDEX_TEMPLATE_ID = "index";
     public static final String PROFILE_TEMPLATE_ID = "profile";
+    public static final String WELCOME_EMAIL_TEMPLATE_ID = "welcome";
 
     void onStart(@Observes StartupEvent event) {
-        engine.putTemplate(DIGEST_TEMPLATE_ID, engine.parse(digestContents));
+        engine.putTemplate(DIGEST_EMAIL_TEMPLATE_ID, engine.parse(digestEmailContents));
         engine.putTemplate(INDEX_TEMPLATE_ID, engine.parse(indexContents));
         engine.putTemplate(PROFILE_TEMPLATE_ID, engine.parse(profileContents));
+        engine.putTemplate(WELCOME_EMAIL_TEMPLATE_ID, engine.parse(profileContents));
     }
 
 }

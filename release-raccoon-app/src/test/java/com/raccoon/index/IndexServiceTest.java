@@ -14,7 +14,7 @@ import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
-import static com.raccoon.templatedata.TemplateLoader.INDEX_TEMPLATE_ID;
+import static com.raccoon.templatedata.QuteTemplateLoader.INDEX_TEMPLATE_ID;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
