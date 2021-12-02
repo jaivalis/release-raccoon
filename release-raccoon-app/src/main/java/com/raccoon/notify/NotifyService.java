@@ -27,17 +27,17 @@ import static java.util.stream.Collectors.toSet;
 @ApplicationScoped
 public class NotifyService {
 
-    RaccoonMailer mailer;
+    RaccoonMailer raccoonMailer;
     ReleaseRepository releaseRepository;
     UserArtistRepository userArtistRepository;
 
     @Inject
     public NotifyService(final ReleaseRepository releaseRepository,
                          final UserArtistRepository userArtistRepository,
-                         final RaccoonMailer mailer) {
+                         final RaccoonMailer raccoonMailer) {
         this.userArtistRepository = userArtistRepository;
         this.releaseRepository = releaseRepository;
-        this.mailer = mailer;
+        this.raccoonMailer = raccoonMailer;
     }
 
     @Scheduled(cron="{notify.cron.expr}")
@@ -46,8 +46,15 @@ public class NotifyService {
         notifyUsers();
     }
 
+    /**
+     * Blocks until the Reactive mailer has responses for all sent mails.
+     * @return
+     */
     public Uni<Boolean> notifyUsers() {
         log.info("Notifying users...");
+
+//        List<Long> successfulUpdates = Collections.synchronizedList(new ArrayList<>());
+//        List<Long> failedUpdates = Collections.synchronizedList(new ArrayList<>());
 
         final List<UserArtist> userArtistsWithNewRelease = userArtistRepository.getUserArtistsWithNewRelease();
         List<Uni<Void>> unis = userArtistsWithNewRelease.stream()
@@ -62,13 +69,15 @@ public class NotifyService {
                 .toList();
 
         if (unis.isEmpty()) {
-            return Uni.createFrom().item(false);
+            log.info("Nobody to notify");
+            return Uni.createFrom().item(true);
         }
 
-        return Uni.combine().all().unis(unis)
-                .combinedWith(results -> true).onFailure()
+        return Uni.combine().all()
+                .unis(unis)
+                .combinedWith(results -> true)
+                .onFailure()
                 .recoverWithUni(failure -> Uni.createFrom().item(false));
-
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,28 +103,35 @@ public class NotifyService {
      * @param releases what should be in the notification.
      * @param userArtistList
      */
-    private Uni<Void> notifyUser(User user, List<Release> releases, List<UserArtist> userArtistList) {
+    private Uni<Void> notifyUser(final User user,
+                                 final List<Release> releases,
+                                 final List<UserArtist> userArtistList) {
         try {
-//            Mail mail = mailRenderer.createDigestMail(user.getEmail(), user, releases);
-            log.info("Notifying user {} for releases {}", user, releases);
-            return mailer.sendDigest(user, releases)
-                    .onItem().invoke(() -> mailSuccessCallback(user, userArtistList))
-                    .onFailure().invoke(() -> mailFailureCallback(user));
+            log.info("Notifying user {} for releases {}", user.id, releases);
+
+            return raccoonMailer.sendDigest(user, releases,
+                    () -> mailSuccessCallback(user, userArtistList),
+                    () -> mailFailureCallback(user));
         } catch (TemplateException e) {
             return Uni.createFrom().voidItem();
         }
     }
 
-    private void mailSuccessCallback(User user, List<UserArtist> userArtistList) {
-        log.debug("Successfully sent email");
+    /**
+     * Mark userArtist.hasNewRelease as false
+     * @param user
+     * @param userArtistList
+     */
+    private void mailSuccessCallback(User user,
+                                     List<UserArtist> userArtistList) {
+        log.info("Notified user {}", user.id);
         userArtistList.forEach(userArtist -> userArtist.setHasNewRelease(false));
 
         userArtistRepository.persist(userArtistList);
-        log.info("Notified user {}", user);
     }
 
     private void mailFailureCallback(User user) {
-        log.error("Failed to notify user {}", user.getEmail());
+        log.warn("Failed to notify user {}", user.id);
     }
 
 }

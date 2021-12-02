@@ -81,7 +81,7 @@ class UserProfileServiceTest {
         when(mockUserRepository.findByEmail(any())).thenReturn(user);
         when(mockTemplate.data(anyString(), any())).thenReturn(templateInstanceMock);
 
-        service.getTemplateInstance("some@email.com");
+        service.renderTemplateInstance("some@email.com");
 
         verify(mockTemplate, times(1))
                 .data(anyString(), any());

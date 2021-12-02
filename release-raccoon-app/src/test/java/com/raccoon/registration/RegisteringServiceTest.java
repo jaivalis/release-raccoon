@@ -19,6 +19,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.quarkus.mailer.MockMailbox;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
@@ -36,10 +38,14 @@ class RegisteringServiceTest {
     UserFactory mockUserFactory;
     @Mock
     RaccoonMailer mockMailer;
+    @Mock
+    MockMailbox mockMailbox;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+        mockMailbox.clear();
+
         service = new RegisteringService(mockUserFactory, mockUserRepository, mockMailer);
     }
 

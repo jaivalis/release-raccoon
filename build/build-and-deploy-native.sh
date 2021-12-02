@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# exit when any command fails
+set -e
+
+# print all commands
+set -x
 
 echo "Copying new executable..."
 cp /Users/jaivalis/Workspace/os/jaivalis/release-raccoon/build/release-raccoon-app-0.0.1-SNAPSHOT-runner ./docker/raccoon

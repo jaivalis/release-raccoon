@@ -22,7 +22,6 @@ import java.util.List;
 
 import io.smallrye.mutiny.Uni;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -85,18 +84,11 @@ class NotifyServiceTest {
         ua.setUser(user);
         ua.setArtist(artist);
         when(mockUserArtistRepository.getUserArtistsWithNewRelease()).thenReturn(List.of(ua));
-        doNothing().when(mockUserArtistRepository).persist(anyList());
-        Uni<Void> completeUni = Uni.createFrom().voidItem();
-        when(mockMailer.sendDigest(eq(user), anyList())).thenReturn(completeUni);
 
         Uni<Boolean> uni = notifyService.notifyUsers();
 
         var success = uni.await().atMost(Duration.ofSeconds(1));
         assertTrue(success);
-        verify(mockUserArtistRepository, times(1)).persist(userArtistListCaptor.capture());
-        assertEquals(1, userArtistListCaptor.getValue().size());
-        assertEquals(user, userArtistListCaptor.getValue().get(0).getUser());
-        assertEquals(artist, userArtistListCaptor.getValue().get(0).getArtist());
     }
 
     @Test
@@ -110,14 +102,11 @@ class NotifyServiceTest {
         ua.setArtist(artist);
         when(mockUserArtistRepository.getUserArtistsWithNewRelease()).thenReturn(List.of(ua));
         Uni<Void> failedUni = Uni.createFrom().failure(IllegalArgumentException::new);
-        when(mockMailer.sendDigest(eq(user), anyList())).thenReturn(failedUni);
+        when(mockMailer.sendDigest(eq(user), anyList(), any(), any())).thenReturn(failedUni);
 
         Uni<Boolean> uni = notifyService.notifyUsers();
-
         var success = uni.await().atMost(Duration.ofSeconds(1));
         assertFalse(success);
-        verify(mockUserArtistRepository, never()).persist(anyList());
-        verify(mockUserArtistRepository, never()).persist(any(UserArtist.class));
     }
 
 }

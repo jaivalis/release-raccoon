@@ -34,7 +34,7 @@ public class QuteTemplateLoader {
     final String digestEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/digest.html")), UTF_8);
     final String indexContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/index.html")), UTF_8);
     final String profileContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/profile.html")), UTF_8);
-    final String welcomeEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/welcome.html")), UTF_8);
+    final String welcomeEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/mail-welcome.html")), UTF_8);
 
     public static final String DIGEST_EMAIL_TEMPLATE_ID = "digest";
     public static final String INDEX_TEMPLATE_ID = "index";
@@ -45,7 +45,7 @@ public class QuteTemplateLoader {
         engine.putTemplate(DIGEST_EMAIL_TEMPLATE_ID, engine.parse(digestEmailContents));
         engine.putTemplate(INDEX_TEMPLATE_ID, engine.parse(indexContents));
         engine.putTemplate(PROFILE_TEMPLATE_ID, engine.parse(profileContents));
-        engine.putTemplate(WELCOME_EMAIL_TEMPLATE_ID, engine.parse(profileContents));
+        engine.putTemplate(WELCOME_EMAIL_TEMPLATE_ID, engine.parse(welcomeEmailContents));
     }
 
 }

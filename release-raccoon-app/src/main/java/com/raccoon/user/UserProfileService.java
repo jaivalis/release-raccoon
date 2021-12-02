@@ -46,7 +46,7 @@ public class UserProfileService {
         return userArtistRepository.findByUserIdByWeight(user.id);
     }
 
-    public String getTemplateInstance(final String userEmail) {
+    public String renderTemplateInstance(final String userEmail) {
         var user = userRepository.findByEmail(userEmail);
         boolean isSpotifyEnabled = user.getSpotifyEnabled();
         var lastFmUsername = user.getLastfmUsername();

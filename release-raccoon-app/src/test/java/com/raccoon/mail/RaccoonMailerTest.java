@@ -1,21 +1,23 @@
 package com.raccoon.mail;
 
+import com.raccoon.entity.Release;
+import com.raccoon.entity.User;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.function.Consumer;
+import java.util.List;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.reactive.ReactiveMailer;
+import io.quarkus.qute.TemplateException;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,6 +32,10 @@ class RaccoonMailerTest {
     ReactiveMailer mockMailer;
     @Mock
     MailTemplateRenderer mockRenderer;
+    @Mock
+    Mail mockMail;
+    @Mock
+    Runnable mockRunnable;
 
     @BeforeEach
     void setUp() {
@@ -37,21 +43,50 @@ class RaccoonMailerTest {
     }
 
     @Test
-    void testQuarkusMailerInvoked() {
-        Consumer<Mail> failureConsumer = mail -> fail("This is happy flow");
-        mailer.sendMail(Mail.withHtml("someone", "subject", "<html></html>"), failureConsumer).await();
+    void testSendDigest() {
+        var user = new User();
+        user.setEmail("email");
+        var releases = List.of(new Release());
+        when(mockRenderer.renderDigestMail(user, releases)).thenReturn(mockMail);
 
-        verify(mockMailer, times(1)).send(any(Mail.class));
+        mailer.sendDigest(user, releases, mockRunnable, mockRunnable);
+
+        verify(mockMailer, times(1)).send(mockMail);
     }
 
     @Test
-    void testErrorHandlingInvoked() {
-        Consumer<Mail> failureConsumer = mail -> log.info("failed successfully");
-        when(mockMailer.send(any())).thenReturn(Uni.createFrom().failure(IllegalArgumentException::new));
-        Uni<Void> uni = mailer.sendMail(Mail.withHtml("someone", "subject", "<html></html>"), failureConsumer);
+    void testSendDigestTemplateException() {
+        var user = new User();
+        user.setEmail("email");
+        var releases = List.of(new Release());
+        when(mockRenderer.renderDigestMail(user, releases)).thenThrow(TemplateException.class);
 
-        var subscriber = uni.subscribe().withSubscriber(UniAssertSubscriber.create());
+        Uni<Void> uni = mailer.sendDigest(user, releases, mockRunnable, mockRunnable);
 
-        subscriber.assertFailed();
+        uni.subscribe().withSubscriber(UniAssertSubscriber.create()).assertFailed();
+        verify(mockMailer, times(0)).send(mockMail);
+    }
+
+    @Test
+    void testSendWelcome() {
+        var user = new User();
+        user.setEmail("email");
+        when(mockRenderer.renderWelcomeMail(user)).thenReturn(mockMail);
+
+        mailer.sendWelcome(user, mockRunnable, mockRunnable);
+
+        verify(mockMailer, times(1)).send(mockMail);
+    }
+
+    @Test
+    void testSendWelcomeTemplateException() {
+        var user = new User();
+        user.setEmail("email");
+        when(mockRenderer.renderWelcomeMail(user)).thenThrow(TemplateException.class);
+
+        Uni<Void> uni = mailer.sendWelcome(user, mockRunnable, mockRunnable);
+
+        uni.subscribe().withSubscriber(UniAssertSubscriber.create()).assertFailed();
+        verify(mockMailer, times(0)).send(mockMail);
     }
 }

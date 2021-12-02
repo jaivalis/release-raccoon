@@ -4,7 +4,6 @@ import com.raccoon.entity.Release;
 import com.raccoon.entity.User;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,45 +31,34 @@ public class RaccoonMailer {
         this.renderer = renderer;
     }
 
-    /**
-     * Sends emails and registers a failure callback
-     * @param mail
-     * @param onFailureCallback
-     * @return
-     */
-    public Uni<Void> sendMail(Mail mail, Consumer<Mail> onFailureCallback) {
-        return mailer.send(mail)
-                .onItem().invoke(() -> log.debug("Successfully sent email"))
-                .onFailure().invoke(() -> onFailureCallback.accept(mail));
-    }
-
-    /**
-     * Fire and forget
-     * @param withHtml
-     */
-    public Uni<Void> send(Mail withHtml) {
-        return mailer.send(withHtml);
-    }
-
-    public Uni<Void> sendDigest(User user, List<Release> releases) {
+    public Uni<Void> sendDigest(final User user,
+                                final List<Release> releases,
+                                final Runnable successCallback,
+                                final Runnable failureCallback) {
+        log.info("Notifying user {} for releases {}", user.id, releases);
         try {
-            Mail mail = renderer.renderDigestMail(user.getEmail(), user, releases);
-            log.info("Notifying user {} for releases {}", user, releases);
+            Mail mail = renderer.renderDigestMail(user, releases);
 
-            return mailer.send(mail);
+            return mailer.send(mail).onItem()
+                    .invoke(successCallback)
+                    .onFailure().invoke(failureCallback);
         } catch (TemplateException e) {
-            return Uni.createFrom().voidItem();
+            return Uni.createFrom().failure(e);
         }
     }
 
-    public Uni<Void> sendWelcome(User user) {
+    public Uni<Void> sendWelcome(User user,
+                                 final Runnable successCallback,
+                                 final Runnable failureCallback) {
+        log.info("Welcoming new user {}", user);
         try {
             Mail mail = renderer.renderWelcomeMail(user);
-            log.info("Welcoming new user {}", user);
 
-            return mailer.send(mail);
+            return mailer.send(mail).onItem()
+                    .invoke(successCallback)
+                    .onFailure().invoke(failureCallback);
         } catch (TemplateException e) {
-            return Uni.createFrom().voidItem();
+            return Uni.createFrom().failure(e);
         }
     }
 }

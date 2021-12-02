@@ -49,14 +49,18 @@ public class RegisteringService {
     }
 
     /**
-     * Fetches the user from the database.
+     * Fetches the user from the database. Sends welcome email blocking
      * @param email unique user identifier
      * @return user from the database.
      */
     public User completeRegistration(final String email) {
         User user = userFactory.getOrCreateUser(email);
 
-        mailer.sendWelcome(user);
+        mailer.sendWelcome(
+                user,
+                () -> log.info("Welcome sent to {}", user.id),
+                () -> log.error("Something went wrong while sending welcome to {}", user.id)
+        ).await().indefinitely();
 
         return user;
     }

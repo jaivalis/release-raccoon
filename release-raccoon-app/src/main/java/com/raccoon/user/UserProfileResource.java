@@ -56,7 +56,7 @@ public class UserProfileResource {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         registeringService.completeRegistration(email);
 
-        return Response.ok(userProfileService.getTemplateInstance(email)).build();
+        return Response.ok(userProfileService.renderTemplateInstance(email)).build();
     }
 
     @Path("/unfollow/{artistId}")
@@ -70,7 +70,7 @@ public class UserProfileResource {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         userProfileService.unfollowArtist(email, artistId);
 
-        return Response.ok(userProfileService.getTemplateInstance(email)).build();
+        return Response.ok(userProfileService.renderTemplateInstance(email)).build();
     }
 
     @GET

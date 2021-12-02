@@ -22,8 +22,8 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
@@ -38,11 +38,11 @@ class NotifyingResourceIT {
     UserArtistRepository userArtistRepository;
 
     @Inject
-    MockMailbox mailbox;
+    MockMailbox mockMailbox;
 
     @BeforeEach
     public void setup() {
-        mailbox.clear();
+        mockMailbox.clear();
     }
 
     @Test
@@ -57,10 +57,10 @@ class NotifyingResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        assertEquals(1, mailbox.getMessagesSentTo("user100@mail.com").size());
+        assertEquals(1, mockMailbox.getMessagesSentTo("user100@mail.com").size());
         var uaOptional = userArtistRepository.findByUserArtistOptional(100L, 100L);
         assertTrue(uaOptional.isPresent());
-        assertThat("Release should be marked processed", !uaOptional.get().getHasNewRelease());
+        assertFalse(uaOptional.get().getHasNewRelease(), "Release should be marked processed");
     }
 
 }

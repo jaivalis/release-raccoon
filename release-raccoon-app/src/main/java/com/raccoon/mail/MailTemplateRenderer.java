@@ -36,9 +36,10 @@ class MailTemplateRenderer {
         this.welcomeTemplate = engine.getTemplate(WELCOME_EMAIL_TEMPLATE_ID);
     }
 
-    Mail renderDigestMail(final String to, final User user, List<Release> releases) throws TemplateException {
+    Mail renderDigestMail(final User user, List<Release> releases) throws TemplateException {
+        var to = user.getEmail();
+        var subject = getDigestSubject(releases.size());
         try {
-            final String subject = getDigestSubject(releases);
             final String htmlBody = digestTemplate
                     .data(
                             "user", user,
@@ -46,7 +47,7 @@ class MailTemplateRenderer {
                     ).render();
             return Mail.withHtml(to, subject, htmlBody);
         } catch (TemplateException e) {
-            log.error("Error occurred when rendering digest mail to {}. Cause: {}", to, e.getCause(), e);
+            log.error("Error occurred when rendering digest mail to {}. Cause: {}", user.id, e.getCause(), e);
             throw e;
         }
     }
@@ -54,22 +55,20 @@ class MailTemplateRenderer {
     Mail renderWelcomeMail(final User user) throws TemplateException {
         var to = user.getEmail();
         try {
-            final String htmlBody = welcomeTemplate
-                    .data("user", user)
-                    .render();
+            final String htmlBody = welcomeTemplate.render();
             return Mail.withHtml(to, WELCOME_EMAIL_SUBJECT, htmlBody);
         } catch (TemplateException e) {
-            log.error("Error occurred when rendering welcome mail to {}. Cause: {}", to, e.getCause(), e);
+            log.error("Error occurred when rendering welcome mail to {}. Cause: {}", user.id, e.getCause(), e);
             throw e;
         }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private String getDigestSubject(List<Release> releases) {
-        String template = releases.size() == 1 ?
+    private String getDigestSubject(int releases) {
+        String template = releases == 1 ?
                 DIGEST_MAIL_SUBJECT_FORMAT_SINGULAR : DIGEST_MAIL_SUBJECT_FORMAT_PLURAL;
-        return String.format(template, releases.size());
+        return String.format(template, releases);
     }
 
 }

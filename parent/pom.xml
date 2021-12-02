@@ -53,6 +53,7 @@
         <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
 
         <jandex-maven-plugin.version>1.1.0</jandex-maven-plugin.version>
+        <webjars-bootstrap.version>4.4.1</webjars-bootstrap.version>
     </properties>
 
     <dependencyManagement>
@@ -155,6 +156,13 @@
             </dependency>
             <dependency>
                 <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-resteasy-mutiny</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+
+            <!-- Qute & UI -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-resteasy-qute</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
@@ -164,9 +172,9 @@
                 <version>${quarkus.platform.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-resteasy-mutiny</artifactId>
-                <version>${quarkus.platform.version}</version>
+                <groupId>org.webjars</groupId>
+                <artifactId>bootstrap</artifactId>
+                <version>${webjars-bootstrap.version}</version>
             </dependency>
 
             <!-- database -->
