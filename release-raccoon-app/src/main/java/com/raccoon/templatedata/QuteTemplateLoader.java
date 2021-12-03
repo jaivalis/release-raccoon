@@ -20,7 +20,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  *      https://groups.google.com/g/quarkus-dev/c/q5kaomkjMWA
  * As stated in the thread, with this solution the templates are not validated during the build.
  *
- * todo: look into @Location as replacement for this.
+ * Look into @Location as replacement for this.
  */
 public class QuteTemplateLoader {
 

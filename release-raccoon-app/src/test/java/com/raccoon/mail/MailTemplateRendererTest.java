@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.quarkus.mailer.Mail;
 import io.quarkus.qute.Engine;
@@ -17,6 +18,8 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateException;
 import io.quarkus.qute.TemplateInstance;
 
+import static com.raccoon.templatedata.Constants.DIGEST_MAIL_SUBJECT_FORMAT_PLURAL;
+import static com.raccoon.templatedata.Constants.DIGEST_MAIL_SUBJECT_FORMAT_SINGULAR;
 import static com.raccoon.templatedata.Constants.WELCOME_EMAIL_SUBJECT;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,6 +67,35 @@ class MailTemplateRendererTest {
 
         assertEquals(1, mail.getTo().size());
         assertEquals(email, mail.getTo().get(0));
+        assertEquals(email, mail.getTo().get(0));
+    }
+
+    @Test
+    void renderDigestMailSuccessSingularSubject() {
+        var email = "email";
+        when(mockTemplate.data(
+                anyString(), any(User.class),
+                anyString(), anyList()
+        )).thenReturn(mockTemplateInstance);
+        when(mockUser.getEmail()).thenReturn(email);
+
+        Mail mail = renderer.renderDigestMail(mockUser, List.of(new Release()));
+
+        assertEquals(String.format(DIGEST_MAIL_SUBJECT_FORMAT_SINGULAR, 1), mail.getSubject());
+    }
+
+    @Test
+    void renderDigestMailSuccessPluralSubject() {
+        var email = "email";
+        when(mockTemplate.data(
+                anyString(), any(User.class),
+                anyString(), anyList()
+        )).thenReturn(mockTemplateInstance);
+        when(mockUser.getEmail()).thenReturn(email);
+
+        Mail mail = renderer.renderDigestMail(mockUser, List.of(new Release(), new Release()));
+
+        assertEquals(String.format(DIGEST_MAIL_SUBJECT_FORMAT_PLURAL, 2), mail.getSubject());
     }
 
     @Test

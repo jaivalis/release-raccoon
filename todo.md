@@ -6,4 +6,5 @@
 * Add `Unsubscribe` link to emails
 * `Delete account` functionality
 * Adding an artist to user taste should potentially trigger an update email
+* Look into @Location as replacement for [QuteTemplateLoader](release-raccoon-app/src/main/java/com/raccoon/templatedata/QuteTemplateLoader.java)
 

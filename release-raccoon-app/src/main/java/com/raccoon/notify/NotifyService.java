@@ -53,9 +53,6 @@ public class NotifyService {
     public Uni<Boolean> notifyUsers() {
         log.info("Notifying users...");
 
-//        List<Long> successfulUpdates = Collections.synchronizedList(new ArrayList<>());
-//        List<Long> failedUpdates = Collections.synchronizedList(new ArrayList<>());
-
         final List<UserArtist> userArtistsWithNewRelease = userArtistRepository.getUserArtistsWithNewRelease();
         List<Uni<Void>> unis = userArtistsWithNewRelease.stream()
                 .collect(groupingBy(UserArtist::getUser))
