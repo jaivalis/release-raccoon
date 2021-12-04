@@ -11,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,9 +37,6 @@ class NotifyServiceTest {
     UserArtistRepository mockUserArtistRepository;
     @Mock
     RaccoonMailer mockMailer;
-
-    @Captor
-    ArgumentCaptor<List<UserArtist>> userArtistListCaptor;
 
     @BeforeEach
     public void setup() {
@@ -105,8 +100,36 @@ class NotifyServiceTest {
         when(mockMailer.sendDigest(eq(user), anyList(), any(), any())).thenReturn(failedUni);
 
         Uni<Boolean> uni = notifyService.notifyUsers();
+
         var success = uni.await().atMost(Duration.ofSeconds(1));
         assertFalse(success);
+    }
+
+    @Test
+    @DisplayName("successCallback should not update any UserArtist")
+    void successCallbackUpdatesUserArtist() {
+        User user = new User();
+        user.setEmail("email");
+        Artist artist = new Artist();
+        UserArtist ua = new UserArtist();
+        ua.setUser(user);
+        ua.setArtist(artist);
+
+        notifyService.mailSuccessCallback(user, List.of(ua));
+
+        assertFalse(ua.getHasNewRelease());
+        verify(mockUserArtistRepository, times(1)).persist(anyList());
+    }
+
+    @Test
+    @DisplayName("failCallback should not update any UserArtist")
+    void failCallbackUpdatesUserArtist() {
+        User user = new User();
+
+        notifyService.mailFailureCallback(user);
+
+        verify(mockUserArtistRepository, never()).persist(anyList());
+        verify(mockUserArtistRepository, never()).persist(any(UserArtist.class));
     }
 
 }

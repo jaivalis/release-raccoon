@@ -108,7 +108,8 @@ public class NotifyService {
 
             return raccoonMailer.sendDigest(user, releases,
                     () -> mailSuccessCallback(user, userArtistList),
-                    () -> mailFailureCallback(user));
+                    () -> mailFailureCallback(user)
+            );
         } catch (TemplateException e) {
             return Uni.createFrom().voidItem();
         }
@@ -119,15 +120,15 @@ public class NotifyService {
      * @param user
      * @param userArtistList
      */
-    private void mailSuccessCallback(User user,
-                                     List<UserArtist> userArtistList) {
+    void mailSuccessCallback(User user,
+                             List<UserArtist> userArtistList) {
         log.info("Notified user {}", user.id);
         userArtistList.forEach(userArtist -> userArtist.setHasNewRelease(false));
 
         userArtistRepository.persist(userArtistList);
     }
 
-    private void mailFailureCallback(User user) {
+    void mailFailureCallback(User user) {
         log.warn("Failed to notify user {}", user.id);
     }
 
