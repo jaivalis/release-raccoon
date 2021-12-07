@@ -2,6 +2,7 @@ package com.raccoon.mail;
 
 import com.raccoon.entity.Release;
 import com.raccoon.entity.User;
+import com.raccoon.templatedata.pojo.DigestMailContents;
 
 import java.util.List;
 
@@ -40,11 +41,16 @@ class MailTemplateRenderer {
         var to = user.getEmail();
         var subject = getDigestSubject(releases.size());
         try {
-            final String htmlBody = digestTemplate
-                    .data(
-                            "user", user,
-                            "releases", releases
-                    ).render();
+            final var contents = DigestMailContents.builder()
+                    .mailTitle(getDigestSubject(releases.size()))
+                    .user(user)
+                    .releases(releases)
+                    .build();
+
+            final var htmlBody = digestTemplate
+                    .data("contents", contents)
+                    .render();
+
             return Mail.withHtml(to, subject, htmlBody);
         } catch (TemplateException e) {
             log.error("Error occurred when rendering digest mail to {}. Cause: {}", user.id, e.getCause(), e);

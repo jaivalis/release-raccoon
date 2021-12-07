@@ -1,4 +1,4 @@
-package com.raccoon.templatedata;
+package com.raccoon.templatedata.pojo;
 
 import com.raccoon.entity.UserArtist;
 

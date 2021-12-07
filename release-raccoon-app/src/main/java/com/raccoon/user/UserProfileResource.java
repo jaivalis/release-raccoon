@@ -52,7 +52,7 @@ public class UserProfileResource {
     @NoCache
     @Produces(MediaType.TEXT_HTML)
     @Transactional
-    public Response registerCallback() {
+    public Response registrationCallback() {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         registeringService.completeRegistration(email);
 

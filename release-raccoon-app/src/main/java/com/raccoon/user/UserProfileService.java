@@ -5,7 +5,7 @@ import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
-import com.raccoon.templatedata.ProfileContents;
+import com.raccoon.templatedata.pojo.ProfileContents;
 
 import java.util.List;
 import java.util.Optional;

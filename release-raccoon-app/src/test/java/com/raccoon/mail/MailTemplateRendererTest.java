@@ -2,6 +2,7 @@ package com.raccoon.mail;
 
 import com.raccoon.entity.Release;
 import com.raccoon.entity.User;
+import com.raccoon.templatedata.pojo.DigestMailContents;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,6 @@ import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -58,8 +58,7 @@ class MailTemplateRendererTest {
     void renderDigestMailSuccess() {
         var email = "email";
         when(mockTemplate.data(
-                anyString(), any(User.class),
-                anyString(), anyList()
+                anyString(), any(DigestMailContents.class)
         )).thenReturn(mockTemplateInstance);
         when(mockUser.getEmail()).thenReturn(email);
 
@@ -74,8 +73,7 @@ class MailTemplateRendererTest {
     void renderDigestMailSuccessSingularSubject() {
         var email = "email";
         when(mockTemplate.data(
-                anyString(), any(User.class),
-                anyString(), anyList()
+                anyString(), any(DigestMailContents.class)
         )).thenReturn(mockTemplateInstance);
         when(mockUser.getEmail()).thenReturn(email);
 
@@ -88,8 +86,7 @@ class MailTemplateRendererTest {
     void renderDigestMailSuccessPluralSubject() {
         var email = "email";
         when(mockTemplate.data(
-                anyString(), any(User.class),
-                anyString(), anyList()
+                anyString(), any(DigestMailContents.class)
         )).thenReturn(mockTemplateInstance);
         when(mockUser.getEmail()).thenReturn(email);
 
@@ -101,8 +98,7 @@ class MailTemplateRendererTest {
     @Test
     void renderDigestMailFails() {
         when(mockTemplate.data(
-                anyString(), any(User.class),
-                anyString(), anyList()
+                anyString(), any(DigestMailContents.class)
         )).thenReturn(mockTemplateInstance);
         when(mockTemplateInstance.render()).thenThrow(TemplateException.class);
         ArrayList<Release> stub = new ArrayList<>();

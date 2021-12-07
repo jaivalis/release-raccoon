@@ -16,6 +16,7 @@ Releases:
     type: "ALBUM"
     # Make this a new release
     releasedOn: "[now-1d]"
+    spotifyUri: "spotify:album:zzzzzz"
 
 User:
   - id: 100

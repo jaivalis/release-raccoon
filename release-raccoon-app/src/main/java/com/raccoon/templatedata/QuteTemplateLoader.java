@@ -31,9 +31,9 @@ public class QuteTemplateLoader {
         this.engine = engine;
     }
 
-    final String digestEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/digest.html")), UTF_8);
     final String indexContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/index.html")), UTF_8);
     final String profileContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/profile.html")), UTF_8);
+    final String digestEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/mail-digest.html")), UTF_8);
     final String welcomeEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/mail-welcome.html")), UTF_8);
 
     public static final String DIGEST_EMAIL_TEMPLATE_ID = "digest";
