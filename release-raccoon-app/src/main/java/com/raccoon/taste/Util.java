@@ -12,7 +12,7 @@ public class Util {
         // hide implicit constructor
     }
 
-    public static <T> Collection<MutablePair<T, Float>>  normalizeWeights(Collection<MutablePair<T, Float>> taste) {
+    public static <T> Collection<MutablePair<T, Float>> normalizeWeights(Collection<MutablePair<T, Float>> taste) {
         float max = 0;
         for (val pair : taste) {
             max = Math.max(max, pair.getRight());

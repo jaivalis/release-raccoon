@@ -50,7 +50,7 @@ public class RaccoonMailer {
     public Uni<Void> sendWelcome(User user,
                                  final Runnable successCallback,
                                  final Runnable failureCallback) {
-        log.info("Welcoming new user {}", user);
+        log.info("Welcoming new user {}", user.id);
         try {
             Mail mail = renderer.renderWelcomeMail(user);
 

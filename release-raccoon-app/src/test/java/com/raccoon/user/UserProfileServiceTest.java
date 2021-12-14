@@ -1,8 +1,10 @@
 package com.raccoon.user;
 
 import com.raccoon.entity.User;
+import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
+import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,11 +45,15 @@ class UserProfileServiceTest {
     @Mock
     UserArtistRepository mockUserArtistRepository;
     @Mock
+    UserFactory mockUserFactory;
+    @Mock
     UserRepository mockUserRepository;
     @Mock
     LastfmTasteUpdatingService mockLastfmTasteUpdatingService;
     @Mock
     Template mockTemplate;
+    @Mock
+    RaccoonMailer mockMailer;
     @Mock
     Engine mockEngine;
     @Mock
@@ -57,7 +65,8 @@ class UserProfileServiceTest {
         when(mockEngine.getTemplate(PROFILE_TEMPLATE_ID)).thenReturn(mockTemplate);
 
         service = new UserProfileService(
-                mockUserRepository, mockUserArtistRepository, mockLastfmTasteUpdatingService, mockEngine
+                mockUserRepository, mockUserFactory, mockUserArtistRepository,
+                mockLastfmTasteUpdatingService, mockMailer, mockEngine
         );
     }
 
@@ -88,6 +97,36 @@ class UserProfileServiceTest {
     }
 
     @Test
+    @DisplayName("completeRegistration() existing user")
+    void completeRegistrationNew() {
+        var email = "user@mail.com";
+        var userStub = new User();
+        userStub.setEmail(email);
+        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
+
+        final var user = service.completeRegistration(email);
+
+        assertEquals(userStub.getEmail(), user.getEmail());
+        verify(mockUserFactory, never()).createUser(email);
+    }
+
+    @Test
+    @DisplayName("completeRegistration() new user created gets Welcome mail")
+    void completeRegistrationExisting() {
+        var email = "user@mail.com";
+        var userStub = new User();
+        userStub.setEmail(email);
+        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
+        Mockito.when(mockUserFactory.createUser(email)).thenReturn(userStub);
+
+        final var user = service.completeRegistration(email);
+
+        assertEquals(userStub.getEmail(), user.getEmail());
+        verify(mockUserFactory, times(1)).createUser(email);
+        verify(mockMailer, times(1)).sendWelcome(eq(userStub), any(), any());
+    }
+
+    @Test
     void unfollowArtist() {
         var user = new User();
         user.id = 1L;
@@ -103,11 +142,11 @@ class UserProfileServiceTest {
     void enableSourceNotExistent() {
         var email = "user@mail.com";
         Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
+        Optional<String> lastfmUserNameOpt = Optional.of("lastfm");
+        Optional<Boolean> enableSpotifyOpt = Optional.empty();
 
-        var arg1 = Optional.of("lastfm");
-        Optional<Boolean> arg2 = Optional.empty();
         assertThrows(NotFoundException.class,
-                () -> service.enableTasteSources(email, arg1, arg2));
+                () -> service.enableTasteSources(email, lastfmUserNameOpt, enableSpotifyOpt));
     }
 
     @Test
@@ -134,5 +173,18 @@ class UserProfileServiceTest {
 
         assertNull(user.getLastfmUsername());
         assertEquals(Boolean.TRUE, user.getSpotifyEnabled());
+    }
+
+    @Test
+    void enableLastfmAndSpotify() {
+        var email = "user@mail.com";
+        var userStub = new User();
+        userStub.setEmail(email);
+        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
+
+        final var user = service.enableTasteSources(email, Optional.of("lastfm"), Optional.of(Boolean.TRUE));
+
+        assertEquals(Boolean.TRUE, user.getSpotifyEnabled());
+        assertEquals("lastfm", user.getLastfmUsername());
     }
 }

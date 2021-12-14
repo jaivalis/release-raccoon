@@ -1,5 +1,7 @@
 package com.raccoon;
 
+import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.user.UserProfileResource;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -37,10 +39,17 @@ class UserProfileResourceIT {
 
     @Inject
     MockMailbox mockMailbox;
+    @Inject
+    UserRepository userRepository;
+    @Inject
+    UserArtistRepository userArtistRepository;
 
     @BeforeEach
+    @Transactional
     public void setup() {
         mockMailbox.clear();
+        userArtistRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -48,8 +57,30 @@ class UserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user@gmail.com")
     })
-    @DisplayName("successful registerCallback, should send welcome mail")
-    void registerCallback() {
+    @DisplayName("successful get, should send welcome mail")
+    void getProfileOnce() {
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
+        assertEquals(1, mockMailbox.getMessagesSentTo("user@gmail.com").size());
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = EMAIL_CLAIM, value = "user@gmail.com")
+    })
+    @DisplayName("successful get, called twice should send single welcome mail")
+    void getProfileTwice() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
         given()
                 .contentType(ContentType.JSON)
                 .when().get()
@@ -66,9 +97,39 @@ class UserProfileResourceIT {
     })
     @DisplayName("delete artist association")
     void unfollowArtist() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
         given()
                 .contentType(ContentType.JSON)
                 .when().post("/unfollow/1")
+                .then()
+                .statusCode(SC_OK);
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = "email", value = "user@gmail.com")
+    })
+    @DisplayName("enableServices")
+    void enableServices() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
+        given()
+                .contentType(ContentType.JSON)
+                .param("lastfmUsername", "username")
+                .param("enableSpotify", false)
+                .when().get("/enableServices/")
                 .then()
                 .statusCode(SC_OK);
     }

@@ -53,7 +53,7 @@ public class TasteScrapingResource {
     public Collection<UserArtist> scrapeLastfmTaste() {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         var existing = getUser(email);
-        final var updated = lastfmTasteUpdatingService.updateTaste(existing);
+        final var updated = lastfmTasteUpdatingService.updateTaste(existing.id);
         return updated.getArtists();
     }
 

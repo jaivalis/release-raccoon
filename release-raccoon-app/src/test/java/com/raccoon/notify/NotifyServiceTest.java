@@ -1,6 +1,7 @@
 package com.raccoon.notify;
 
 import com.raccoon.entity.Artist;
+import com.raccoon.entity.Release;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ReleaseRepository;
@@ -16,10 +17,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 
 import io.smallrye.mutiny.Uni;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,7 +65,7 @@ class NotifyServiceTest {
 
     @Test
     @DisplayName("Should notify nobody")
-    void notifyNobody() {
+    void notifyUsersNotifyNobody() {
         notifyService.notifyUsers();
 
         verify(mockUserArtistRepository, times(0)).persist(anyList());
@@ -71,7 +74,7 @@ class NotifyServiceTest {
 
     @Test
     @DisplayName("Mail send success, user gets updated")
-    void notifySingleUserSuccess() {
+    void notifyUsersSuccess() {
         User user = new User();
         user.setEmail("email");
         Artist artist = new Artist();
@@ -88,7 +91,7 @@ class NotifyServiceTest {
 
     @Test
     @DisplayName("Mail send failure, no users modified")
-    void notifyUserMailFailure() {
+    void notifyUsersMailFailure() {
         User user = new User();
         user.setEmail("email");
         Artist artist = new Artist();
@@ -103,6 +106,43 @@ class NotifyServiceTest {
 
         var success = uni.await().atMost(Duration.ofSeconds(1));
         assertFalse(success);
+    }
+
+    @Test
+    @DisplayName("notifySingleUser(), 1 mail to send")
+    void notifySingleUserMailSent() {
+        User user = new User();
+        user.setEmail("email");
+        Artist artist = new Artist();
+        UserArtist ua = new UserArtist();
+        ua.setUser(user);
+        ua.setArtist(artist);
+        Uni<Void> failedUni = Uni.createFrom().failure(IllegalArgumentException::new);
+        when(mockMailer.sendDigest(eq(user), anyList(), any(), any())).thenReturn(failedUni);
+        Release release = new Release();
+        Collection<UserArtist> mightHaveNewReleases = List.of(ua);
+        when(mockReleaseRepository.findByArtistsSinceDays(anySet(), anyInt())).thenReturn(List.of(release));
+
+        notifyService.notifySingleUser(user, mightHaveNewReleases);
+
+        verify(mockMailer, times(1)).sendDigest(eq(user), eq(List.of(release)), any(), any());
+    }
+
+    @Test
+    @DisplayName("notifySingleUser(), no mails sent")
+    void notifySingleUserNoMail() {
+        User user = new User();
+        user.setEmail("email");
+        Artist artist = new Artist();
+        UserArtist ua = new UserArtist();
+        ua.setUser(user);
+        ua.setArtist(artist);
+        Collection<UserArtist> mightHaveNewReleases = List.of(ua);
+        when(mockReleaseRepository.findByArtistsSinceDays(anySet(), anyInt())).thenReturn(emptyList());
+
+        notifyService.notifySingleUser(user, mightHaveNewReleases);
+
+        verify(mockMailer, never()).sendDigest(any(), anyList(), any(), any());
     }
 
     @Test

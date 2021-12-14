@@ -5,6 +5,7 @@ import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.entity.repository.UserRepository;
+import com.raccoon.notify.NotifyService;
 import com.raccoon.scraper.lastfm.LastfmScraper;
 
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -26,6 +27,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,13 +44,20 @@ class LastfmTasteUpdatingServiceTest {
     UserRepository userRepositoryMock;
     @Mock
     LastfmScraper lastfmScraperMock;
+    @Mock
+    NotifyService mockNotifyService;
 
     User user = new User();
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        service = new LastfmTasteUpdatingService(userArtistFactoryMock, userRepositoryMock, lastfmScraperMock);
+        service = new LastfmTasteUpdatingService(
+                userArtistFactoryMock,
+                userRepositoryMock,
+                lastfmScraperMock,
+                mockNotifyService
+        );
     }
 
     @Test
@@ -55,8 +65,10 @@ class LastfmTasteUpdatingServiceTest {
     void scrapeNoLastFmUsername() {
         user.setLastfmUsername("");
         user.setArtists(Collections.emptySet());
+        user.id = 1L;
+        when(userRepositoryMock.findById(user.id)).thenReturn(user);
 
-        service.updateTaste(user);
+        service.updateTaste(user.id);
 
         assertEquals(Collections.emptySet(), user.getArtists());
     }
@@ -70,10 +82,13 @@ class LastfmTasteUpdatingServiceTest {
         user.setLastfmUsername("username");
         user.setLastLastFmScrape(LocalDateTime.now());
         user.setArtists(artists);
+        user.id = 1L;
+        when(userRepositoryMock.findById(user.id)).thenReturn(user);
 
-        service.updateTaste(user);
+        service.updateTaste(user.id);
 
         assertEquals(artists, user.getArtists());
+        verify(mockNotifyService, never()).notifySingleUser(eq(user), any());
     }
 
     @Test
@@ -92,13 +107,16 @@ class LastfmTasteUpdatingServiceTest {
         userArtist.setArtist(stubArtist);
         userArtist.setUser(user);
         when(userArtistFactoryMock.getOrCreateUserArtist(user, stubArtist)).thenReturn(userArtist);
+        user.id = 1L;
+        when(userRepositoryMock.findById(user.id)).thenReturn(user);
 
-        service.updateTaste(user);
+        service.updateTaste(user.id);
 
         assertEquals(1, user.getArtists().size());
         assertEquals(LocalDateTime.now().getDayOfMonth(), user.getLastLastFmScrape().getDayOfMonth());
         assertEquals(stubArtist, user.getArtists().iterator().next().getArtist());
         verify(userRepositoryMock, times(1)).persist(user);
+        verify(mockNotifyService, times(1)).notifySingleUser(eq(user), any());
     }
 
 }

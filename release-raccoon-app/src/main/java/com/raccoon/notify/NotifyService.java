@@ -77,6 +77,28 @@ public class NotifyService {
                 .recoverWithUni(failure -> Uni.createFrom().item(false));
     }
 
+    /**
+     *
+     * @param user the user to notify
+     * @param mightHaveNewReleases UserArtist associations that potentially have a release,
+     *                             hasNewRelease will be marked `false` after the digest is sent.
+     * @return
+     */
+    public Uni<Void> notifySingleUser(User user, Collection<UserArtist> mightHaveNewReleases) {
+        log.info("Checking for potential digests for {} newly subscribed to artists that were present in the database for user {}", mightHaveNewReleases.size(), user.id);
+        Set<Artist> artists = mightHaveNewReleases.stream()
+                .map(UserArtist::getArtist)
+                .collect(toSet());
+        var relevantReleases = releaseRepository.findByArtistsSinceDays(artists, 10);
+
+        if (relevantReleases.isEmpty()) {
+            log.info("Nothing found for user {}", user.id);
+            return Uni.createFrom().voidItem();
+        }
+
+        return notifyUser(user, relevantReleases, mightHaveNewReleases);
+    }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -102,10 +124,9 @@ public class NotifyService {
      */
     private Uni<Void> notifyUser(final User user,
                                  final List<Release> releases,
-                                 final List<UserArtist> userArtistList) {
+                                 final Collection<UserArtist> userArtistList) {
+        log.info("Notifying user {} for releases {}", user.id, releases);
         try {
-            log.info("Notifying user {} for releases {}", user.id, releases);
-
             return raccoonMailer.sendDigest(user, releases,
                     () -> mailSuccessCallback(user, userArtistList),
                     () -> mailFailureCallback(user)
@@ -120,8 +141,7 @@ public class NotifyService {
      * @param user
      * @param userArtistList
      */
-    void mailSuccessCallback(User user,
-                             List<UserArtist> userArtistList) {
+    void mailSuccessCallback(User user, Collection<UserArtist> userArtistList) {
         log.info("Notified user {}", user.id);
         userArtistList.forEach(userArtist -> userArtist.setHasNewRelease(false));
 

@@ -2,8 +2,10 @@ package com.raccoon.user;
 
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
+import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 import com.raccoon.templatedata.pojo.ProfileContents;
 
@@ -26,18 +28,24 @@ import static com.raccoon.templatedata.QuteTemplateLoader.PROFILE_TEMPLATE_ID;
 public class UserProfileService {
 
     UserRepository userRepository;
+    UserFactory userFactory;
     UserArtistRepository userArtistRepository;
     LastfmTasteUpdatingService lastfmTasteUpdatingService;
+    RaccoonMailer mailer;
     Template profile;
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
+                              final UserFactory userFactory,
                               final UserArtistRepository userArtistRepository,
                               final LastfmTasteUpdatingService lastfmTasteUpdatingService,
+                              final RaccoonMailer mailer,
                               final Engine engine) {
         this.userRepository = userRepository;
+        this.userFactory = userFactory;
         this.userArtistRepository = userArtistRepository;
         this.lastfmTasteUpdatingService = lastfmTasteUpdatingService;
+        this.mailer = mailer;
         this.profile = engine.getTemplate(PROFILE_TEMPLATE_ID);
     }
 
@@ -66,6 +74,28 @@ public class UserProfileService {
         ).render();
     }
 
+    /**
+     * Fetches the user from the database. Sends welcome email blocking in case the user was just created.
+     * @param email unique user identifier
+     * @return user from the database.
+     */
+    public User completeRegistration(final String email) {
+        Optional<User> optionalUser = userRepository.findByEmailOptional(email);
+
+        return optionalUser.orElseGet(() -> {
+            var user = userFactory.createUser(email);
+            mailer.sendWelcome(
+                    user,
+                    () -> {
+                        log.info("Welcome sent to user {}", user.id);
+                        userRepository.persist(user);
+                    },
+                    () -> log.error("Something went wrong while sending welcome to {}", user.id)
+            ).await().indefinitely();
+            return user;
+        });
+    }
+
     public void unfollowArtist(final String userEmail, final Long artistId) {
         var user = userRepository.findByEmail(userEmail);
         userArtistRepository.deleteAssociation(user.id, artistId);
@@ -83,7 +113,7 @@ public class UserProfileService {
         lastfmUsernameOpt.ifPresent(user::setLastfmUsername);
         enableSpotifyOpt.ifPresent(user::setSpotifyEnabled);
 
-        lastfmTasteUpdatingService.updateTaste(user);
+        lastfmTasteUpdatingService.updateTaste(user.id);
 
         userRepository.persist(user);
         return user;

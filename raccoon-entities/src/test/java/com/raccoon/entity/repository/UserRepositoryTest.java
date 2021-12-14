@@ -2,6 +2,7 @@ package com.raccoon.entity.repository;
 
 import com.raccoon.entity.factory.UserFactory;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
@@ -26,6 +27,12 @@ class UserRepositoryTest {
     @Inject
     UserFactory factory;
 
+    @BeforeEach
+    @Transactional
+    void setup() {
+        repository.deleteAll();
+    }
+
     @Test
     @Transactional
     void findByEmailEmpty() {
@@ -38,7 +45,7 @@ class UserRepositoryTest {
     @Transactional
     void findByEmailOptional() {
         var email = "email@mail.com";
-        factory.getOrCreateUser(email);
+        factory.createUser(email);
 
         final var found = repository.findByEmailOptional(email);
 
@@ -58,7 +65,7 @@ class UserRepositoryTest {
     @Transactional
     void findByEmail() {
         var email = "email@mail.com";
-        factory.getOrCreateUser(email);
+        factory.createUser(email);
 
         final var found = repository.findByEmail(email);
 

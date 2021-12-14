@@ -2,7 +2,10 @@ package com.raccoon.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,6 +40,10 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @Column(name = "artistId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
+
+    @CreationTimestamp
+    @Column(name = "create_date")
+    LocalDateTime createDate;
 
     @Column
     String name;

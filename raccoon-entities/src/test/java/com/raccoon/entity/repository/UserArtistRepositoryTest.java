@@ -24,7 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UserArtistRepositoryTest {
 
     @Inject
-    UserArtistRepository repository;
+    UserArtistRepository artistRepository;
+    @Inject
+    UserRepository userRepository;
 
     @Inject
     ArtistFactory artistFactory;
@@ -36,14 +38,15 @@ class UserArtistRepositoryTest {
     @BeforeEach
     @Transactional
     void setup() {
-        repository.deleteAll();
-        stubFactory = new UserArtistStubFactory(repository, userFactory, artistFactory);
+        artistRepository.deleteAll();
+        userRepository.deleteAll();
+        stubFactory = new UserArtistStubFactory(artistRepository, userFactory, userRepository, artistFactory);
     }
 
     @Test
     @Transactional
     void getUserArtistsWithNewReleaseEmpty() {
-        assertTrue(repository.getUserArtistsWithNewRelease().isEmpty());
+        assertTrue(artistRepository.getUserArtistsWithNewRelease().isEmpty());
     }
 
     @Test
@@ -54,9 +57,9 @@ class UserArtistRepositoryTest {
         // set the flag for one of the two entries
         userArtist1.setHasNewRelease(true);
         userArtist2.setHasNewRelease(false);
-        repository.persist(userArtist1, userArtist2);
+        artistRepository.persist(userArtist1, userArtist2);
 
-        var userArtists = repository.getUserArtistsWithNewRelease();
+        var userArtists = artistRepository.getUserArtistsWithNewRelease();
 
         assertEquals(1, userArtists.size());
     }
@@ -66,10 +69,10 @@ class UserArtistRepositoryTest {
     void markNewReleaseForArtist() {
         var userArtist1 = stubFactory.stubUserArtist("user1", "artist1");
         var userArtist2 = stubFactory.stubUserArtist("user2", "artist2");
-        repository.persist(userArtist1, userArtist2);
+        artistRepository.persist(userArtist1, userArtist2);
         var id = userArtist1.getArtist().id;
 
-        var userArtists = repository.markNewRelease(List.of(id));
+        var userArtists = artistRepository.markNewRelease(List.of(id));
 
         assertEquals(1, userArtists.size());
     }
@@ -77,18 +80,18 @@ class UserArtistRepositoryTest {
     @Test
     @Transactional
     void markNewReleaseNoIds() {
-        assertTrue(repository.markNewRelease(List.of()).isEmpty());
+        assertTrue(artistRepository.markNewRelease(List.of()).isEmpty());
     }
 
     @Test
     @Transactional
     void findByUserArtistOptional() {
         var userArtist = stubFactory.stubUserArtist("user1", "artist1");
-        repository.persist(userArtist);
+        artistRepository.persist(userArtist);
         var artistId = userArtist.getArtist().id;
         var userId = userArtist.getUser().id;
 
-        var userArtists = repository.findByUserArtistOptional(userId, artistId);
+        var userArtists = artistRepository.findByUserArtistOptional(userId, artistId);
 
         assertTrue(userArtists.isPresent());
     }
@@ -96,7 +99,7 @@ class UserArtistRepositoryTest {
     @Test
     @Transactional
     void findByUserArtistOptionalEmpty() {
-        var userArtists = repository.findByUserArtistOptional(1L, 1L);
+        var userArtists = artistRepository.findByUserArtistOptional(1L, 1L);
 
         assertTrue(userArtists.isEmpty());
     }
@@ -117,7 +120,7 @@ class UserArtistRepositoryTest {
     @Test
     @Transactional
     void findByUserIdEmpty() {
-        var userArtists = repository.findByUserId(1);
+        var userArtists = artistRepository.findByUserId(1);
 
         assertTrue(userArtists.isEmpty());
     }
@@ -131,9 +134,9 @@ class UserArtistRepositoryTest {
         user1Artist1.setWeight(0.60f);
         user1Artist2.setWeight(0.65f);
         user2Artist1.setWeight(0.10f);
-        repository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
+        artistRepository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
 
-        var byWeight = repository.findByUserIdByWeight(user1Artist1.getUser().id);
+        var byWeight = artistRepository.findByUserIdByWeight(user1Artist1.getUser().id);
 
         assertEquals(2, byWeight.size());
         assertEquals("artist2", byWeight.get(0).getArtist().getName());
@@ -146,11 +149,11 @@ class UserArtistRepositoryTest {
         var userArtist = stubFactory.stubUserArtist("user1", "artist1");
         var userId = userArtist.getUser().id;
         var artistIdNotExistent = userArtist.getArtist().id;
-        assertEquals(1, repository.findAll().stream().count());
+        assertEquals(1, artistRepository.findAll().stream().count());
 
-        repository.deleteAssociation(userId, artistIdNotExistent);
+        artistRepository.deleteAssociation(userId, artistIdNotExistent);
 
-        assertEquals(0, repository.findAll().stream().count());
+        assertEquals(0, artistRepository.findAll().stream().count());
     }
 
 }
