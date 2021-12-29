@@ -160,6 +160,15 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- DBRider -->
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-cdi</artifactId>
+        </dependency>
 
         <!-- util -->
         <dependency>
@@ -224,6 +233,7 @@
                     <include>**/*.svg</include>
                     <include>**/*.html</include>
                     <include>**/*.json</include>
+                    <include>**/*.yml</include>
                 </includes>
             </testResource>
         </testResources>

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import io.quarkus.scheduler.Scheduled;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class ReleaseScrapingService {
         scrape();
     }
 
+    @Transactional
     public Set<Release> scrape() throws ReleaseScrapeException, InterruptedException {
         try {
             // Could optimize the txs by localizing and batching.

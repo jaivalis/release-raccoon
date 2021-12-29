@@ -1,7 +1,6 @@
 package com.raccoon.notify;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
@@ -18,8 +17,6 @@ public class NotifyingResource {
     }
 
     @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
     public Uni<Boolean> notifyUsers() {
         return service.notifyUsers();
     }

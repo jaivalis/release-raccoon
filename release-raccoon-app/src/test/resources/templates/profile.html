@@ -136,40 +136,47 @@
             {/if}
         </div>
 
-        Artists tracked:
+    {#if contents.artistsFollowed != null && contents.artistsFollowed.size != 0}
+
+        <p>Artists tracked:</p>
         <table class="horizaligned">
+        <tr>
+
+        <th>Artist Name</th>
+        <th></th>
+
+        {#for userArtist in contents.getArtistsFollowed()}
             <tr>
-                <th>Artist Name</th>
-
-                <th></th>
-
-                {#for userArtist in contents.getArtistsFollowed()}
-                    <tr>
-                        <td>{userArtist.artist.name}</td>
-                        <td>
-                            {#if userArtist.artist.lastfmUri != null}
-                            <a href="{userArtist.artist.lastfmUri}" class="path-link" target="_blank">
-                                <img height="30px" src="images/lastfm.icon.svg"/>
-                            </a>
-                            {/if}
-                        </td>
-                        <td>
-                            {#if userArtist.artist.spotifyUri != null}
-                            <a href="{userArtist.artist.spotifyUri}" class="path-link" target="_blank">
-                                <img height="30px" src="images/spotify.icon.svg"/>
-                            </a>
-                            {/if}
-                        </td>
-                        <td>
-                            <form method="POST" action="/me/unfollow/{userArtist.artist.id}">
-                                <input type="submit" class="path-link" value="unfollow">
-                            </form>
-                        </td>
-                    </tr>
-                {/for}
+            <td>{userArtist.artist.name}</td>
+            <td>
+                {#if userArtist.artist.lastfmUri != null}
+                    <a href="{userArtist.artist.lastfmUri}" class="path-link" target="_blank">
+                        <img height="30px" src="images/lastfm.icon.svg"/>
+                    </a>
+                {/if}
+            </td>
+            <td>
+                {#if userArtist.artist.spotifyUri != null}
+                    <a href="{userArtist.artist.spotifyUri}" class="path-link" target="_blank">
+                        <img height="30px" src="images/spotify.icon.svg"/>
+                    </a>
+                {/if}
+            </td>
+            <td>
+            <form method="POST" action="/me/unfollow/{userArtist.artist.id}">
+                <input type="submit" class="path-link" value="unfollow">
+            </form>
+            </td>
             </tr>
+        {/for}
+        </tr>
         </table>
-    </div>
+    {#else}
+
+        <p>No artists tracked yet. Use the panel above to set your taste</p>
+
+    {/if}
+</div>
 
 </body>
 </html>

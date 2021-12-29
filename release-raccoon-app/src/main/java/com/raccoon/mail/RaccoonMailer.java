@@ -47,7 +47,7 @@ public class RaccoonMailer {
         }
     }
 
-    public Uni<Void> sendWelcome(User user,
+    public Uni<Void> sendWelcome(final User user,
                                  final Runnable successCallback,
                                  final Runnable failureCallback) {
         log.info("Welcoming new user {}", user.id);
