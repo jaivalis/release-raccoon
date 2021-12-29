@@ -53,17 +53,6 @@ class NotifyServiceTest {
     }
 
     @Test
-    @DisplayName("notifyCronJob() calls notifyUsers()")
-    void notifyCronJob() {
-        NotifyService notifyService = mock(NotifyService.class);
-        doCallRealMethod().when(notifyService).notifyCronJob();
-
-        notifyService.notifyCronJob();
-
-        verify(notifyService, times(1)).notifyUsers();
-    }
-
-    @Test
     @DisplayName("Should notify nobody")
     void notifyUsersNotifyNobody() {
         notifyService.notifyUsers();

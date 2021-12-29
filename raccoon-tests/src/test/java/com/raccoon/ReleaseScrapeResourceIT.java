@@ -5,7 +5,7 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.release.ReleaseScrapingResource;
+import com.raccoon.release.ReleaseScrapeResource;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +40,7 @@ import static org.mockito.ArgumentMatchers.any;
 @QuarkusTest
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestHTTPEndpoint(ReleaseScrapingResource.class)
+@TestHTTPEndpoint(ReleaseScrapeResource.class)
 @DBRider
 @DBUnit(caseSensitiveTableNames = true)
 class ReleaseScrapeResourceIT {

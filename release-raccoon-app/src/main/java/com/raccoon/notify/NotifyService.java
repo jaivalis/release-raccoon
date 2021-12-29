@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import io.quarkus.qute.TemplateException;
-import io.quarkus.scheduler.Scheduled;
 import io.smallrye.mutiny.Uni;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,12 +38,6 @@ public class NotifyService {
         this.userArtistRepository = userArtistRepository;
         this.releaseRepository = releaseRepository;
         this.raccoonMailer = raccoonMailer;
-    }
-
-    @Scheduled(cron="{notify.cron.expr}")
-    public void notifyCronJob() {
-        log.info("Notifying cronjob triggered");
-        notifyUsers();
     }
 
     /**

@@ -19,21 +19,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.transaction.UserTransaction;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ReleaseScrapingServiceTest {
+class ReleaseScrapeServiceTest {
 
-    ReleaseScrapingService service;
+    ReleaseScrapeService service;
 
     @Mock
     ReleaseScrapers releaseScrapersMock;
-    @Mock
-    UserTransaction userTransactionMock;
     @Mock
     UserArtistRepository userArtistRepositoryMock;
 
@@ -42,7 +40,7 @@ class ReleaseScrapingServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new ReleaseScrapingService(
+        service = new ReleaseScrapeService(
                 releaseScrapersMock,
                 userArtistRepositoryMock
         );
@@ -68,16 +66,6 @@ class ReleaseScrapingServiceTest {
         artistRelease.setRelease(release);
 
         return release;
-    }
-
-    @Test
-    void releaseScrapeCronJob() throws Exception {
-        ReleaseScrapingService serviceMock = mock(ReleaseScrapingService.class);
-        doCallRealMethod().when(serviceMock).releaseScrapeCronJob();
-
-        serviceMock.releaseScrapeCronJob();
-
-        verify(serviceMock, times(1)).scrape();
     }
 
     @Test

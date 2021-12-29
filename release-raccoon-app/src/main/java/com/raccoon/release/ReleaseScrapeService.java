@@ -13,27 +13,20 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import io.quarkus.scheduler.Scheduled;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-public class ReleaseScrapingService {
+public class ReleaseScrapeService {
 
     ReleaseScrapers releaseScrapers;
     UserArtistRepository userArtistRepository;
 
     @Inject
-    ReleaseScrapingService(final ReleaseScrapers releaseScrapers,
-                           final UserArtistRepository userArtistRepository) {
+    ReleaseScrapeService(final ReleaseScrapers releaseScrapers,
+                         final UserArtistRepository userArtistRepository) {
         this.releaseScrapers = releaseScrapers;
         this.userArtistRepository = userArtistRepository;
-    }
-
-    @Scheduled(cron="{release.scrape.cron.expr}")
-    public void releaseScrapeCronJob() throws ReleaseScrapeException, InterruptedException {
-        log.info("Release scrape cronjob triggered");
-        scrape();
     }
 
     @Transactional
