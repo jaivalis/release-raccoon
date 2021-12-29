@@ -12,9 +12,9 @@ class ArtistTest {
     @Test
     void getSpotifyUriId() {
         artist = new Artist();
-        artist.setSpotifyUri(SPOTIFY_ARTIST_PREFIX + "xyz");
+        artist.setSpotifyUri(SPOTIFY_ARTIST_PREFIX + "3TsEEdpuuCN1G0dPxV4uOA");
 
-        assertEquals("xyz", artist.getSpotifyUriId());
+        assertEquals("3TsEEdpuuCN1G0dPxV4uOA", artist.getSpotifyUriId());
     }
 
     @Test

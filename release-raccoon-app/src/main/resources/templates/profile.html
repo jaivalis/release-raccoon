@@ -145,28 +145,32 @@
                 <th>Artist Name</th>
                 <th></th>
 
-                {#for userArtist in contents.getArtistsFollowed()}
+                {#for artist in contents.getArtistsFollowed()}
                     <tr>
-                        <td>{userArtist.artist.name}</td>
+                        <td>{artist.name}</td>
+
                         <td>
-                            {#if userArtist.artist.lastfmUri != null}
-                                <a href="{userArtist.artist.lastfmUri}" class="path-link" target="_blank">
+                            {#if artist.lastfmUri != null}
+                                <a href="{artist.lastfmUri}" class="path-link" target="_blank">
                                     <img height="30px" src="images/lastfm.icon.svg"/>
                                 </a>
                             {/if}
                         </td>
+
                         <td>
-                            {#if userArtist.artist.spotifyUri != null}
-                                <a href="{userArtist.artist.spotifyUri}" class="path-link" target="_blank">
+                            {#if artist.getSpotifyUriId() != ""}
+                                <a href="https://open.spotify.com/artist/{artist.getSpotifyUriId()}" class="path-link" target="_blank">
                                     <img height="30px" src="images/spotify.icon.svg"/>
                                 </a>
                             {/if}
                         </td>
+
                         <td>
-                            <form method="POST" action="/me/unfollow/{userArtist.artist.id}">
+                            <form method="POST" action="/me/unfollow/{artist.id}">
                                 <input type="submit" class="path-link" value="unfollow">
                             </form>
                         </td>
+
                     </tr>
                 {/for}
             </tr>

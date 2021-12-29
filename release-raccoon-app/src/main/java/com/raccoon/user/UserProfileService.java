@@ -1,5 +1,6 @@
 package com.raccoon.user;
 
+import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
@@ -50,8 +51,11 @@ public class UserProfileService {
     }
 
 
-    public List<UserArtist> getUserArtists(final User user) {
-        return userArtistRepository.findByUserIdByWeight(user.id);
+    public List<Artist> getUserArtists(final User user) {
+        return userArtistRepository.findByUserIdByWeight(user.id)
+                .stream()
+                .map(UserArtist::getArtist)
+                .toList();
     }
 
     public String renderTemplateInstance(final String userEmail) {

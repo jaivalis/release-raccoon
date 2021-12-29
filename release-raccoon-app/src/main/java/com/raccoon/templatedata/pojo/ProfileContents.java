@@ -1,6 +1,6 @@
 package com.raccoon.templatedata.pojo;
 
-import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.Artist;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class ProfileContents {
 
-    private List<UserArtist> artistsFollowed;
+    private List<Artist> artistsFollowed;
     private boolean spotifyEnabled;
     private boolean lastfmEnabled;
     private boolean canScrapeSpotify;

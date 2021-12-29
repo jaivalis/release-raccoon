@@ -12,9 +12,9 @@ class ReleaseTest {
     @Test
     void getSpotifyUriId() {
         release = new Release();
-        release.setSpotifyUri(SPOTIFY_RELEASE_PREFIX + "xyz");
+        release.setSpotifyUri(SPOTIFY_RELEASE_PREFIX + "3TsEEdpuuCN1G0dPxV4uOA");
 
-        assertEquals("xyz", release.getSpotifyUriId());
+        assertEquals("3TsEEdpuuCN1G0dPxV4uOA", release.getSpotifyUriId());
     }
 
     @Test

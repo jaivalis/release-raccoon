@@ -81,9 +81,9 @@
         }
 
         thead {
-            th {
-                background-color: #55608f;
-            }
+        th {
+            background-color: #55608f;
+        }
         }
 
         a:link, a:visited {
@@ -103,16 +103,16 @@
 </head>
 
 <body>
-    <h1>Your Release Raccoon</h1>
-    <div>
-        <div class="banner lead">
-            {#if contents.isSpotifyEnabled() == false}
-                Enable
-                <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
-                    spotify
-                    <img height="30px" src="images/spotify.icon.svg"/>
-                </a>
-                </br>
+<h1>Your Release Raccoon</h1>
+<div>
+    <div class="banner lead">
+        {#if contents.isSpotifyEnabled() == false}
+            Enable
+            <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
+                spotify
+                <img height="30px" src="images/spotify.icon.svg"/>
+            </a>
+            </br>
             {#else}
                 Spotify enabled ⛓
                 {#if contents.isCanScrapeSpotify()}
@@ -121,20 +121,20 @@
                         <img height="30px" src="images/spotify.icon.svg"/>
                     </a>
                 {/if}
-                </br>
-            {/if}
-            {#if contents.isLastfmEnabled() == false}
+            </br>
+        {/if}
+        {#if contents.isLastfmEnabled() == false}
             Your Last.fm username is
-                <form method="GET" action="/me/enableServices">
-                    <input type="text" id="lastfmname" name="lastfmUsername">
-                    <input type="submit" class="path-link" value="enable">
-                </form>
-                </br>
-            {#else}
-                Last.fm scraping enabled ⛓
-                </br>
-            {/if}
-        </div>
+            <form method="GET" action="/me/enableServices">
+                <input type="text" id="lastfmname" name="lastfmUsername">
+                <input type="submit" class="path-link" value="enable">
+            </form>
+            </br>
+        {#else}
+            Last.fm scraping enabled ⛓
+            </br>
+        {/if}
+    </div>
 
     {#if contents.artistsFollowed != null && contents.artistsFollowed.size != 0}
 
@@ -145,28 +145,32 @@
         <th>Artist Name</th>
         <th></th>
 
-        {#for userArtist in contents.getArtistsFollowed()}
+        {#for artist in contents.getArtistsFollowed()}
             <tr>
-            <td>{userArtist.artist.name}</td>
+            <td>{artist.name}</td>
+
             <td>
-                {#if userArtist.artist.lastfmUri != null}
-                    <a href="{userArtist.artist.lastfmUri}" class="path-link" target="_blank">
+                {#if artist.lastfmUri != null}
+                    <a href="{artist.lastfmUri}" class="path-link" target="_blank">
                         <img height="30px" src="images/lastfm.icon.svg"/>
                     </a>
                 {/if}
             </td>
+
             <td>
-                {#if userArtist.artist.spotifyUri != null}
-                    <a href="{userArtist.artist.spotifyUri}" class="path-link" target="_blank">
+                {#if artist.getSpotifyUriId() != ""}
+                    <a href="https://open.spotify.com/artist/{artist.getSpotifyUriId()}" class="path-link" target="_blank">
                         <img height="30px" src="images/spotify.icon.svg"/>
                     </a>
                 {/if}
             </td>
+
             <td>
-            <form method="POST" action="/me/unfollow/{userArtist.artist.id}">
+            <form method="POST" action="/me/unfollow/{artist.id}">
                 <input type="submit" class="path-link" value="unfollow">
             </form>
             </td>
+
             </tr>
         {/for}
         </tr>
