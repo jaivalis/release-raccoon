@@ -207,14 +207,9 @@
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.html</include>
-                    <include>**/*.ico</include>
-                    <include>**/*.json</include>
-                    <include>**/*.sql</include>
-                    <include>**/*.svg</include>
-                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
             </resource>
         </resources>
 
@@ -227,14 +222,9 @@
             </testResource>
             <testResource>
                 <directory>${project.basedir}/src/test/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.ico</include>
-                    <include>**/*.svg</include>
-                    <include>**/*.html</include>
-                    <include>**/*.json</include>
-                    <include>**/*.yml</include>
-                </includes>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/main/java/resources/templates</directory>
             </testResource>
         </testResources>
 
