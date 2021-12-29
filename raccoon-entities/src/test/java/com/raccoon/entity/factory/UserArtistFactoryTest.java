@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 class UserArtistFactoryTest {
 
-    UserArtistFactory factory;
+    UserArtistFactory factory = new UserArtistFactory();
 
     @Test
     void getOrCreateUserArtistExists() {
