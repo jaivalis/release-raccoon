@@ -74,7 +74,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <groupId>org.apache.maven.plugins</groupId>
                 <configuration>
-                    <argLine>-Xmx1024m</argLine>
+                    <argLine>@{argLine} -Xmx1024m</argLine>
                 </configuration>
             </plugin>
 
