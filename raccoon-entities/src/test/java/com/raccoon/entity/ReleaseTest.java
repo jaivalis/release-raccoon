@@ -2,6 +2,7 @@ package com.raccoon.entity;
 
 import org.junit.jupiter.api.Test;
 
+import static com.raccoon.entity.Constants.SPOTIFY_RELEASE_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReleaseTest {
@@ -11,7 +12,7 @@ class ReleaseTest {
     @Test
     void getSpotifyUriId() {
         release = new Release();
-        release.setSpotifyUri("spotify:album:xyz");
+        release.setSpotifyUri(SPOTIFY_RELEASE_PREFIX + "xyz");
 
         assertEquals("xyz", release.getSpotifyUriId());
     }
@@ -19,7 +20,7 @@ class ReleaseTest {
     @Test
     void getSpotifyUriBadInput() {
         release = new Release();
-        release.setSpotifyUri("spotify:album:");
+        release.setSpotifyUri(SPOTIFY_RELEASE_PREFIX);
 
         assertEquals("", release.getSpotifyUriId());
     }
