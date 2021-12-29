@@ -58,7 +58,7 @@ class NotifyingResourceIT {
                 .statusCode(SC_OK);
 
         assertEquals(1, mockMailbox.getMessagesSentTo("user100@mail.com").size());
-        var uaOptional = userArtistRepository.findByUserArtistOptional(100L, 100L);
+        var uaOptional = userArtistRepository.findByUserIdArtistIdOptional(100L, 100L);
         assertTrue(uaOptional.isPresent());
         assertFalse(uaOptional.get().getHasNewRelease(), "Release should be marked processed");
     }

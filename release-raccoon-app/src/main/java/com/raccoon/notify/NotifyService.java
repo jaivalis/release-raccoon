@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import io.quarkus.qute.TemplateException;
 import io.quarkus.scheduler.Scheduled;
@@ -50,6 +51,7 @@ public class NotifyService {
      * Blocks until the Reactive mailer has responses for all sent mails.
      * @return
      */
+    @Transactional
     public Uni<Boolean> notifyUsers() {
         log.info("Notifying users...");
 
@@ -78,7 +80,7 @@ public class NotifyService {
     }
 
     /**
-     *
+     * TODO Break into `boolean canNotifyUser` & `Uni<Void> notifyUser`
      * @param user the user to notify
      * @param mightHaveNewReleases UserArtist associations that potentially have a release,
      *                             hasNewRelease will be marked `false` after the digest is sent.
@@ -125,7 +127,6 @@ public class NotifyService {
     private Uni<Void> notifyUser(final User user,
                                  final List<Release> releases,
                                  final Collection<UserArtist> userArtistList) {
-        log.info("Notifying user {} for releases {}", user.id, releases);
         try {
             return raccoonMailer.sendDigest(user, releases,
                     () -> mailSuccessCallback(user, userArtistList),

@@ -3,11 +3,11 @@ package com.raccoon.taste.spotify;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
-import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.notify.NotifyService;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
+import com.raccoon.taste.TasteScrapeArtistWeightPairProcessor;
 import com.raccoon.taste.TasteUpdatingService;
 
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -32,19 +32,19 @@ import static com.raccoon.taste.Util.normalizeWeights;
 @ApplicationScoped
 public class SpotifyTasteUpdatingService implements TasteUpdatingService {
 
-    UserArtistFactory userArtistFactory;
-    UserRepository userRepository;
-    SpotifyUserAuthorizer spotifyUserAuthorizer;
-    SpotifyScraper spotifyScraper;
-    NotifyService notifyService;
+    final TasteScrapeArtistWeightPairProcessor tasteScrapeArtistWeightPairProcessor;
+    final UserRepository userRepository;
+    final SpotifyUserAuthorizer spotifyUserAuthorizer;
+    final SpotifyScraper spotifyScraper;
+    final NotifyService notifyService;
 
     @Inject
-    public SpotifyTasteUpdatingService(final UserArtistFactory userArtistFactory,
+    public SpotifyTasteUpdatingService(final TasteScrapeArtistWeightPairProcessor tasteScrapeArtistWeightPairProcessor,
                                        final UserRepository userRepository,
                                        final SpotifyUserAuthorizer spotifyUserAuthorizer,
                                        final SpotifyScraper spotifyScraper,
                                        final NotifyService notifyService) {
-        this.userArtistFactory = userArtistFactory;
+        this.tasteScrapeArtistWeightPairProcessor = tasteScrapeArtistWeightPairProcessor;
         this.userRepository = userRepository;
         this.spotifyUserAuthorizer = spotifyUserAuthorizer;
         this.spotifyScraper = spotifyScraper;
@@ -89,25 +89,29 @@ public class SpotifyTasteUpdatingService implements TasteUpdatingService {
         // Keep track of the artists that might be relevant to get updates from
         // That is the ones that were already in the database.
         final List<UserArtist> existingArtists = new ArrayList<>();
-        LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
 
         user.setArtists(
                 normalizeWeights(spotifyTaste)
                         .stream()
                         .map(
-                                artistWeightPair -> {
-                                    var artist = artistWeightPair.left;
-                                    var weight = artistWeightPair.right;
+                                pair -> {
+//                                    var artist = artistWeightPair.left;
+//                                    var weight = artistWeightPair.right;
+//
+//                                    var userArtist = userArtistFactory.getOrCreateUserArtist(user, artist);
+//                                    userArtist.setWeight(weight);
+//
+//                                    if (artist.getCreateDate() == null || twoMinutesAgo.isAfter(artist.getCreateDate())) {
+//                                        // artist existed in the database prior, might have a release
+//                                        existingArtists.add(userArtist);
+//                                    }
+//
+//                                    return userArtist;
+                                    var artist = pair.left;
+                                    var weight = pair.right;
 
-                                    var userArtist = userArtistFactory.getOrCreateUserArtist(user, artist);
-                                    userArtist.setWeight(weight);
+                                    return tasteScrapeArtistWeightPairProcessor.delegateProcessArtistWeightPair(user, artist, weight, existingArtists);
 
-                                    if (artist.getCreateDate() == null || twoMinutesAgo.isAfter(artist.getCreateDate())) {
-                                        // artist existed in the database prior, might have a release
-                                        existingArtists.add(userArtist);
-                                    }
-
-                                    return userArtist;
                                 }
                         ).collect(Collectors.toSet())
         );
@@ -123,7 +127,8 @@ public class SpotifyTasteUpdatingService implements TasteUpdatingService {
 
     @Override
     public void notifyForRecentReleases(User user, Collection<UserArtist> userArtists) {
-        notifyService.notifySingleUser(user, userArtists);
+        notifyService.notifySingleUser(user, userArtists)
+                .await().indefinitely();
     }
 
 }

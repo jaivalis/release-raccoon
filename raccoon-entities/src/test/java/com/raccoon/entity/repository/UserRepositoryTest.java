@@ -2,7 +2,7 @@ package com.raccoon.entity.repository;
 
 import com.raccoon.entity.factory.UserFactory;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
@@ -27,7 +27,7 @@ class UserRepositoryTest {
     @Inject
     UserFactory factory;
 
-    @BeforeEach
+    @AfterEach
     @Transactional
     void setup() {
         repository.deleteAll();

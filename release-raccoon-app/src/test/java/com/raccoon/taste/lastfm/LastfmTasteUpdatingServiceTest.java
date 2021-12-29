@@ -7,6 +7,7 @@ import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.notify.NotifyService;
 import com.raccoon.scraper.lastfm.LastfmScraper;
+import com.raccoon.taste.TasteScrapeArtistWeightPairProcessor;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -38,6 +40,8 @@ class LastfmTasteUpdatingServiceTest {
 
     LastfmTasteUpdatingService service;
 
+    @Mock
+    TasteScrapeArtistWeightPairProcessor mockTasteScrapeArtistWeightPairProcessor;
     @Mock
     UserArtistFactory userArtistFactoryMock;
     @Mock
@@ -53,7 +57,7 @@ class LastfmTasteUpdatingServiceTest {
     public void setup() {
         MockitoAnnotations.openMocks(this);
         service = new LastfmTasteUpdatingService(
-                userArtistFactoryMock,
+                mockTasteScrapeArtistWeightPairProcessor,
                 userRepositoryMock,
                 lastfmScraperMock,
                 mockNotifyService
@@ -76,9 +80,7 @@ class LastfmTasteUpdatingServiceTest {
     @Test
     @DisplayName("If scrape took place not to long ago, should do nothing")
     void scrapeAfterJustScraped() {
-        Set<UserArtist> artists = Set.of(
-                new UserArtist()
-        );
+        Set<UserArtist> artists = Set.of(new UserArtist());
         user.setLastfmUsername("username");
         user.setLastLastFmScrape(LocalDateTime.now());
         user.setArtists(artists);
@@ -92,7 +94,7 @@ class LastfmTasteUpdatingServiceTest {
     }
 
     @Test
-    @DisplayName("Scrape should update user artists")
+    @DisplayName("Scrape should update user artists and notify of release")
     void testScrape() {
         user.setLastfmUsername("username");
         user.setLastLastFmScrape(LocalDateTime.now().minusDays(20));
@@ -106,9 +108,10 @@ class LastfmTasteUpdatingServiceTest {
         var userArtist = new UserArtist();
         userArtist.setArtist(stubArtist);
         userArtist.setUser(user);
-        when(userArtistFactoryMock.getOrCreateUserArtist(user, stubArtist)).thenReturn(userArtist);
         user.id = 1L;
         when(userRepositoryMock.findById(user.id)).thenReturn(user);
+        when(mockTasteScrapeArtistWeightPairProcessor.delegateProcessArtistWeightPair(eq(user), eq(stubArtist), anyFloat(), any()))
+                .thenReturn(userArtist);
 
         service.updateTaste(user.id);
 

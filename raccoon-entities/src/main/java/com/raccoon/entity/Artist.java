@@ -20,11 +20,14 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.netty.util.internal.StringUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import static com.raccoon.entity.Constants.SPOTIFY_ARTIST_URI_PATTERN;
 
 @Data
 @ToString
@@ -65,5 +68,18 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
     private Set<UserArtist> users = new HashSet<>();
+
+    public String getSpotifyUriId() {
+        if (StringUtil.isNullOrEmpty(spotifyUri)) {
+            return "";
+        }
+
+        if (!SPOTIFY_ARTIST_URI_PATTERN.matcher(spotifyUri).matches()) {
+            return "";
+        }
+
+        String[] parts = spotifyUri.split(":");
+        return parts[parts.length - 1];
+    }
 
 }

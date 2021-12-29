@@ -66,7 +66,6 @@ class MailTemplateRendererTest {
 
         assertEquals(1, mail.getTo().size());
         assertEquals(email, mail.getTo().get(0));
-        assertEquals(email, mail.getTo().get(0));
     }
 
     @Test
@@ -124,6 +123,5 @@ class MailTemplateRendererTest {
 
         assertThrows(TemplateException.class, () -> renderer.renderWelcomeMail(mockUser));
     }
-
 
 }

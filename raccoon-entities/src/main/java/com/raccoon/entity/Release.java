@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -21,6 +20,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import static com.raccoon.entity.Constants.SPOTIFY_RELEASE_URI_PATTERN;
 
 @Data
 @Entity(name = "Releases")
@@ -63,9 +64,8 @@ public class Release extends PanacheEntityBase implements Serializable {
         if (StringUtil.isNullOrEmpty(spotifyUri)) {
             return "";
         }
-        Pattern p = Pattern.compile("(spotify:album:[A-Za-z])\\w+");
 
-        if (!p.matcher(spotifyUri).matches()) {
+        if (!SPOTIFY_RELEASE_URI_PATTERN.matcher(spotifyUri).matches()) {
             return "";
         }
 
