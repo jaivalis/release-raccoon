@@ -73,7 +73,7 @@ public class NotifyService {
     }
 
     /**
-     * TODO Break into `boolean canNotifyUser` & `Uni<Void> notifyUser`
+     * Can be broken into `boolean canNotifyUser` & `Uni<Void> notifyUser`
      * @param user the user to notify
      * @param mightHaveNewReleases UserArtist associations that potentially have a release,
      *                             hasNewRelease will be marked `false` after the digest is sent.

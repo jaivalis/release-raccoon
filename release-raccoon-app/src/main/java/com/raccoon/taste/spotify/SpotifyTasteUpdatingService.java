@@ -95,23 +95,13 @@ public class SpotifyTasteUpdatingService implements TasteUpdatingService {
                         .stream()
                         .map(
                                 pair -> {
-//                                    var artist = artistWeightPair.left;
-//                                    var weight = artistWeightPair.right;
-//
-//                                    var userArtist = userArtistFactory.getOrCreateUserArtist(user, artist);
-//                                    userArtist.setWeight(weight);
-//
-//                                    if (artist.getCreateDate() == null || twoMinutesAgo.isAfter(artist.getCreateDate())) {
-//                                        // artist existed in the database prior, might have a release
-//                                        existingArtists.add(userArtist);
-//                                    }
-//
-//                                    return userArtist;
                                     var artist = pair.left;
                                     var weight = pair.right;
 
-                                    return tasteScrapeArtistWeightPairProcessor.delegateProcessArtistWeightPair(user, artist, weight, existingArtists);
-
+                                    return tasteScrapeArtistWeightPairProcessor
+                                            .delegateProcessArtistWeightPair(
+                                                    user, artist, weight, existingArtists
+                                            );
                                 }
                         ).collect(Collectors.toSet())
         );

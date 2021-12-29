@@ -70,7 +70,10 @@ public class LastfmTasteUpdatingService implements TasteUpdatingService {
                             var artist = pair.left;
                             var weight = pair.right;
 
-                            return tasteScrapeArtistWeightPairProcessor.delegateProcessArtistWeightPair(user, artist, weight, existingArtists);
+                            return tasteScrapeArtistWeightPairProcessor
+                                    .delegateProcessArtistWeightPair(
+                                            user, artist, weight, existingArtists
+                                    );
                         }).collect(Collectors.toSet())
         );
         user.setLastLastFmScrape(LocalDateTime.now());
