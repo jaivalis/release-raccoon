@@ -1,4 +1,4 @@
-package com.raccoon.templatedata.pojo;
+package com.raccoon.dto;
 
 import com.raccoon.entity.Artist;
 
@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ProfileContents {
+public class ProfileDto {
 
     private List<Artist> artistsFollowed;
     private boolean spotifyEnabled;
