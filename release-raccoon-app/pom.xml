@@ -84,6 +84,12 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-mutiny</artifactId>
+        </dependency>
+
+        <!-- Qute & UI -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-qute</artifactId>
         </dependency>
         <dependency>
@@ -93,6 +99,10 @@
         <dependency>
             <groupId>io.quarkus.qute</groupId>
             <artifactId>qute-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
         </dependency>
 
         <!-- database -->
@@ -150,6 +160,15 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- DBRider -->
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-cdi</artifactId>
+        </dependency>
 
         <!-- util -->
         <dependency>
@@ -188,14 +207,9 @@
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.html</include>
-                    <include>**/*.ico</include>
-                    <include>**/*.json</include>
-                    <include>**/*.sql</include>
-                    <include>**/*.svg</include>
-                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
             </resource>
         </resources>
 
@@ -208,13 +222,9 @@
             </testResource>
             <testResource>
                 <directory>${project.basedir}/src/test/resources</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.ico</include>
-                    <include>**/*.svg</include>
-                    <include>**/*.html</include>
-                    <include>**/*.json</include>
-                </includes>
+            </testResource>
+            <testResource>
+                <directory>${project.basedir}/src/main/java/resources/templates</directory>
             </testResource>
         </testResources>
 

@@ -3,18 +3,22 @@ package com.raccoon.entity;
 import com.raccoon.entity.factory.ArtistFactory;
 import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.entity.repository.UserRepository;
 
 public class UserArtistStubFactory {
 
-    UserArtistRepository repository;
+    UserArtistRepository userArtistRepository;
+    UserRepository userRepository;
     UserFactory userFactory;
     ArtistFactory artistFactory;
 
-    public UserArtistStubFactory(UserArtistRepository repository,
+    public UserArtistStubFactory(UserArtistRepository userArtistRepository,
                                  UserFactory userFactory,
+                                 UserRepository userRepository,
                                  ArtistFactory artistFactory) {
-        this.repository = repository;
+        this.userArtistRepository = userArtistRepository;
         this.userFactory = userFactory;
+        this.userRepository = userRepository;
         this.artistFactory = artistFactory;
     }
 
@@ -25,12 +29,13 @@ public class UserArtistStubFactory {
         var userArtist = new UserArtist();
         userArtist.setUser(user);
         userArtist.setArtist(artist);
-        repository.persist(userArtist);
+        userArtistRepository.persist(userArtist);
         return userArtist;
     }
 
     User stubUser(String email) {
-        return userFactory.getOrCreateUser(email);
+        return userRepository.findByEmailOptional(email)
+                .orElseGet(() -> userFactory.createUser(email));
     }
 
 

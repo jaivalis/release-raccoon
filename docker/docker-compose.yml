@@ -16,7 +16,8 @@ services:
       - ./db_init/:/docker-entrypoint-initdb.d
 
   keycloak:
-    image: quay.io/keycloak/keycloak:14.0.0
+#    image: quay.io/keycloak/keycloak:14.0.0
+    image: wizzn/keycloak:14
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin

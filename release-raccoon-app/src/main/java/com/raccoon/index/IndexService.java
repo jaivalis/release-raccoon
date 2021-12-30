@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 
-import static com.raccoon.templatedata.TemplateLoader.INDEX_TEMPLATE_ID;
+import static com.raccoon.templatedata.QuteTemplateLoader.INDEX_TEMPLATE_ID;
 
 @ApplicationScoped
 public class IndexService {

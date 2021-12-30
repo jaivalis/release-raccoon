@@ -2,15 +2,20 @@ package com.raccoon.taste.spotify;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
-import com.raccoon.entity.factory.UserArtistFactory;
+import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserRepository;
+import com.raccoon.notify.NotifyService;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
+import com.raccoon.taste.TasteScrapeArtistWeightPairProcessor;
+import com.raccoon.taste.TasteUpdatingService;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,26 +30,25 @@ import static com.raccoon.taste.Util.normalizeWeights;
 
 @Slf4j
 @ApplicationScoped
-public class SpotifyTasteUpdatingService {
+public class SpotifyTasteUpdatingService implements TasteUpdatingService {
+
+    final TasteScrapeArtistWeightPairProcessor tasteScrapeArtistWeightPairProcessor;
+    final UserRepository userRepository;
+    final SpotifyUserAuthorizer spotifyUserAuthorizer;
+    final SpotifyScraper spotifyScraper;
+    final NotifyService notifyService;
 
     @Inject
-    UserArtistFactory userArtistFactory;
-    @Inject
-    UserRepository userRepository;
-
-    @Inject
-    SpotifyUserAuthorizer spotifyUserAuthorizer;
-    @Inject
-    SpotifyScraper spotifyScraper;
-
-    public SpotifyTasteUpdatingService(final UserArtistFactory userArtistFactory,
+    public SpotifyTasteUpdatingService(final TasteScrapeArtistWeightPairProcessor tasteScrapeArtistWeightPairProcessor,
                                        final UserRepository userRepository,
                                        final SpotifyUserAuthorizer spotifyUserAuthorizer,
-                                       final SpotifyScraper spotifyScraper) {
-        this.userArtistFactory = userArtistFactory;
+                                       final SpotifyScraper spotifyScraper,
+                                       final NotifyService notifyService) {
+        this.tasteScrapeArtistWeightPairProcessor = tasteScrapeArtistWeightPairProcessor;
         this.userRepository = userRepository;
         this.spotifyUserAuthorizer = spotifyUserAuthorizer;
         this.spotifyScraper = spotifyScraper;
+        this.notifyService = notifyService;
     }
 
     /**
@@ -82,20 +86,39 @@ public class SpotifyTasteUpdatingService {
 
         final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(spotifyUserAuthorizer);
 
+        // Keep track of the artists that might be relevant to get updates from
+        // That is the ones that were already in the database.
+        final List<UserArtist> existingArtists = new ArrayList<>();
+
         user.setArtists(
                 normalizeWeights(spotifyTaste)
                         .stream()
-                        .map(pair -> {
-                            final var userArtist = userArtistFactory.getOrCreateUserArtist(user, pair.left);
-                            userArtist.setWeight(pair.right);
-                            return userArtist;
-                        }).collect(Collectors.toSet())
+                        .map(
+                                pair -> {
+                                    var artist = pair.left;
+                                    var weight = pair.right;
+
+                                    return tasteScrapeArtistWeightPairProcessor
+                                            .delegateProcessArtistWeightPair(
+                                                    user, artist, weight, existingArtists
+                                            );
+                                }
+                        ).collect(Collectors.toSet())
         );
         user.setSpotifyEnabled(true);
         user.setLastSpotifyScrape(LocalDateTime.now());
 
         userRepository.persist(user);
+
+        notifyForRecentReleases(user, existingArtists);
+
         return user;
+    }
+
+    @Override
+    public void notifyForRecentReleases(User user, Collection<UserArtist> userArtists) {
+        notifyService.notifySingleUser(user, userArtists)
+                .await().indefinitely();
     }
 
 }

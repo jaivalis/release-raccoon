@@ -1,7 +1,5 @@
 package com.raccoon.user;
 
-import com.raccoon.registration.RegisteringService;
-
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
@@ -33,26 +31,27 @@ import static com.raccoon.Constants.EMAIL_CLAIM;
 public class UserProfileResource {
 
     UserProfileService userProfileService;
-    RegisteringService registeringService;
     @IdToken
     JsonWebToken idToken;
 
     @Inject
-    public UserProfileResource(final UserProfileService userProfileService,
-                               final RegisteringService registeringService) {
+    public UserProfileResource(final UserProfileService userProfileService) {
         this.userProfileService = userProfileService;
-        this.registeringService = registeringService;
     }
 
+    /**
+     * Also called by the oidc service to complete the user registration.
+     * @return The rendered user profile qute-template
+     */
     @GET
     @NoCache
     @Produces(MediaType.TEXT_HTML)
     @Transactional
-    public Response registerCallback() {
+    public Response registrationCallback() {
         final String email = idToken.getClaim(EMAIL_CLAIM);
-        registeringService.completeRegistration(email);
+        userProfileService.completeRegistration(email);
 
-        return Response.ok(userProfileService.getTemplateInstance(email)).build();
+        return Response.ok(userProfileService.renderTemplateInstance(email)).build();
     }
 
     @Path("/unfollow/{artistId}")
@@ -66,7 +65,7 @@ public class UserProfileResource {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         userProfileService.unfollowArtist(email, artistId);
 
-        return Response.ok(userProfileService.getTemplateInstance(email)).build();
+        return Response.ok(userProfileService.renderTemplateInstance(email)).build();
     }
 
     @GET

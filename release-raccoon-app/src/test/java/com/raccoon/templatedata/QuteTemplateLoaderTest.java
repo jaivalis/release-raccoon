@@ -18,9 +18,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class TemplateLoaderTest {
+class QuteTemplateLoaderTest {
 
-    TemplateLoader loader;
+    QuteTemplateLoader loader;
 
     @Mock
     Engine mockEngine;
@@ -28,15 +28,17 @@ class TemplateLoaderTest {
     @BeforeEach
     public void setup() throws IOException {
         MockitoAnnotations.openMocks(this);
-        loader = new TemplateLoader(mockEngine);
+        loader = new QuteTemplateLoader(mockEngine);
     }
+
     @Test
     void onStartParsesAndLoadsTemplates() {
         loader.onStart(null);
 
-        verify(mockEngine, times(3)).parse(anyString());
-        verify(mockEngine, times(1)).putTemplate(eq(TemplateLoader.DIGEST_TEMPLATE_ID), any());
-        verify(mockEngine, times(1)).putTemplate(eq(TemplateLoader.INDEX_TEMPLATE_ID), any());
-        verify(mockEngine, times(1)).putTemplate(eq(TemplateLoader.PROFILE_TEMPLATE_ID), any());
+        verify(mockEngine, times(4)).parse(anyString());
+        verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.DIGEST_EMAIL_TEMPLATE_ID), any());
+        verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.INDEX_TEMPLATE_ID), any());
+        verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.PROFILE_TEMPLATE_ID), any());
+        verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.WELCOME_EMAIL_TEMPLATE_ID), any());
     }
 }

@@ -1,10 +1,16 @@
+# Artist 100 existed before the scrape
+# Artist 101 was created before the scrape
+# No association between User 100 and Artist 100 exists yet
+
 Artist:
   - artistId: 100
-    name: "artist1"
+    name: "existed before the scrape"
     spotifyUri: "uri1"
+    create_date: "[now-7d]"
   - artistId: 101
-    name: "artist2"
-    spotifyUri: "uri1"
+    name: "also existed before the scrape"
+    spotifyUri: "uri2"
+    create_date: "[now-7d]"
 
 ArtistRelease:
   - release_id: 100
@@ -14,6 +20,9 @@ Releases:
   - releaseId: 100
     name: "newRelease"
     type: "ALBUM"
+    # Make this a new release
+    releasedOn: "[now-1d]"
+    spotifyUri: "spotify:album:zzzzzz"
 
 User:
   - id: 100
@@ -25,11 +34,9 @@ User:
 
 UserArtist:
   - user_id: 100
-    artist_id: 100
-    hasNewRelease: true
-  - user_id: 100
     artist_id: 101
     hasNewRelease: false
+    weight: 0.69
   - user_id: 101
     artist_id: 101
     hasNewRelease: false

@@ -15,11 +15,13 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.netty.util.internal.StringUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import static com.raccoon.entity.Constants.SPOTIFY_RELEASE_URI_PATTERN;
 
 @Data
 @Entity(name = "Releases")
@@ -27,7 +29,6 @@ import lombok.ToString;
         @Index(columnList = "spotifyUri")
 })
 @NoArgsConstructor
-@RegisterForReflection
 public class Release extends PanacheEntityBase implements Serializable {
 
     @Id
@@ -57,6 +58,19 @@ public class Release extends PanacheEntityBase implements Serializable {
         return releases.stream()
                 .map(ArtistRelease::getArtist)
                 .toList();
+    }
+
+    public String getSpotifyUriId() {
+        if (StringUtil.isNullOrEmpty(spotifyUri)) {
+            return "";
+        }
+
+        if (!SPOTIFY_RELEASE_URI_PATTERN.matcher(spotifyUri).matches()) {
+            return "";
+        }
+
+        String[] parts = spotifyUri.split(":");
+        return parts[parts.length - 1];
     }
 
 }

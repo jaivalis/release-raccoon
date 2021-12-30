@@ -1,10 +1,12 @@
 package com.raccoon.notify;
 
 import com.raccoon.entity.Artist;
+import com.raccoon.entity.Release;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.mail.RaccoonMailer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,11 +16,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
+import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.smallrye.mutiny.Uni;
+
+import static java.util.Collections.emptyList;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,69 +39,126 @@ class NotifyServiceTest {
     @Mock
     UserArtistRepository mockUserArtistRepository;
     @Mock
-    MailingService mockMailingService;
+    RaccoonMailer mockMailer;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-    }
 
-    @Test
-    void notifyCronJob() {
-        NotifyService notifyService = mock(NotifyService.class);
-        doCallRealMethod().when(notifyService).notifyCronJob();
-
-        notifyService.notifyCronJob();
-
-        verify(notifyService, times(1)).notifyUsers();
+        notifyService = new NotifyService(
+                mockReleaseRepository,
+                mockUserArtistRepository,
+                mockMailer
+        );
     }
 
     @Test
     @DisplayName("Should notify nobody")
-    void notifyNobody() {
-        notifyService = new NotifyService(mockReleaseRepository, mockUserArtistRepository, mockMailingService);
+    void notifyUsersNotifyNobody() {
+        notifyService.notifyUsers();
 
-        final var usersNotified = notifyService.notifyUsers();
-
-        assertEquals(Collections.EMPTY_LIST, usersNotified);
+        verify(mockUserArtistRepository, times(0)).persist(anyList());
+        verify(mockUserArtistRepository, times(0)).persist(any(UserArtist.class));
     }
 
     @Test
-    @DisplayName("A sent message should result in the user getting returned")
-    void notifySingleUserSuccess() {
+    @DisplayName("Mail send success, user gets updated")
+    void notifyUsersSuccess() {
         User user = new User();
+        user.setEmail("email");
         Artist artist = new Artist();
         UserArtist ua = new UserArtist();
         ua.setUser(user);
         ua.setArtist(artist);
         when(mockUserArtistRepository.getUserArtistsWithNewRelease()).thenReturn(List.of(ua));
-        when(mockMailingService.send(any(), any(User.class), any())).thenReturn(Boolean.TRUE);
 
-        notifyService = new NotifyService(mockReleaseRepository, mockUserArtistRepository, mockMailingService);
-        final var usersNotified = notifyService.notifyUsers();
+        Uni<Boolean> uni = notifyService.notifyUsers();
 
-        assertEquals(1, usersNotified.size());
-        verify(mockMailingService, times(1)).send(any(), any(User.class), any());
-        verify(mockUserArtistRepository, times(1)).persist(any(Iterable.class));
+        var success = uni.await().atMost(Duration.ofSeconds(1));
+        assertTrue(success);
     }
 
     @Test
-    @DisplayName("A message send failure should result in the empty list returned")
-    void notifyUserFailure() {
+    @DisplayName("Mail send failure, no users modified")
+    void notifyUsersMailFailure() {
         User user = new User();
+        user.setEmail("email");
         Artist artist = new Artist();
         UserArtist ua = new UserArtist();
         ua.setUser(user);
         ua.setArtist(artist);
         when(mockUserArtistRepository.getUserArtistsWithNewRelease()).thenReturn(List.of(ua));
-        when(mockMailingService.send(any(), any(User.class), any())).thenReturn(Boolean.FALSE);
+        Uni<Void> failedUni = Uni.createFrom().failure(IllegalArgumentException::new);
+        when(mockMailer.sendDigest(eq(user), anyList(), any(), any())).thenReturn(failedUni);
 
-        notifyService = new NotifyService(mockReleaseRepository, mockUserArtistRepository, mockMailingService);
-        final var usersNotified = notifyService.notifyUsers();
+        Uni<Boolean> uni = notifyService.notifyUsers();
 
-        assertEquals(0, usersNotified.size());
-        verify(mockMailingService, times(1)).send(any(), any(User.class), any());
-        verify(mockUserArtistRepository, times(0)).persist(any(Iterable.class));
+        var success = uni.await().atMost(Duration.ofSeconds(1));
+        assertFalse(success);
+    }
+
+    @Test
+    @DisplayName("notifySingleUser(), 1 mail to send")
+    void notifySingleUserMailSent() {
+        User user = new User();
+        user.setEmail("email");
+        Artist artist = new Artist();
+        UserArtist ua = new UserArtist();
+        ua.setUser(user);
+        ua.setArtist(artist);
+        Uni<Void> failedUni = Uni.createFrom().failure(IllegalArgumentException::new);
+        when(mockMailer.sendDigest(eq(user), anyList(), any(), any())).thenReturn(failedUni);
+        Release release = new Release();
+        Collection<UserArtist> mightHaveNewReleases = List.of(ua);
+        when(mockReleaseRepository.findByArtistsSinceDays(anySet(), anyInt())).thenReturn(List.of(release));
+
+        notifyService.notifySingleUser(user, mightHaveNewReleases);
+
+        verify(mockMailer, times(1)).sendDigest(eq(user), eq(List.of(release)), any(), any());
+    }
+
+    @Test
+    @DisplayName("notifySingleUser(), no mails sent")
+    void notifySingleUserNoMail() {
+        User user = new User();
+        user.setEmail("email");
+        Artist artist = new Artist();
+        UserArtist ua = new UserArtist();
+        ua.setUser(user);
+        ua.setArtist(artist);
+        Collection<UserArtist> mightHaveNewReleases = List.of(ua);
+        when(mockReleaseRepository.findByArtistsSinceDays(anySet(), anyInt())).thenReturn(emptyList());
+
+        notifyService.notifySingleUser(user, mightHaveNewReleases);
+
+        verify(mockMailer, never()).sendDigest(any(), anyList(), any(), any());
+    }
+
+    @Test
+    @DisplayName("successCallback should not update any UserArtist")
+    void successCallbackUpdatesUserArtist() {
+        User user = new User();
+        user.setEmail("email");
+        Artist artist = new Artist();
+        UserArtist ua = new UserArtist();
+        ua.setUser(user);
+        ua.setArtist(artist);
+
+        notifyService.mailSuccessCallback(user, List.of(ua));
+
+        assertFalse(ua.getHasNewRelease());
+        verify(mockUserArtistRepository, times(1)).persist(anyList());
+    }
+
+    @Test
+    @DisplayName("failCallback should not update any UserArtist")
+    void failCallbackUpdatesUserArtist() {
+        User user = new User();
+
+        notifyService.mailFailureCallback(user);
+
+        verify(mockUserArtistRepository, never()).persist(anyList());
+        verify(mockUserArtistRepository, never()).persist(any(UserArtist.class));
     }
 
 }

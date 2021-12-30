@@ -14,13 +14,16 @@ Releases:
   - releaseId: 100
     name: "newRelease"
     type: "ALBUM"
+    # Make this a new release
+    releasedOn: "[now-1d]"
+    spotifyUri: "spotify:album:zzzzzz"
 
 User:
   - id: 100
-    email: "user1@mail.com"
+    email: "user100@mail.com"
     lastfmUsername: "username1"
   - id: 101
-    email: "user2@mail.com"
+    email: "user101@mail.com"
     lastfmUsername: "username2"
 
 UserArtist:

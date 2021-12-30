@@ -14,6 +14,9 @@
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
 
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
         <!-- sonar -->
         <sonar.organization>jaivalis</sonar.organization>
         <sonar.projectKey>jaivalis_release-raccoon</sonar.projectKey>

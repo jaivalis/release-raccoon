@@ -1,5 +1,11 @@
 # ReleaseRaccoon
-A music release newsletter application built on quarkus.
+---
+
+![Github Actions build](https://github.com/jaivalis/release-raccoon/actions/workflows/build.yml/badge.svg)
+[![Known Vulnerabilities](https://snyk.io/test/github/jaivalis/release-raccoon/badge.svg)](https://snyk.io/test/github/jaivalis/release-raccoon)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jaivalis_release-raccoon&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jaivalis_release-raccoon)
+
+A music release newsletter application built with quarkus.
 
 ## Running the application in dev mode
 

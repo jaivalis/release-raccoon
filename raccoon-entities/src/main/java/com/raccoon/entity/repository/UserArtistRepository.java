@@ -37,7 +37,7 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         return collect;
     }
 
-    public Optional<UserArtist> findByUserArtistOptional(final Long userId, final Long artistId) {
+    public Optional<UserArtist> findByUserIdArtistIdOptional(final Long userId, final Long artistId) {
         return find("(user_id = ?1 and artist_id = ?2)", userId, artistId).stream().findAny();
     }
 
