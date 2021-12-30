@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+#############################################################################
+# Builds the docker image and deploys it on heroku                          #
+# Pre-step: an executable *-runner binary needs to be present in build      #
+# Run this script from the root of the project:                             #
+#                                                                           #
+# $> ./build/build-and-deploy.sh                                            #
+#############################################################################
+
 # exit when any command fails
 set -e
 
@@ -7,7 +15,7 @@ set -e
 set -x
 
 echo "Copying new executable..."
-cp /Users/jaivalis/Workspace/os/jaivalis/release-raccoon/build/release-raccoon-app-0.0.1-SNAPSHOT-runner ./docker/raccoon
+cp ./build/release-raccoon-app-0.0.1-SNAPSHOT-runner ./docker/raccoon
 
 pushd docker
 
