@@ -12,12 +12,14 @@
 
     <artifactId>parent</artifactId>
     <name>parent</name>
+    <description>Dependency Management Module</description>
 
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
-        <maven.compiler.release>16</maven.compiler.release>
+        <!-- Fixes Qute template issue:
+             https://github.com/quarkusio/quarkus/issues/11091 -->
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -25,7 +27,7 @@
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>2.4.1.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.6.1.Final</quarkus.platform.version>
 
         <!-- Native image build fixes -->
         <jboss-jacc.version>1.0.2.Final</jboss-jacc.version>
@@ -107,6 +109,11 @@
             <dependency>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-arc</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-resteasy</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
             <dependency>
@@ -323,6 +330,11 @@
 
             <!-- util -->
             <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-jackson</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
@@ -344,11 +356,6 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
-                    <configuration>
-                        <!-- Fixes Qute template issue:
-                             https://github.com/quarkusio/quarkus/issues/11091 -->
-                        <parameters>true</parameters>
-                    </configuration>
                 </plugin>
 
                 <plugin>

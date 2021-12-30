@@ -1,5 +1,7 @@
 package com.raccoon.entity;
 
+import com.raccoon.common.util.StringUtil;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,7 +17,6 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import io.netty.util.internal.StringUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.NoArgsConstructor;
