@@ -22,6 +22,11 @@
         <!-- submodules: added for root aggregate pom -->
         <dependency>
             <groupId>com.raccoon</groupId>
+            <artifactId>raccoon-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.raccoon</groupId>
             <artifactId>raccoon-entities</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -42,11 +47,6 @@
         <dependencies>
 
             <!-- submodules -->
-            <dependency>
-                <groupId>com.raccoon</groupId>
-                <artifactId>raccoon-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.raccoon</groupId>
                 <artifactId>raccoon-entities</artifactId>
