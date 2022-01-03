@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static java.util.Collections.EMPTY_LIST;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
@@ -43,7 +44,7 @@ class RaccoonLastfmApiTest {
         try (MockedStatic<User> mocked = mockStatic(User.class)) {
             var username = "username";
             mocked.when(() -> User.getTopArtists(anyString(), any(Period.class), anyString()))
-                    .thenReturn(null);
+                    .thenReturn(EMPTY_LIST);
 
             api.getUserTopArtists(username, period);
 
@@ -56,7 +57,7 @@ class RaccoonLastfmApiTest {
         try (MockedStatic<Artist> mocked = mockStatic(Artist.class)) {
             var artistName = "an Artist";
             mocked.when(() -> Artist.search(anyString(), anyString()))
-                    .thenReturn(null);
+                    .thenReturn(EMPTY_LIST);
 
             api.searchArtist(artistName);
 
