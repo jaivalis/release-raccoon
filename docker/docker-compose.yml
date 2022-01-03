@@ -16,7 +16,9 @@ services:
       - ./db_init/:/docker-entrypoint-initdb.d
 
   keycloak:
+    # For amd64 CPUs:
 #    image: quay.io/keycloak/keycloak:14.0.0
+    # For arm CPUs:
     image: wizzn/keycloak:14
     environment:
       KEYCLOAK_USER: admin
@@ -26,3 +28,13 @@ services:
       - ${KEYCLOAK_PORT}:8080
     volumes:
       - ./keycloak_init/:/tmp/keycloak_init
+
+  raccoon-elasticsearch:
+    # For amd64 CPUs:
+#    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    # For arm CPUs:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2-arm64
+    environment:
+      discovery.type: single-node
+    ports:
+      - ${ELASTIC_PORT}:9200

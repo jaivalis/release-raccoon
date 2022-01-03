@@ -159,6 +159,12 @@
                 <artifactId>quarkus-resteasy-mutiny</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
+            <!-- Search -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-hibernate-search-orm-elasticsearch</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
 
             <!-- Qute & UI -->
             <dependency>

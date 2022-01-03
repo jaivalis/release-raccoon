@@ -8,3 +8,8 @@
 * Look into @Location as replacement for [QuteTemplateLoader](release-raccoon-app/src/main/java/com/raccoon/templatedata/QuteTemplateLoader.java)
 * Per DomainDrivenDesign book getOrCreate is an anti-pattern. It is useful to know whether the entity existed or was just created. Separate those.
 
+# Additional Integrations
+* Add integrations:
+  * [bandcamp](https://bandcamp.com) (release scraper)
+  * [Rate Your Music](https://rateyourmusic.com) (release/taste scrape)
+
