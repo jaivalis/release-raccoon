@@ -3,6 +3,7 @@ package com.raccoon;
 import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.release.ReleaseScrapeResource;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -43,6 +45,7 @@ import static org.mockito.ArgumentMatchers.any;
 @TestHTTPEndpoint(ReleaseScrapeResource.class)
 @DBRider
 @DBUnit(caseSensitiveTableNames = true)
+@QuarkusTestResource(ElasticSearchTestResource.class)
 class ReleaseScrapeResourceIT {
 
     @Inject

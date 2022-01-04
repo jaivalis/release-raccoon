@@ -14,6 +14,16 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <dependencies>
+        <!-- submodules -->
+        <!-- test-jar important here such that test classes can be imported
+     see: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html -->
+        <dependency>
+            <groupId>com.raccoon</groupId>
+            <artifactId>raccoon-common</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
         <!-- quarkus -->
         <dependency>
             <groupId>io.quarkus</groupId>

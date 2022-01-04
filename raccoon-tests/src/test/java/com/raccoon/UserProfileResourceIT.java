@@ -1,5 +1,6 @@
 package com.raccoon;
 
+import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.user.UserProfileResource;
@@ -15,6 +16,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import io.quarkus.mailer.MockMailbox;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -32,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Testcontainers
 @TestMethodOrder(OrderAnnotation.class)
 @TestHTTPEndpoint(UserProfileResource.class)
+@QuarkusTestResource(ElasticSearchTestResource.class)
 @Transactional
 class UserProfileResourceIT {
 

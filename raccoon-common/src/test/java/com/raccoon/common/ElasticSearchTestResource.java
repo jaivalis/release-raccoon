@@ -1,5 +1,4 @@
-package com.raccoon.entity.resources;
-
+package com.raccoon.common;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -74,5 +73,4 @@ public class ElasticSearchTestResource implements QuarkusTestResourceLifecycleMa
             // Ignored
         }
     }
-
 }

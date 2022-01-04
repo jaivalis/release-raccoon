@@ -51,6 +51,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
         <failsafe-plugin.version>3.0.0-M5</failsafe-plugin.version>
+        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 
         <jandex-maven-plugin.version>1.1.0</jandex-maven-plugin.version>
@@ -72,6 +73,15 @@
                 <groupId>com.raccoon</groupId>
                 <artifactId>raccoon-common</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <!-- test-jar important here such that test classes can be imported
+                 see: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html -->
+            <dependency>
+                <groupId>com.raccoon</groupId>
+                <artifactId>raccoon-common</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.raccoon</groupId>
@@ -391,6 +401,12 @@
                     <groupId>org.jboss.jandex</groupId>
                     <artifactId>jandex-maven-plugin</artifactId>
                     <version>${jandex-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
                 </plugin>
 
             </plugins>

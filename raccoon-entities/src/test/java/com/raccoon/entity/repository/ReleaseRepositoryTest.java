@@ -1,9 +1,9 @@
 package com.raccoon.entity.repository;
 
+import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
-import com.raccoon.entity.resources.ElasticSearchTestResource;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
