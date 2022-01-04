@@ -3,9 +3,11 @@ package com.raccoon.entity.repository;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
+import com.raccoon.entity.resources.ElasticSearchTestResource;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
+@QuarkusTestResource(ElasticSearchTestResource.class)
+@Testcontainers
 class ReleaseRepositoryTest {
 
     @Inject

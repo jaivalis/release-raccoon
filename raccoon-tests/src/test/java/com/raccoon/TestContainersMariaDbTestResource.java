@@ -2,7 +2,6 @@ package com.raccoon;
 
 import org.testcontainers.containers.MariaDBContainer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -17,10 +16,15 @@ public class TestContainersMariaDbTestResource {
 
         @Override
         public Map<String, String> start() {
-            this.mariaDbContainer = new MariaDBContainer<>("mariadb:latest");//.withDatabaseName("test");
+            this.mariaDbContainer = new MariaDBContainer<>("mariadb:latest");
             mariaDbContainer.start();
 
-            return configutationParameters();
+            return Map.of(
+                    "quarkus.datasource.jdbc.url", this.mariaDbContainer.getJdbcUrl(),
+                    "quarkus.datasource.username", this.mariaDbContainer.getUsername(),
+                    "quarkus.datasource.password", this.mariaDbContainer.getPassword(),
+                    "quarkus.hibernate-orm.database.generation", "drop-and-create"
+            );
         }
 
         @Override
@@ -30,15 +34,5 @@ public class TestContainersMariaDbTestResource {
             }
         }
 
-        private Map<String, String> configutationParameters() {
-            final Map<String, String> conf = new HashMap<>();
-            conf.put("quarkus.datasource.jdbc.url", this.mariaDbContainer.getJdbcUrl());
-            conf.put("quarkus.datasource.username", this.mariaDbContainer.getUsername());
-            conf.put("quarkus.datasource.password", this.mariaDbContainer.getPassword());
-
-            conf.put("quarkus.hibernate-orm.database.generation", "drop-and-create");
-
-            return conf;
-        }
     }
 }
