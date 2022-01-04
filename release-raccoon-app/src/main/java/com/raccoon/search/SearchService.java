@@ -3,6 +3,7 @@ package com.raccoon.search;
 import com.raccoon.entity.Artist;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
 import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.ArtistDtoProjector;
 import com.raccoon.search.dto.ArtistSearchResponse;
 
 import org.hibernate.search.mapper.orm.session.SearchSession;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -19,16 +21,20 @@ import io.quarkus.runtime.StartupEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@ApplicationScoped
 public class SearchService {
 
     final SearchSession searchSession;
     final RaccoonLastfmApi lastfmApi;
+    final ArtistDtoProjector artistDtoProjector;
 
     @Inject
     public SearchService(final SearchSession searchSession,
-                         final RaccoonLastfmApi lastfmApi) {
+                         final RaccoonLastfmApi lastfmApi,
+                         final ArtistDtoProjector artistDtoProjector) {
         this.searchSession = searchSession;
         this.lastfmApi = lastfmApi;
+        this.artistDtoProjector = artistDtoProjector;
     }
 
     @Transactional
@@ -53,7 +59,7 @@ public class SearchService {
         var fromDb = searchDb(pattern, size);
         var fromLastfm = lastfmApi.searchArtist(pattern)
                 .stream()
-                .map(ArtistDto::new)
+                .map(artistDtoProjector::project)
                 .collect(Collectors.toSet());
 
         log.info("Found {} in db, {} in lastfm", fromDb.size(), fromLastfm.size());
@@ -77,7 +83,7 @@ public class SearchService {
 //                .sort(f -> f.field("name_sort"))
                 .fetchHits(size.orElse(20))
                 .stream()
-                .map(ArtistDto::new)
+                .map(artistDtoProjector::project)
                 .collect(Collectors.toSet());
     }
 }
