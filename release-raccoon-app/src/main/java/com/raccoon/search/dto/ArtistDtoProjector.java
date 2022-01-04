@@ -4,9 +4,12 @@ import com.raccoon.entity.Artist;
 
 import de.umass.lastfm.ImageSize;
 
+import javax.enterprise.context.ApplicationScoped;
+
 /**
  * Makes a projection of Artist objects to be returned as search results
  */
+@ApplicationScoped
 public class ArtistDtoProjector {
 
     public ArtistDto project(Artist artist) {
