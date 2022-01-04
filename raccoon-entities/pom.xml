@@ -15,6 +15,10 @@
 
     <dependencies>
         <!-- submodules -->
+        <dependency>
+            <groupId>com.raccoon</groupId>
+            <artifactId>raccoon-common</artifactId>
+        </dependency>
         <!-- test-jar important here such that test classes can be imported
      see: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html -->
         <dependency>

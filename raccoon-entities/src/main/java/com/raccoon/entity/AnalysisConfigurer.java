@@ -1,5 +1,7 @@
 package com.raccoon.entity;
 
+import com.raccoon.common.ExcludeFromJacocoGeneratedReport;
+
 import org.hibernate.search.backend.elasticsearch.analysis.ElasticsearchAnalysisConfigurationContext;
 import org.hibernate.search.backend.elasticsearch.analysis.ElasticsearchAnalysisConfigurer;
 
@@ -8,6 +10,7 @@ import javax.inject.Named;
 
 @Dependent
 @Named("raccoonAnalysisConfigurer")
+@ExcludeFromJacocoGeneratedReport
 public class AnalysisConfigurer implements ElasticsearchAnalysisConfigurer {
 
     @Override
