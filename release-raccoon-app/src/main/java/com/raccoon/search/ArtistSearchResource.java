@@ -13,8 +13,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@ApplicationScoped
+import io.quarkus.security.Authenticated;
+
 @Path("/artist")
+@ApplicationScoped
+@Authenticated
 public class ArtistSearchResource {
 
     final SearchService searchService;

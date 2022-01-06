@@ -2,8 +2,6 @@ package com.raccoon.search.dto;
 
 import com.raccoon.entity.Artist;
 
-import de.umass.lastfm.ImageSize;
-
 import javax.enterprise.context.ApplicationScoped;
 
 /**
@@ -18,7 +16,6 @@ public class ArtistDtoProjector {
                 .name(artist.getName())
                 .lastfmUri(artist.getLastfmUri())
                 .spotifyUri(artist.getSpotifyUri())
-                .imageUri("")
                 .build();
     }
 
@@ -28,7 +25,6 @@ public class ArtistDtoProjector {
                 .name(artist.getName())
                 .lastfmUri(artist.getUrl())
                 .spotifyUri("")
-                .imageUri(artist.getImageURL(ImageSize.SMALL))
                 .build();
     }
 

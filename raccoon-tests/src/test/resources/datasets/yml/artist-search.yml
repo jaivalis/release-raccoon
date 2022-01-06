@@ -1,0 +1,38 @@
+Artist:
+  - artistId: 100
+    name: "led zeppeling"
+    spotifyUri: "uri1"
+  - artistId: 101
+    name: "Zapp Franka"
+    spotifyUri: "uri2"
+  - artistId: 102
+    name: "put metheny"
+    spotifyUri: "uri3"
+
+  - artistId: 103
+    name: "vangelio"
+    spotifyUri: "uri3"
+  - artistId: 104
+    name: "krs-two"
+    spotifyUri: "uri4"
+  - artistId: 105
+    name: "me-roy"
+    spotifyUri: "uri5"
+  - artistId: 106
+    name: "philip grass"
+    spotifyUri: "uri6"
+  - artistId: 107
+    name: "kanye east"
+    spotifyUri: "uri7"
+  - artistId: 108
+    name: "min Romeo"
+    spotifyUri: "uri8"
+  - artistId: 109
+    name: "Inner Kamoze"
+    spotifyUri: "uri9"
+  - artistId: 110
+    name: "Beta Blondy"
+    spotifyUri: "uri10"
+  - artistId: 111
+    name: "philip stone"
+    spotifyUri: "uri11"

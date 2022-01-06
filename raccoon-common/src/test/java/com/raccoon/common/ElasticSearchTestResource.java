@@ -55,7 +55,9 @@ public class ElasticSearchTestResource implements QuarkusTestResourceLifecycleMa
             return Map.of(
                     "quarkus.hibernate-search-orm.elasticsearch.version", "7",
                     "quarkus.hibernate-search-orm.elasticsearch.hosts", host + ":" + port,
-                    "quarkus.hibernate-search-orm.elasticsearch.analysis.configurer", "bean:raccoonAnalysisConfigurer"
+                    "quarkus.hibernate-search-orm.elasticsearch.analysis.configurer", "bean:raccoonAnalysisConfigurer",
+                    "quarkus.hibernate-search-orm.schema-management.strategy", "drop-and-create",
+                    "quarkus.hibernate-search-orm.automatic-indexing.synchronization.strategy", "sync"
             );
 
         } catch (Exception e) {

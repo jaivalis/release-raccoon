@@ -11,6 +11,5 @@ public class ArtistDto {
     private final String name;
     private final String lastfmUri;
     private final String spotifyUri;
-    private final String imageUri;
 
 }
