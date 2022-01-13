@@ -5,9 +5,12 @@ import com.raccoon.search.ArtistSearcher;
 import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.search.dto.ArtistDtoProjector;
 
+import de.umass.lastfm.Artist;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,8 +30,11 @@ public class LastfmSearcher implements ArtistSearcher {
 
     @Override
     public Collection<ArtistDto> searchArtist(String pattern, Optional<Integer> size) {
-        return lastfmApi.searchArtist(pattern)
-                .stream()
+        Stream<Artist> lastfmArtistStream = lastfmApi.searchArtist(pattern).stream();
+        if (size.isPresent()) {
+            lastfmArtistStream = lastfmArtistStream.limit(size.get());
+        }
+        return lastfmArtistStream
                 .map(artistDtoProjector::project)
                 .collect(Collectors.toSet());
     }

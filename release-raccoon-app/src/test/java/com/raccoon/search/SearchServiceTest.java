@@ -19,7 +19,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 class SearchServiceTest {
 
     SearchService service;
-    
+
     @Mock
     HibernateSearcher mockHibernateSearcher;
     @Mock
@@ -36,7 +36,7 @@ class SearchServiceTest {
         var pattern = "pattern";
         var size = Optional.of(10);
 
-        service.searchArtists(pattern, Optional.of(10));
+        service.searchArtists(pattern, size);
 
         verify(mockHibernateSearcher, times(1)).searchArtist(pattern, size);
         verify(mockLastfmSearcher, times(1)).searchArtist(pattern, size);

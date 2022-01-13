@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +68,37 @@ class LastfmSearcherTest {
 
         verify(mockLastfmApi, times(1)).searchArtist(pattern);
         verify(mockArtistDtoProjector, never()).project(any(Artist.class));
+    }
+
+
+    @Test
+    @DisplayName("searchArtists() should limit")
+    void searchArtistsShouldLimit() {
+        var pattern = "pattern";
+        var size = Optional.of(10);
+        Collection<Artist> twentyArtists = IntStream.range(0, 20)
+                .mapToObj(i -> Mockito.mock(Artist.class))
+                .toList();
+        when(mockLastfmApi.searchArtist(pattern)).thenReturn(twentyArtists);
+
+        searcher.searchArtist(pattern, size);
+
+        verify(mockArtistDtoProjector, times(size.get())).project(any(Artist.class));
+    }
+
+    @Test
+    @DisplayName("searchArtists() should not limit")
+    void searchArtistsShouldNotLimit() {
+        var pattern = "pattern";
+        Collection<Artist> twentyArtists = IntStream.range(0, 20)
+                .mapToObj(i -> Mockito.mock(Artist.class))
+                .toList();
+        Optional<Integer> empty = Optional.empty();
+        when(mockLastfmApi.searchArtist(pattern)).thenReturn(twentyArtists);
+
+        searcher.searchArtist(pattern, empty);
+
+        verify(mockArtistDtoProjector, times(20)).project(any(Artist.class));
     }
 
 }

@@ -7,6 +7,9 @@
 * `Delete account` functionality
 * Look into @Location as replacement for [QuteTemplateLoader](release-raccoon-app/src/main/java/com/raccoon/templatedata/QuteTemplateLoader.java)
 * Per DomainDrivenDesign book getOrCreate is an anti-pattern. It is useful to know whether the entity existed or was just created. Separate those.
+* Separate the domain from the Controllers and the Quarkus Qute dependencies
+* Create DTOs for every Entity class (Decouple)
+* Cucumber tests
 
 # Additional Integrations
 * Add integrations:
