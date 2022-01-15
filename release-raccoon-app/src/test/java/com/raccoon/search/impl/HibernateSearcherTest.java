@@ -1,16 +1,19 @@
 package com.raccoon.search.impl;
 
+import com.raccoon.Constants;
 import com.raccoon.entity.Artist;
 import com.raccoon.search.dto.ArtistDtoProjector;
 
 import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -31,6 +34,12 @@ class HibernateSearcherTest {
     @BeforeEach
     void setUp() {
         searcher = new HibernateSearcher(mockSearchSession, mockArtistDtoProjector);
+    }
+
+    @Test
+    @DisplayName("Some artists returned")
+    void searcherId() {
+        assertEquals(Constants.HIBERNATE_SEARCHER_ID, searcher.getSearcherId());
     }
 
     @Test

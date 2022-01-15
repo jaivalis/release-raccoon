@@ -8,6 +8,12 @@ import java.util.Optional;
 public interface ArtistSearcher {
 
     /**
+     * Used to identify the results in the dynamically generated ArtistSearchResponse dto
+     * @return unique searcher id
+     */
+    String getSearcherId();
+
+    /**
      * Search for an artist against available Searchers
      * @param pattern pattern to match artist name against
      * @param size search limit per resource (database and lastfm)

@@ -1,5 +1,6 @@
 package com.raccoon.search.impl;
 
+import com.raccoon.Constants;
 import com.raccoon.entity.Artist;
 import com.raccoon.search.ArtistSearcher;
 import com.raccoon.search.dto.ArtistDto;
@@ -40,6 +41,11 @@ public class HibernateSearcher implements ArtistSearcher {
                 .threadsToLoadObjects(2)
                 .batchSizeToLoadObjects(25)
                 .start();
+    }
+
+    @Override
+    public String getSearcherId() {
+        return Constants.HIBERNATE_SEARCHER_ID;
     }
 
     @Override

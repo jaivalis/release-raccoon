@@ -11,9 +11,7 @@ import com.raccoon.search.ArtistSearchResource;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mockito;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -24,6 +22,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -42,11 +41,11 @@ import static org.mockito.Mockito.when;
 @Slf4j
 @QuarkusTest
 @Testcontainers
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestHTTPEndpoint(ArtistSearchResource.class)
 @DBRider
 @DBUnit(caseSensitiveTableNames = true)
 @QuarkusTestResource(ElasticSearchTestResource.class)
+@TestTransaction
 class ArtistSearchResourceIT {
 
     final static String EXISTING_USERNAME = "authenticated";
@@ -88,8 +87,10 @@ class ArtistSearchResourceIT {
                 .then()
                 .statusCode(SC_OK)
                 .assertThat()
-                .body("fromDb.size()", is(1),
-                        "fromDb[0].name", equalTo("Zapp Franka"));
+                .body(
+                        "artistsPerResource.fromDb.size()", is(1),
+                        "artistsPerResource.fromDb[0].name", equalTo("Zapp Franka")
+                );
     }
 
     @Test
@@ -113,10 +114,10 @@ class ArtistSearchResourceIT {
                 .statusCode(SC_OK)
                 .assertThat()
                 .body(
-                        "fromDb.size()", is(2),
-                        "fromDb.name", hasItems( "philip grass", "philip stone"),
-                        "fromLastfm.size()", is(1),
-                        "fromLastfm", hasItem(
+                        "artistsPerResource.fromDb.size()", is(2),
+                        "artistsPerResource.fromDb.name", hasItems( "philip grass", "philip stone"),
+                        "artistsPerResource.fromLastfm.size()", is(1),
+                        "artistsPerResource.fromLastfm", hasItem(
                                 allOf(
                                         hasEntry("name", "Philip Glass")
                                 )
@@ -136,6 +137,6 @@ class ArtistSearchResourceIT {
                 .then()
                 .statusCode(SC_OK)
                 .assertThat()
-                .body("fromDb.size()", is(0));
+                .body("artistsPerResource.fromDb.size()", is(0));
     }
 }

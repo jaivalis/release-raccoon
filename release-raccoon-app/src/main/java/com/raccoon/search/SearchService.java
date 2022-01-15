@@ -1,12 +1,16 @@
 package com.raccoon.search;
 
+import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.search.dto.ArtistSearchResponse;
-import com.raccoon.search.impl.HibernateSearcher;
-import com.raccoon.search.impl.LastfmSearcher;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,14 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class SearchService {
 
-    final HibernateSearcher hibernateSearcher;
-    final LastfmSearcher lastfmSearcher;
+    final List<ArtistSearcher> searchers;
 
     @Inject
-    public SearchService(final HibernateSearcher hibernateSearcher,
-                         final LastfmSearcher lastfmSearcher) {
-        this.hibernateSearcher = hibernateSearcher;
-        this.lastfmSearcher = lastfmSearcher;
+    public SearchService(final Instance<ArtistSearcher> searchers) {
+        this.searchers = searchers.stream().toList();
+        log.info("Found {} artist searchers in classpath", this.searchers.size());
     }
 
     /**
@@ -31,17 +33,24 @@ public class SearchService {
      * @param size search limit per resource (database and lastfm)
      * @return ArtistSearchResponse
      */
-    public ArtistSearchResponse searchArtists(String pattern,
-                                              Optional<Integer> size) {
+    public ArtistSearchResponse searchArtists(final String pattern,
+                                              final Optional<Integer> size) {
         log.info("Searching for artist {}", pattern);
 
-        var fromDb = hibernateSearcher.searchArtist(pattern, size);
-        var fromLastfm = lastfmSearcher.searchArtist(pattern, size);
-        log.info("Search hits: {} in db, {} in lastfm", fromDb.size(), fromLastfm.size());
+        Map<String, Collection<ArtistDto>> artistsPerResource = new HashMap<>();
+
+        searchers.parallelStream().forEach(
+                searcher -> {
+                    var searcherId = searcher.getSearcherId();
+                    var results = searcher.searchArtist(pattern, size);
+                    log.info("Search hits, source `{}`: {} ", searcherId, results);
+
+                    artistsPerResource.put(searcherId, results);
+                }
+        );
 
         return ArtistSearchResponse.builder()
-                .fromDb(fromDb)
-                .fromLastfm(fromLastfm)
+                .artistsPerResource(artistsPerResource)
                 .build();
     }
 

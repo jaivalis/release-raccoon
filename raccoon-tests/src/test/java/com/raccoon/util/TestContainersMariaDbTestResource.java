@@ -1,4 +1,4 @@
-package com.raccoon;
+package com.raccoon.util;
 
 import org.testcontainers.containers.MariaDBContainer;
 

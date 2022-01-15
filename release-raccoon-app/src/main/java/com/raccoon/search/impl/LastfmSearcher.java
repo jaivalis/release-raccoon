@@ -1,5 +1,6 @@
 package com.raccoon.search.impl;
 
+import com.raccoon.Constants;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
 import com.raccoon.search.ArtistSearcher;
 import com.raccoon.search.dto.ArtistDto;
@@ -26,6 +27,11 @@ public class LastfmSearcher implements ArtistSearcher {
                           final ArtistDtoProjector artistDtoProjector) {
         this.lastfmApi = lastfmApi;
         this.artistDtoProjector = artistDtoProjector;
+    }
+
+    @Override
+    public String getSearcherId() {
+        return Constants.LASTFM_SEARCHER_ID;
     }
 
     @Override

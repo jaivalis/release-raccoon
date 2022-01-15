@@ -1,5 +1,6 @@
 package com.raccoon.search.impl;
 
+import com.raccoon.Constants;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
 import com.raccoon.search.dto.ArtistDtoProjector;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -38,6 +40,12 @@ class LastfmSearcherTest {
     @BeforeEach
     void setUp() {
         searcher = new LastfmSearcher(mockLastfmApi, mockArtistDtoProjector);
+    }
+
+    @Test
+    @DisplayName("Some artists returned")
+    void searcherId() {
+        assertEquals(Constants.LASTFM_SEARCHER_ID, searcher.getSearcherId());
     }
 
     @Test

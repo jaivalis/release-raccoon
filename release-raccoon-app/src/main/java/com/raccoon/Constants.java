@@ -15,4 +15,7 @@ public class Constants {
     public static final String RELEASE_SCRAPE_RESPONSE_SUCCESS_TEMPLATE = "Successfully scraped %d releases";
     public static final String RELEASE_SCRAPE_RESPONSE_FAILURE_TEMPLATE = "Failed to scrape new releases. Cause: %s";
 
+    // Searcher IDs
+    public static final String HIBERNATE_SEARCHER_ID = "fromDb";
+    public static final String LASTFM_SEARCHER_ID = "fromLastfm";
 }
