@@ -4,7 +4,22 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Bootstrap -->
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
     <link rel="icon" type="image/ico" href="images/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap" rel="stylesheet">
+
+    <!-- Searchable artists -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
     <title>ReleaseRaccoon | Profile</title>
     <style>
         html,
@@ -13,9 +28,9 @@
         }
 
         body {
-            margin: 15%;
+            margin: 5%;
             background: linear-gradient(90deg, #49a09d, #5f2c82);
-            font-family: sans-serif;
+            font-family: 'Titilium Web', sans-serif;
             font-weight: 100;
             color: white;
         }
@@ -24,12 +39,12 @@
             horiz-align: center;
         }
 
-        .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+        /*.container {*/
+        /*    position: absolute;*/
+        /*    top: 50%;*/
+        /*    left: 50%;*/
+        /*    transform: translate(-50%, -50%);*/
+        /*}*/
 
         .banner {
             font-size: 2.7rem;
@@ -49,6 +64,11 @@
             color: white;
             text-align: center;
             font-weight: bolder;
+        }
+
+        .artists {
+            padding: 2rem 1rem;
+            background-color: rgba(255,255,255,0.2);
         }
 
         .lead {
@@ -99,13 +119,130 @@
             background-color: red;
         }
 
+        input {
+            margin: 0;
+        }
+
+        /* bootstrap */
+        /*
+         * Top navigation
+         * Hide default border to remove 1px line.
+         */
+        .navbar-fixed-top {
+            border: 0;
+        }
+
+        #navbar {
+            position: relative;
+        }
+
+        #results {
+            position: absolute;
+            background: aquamarine;
+            list-style-type: none;
+            padding: 10px;
+            color: black;
+        }
+
+        #results li {
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
+    <script>
+        // Search artist table
+        $(document).ready(function(){
+            $("#tableSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#artistTable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchForm = document.getElementById('search-form');
+            searchForm.addEventListener("submit", getResults, false);
+        });
+
+        function renderResults(results){
+            try {
+                document.getElementById('results').remove();
+            }catch{
+            }
+
+            const navbarEl = document.getElementById('navbar');
+            const resultsParent = document.createElement('ul');
+            resultsParent.setAttribute('id', 'results');
+            navbarEl.appendChild(resultsParent);
+
+            results.map((result)=>{
+                let listEl = document.createElement("li");
+
+                let button = document.createElement("button");
+                button.addEventListener('click', follow, false);
+                button.innerHTML = 'follow';
+
+                listEl.innerHTML = result.name;
+                resultsParent.appendChild(listEl);
+                listEl.appendChild(button);
+            })
+        }
+
+        function follow(e){
+            e.
+            // disable button
+            fetch('/artist/search?pattern=', {
+                method: POST
+            }).then(
+                //enable button
+            );
+        }
+
+        async function getResults(e){
+            e.preventDefault();
+            const results = await fetch('/artist/search?pattern='+e.target.elements.searchTerm.value)
+                .then(response => response.json())
+                .then(data => data);
+            renderResults(results.artistsPerResource.fromLastfm);
+        }
+    </script>
 </head>
 
 <body>
-<h1>Your Release Raccoon</h1>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            {!<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">!}
+                {!<span class="sr-only">Toggle navigation</span>!}
+                {!<span class="icon-bar"></span>!}
+                {!<span class="icon-bar"></span>!}
+                {!<span class="icon-bar"></span>!}
+            {!</button>!}
+            <a class="navbar-brand" href="#">Release Raccoon</a>
+        </div>
+        <div id="navbar">
+            <!--           <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>
+                      </ul> -->
+            <form id="search-form" class="navbar-form navbar-right">
+                <input type="text" class="form-control" name="searchTerm" placeholder="Search...">
+            </form>
+        </div>
+    </div>
+</nav>
+
 <div>
-    <div class="banner lead">
+
+    {!<div class="title">!}
+        {!<h1 >Your Release Raccoon</h1>!}
+    {!</div>!}
+
+    <div class="content">
         {#if contents.isSpotifyEnabled() == false}
             Enable
             <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
@@ -123,63 +260,81 @@
                 {/if}
             </br>
         {/if}
+
         {#if contents.isLastfmEnabled() == false}
-            Your Last.fm username is
-            <form method="GET" action="/me/enableServices">
-                <input type="text" id="lastfmname" name="lastfmUsername">
-                <input type="submit" class="path-link" value="enable">
-            </form>
-            </br>
+            <p>
+                Your Last.fm username is
+                <form method="GET" action="/me/enableServices">
+                    <input type="text" id="lastfmname" name="lastfmUsername">
+                    <input type="submit" class="path-link" value="enable">
+                </form>
+                </br>
+            </p>
         {#else}
             Last.fm scraping enabled ⛓
             </br>
         {/if}
     </div>
 
+    <div class="artists">
     {#if contents.artistsFollowed != null && contents.artistsFollowed.size != 0}
 
-        <p>Artists tracked:</p>
-        <table class="horizaligned">
-            <tr>
+        <div class="container">
+            <input class="form-control mb-4" id="tableSearch" type="text" placeholder="Search followed artists">
 
+            <table class="horizaligned table">
+                <thead>
                 <th>Artist Name</th>
                 <th></th>
+                </thead>
+            <tr>
 
+            <tbody id="artistTable">
                 {#for artist in contents.getArtistsFollowed()}
                     <tr>
-                        <td>{artist.name}</td>
+                    <td>{artist.name}</td>
 
-                        <td>
-                            {#if artist.lastfmUri != null}
-                                <a href="{artist.lastfmUri}" class="path-link" target="_blank">
-                                    <img height="30px" src="images/lastfm.icon.svg"/>
-                                </a>
-                            {/if}
-                        </td>
+                    <td>
+                        {#if artist.lastfmUri != null}
+                            <a href="{artist.lastfmUri}" class="path-link" target="_blank">
+                                <img height="30px" src="images/lastfm.icon.svg"/>
+                            </a>
+                        {/if}
+                    </td>
 
-                        <td>
-                            {#if artist.getSpotifyUriId() != ""}
-                                <a href="https://open.spotify.com/artist/{artist.getSpotifyUriId()}" class="path-link" target="_blank">
-                                    <img height="30px" src="images/spotify.icon.svg"/>
-                                </a>
-                            {/if}
-                        </td>
+                    <td>
+                        {#if artist.getSpotifyUriId() != ""}
+                            <a href="https://open.spotify.com/artist/{artist.getSpotifyUriId()}" class="path-link" target="_blank">
+                                <img height="30px" src="images/spotify.icon.svg"/>
+                            </a>
+                        {/if}
+                    </td>
 
-                        <td>
-                            <form method="POST" action="/me/unfollow/{artist.id}">
-                                <input type="submit" class="path-link" value="unfollow">
-                            </form>
-                        </td>
+                    <td>
+                    <form method="POST" action="/me/unfollow/{artist.id}">
+                        <input type="submit" class="path-link" value="unfollow">
+                    </form>
+                    </td>
 
                     </tr>
                 {/for}
-            </tr>
-        </table>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     {#else}
 
-        <p>No artists tracked yet. Use the panel above to set your taste</p>
+        <p>No artists followed yet. Use the panel above to set your taste</p>
 
     {/if}
+
+    </div>
+</div>
+
+<div class="footer">
+    <p>
+        &reg; Release Raccoon, 2021
+    </p>
 </div>
 
 </body>
