@@ -5,11 +5,15 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
+import com.raccoon.notify.NotifyService;
+import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,25 +33,31 @@ import static com.raccoon.templatedata.QuteTemplateLoader.PROFILE_TEMPLATE_ID;
 public class UserProfileService {
 
     UserRepository userRepository;
+    ArtistRepository artistRepository;
     UserFactory userFactory;
     UserArtistRepository userArtistRepository;
     LastfmTasteUpdatingService lastfmTasteUpdatingService;
     RaccoonMailer mailer;
     Template profile;
+    NotifyService notifyService;
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
+                              final ArtistRepository artistRepository,
                               final UserFactory userFactory,
                               final UserArtistRepository userArtistRepository,
                               final LastfmTasteUpdatingService lastfmTasteUpdatingService,
                               final RaccoonMailer mailer,
-                              final Engine engine) {
+                              final Engine engine,
+                              final NotifyService notifyService) {
         this.userRepository = userRepository;
+        this.artistRepository = artistRepository;
         this.userFactory = userFactory;
         this.userArtistRepository = userArtistRepository;
         this.lastfmTasteUpdatingService = lastfmTasteUpdatingService;
         this.mailer = mailer;
         this.profile = engine.getTemplate(PROFILE_TEMPLATE_ID);
+        this.notifyService = notifyService;
     }
 
 
@@ -80,14 +90,14 @@ public class UserProfileService {
 
     /**
      * Fetches the user from the database. Sends welcome email blocking in case the user was just created.
-     * @param email unique user identifier
+     * @param userEmail unique user identifier
      * @return user from the database.
      */
-    public User completeRegistration(final String email) {
-        Optional<User> optionalUser = userRepository.findByEmailOptional(email);
+    public User completeRegistration(final String userEmail) {
+        Optional<User> optionalUser = userRepository.findByEmailOptional(userEmail);
 
         return optionalUser.orElseGet(() -> {
-            var user = userFactory.createUser(email);
+            var user = userFactory.createUser(userEmail);
             mailer.sendWelcome(
                     user,
                     () -> {
@@ -100,15 +110,50 @@ public class UserProfileService {
         });
     }
 
+    /**
+     * Create a new UserArtist association
+     * @param userEmail user requesting the follow
+     * @param artistDto artistDto as it originates from an Artist search.
+     */
+    public void followArtist(final String userEmail, final ArtistDto artistDto) {
+        var user = userRepository.findByEmail(userEmail);
+        Artist artist;
+        List<UserArtist> mightHaveNewReleases = new ArrayList<>();
+        boolean artistWasInDatabase = false;
+
+        var userArtist = new UserArtist();
+        if (artistDto.getId() != null) {
+            artist = artistRepository.findById(Long.valueOf(artistDto.getId()));
+            artistWasInDatabase = true;
+        } else {
+            artist = new Artist();
+            artist.setName(artistDto.getName());
+            artist.setLastfmUri(artistDto.getLastfmUri());
+            artist.setSpotifyUri(artistDto.getSpotifyUri());
+            artistRepository.persist(artist);
+        }
+
+        userArtist.setArtist(artist);
+        userArtist.setUser(user);
+        userArtist.setWeight(1.0F);
+        userArtistRepository.persist(userArtist);
+
+        if (artistWasInDatabase) {
+            mightHaveNewReleases.add(userArtist);
+            notifyService.notifySingleUser(user, mightHaveNewReleases)
+                    .await().indefinitely();
+        }
+    }
+
     public void unfollowArtist(final String userEmail, final Long artistId) {
         var user = userRepository.findByEmail(userEmail);
         userArtistRepository.deleteAssociation(user.id, artistId);
     }
 
-    public User enableTasteSources(final String email,
+    public User enableTasteSources(final String userEmail,
                                    final Optional<String> lastfmUsernameOpt,
                                    final Optional<Boolean> enableSpotifyOpt) {
-        Optional<User> existing = userRepository.findByEmailOptional(email);
+        Optional<User> existing = userRepository.findByEmailOptional(userEmail);
         if (existing.isEmpty()) {
             log.info("User does not exist.");
             throw new NotFoundException("User not found");

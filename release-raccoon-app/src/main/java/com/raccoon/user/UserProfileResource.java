@@ -1,5 +1,7 @@
 package com.raccoon.user;
 
+import com.raccoon.search.dto.ArtistDto;
+
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
@@ -11,6 +13,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -50,6 +53,21 @@ public class UserProfileResource {
     public Response registrationCallback() {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         userProfileService.completeRegistration(email);
+
+        return Response.ok(userProfileService.renderTemplateInstance(email)).build();
+    }
+
+    @Path("/follow")
+    @POST
+    @NoCache
+    @Transactional
+    @Valid
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response followArtist(@NotNull ArtistDto artistDto) {
+        log.info("Following artist {}", artistDto);
+        final String email = idToken.getClaim(EMAIL_CLAIM);
+
+        userProfileService.followArtist(email, artistDto);
 
         return Response.ok(userProfileService.renderTemplateInstance(email)).build();
     }

@@ -3,6 +3,7 @@ package com.raccoon;
 import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
+import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.user.UserProfileResource;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -91,6 +92,63 @@ class UserProfileResourceIT {
                 .statusCode(SC_OK);
 
         assertEquals(1, mockMailbox.getMessagesSentTo("user@gmail.com").size());
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = "email", value = "user@gmail.com")
+    })
+    @DisplayName("delete artist association")
+    void followArtist() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
+        ArtistDto artistDto = ArtistDto.builder()
+                .name("name")
+                .id("3")
+                .build();
+
+        given()
+                .contentType(ContentType.JSON)
+                .with().body(
+                        artistDto
+                )
+                .when().post("/follow")
+                .then()
+                .statusCode(SC_OK);
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = "email", value = "user@gmail.com")
+    })
+    @DisplayName("delete artist association")
+    void followArtistWithoutId() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
+        ArtistDto artistDto = ArtistDto.builder()
+                .name("name")
+                .build();
+
+        given()
+                .contentType(ContentType.JSON)
+                .with().body(
+                        artistDto
+                )
+                .when().post("/follow")
+                .then()
+                .statusCode(SC_OK);
     }
 
     @Test

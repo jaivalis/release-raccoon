@@ -1,10 +1,15 @@
 package com.raccoon.user;
 
+import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
+import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
+import com.raccoon.notify.NotifyService;
+import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,11 +48,13 @@ class UserProfileServiceTest {
     UserProfileService service;
 
     @Mock
+    UserRepository mockUserRepository;
+    @Mock
+    ArtistRepository mockArtistRepository;
+    @Mock
     UserArtistRepository mockUserArtistRepository;
     @Mock
     UserFactory mockUserFactory;
-    @Mock
-    UserRepository mockUserRepository;
     @Mock
     LastfmTasteUpdatingService mockLastfmTasteUpdatingService;
     @Mock
@@ -58,6 +65,8 @@ class UserProfileServiceTest {
     Engine mockEngine;
     @Mock
     TemplateInstance templateInstanceMock;
+    @Mock
+    NotifyService mockNotifyService;
 
     @BeforeEach
     public void setup() {
@@ -65,8 +74,8 @@ class UserProfileServiceTest {
         when(mockEngine.getTemplate(PROFILE_TEMPLATE_ID)).thenReturn(mockTemplate);
 
         service = new UserProfileService(
-                mockUserRepository, mockUserFactory, mockUserArtistRepository,
-                mockLastfmTasteUpdatingService, mockMailer, mockEngine
+                mockUserRepository, mockArtistRepository, mockUserFactory, mockUserArtistRepository,
+                mockLastfmTasteUpdatingService, mockMailer, mockEngine, mockNotifyService
         );
     }
 
@@ -124,6 +133,42 @@ class UserProfileServiceTest {
         assertEquals(userStub.getEmail(), user.getEmail());
         verify(mockUserFactory, times(1)).createUser(email);
         verify(mockMailer, times(1)).sendWelcome(eq(userStub), any(), any());
+    }
+
+    @Test
+    @DisplayName("followArtist() ArtistDto `id` provided")
+    void followArtist() {
+        var user = new User();
+        user.id = 1L;
+        when(mockUserRepository.findByEmail(any())).thenReturn(user);
+        var artistDto = ArtistDto.builder()
+                .name("name")
+                .id("3")
+                .build();
+
+        service.followArtist("some@mail.com", artistDto);
+
+        verify(mockUserArtistRepository, times(1)).persist(any(UserArtist.class));
+        verify(mockNotifyService, times(1)).notifySingleUser(any(), any());
+        verify(mockArtistRepository, never()).persist(any(Artist.class));
+    }
+
+    @Test
+    @DisplayName("followArtist() ArtistDto `id` not provided, should create artist")
+    void followArtistNoId() {
+        var user = new User();
+        user.id = 1L;
+        when(mockUserRepository.findByEmail(any())).thenReturn(user);
+        var artistDto = ArtistDto.builder()
+                .name("name")
+                .id(null)
+                .build();
+
+        service.followArtist("some@mail.com", artistDto);
+
+        verify(mockArtistRepository, times(1)).persist(any(Artist.class));
+        verify(mockNotifyService, never()).notifySingleUser(any(), any());
+        verify(mockUserArtistRepository, times(1)).persist(any(UserArtist.class));
     }
 
     @Test

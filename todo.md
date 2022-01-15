@@ -10,6 +10,7 @@
 * Separate the domain from the Controllers and the Quarkus Qute dependencies
 * Create DTOs for every Entity class (Decouple)
 * Cucumber tests
+* UserProfileService does too much, break down
 
 # Additional Integrations
 * Add integrations:

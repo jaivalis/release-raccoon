@@ -1,17 +1,26 @@
 package com.raccoon.search.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
 @Builder
 @ToString
+@JsonInclude(NON_NULL)
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArtistDto {
 
-    private final String id;
-    private final String name;
-    private final String lastfmUri;
-    private final String spotifyUri;
+    private String id;
+    private String name;
+    private String lastfmUri;
+    private String spotifyUri;
 
 }
