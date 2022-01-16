@@ -4,7 +4,7 @@ import com.raccoon.Constants;
 import com.raccoon.entity.Artist;
 import com.raccoon.search.ArtistSearcher;
 import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.ArtistDtoProjector;
+import com.raccoon.search.dto.ArtistMapper;
 
 import org.hibernate.search.mapper.orm.session.SearchSession;
 
@@ -25,13 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 public class HibernateSearcher implements ArtistSearcher {
 
     final SearchSession searchSession;
-    final ArtistDtoProjector artistDtoProjector;
+    final ArtistMapper artistMapper;
 
     @Inject
     public HibernateSearcher(final SearchSession searchSession,
-                             final ArtistDtoProjector artistDtoProjector) {
+                             final ArtistMapper artistMapper) {
         this.searchSession = searchSession;
-        this.artistDtoProjector = artistDtoProjector;
+        this.artistMapper = artistMapper;
     }
 
     @Transactional
@@ -60,7 +60,7 @@ public class HibernateSearcher implements ArtistSearcher {
                 )
                 .fetchHits(size.orElse(20))
                 .stream()
-                .map(artistDtoProjector::project)
+                .map(artistMapper::toDto)
                 .collect(Collectors.toSet());
     }
 

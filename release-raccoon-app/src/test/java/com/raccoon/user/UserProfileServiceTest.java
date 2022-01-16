@@ -1,11 +1,13 @@
 package com.raccoon.user;
 
+import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.ArtistMapper;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -61,6 +63,8 @@ class UserProfileServiceTest {
     TemplateInstance templateInstanceMock;
     @Mock
     ArtistFollowingService mockArtistFollowingService;
+    @Mock
+    ArtistMapper mockArtistMapper;
 
     @BeforeEach
     public void setup() {
@@ -68,8 +72,8 @@ class UserProfileServiceTest {
         when(mockEngine.getTemplate(PROFILE_TEMPLATE_ID)).thenReturn(mockTemplate);
 
         service = new UserProfileService(
-                mockUserRepository, mockUserFactory, mockUserArtistRepository,
-                mockLastfmTasteUpdatingService, mockMailer, mockEngine, mockArtistFollowingService
+                mockUserRepository, mockUserFactory, mockUserArtistRepository, mockLastfmTasteUpdatingService,
+                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper
         );
     }
 
@@ -134,10 +138,12 @@ class UserProfileServiceTest {
     void followArtist() {
         var mail = "some@mail.com";
         var artistDto = ArtistDto.builder().build();
+        var artist = new Artist();
+        when(mockArtistMapper.fromDto(artistDto)).thenReturn(artist);
 
         service.followArtist("some@mail.com", artistDto);
 
-        verify(mockArtistFollowingService, times(1)).followArtist(mail, artistDto);
+        verify(mockArtistFollowingService, times(1)).followArtist(mail, artist);
     }
 
     @Test

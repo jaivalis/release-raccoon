@@ -4,7 +4,7 @@ import com.raccoon.Constants;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
 import com.raccoon.search.ArtistSearcher;
 import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.ArtistDtoProjector;
+import com.raccoon.search.dto.LastFmArtistMapper;
 
 import de.umass.lastfm.Artist;
 
@@ -20,13 +20,13 @@ import javax.inject.Inject;
 public class LastfmSearcher implements ArtistSearcher {
 
     final RaccoonLastfmApi lastfmApi;
-    final ArtistDtoProjector artistDtoProjector;
+    final LastFmArtistMapper artistMapper;
 
     @Inject
     public LastfmSearcher(final RaccoonLastfmApi lastfmApi,
-                          final ArtistDtoProjector artistDtoProjector) {
+                          final LastFmArtistMapper artistMapper) {
         this.lastfmApi = lastfmApi;
-        this.artistDtoProjector = artistDtoProjector;
+        this.artistMapper = artistMapper;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class LastfmSearcher implements ArtistSearcher {
             lastfmArtistStream = lastfmArtistStream.limit(size.get());
         }
         return lastfmArtistStream
-                .map(artistDtoProjector::project)
+                .map(artistMapper::toDto)
                 .collect(Collectors.toSet());
     }
 

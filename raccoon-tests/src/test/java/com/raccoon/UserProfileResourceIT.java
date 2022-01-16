@@ -1,6 +1,7 @@
 package com.raccoon;
 
 import com.raccoon.common.ElasticSearchTestResource;
+import com.raccoon.entity.Artist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.ArtistDto;
@@ -100,36 +101,7 @@ class UserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "user@gmail.com")
     })
-    @DisplayName("follow artist with id")
-    void followArtist() {
-        // create the user
-        given()
-                .contentType(ContentType.JSON)
-                .when().get()
-                .then()
-                .statusCode(SC_OK);
-
-        ArtistDto artistDto = ArtistDto.builder()
-                .name("name")
-                .id("3")
-                .build();
-
-        given()
-                .contentType(ContentType.JSON)
-                .with().body(
-                        artistDto
-                )
-                .when().post("/follow")
-                .then()
-                .statusCode(SC_NO_CONTENT);
-    }
-
-    @Test
-    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = "email", value = "user@gmail.com")
-    })
-    @DisplayName("follow artist without id")
+    @DisplayName("follow artist")
     void followArtistWithoutId() {
         // create the user
         given()
@@ -140,6 +112,8 @@ class UserProfileResourceIT {
 
         ArtistDto artistDto = ArtistDto.builder()
                 .name("name")
+                .spotifyUri("spotifyUri")
+                .lastfmUri("lastfmUri")
                 .build();
 
         given()
@@ -150,6 +124,13 @@ class UserProfileResourceIT {
                 .when().post("/follow")
                 .then()
                 .statusCode(SC_NO_CONTENT);
+
+        Long userId = userRepository.findByEmail("user@gmail.com").id;
+        assertEquals(1, userArtistRepository.findByUserId(userId).size());
+        Artist followedArtist = userArtistRepository.findByUserId(userId).get(0).getArtist();
+        assertEquals("name", followedArtist.getName());
+        assertEquals("spotifyUri", followedArtist.getSpotifyUri());
+        assertEquals("lastfmUri", followedArtist.getLastfmUri());
     }
 
     @Test

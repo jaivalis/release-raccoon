@@ -9,6 +9,7 @@ import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.ArtistMapper;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class UserProfileService {
     private final RaccoonMailer mailer;
     private final Template profile;
     private final ArtistFollowingService artistFollowingService;
+    private final ArtistMapper artistMapper;
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
@@ -44,7 +46,8 @@ public class UserProfileService {
                               final LastfmTasteUpdatingService lastfmTasteUpdatingService,
                               final RaccoonMailer mailer,
                               final Engine engine,
-                              final ArtistFollowingService artistFollowingService) {
+                              final ArtistFollowingService artistFollowingService,
+                              final ArtistMapper artistMapper) {
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.userArtistRepository = userArtistRepository;
@@ -52,6 +55,7 @@ public class UserProfileService {
         this.mailer = mailer;
         this.profile = engine.getTemplate(PROFILE_TEMPLATE_ID);
         this.artistFollowingService = artistFollowingService;
+        this.artistMapper = artistMapper;
     }
 
 
@@ -110,7 +114,7 @@ public class UserProfileService {
      * @param artistDto artistDto as it originates from an Artist search.
      */
     public void followArtist(final String userEmail, final ArtistDto artistDto) {
-        artistFollowingService.followArtist(userEmail, artistDto);
+        artistFollowingService.followArtist(userEmail, artistMapper.fromDto(artistDto));
     }
 
     public void unfollowArtist(final String userEmail, final Long artistId) {

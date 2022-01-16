@@ -7,7 +7,6 @@ import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.notify.NotifyService;
-import com.raccoon.search.dto.ArtistDto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -54,54 +52,26 @@ class ArtistFollowingServiceTest {
     }
 
     @Test
-    @DisplayName("followArtist() ArtistDto `id` provided, should: notify")
+    @DisplayName("followArtist() ArtistDto name already in db, should: notify")
     void followArtist() {
-        var artistDto = ArtistDto.builder()
-                .name("name")
-                .id("3")
-                .build();
         // Artist existed in the database prior, should look for relevant releases and notify user
         var existingArtist = new Artist();
         existingArtist.setCreateDate(LocalDateTime.now().minusDays(2));
-        when(mockArtistRepository.findByIdAndNameOptional(3L, "name")).thenReturn(Optional.of(existingArtist));
 
-        service.followArtist("some@mail.com", artistDto);
+        service.followArtist("some@mail.com", existingArtist);
 
         verify(mockUserArtistRepository, times(1)).persist(any(UserArtist.class));
         verify(mockNotifyService, times(1)).notifySingleUser(any(), any());
-        verify(mockArtistRepository, never()).persist(any(Artist.class));
     }
 
     @Test
-    @DisplayName("followArtist() ArtistDto `id` provided but incorrect, should: create new artist, not notify")
-    void followArtistIncorrectIdProvided() {
-        var artistDto = ArtistDto.builder()
-                .name("name")
-                .id("3")
-                .build();
-        // Artist with name and id provided is not in the database
-        var existingArtist = new Artist();
-        existingArtist.setCreateDate(LocalDateTime.now().minusDays(2));
-        when(mockArtistRepository.findByIdAndNameOptional(3L, "name")).thenReturn(Optional.empty());
-
-        service.followArtist("some@mail.com", artistDto);
-
-        verify(mockUserArtistRepository, times(1)).persist(any(UserArtist.class));
-        verify(mockNotifyService, never()).notifySingleUser(any(), any());
-        verify(mockArtistRepository, times(1)).persist(any(Artist.class));
-    }
-
-    @Test
-    @DisplayName("followArtist() ArtistDto `id` not provided, should: create artist, not notify")
+    @DisplayName("followArtist() ArtistDto `id` newly created artist, should: not notify")
     void followArtistNoId() {
-        var artistDto = ArtistDto.builder()
-                .name("name")
-                .id(null)
-                .build();
+        var existingArtist = new Artist();
+        existingArtist.setCreateDate(LocalDateTime.now());
 
-        service.followArtist("some@mail.com", artistDto);
+        service.followArtist("some@mail.com", existingArtist);
 
-        verify(mockArtistRepository, times(1)).persist(any(Artist.class));
         verify(mockNotifyService, never()).notifySingleUser(any(), any());
         verify(mockUserArtistRepository, times(1)).persist(any(UserArtist.class));
     }

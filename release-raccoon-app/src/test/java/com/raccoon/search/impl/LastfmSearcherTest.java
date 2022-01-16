@@ -2,7 +2,7 @@ package com.raccoon.search.impl;
 
 import com.raccoon.Constants;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
-import com.raccoon.search.dto.ArtistDtoProjector;
+import com.raccoon.search.dto.LastFmArtistMapper;
 
 import de.umass.lastfm.Artist;
 
@@ -35,11 +35,11 @@ class LastfmSearcherTest {
     @Mock
     RaccoonLastfmApi mockLastfmApi;
     @Mock
-    ArtistDtoProjector mockArtistDtoProjector;
+    LastFmArtistMapper mockLastFmArtistMapper;
 
     @BeforeEach
     void setUp() {
-        searcher = new LastfmSearcher(mockLastfmApi, mockArtistDtoProjector);
+        searcher = new LastfmSearcher(mockLastfmApi, mockLastFmArtistMapper);
     }
 
     @Test
@@ -62,7 +62,7 @@ class LastfmSearcherTest {
         searcher.searchArtist(pattern, size);
 
         verify(mockLastfmApi, times(1)).searchArtist(pattern);
-        verify(mockArtistDtoProjector, times(artists.size())).project(any(Artist.class));
+        verify(mockLastFmArtistMapper, times(artists.size())).toDto(any(Artist.class));
     }
 
     @Test
@@ -75,7 +75,7 @@ class LastfmSearcherTest {
         searcher.searchArtist(pattern, size);
 
         verify(mockLastfmApi, times(1)).searchArtist(pattern);
-        verify(mockArtistDtoProjector, never()).project(any(Artist.class));
+        verify(mockLastFmArtistMapper, never()).toDto(any(Artist.class));
     }
 
 
@@ -91,7 +91,7 @@ class LastfmSearcherTest {
 
         searcher.searchArtist(pattern, size);
 
-        verify(mockArtistDtoProjector, times(size.get())).project(any(Artist.class));
+        verify(mockLastFmArtistMapper, times(size.get())).toDto(any(Artist.class));
     }
 
     @Test
@@ -106,7 +106,7 @@ class LastfmSearcherTest {
 
         searcher.searchArtist(pattern, empty);
 
-        verify(mockArtistDtoProjector, times(20)).project(any(Artist.class));
+        verify(mockLastFmArtistMapper, times(20)).toDto(any(Artist.class));
     }
 
 }

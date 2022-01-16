@@ -1,10 +1,6 @@
 package com.raccoon.search.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
-
-import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
@@ -22,22 +18,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Data
 public class ArtistDto {
 
-    @JsonSetter(nulls = Nulls.SKIP)
-    private String id;
     @NotNull
     private String name;
     private String lastfmUri;
     private String spotifyUri;
-
-    public Optional<Long> validId() {
-        if (id != null && !"null".equalsIgnoreCase(id)) {
-            try {
-                return Optional.of(Long.parseLong(id));
-            } catch (NumberFormatException e) {
-                return Optional.empty();
-            }
-        }
-        return Optional.empty();
-    }
 
 }

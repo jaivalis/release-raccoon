@@ -2,7 +2,7 @@ package com.raccoon.search.impl;
 
 import com.raccoon.Constants;
 import com.raccoon.entity.Artist;
-import com.raccoon.search.dto.ArtistDtoProjector;
+import com.raccoon.search.dto.ArtistMapper;
 
 import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
 import org.hibernate.search.mapper.orm.session.SearchSession;
@@ -28,12 +28,11 @@ class HibernateSearcherTest {
     @Mock
     SearchSession mockSearchSession;
     @Mock
-    ArtistDtoProjector mockArtistDtoProjector;
-
+    ArtistMapper mockArtistMapper;
 
     @BeforeEach
     void setUp() {
-        searcher = new HibernateSearcher(mockSearchSession, mockArtistDtoProjector);
+        searcher = new HibernateSearcher(mockSearchSession, mockArtistMapper);
     }
 
     @Test

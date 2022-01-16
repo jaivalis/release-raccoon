@@ -6,7 +6,6 @@ import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.notify.NotifyService;
-import com.raccoon.search.dto.ArtistDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,15 +43,18 @@ public class ArtistFollowingService {
     /**
      * Create a new UserArtist association
      * @param userEmail user requesting the follow
-     * @param artistDto artistDto as it originates from an Artist search.
+     * @param artist artist mapped from dto, might need to be persisted
      */
-    public void followArtist(final String userEmail, final ArtistDto artistDto) {
+    public void followArtist(final String userEmail, final Artist artist) {
         var user = userRepository.findByEmail(userEmail);
 
-        var artistDtoId = artistDto.validId();
-        Artist artist = artistDtoId
-                .map(id -> getArtistFromDb(artistDto, id))
-                .orElseGet(() -> createNewArtist(artistDto));
+        if (artist.id == null) {
+            artistRepository.persist(artist);
+        }
+//        var artistDtoId = artistDto.validId();
+//        Artist artist = artistDtoId
+//                .map(id -> getArtistFromDb(artistDto, id))
+//                .orElseGet(() -> createNewArtist(artistDto));
 
         var userArtist = userArtistRepository
                 .findByUserIdArtistIdOptional(user.id, artist.id)
@@ -71,41 +73,5 @@ public class ArtistFollowingService {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private Artist createNewArtist(ArtistDto artistDto) {
-        Artist artist;
-        log.info("Following artist from web search {}", artistDto.getName());
-        artist = artistRepository
-                .findByNameOptional(artistDto.getName())
-                .orElseGet(Artist::new);
-        artist.setName(artistDto.getName());
-        artist.setLastfmUri(artistDto.getLastfmUri());
-        artist.setSpotifyUri(artistDto.getSpotifyUri());
-        artist.setCreateDate(LocalDateTime.now());
-
-        artistRepository.persist(artist);
-        return artist;
-    }
-
-    private Artist getArtistFromDb(ArtistDto artistDto, Long artistDtoId) {
-        Artist artist;
-        log.info("Following artist with `id` provided {}", artistDto.getName());
-        var artistOpt = artistRepository
-                .findByIdAndNameOptional(artistDtoId, artistDto.getName());
-        if (artistOpt.isPresent()) {
-            artist = artistOpt.get();
-        } else {
-            // bad name/id pair provided, need to create new artist
-            artist = new Artist();
-            artist.setName(artistDto.getName());
-            artist.setLastfmUri(artistDto.getLastfmUri());
-            artist.setSpotifyUri(artistDto.getSpotifyUri());
-            artist.setCreateDate(LocalDateTime.now());
-
-            artistRepository.persist(artist);
-        }
-        return artist;
-    }
 
 }

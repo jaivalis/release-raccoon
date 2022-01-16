@@ -41,11 +41,12 @@
         <testcontainers-elasticsearch.version>1.16.2</testcontainers-elasticsearch.version>
         <rider.version>1.21.1</rider.version>
         <awaitility.version>4.0.3</awaitility.version>
+        <rest.assured.version>4.3.3</rest.assured.version>
 
         <!-- util -->
         <lombok.version>1.18.20</lombok.version>
         <apache.commons.version>3.9</apache.commons.version>
-        <rest.assured.version>4.3.3</rest.assured.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -356,6 +357,19 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${apache.commons.version}</version>
+            </dependency>
+            <!-- mapstruct -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+                <scope>provided</scope>
             </dependency>
 
         </dependencies>
