@@ -1,14 +1,10 @@
 package com.raccoon.user;
 
-import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
-import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
-import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
-import com.raccoon.notify.NotifyService;
 import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
@@ -35,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -51,8 +46,6 @@ class UserProfileServiceTest {
     @Mock
     UserRepository mockUserRepository;
     @Mock
-    ArtistRepository mockArtistRepository;
-    @Mock
     UserArtistRepository mockUserArtistRepository;
     @Mock
     UserFactory mockUserFactory;
@@ -67,7 +60,7 @@ class UserProfileServiceTest {
     @Mock
     TemplateInstance templateInstanceMock;
     @Mock
-    NotifyService mockNotifyService;
+    ArtistFollowingService mockArtistFollowingService;
 
     @BeforeEach
     public void setup() {
@@ -75,8 +68,8 @@ class UserProfileServiceTest {
         when(mockEngine.getTemplate(PROFILE_TEMPLATE_ID)).thenReturn(mockTemplate);
 
         service = new UserProfileService(
-                mockUserRepository, mockArtistRepository, mockUserFactory, mockUserArtistRepository,
-                mockLastfmTasteUpdatingService, mockMailer, mockEngine, mockNotifyService
+                mockUserRepository, mockUserFactory, mockUserArtistRepository,
+                mockLastfmTasteUpdatingService, mockMailer, mockEngine, mockArtistFollowingService
         );
     }
 
@@ -137,51 +130,24 @@ class UserProfileServiceTest {
     }
 
     @Test
-    @DisplayName("followArtist() ArtistDto `id` provided")
+    @DisplayName("followArtist()")
     void followArtist() {
-        var user = new User();
-        user.id = 1L;
-        when(mockUserRepository.findByEmail(any())).thenReturn(user);
-        var artistDto = ArtistDto.builder()
-                .name("name")
-                .id("3")
-                .build();
-        when(mockArtistRepository.findById(anyLong())).thenReturn(new Artist());
+        var mail = "some@mail.com";
+        var artistDto = ArtistDto.builder().build();
 
         service.followArtist("some@mail.com", artistDto);
 
-        verify(mockUserArtistRepository, times(1)).persist(any(UserArtist.class));
-        verify(mockNotifyService, times(1)).notifySingleUser(any(), any());
-        verify(mockArtistRepository, never()).persist(any(Artist.class));
-    }
-
-    @Test
-    @DisplayName("followArtist() ArtistDto `id` not provided, should create artist")
-    void followArtistNoId() {
-        var user = new User();
-        user.id = 1L;
-        when(mockUserRepository.findByEmail(any())).thenReturn(user);
-        var artistDto = ArtistDto.builder()
-                .name("name")
-                .id(null)
-                .build();
-
-        service.followArtist("some@mail.com", artistDto);
-
-        verify(mockArtistRepository, times(1)).persist(any(Artist.class));
-        verify(mockNotifyService, never()).notifySingleUser(any(), any());
-        verify(mockUserArtistRepository, times(1)).persist(any(UserArtist.class));
+        verify(mockArtistFollowingService, times(1)).followArtist(mail, artistDto);
     }
 
     @Test
     void unfollowArtist() {
-        var user = new User();
-        user.id = 1L;
-        when(mockUserRepository.findByEmail(any())).thenReturn(user);
+        var mail = "some@mail.com";
+        var artistId = 2L;
 
-        service.unfollowArtist("some@mail.com", 2L);
+        service.unfollowArtist("some@mail.com", artistId);
 
-        verify(mockUserArtistRepository).deleteAssociation(1L, 2L);
+        verify(mockArtistFollowingService, times(1)).unfollowArtist(mail, artistId);
     }
 
     @Test
@@ -234,4 +200,5 @@ class UserProfileServiceTest {
         assertEquals(Boolean.TRUE, user.getSpotifyEnabled());
         assertEquals("lastfm", user.getLastfmUsername());
     }
+
 }

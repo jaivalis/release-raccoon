@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 
+import java.util.Optional;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -26,5 +28,16 @@ public class ArtistDto {
     private String name;
     private String lastfmUri;
     private String spotifyUri;
+
+    public Optional<Long> validId() {
+        if (id != null && !"null".equalsIgnoreCase(id)) {
+            try {
+                return Optional.of(Long.parseLong(id));
+            } catch (NumberFormatException e) {
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
+    }
 
 }
