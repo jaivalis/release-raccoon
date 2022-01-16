@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -145,6 +146,7 @@ class UserProfileServiceTest {
                 .name("name")
                 .id("3")
                 .build();
+        when(mockArtistRepository.findById(anyLong())).thenReturn(new Artist());
 
         service.followArtist("some@mail.com", artistDto);
 
