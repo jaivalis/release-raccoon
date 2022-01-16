@@ -27,6 +27,7 @@ import io.restassured.http.ContentType;
 
 import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -99,7 +100,7 @@ class UserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "user@gmail.com")
     })
-    @DisplayName("delete artist association")
+    @DisplayName("follow artist with id")
     void followArtist() {
         // create the user
         given()
@@ -120,7 +121,7 @@ class UserProfileResourceIT {
                 )
                 .when().post("/follow")
                 .then()
-                .statusCode(SC_OK);
+                .statusCode(SC_NO_CONTENT);
     }
 
     @Test
@@ -128,7 +129,7 @@ class UserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "user@gmail.com")
     })
-    @DisplayName("delete artist association")
+    @DisplayName("follow artist without id")
     void followArtistWithoutId() {
         // create the user
         given()
@@ -148,7 +149,7 @@ class UserProfileResourceIT {
                 )
                 .when().post("/follow")
                 .then()
-                .statusCode(SC_OK);
+                .statusCode(SC_NO_CONTENT);
     }
 
     @Test
