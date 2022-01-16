@@ -102,7 +102,7 @@ class UserProfileResourceIT {
             @Claim(key = "email", value = "user@gmail.com")
     })
     @DisplayName("follow artist")
-    void followArtistWithoutId() {
+    void followArtist() {
         // create the user
         given()
                 .contentType(ContentType.JSON)

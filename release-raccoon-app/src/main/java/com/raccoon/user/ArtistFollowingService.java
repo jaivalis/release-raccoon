@@ -47,14 +47,7 @@ public class ArtistFollowingService {
      */
     public void followArtist(final String userEmail, final Artist artist) {
         var user = userRepository.findByEmail(userEmail);
-
-        if (artist.id == null) {
-            artistRepository.persist(artist);
-        }
-//        var artistDtoId = artistDto.validId();
-//        Artist artist = artistDtoId
-//                .map(id -> getArtistFromDb(artistDto, id))
-//                .orElseGet(() -> createNewArtist(artistDto));
+        artistRepository.persist(artist);
 
         var userArtist = userArtistRepository
                 .findByUserIdArtistIdOptional(user.id, artist.id)
