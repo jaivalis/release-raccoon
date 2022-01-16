@@ -123,13 +123,18 @@ public class UserProfileService {
 
         if (artistDto.getId() != null && !"null".equalsIgnoreCase(artistDto.getId())) {
             log.info("Following artist from database search {}", artistDto.getName());
-            artistWasInDatabase = true;
             var artistOpt = artistRepository
-                    .findByIdOptional(Long.valueOf(artistDto.getId()));
-            if (artistOpt.isEmpty()) {
-                artistWasInDatabase = false;
+                    .findByIdAndNameOptional(Long.valueOf(artistDto.getId()), artistDto.getName());
+            if (artistOpt.isPresent()) {
+                artistWasInDatabase = true;
+                artist = artistOpt.get();
+            } else {
+                artist = new Artist();
+                artist.setName(artistDto.getName());
+                artist.setLastfmUri(artistDto.getLastfmUri());
+                artist.setSpotifyUri(artistDto.getSpotifyUri());
+                artistRepository.persist(artist);
             }
-            artist = artistOpt.orElseGet(Artist::new);
         } else {
             log.info("Following artist from web search {}", artistDto.getName());
             artist = artistRepository

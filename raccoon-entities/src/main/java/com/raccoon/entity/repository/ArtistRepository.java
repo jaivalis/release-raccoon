@@ -15,4 +15,8 @@ public class ArtistRepository implements PanacheRepository<Artist> {
         return Optional.ofNullable(find("name", name).firstResult());
     }
 
+    public Optional<Artist> findByIdAndNameOptional(Long id, String name) {
+        return find("(artistId = ?1 and name = ?2)", id, name).stream().findFirst();
+    }
+
 }
