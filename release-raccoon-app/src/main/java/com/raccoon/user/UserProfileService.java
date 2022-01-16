@@ -123,8 +123,13 @@ public class UserProfileService {
 
         if (artistDto.getId() != null && !"null".equalsIgnoreCase(artistDto.getId())) {
             log.info("Following artist from database search {}", artistDto.getName());
-            artist = artistRepository.findById(Long.valueOf(artistDto.getId()));
             artistWasInDatabase = true;
+            var artistOpt = artistRepository
+                    .findByIdOptional(Long.valueOf(artistDto.getId()));
+            if (artistOpt.isEmpty()) {
+                artistWasInDatabase = false;
+            }
+            artist = artistOpt.orElseGet(Artist::new);
         } else {
             log.info("Following artist from web search {}", artistDto.getName());
             artist = artistRepository
