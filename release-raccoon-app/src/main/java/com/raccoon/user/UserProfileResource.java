@@ -61,15 +61,14 @@ public class UserProfileResource {
     @POST
     @NoCache
     @Transactional
-    @Valid
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response followArtist(@NotNull ArtistDto artistDto) {
+    public Response followArtist(@Valid @NotNull ArtistDto artistDto) {
         log.info("Following artist {}", artistDto);
         final String email = idToken.getClaim(EMAIL_CLAIM);
 
         userProfileService.followArtist(email, artistDto);
 
-        return Response.ok(userProfileService.renderTemplateInstance(email)).build();
+        return Response.noContent().build();
     }
 
     @Path("/unfollow/{artistId}")

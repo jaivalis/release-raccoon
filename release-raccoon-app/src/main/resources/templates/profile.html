@@ -165,7 +165,7 @@
             searchForm.addEventListener("submit", getResults, false);
         });
 
-        function renderResults(results){
+        function renderResults(results) {
             try {
                 document.getElementById('results').remove();
             }catch{
@@ -176,10 +176,11 @@
             resultsParent.setAttribute('id', 'results');
             navbarEl.appendChild(resultsParent);
 
-            results.map((result)=>{
+            results.map((result) => {
                 let listEl = document.createElement("li");
 
                 let button = document.createElement("button");
+                button.user = result
                 button.addEventListener('click', follow, false);
                 button.innerHTML = 'follow';
 
@@ -190,8 +191,9 @@
         }
 
         function follow(e){
-            e.
+            // e.disabled = true
             // disable button
+            console.log('Here is the json:', JSON.stringify(e.currentTarget.user))
             fetch('/me/follow', {
                 method: 'POST',
                 mode: 'cors', // no-cors, *cors, same-origin
@@ -199,10 +201,15 @@
                     'Content-Type': 'application/json'
                 },
                 referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify(data)  // need the artistDto here
-            }).then(
-                //enable button
-            );
+                body: JSON.stringify(e.currentTarget.user, (key, value) => {
+                    // not interested in null values
+                    if (value !== null && value !== 'null') return value
+                })
+            }).then(result => {
+                console.log('Success:', result);
+            }).catch(error => {
+                console.error('Error:', error);
+            });
         }
 
         async function getResults(e){

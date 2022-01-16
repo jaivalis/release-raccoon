@@ -121,18 +121,25 @@ public class UserProfileService {
         List<UserArtist> mightHaveNewReleases = new ArrayList<>();
         boolean artistWasInDatabase = false;
 
-        var userArtist = new UserArtist();
-        if (artistDto.getId() != null) {
+        if (artistDto.getId() != null && !"null".equalsIgnoreCase(artistDto.getId())) {
+            log.info("Following artist from database search {}", artistDto.getName());
             artist = artistRepository.findById(Long.valueOf(artistDto.getId()));
             artistWasInDatabase = true;
         } else {
-            artist = new Artist();
+            log.info("Following artist from web search {}", artistDto.getName());
+            artist = artistRepository
+                    .findByNameOptional(artistDto.getName())
+                    .orElseGet(Artist::new);
             artist.setName(artistDto.getName());
             artist.setLastfmUri(artistDto.getLastfmUri());
             artist.setSpotifyUri(artistDto.getSpotifyUri());
+
             artistRepository.persist(artist);
         }
 
+        var userArtist = userArtistRepository
+                .findByUserIdArtistIdOptional(user.id, artist.id)
+                .orElseGet(UserArtist::new);
         userArtist.setArtist(artist);
         userArtist.setUser(user);
         userArtist.setWeight(1.0F);
