@@ -119,6 +119,11 @@
             background-color: red;
         }
 
+        button {
+            background-color: #f44336;
+            color: white;
+        }
+
         input {
             margin: 0;
         }
@@ -138,16 +143,47 @@
 
         #results {
             position: absolute;
-            background: aquamarine;
+            background: #5f2c82;
             list-style-type: none;
             padding: 10px;
-            color: black;
+            color: white;
+            overflow: auto;
+            height: 420px;
+            width: 192px;
         }
 
         #results li {
             display: flex;
             justify-content: space-between;
         }
+
+        /* loading element */
+        .loader {
+            width: 60px;
+            horiz-align: center;
+        }
+
+        .loader-wheel {
+            animation: spin 1s infinite linear;
+            border: 2px solid rgba(30, 30, 30, 0.5);
+            border-left: 4px solid #fff;
+            border-radius: 50%;
+            height: 100px;
+            margin-bottom: 10px;
+            width: 100px;
+            horiz-align: center;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        /* loading element */
+
     </style>
     <script>
         // Search artist table
@@ -208,6 +244,7 @@
                 console.log('Success:', result);
             }).catch(error => {
                 console.error('Error:', JSON.stringify(error));
+                e.currentTarget.disabled = false;
             }).finally(()=>{
                 e.currentTarget.disabled = false;
             });
@@ -215,11 +252,40 @@
 
         async function getResults(e){
             e.preventDefault();
-            const results = await fetch('/artist/search?pattern='+e.target.elements.searchTerm.value)
+            // show loading element
+            const navbarEl = document.getElementById('navbar');
+            const resultsParent = document.createElement('div');
+            resultsParent.setAttribute('class', 'loader');
+            resultsParent.setAttribute('id', 'results');
+
+            const loaderWheel = document.createElement('div');
+            loaderWheel.setAttribute('class', 'loader-wheel');
+            loaderWheel.setAttribute('id', 'wheel');
+
+            resultsParent.appendChild(loaderWheel);
+            navbarEl.appendChild(resultsParent);
+
+            const results = await fetch('/artist/search?pattern=' + e.target.elements.searchTerm.value)
                 .then(response => response.json())
                 .then(data => data);
             renderResults(results.artistsPerResource.fromLastfm);
         }
+
+        // Hide results on click out of the results panel
+        $(document).mouseup(function(e){
+            // var container = $("#results");
+            //
+            // // If the target of the click isn't the container
+            // if (!container.is(e.target) && container.has(e.target).length === 0) {
+            //     container.hide();
+            // }
+
+            // const element = document.getElementById('results');
+            //
+            // if (element != null && !element.is(e.target) && element.has(e.target).length === 0) {
+            //     e.style.display = e.style.display === 'none' ? 'block' : 'none';
+            // }
+        });
     </script>
 </head>
 
@@ -244,7 +310,7 @@
                         <li><a href="#">Help</a></li>
                       </ul> -->
             <form id="search-form" class="navbar-form navbar-right">
-                <input type="text" class="form-control" name="searchTerm" placeholder="Search...">
+                <input type="text" class="form-control" name="searchTerm" placeholder="Search for artists" autocomplete="off">
             </form>
         </div>
     </div>
