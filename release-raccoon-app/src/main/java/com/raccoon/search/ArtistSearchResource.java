@@ -2,6 +2,7 @@ package com.raccoon.search;
 
 import com.raccoon.search.dto.ArtistSearchResponse;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
 import java.util.Optional;
@@ -13,7 +14,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import io.quarkus.oidc.IdToken;
 import io.quarkus.security.Authenticated;
+
+import static com.raccoon.Constants.EMAIL_CLAIM;
 
 @Path("/artist")
 @ApplicationScoped
@@ -21,6 +25,9 @@ import io.quarkus.security.Authenticated;
 public class ArtistSearchResource {
 
     final SearchService searchService;
+
+    @IdToken
+    JsonWebToken idToken;
 
     @Inject
     public ArtistSearchResource(final SearchService searchService) {
@@ -32,7 +39,8 @@ public class ArtistSearchResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ArtistSearchResponse searchArtists(@QueryParam String pattern,
                                               @QueryParam Optional<Integer> size) {
-        return searchService.searchArtists(pattern, size);
+        final String email = idToken.getClaim(EMAIL_CLAIM);
+        return searchService.searchArtists(email, pattern, size);
     }
 
 }

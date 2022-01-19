@@ -2,8 +2,7 @@ package com.raccoon.search.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,10 @@ import lombok.Data;
 @Data
 public class ArtistSearchResponse {
 
+    /**
+     * Results sorted by relevance
+     */
     @JsonProperty
-    Map<String, Collection<ArtistDto>> artistsPerResource;
+    List<ArtistDto> artists;
 
 }

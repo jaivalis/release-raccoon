@@ -268,7 +268,7 @@
             const results = await fetch('/artist/search?pattern=' + e.target.elements.searchTerm.value)
                 .then(response => response.json())
                 .then(data => data);
-            renderResults(results.artistsPerResource.fromLastfm);
+            renderResults(results.artists);
         }
 
         // Hide results on click out of the results panel
