@@ -1,7 +1,7 @@
 package com.raccoon.search;
 
 import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.ArtistSearchResponse;
+import com.raccoon.search.dto.mapping.ArtistSearchResponse;
 import com.raccoon.search.impl.HibernateSearcher;
 import com.raccoon.search.impl.LastfmSearcher;
 

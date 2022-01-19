@@ -1,4 +1,6 @@
-package com.raccoon.search.dto;
+package com.raccoon.search.dto.mapping;
+
+import com.raccoon.search.dto.ArtistDto;
 
 import de.umass.lastfm.Artist;
 

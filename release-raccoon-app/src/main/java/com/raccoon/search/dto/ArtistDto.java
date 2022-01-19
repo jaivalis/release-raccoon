@@ -18,6 +18,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Data
 public class ArtistDto {
 
+    private Long id;
     @NotNull
     private String name;
     private String lastfmUri;

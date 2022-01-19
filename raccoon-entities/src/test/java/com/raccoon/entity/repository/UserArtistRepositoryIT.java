@@ -143,7 +143,7 @@ class UserArtistRepositoryIT {
         user2Artist1.setWeight(0.10f);
         userArtistRepository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
 
-        var byWeight = userArtistRepository.findByUserIdByWeight(user1Artist1.getUser().id);
+        var byWeight = userArtistRepository.findByUserIdSortedByWeight(user1Artist1.getUser().id);
 
         assertEquals(2, byWeight.size());
         assertEquals("artist2", byWeight.get(0).getArtist().getName());

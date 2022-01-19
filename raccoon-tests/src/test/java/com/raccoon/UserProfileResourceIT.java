@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -110,12 +112,12 @@ class UserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
+        // follow the artist
         ArtistDto artistDto = ArtistDto.builder()
                 .name("name")
                 .spotifyUri("spotifyUri")
                 .lastfmUri("lastfmUri")
                 .build();
-
         given()
                 .contentType(ContentType.JSON)
                 .with().body(
@@ -175,6 +177,48 @@ class UserProfileResourceIT {
                 .when().get("/enableServices/")
                 .then()
                 .statusCode(SC_OK);
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = EMAIL_CLAIM, value = "user@gmail.com")
+    })
+    @DisplayName("GET `/me/followed-artists` returns list of Artists")
+    void getUserArtists() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+        // follow the artist
+        ArtistDto artistDto = ArtistDto.builder()
+                .name("name")
+                .spotifyUri("spotifyUri")
+                .lastfmUri("lastfmUri")
+                .build();
+        given()
+                .contentType(ContentType.JSON)
+                .with().body(
+                        artistDto
+                )
+                .when().post("/follow")
+                .then()
+                .statusCode(SC_NO_CONTENT);
+
+        // get followed artists
+        List<ArtistDto> list = given()
+                .contentType(ContentType.JSON)
+                .when().get("followed-artists")
+                .then()
+                .statusCode(SC_OK)
+                .extract().body().jsonPath().getList(".", ArtistDto.class);
+
+        assertEquals(1, list.size());
+        assertEquals(artistDto.getName(), list.get(0).getName());
+        assertEquals(artistDto.getSpotifyUri(), list.get(0).getSpotifyUri());
+        assertEquals(artistDto.getLastfmUri(), list.get(0).getLastfmUri());
     }
 
     @Test

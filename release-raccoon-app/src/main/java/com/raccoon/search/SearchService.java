@@ -1,7 +1,7 @@
 package com.raccoon.search;
 
 import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.ArtistSearchResponse;
+import com.raccoon.search.dto.mapping.ArtistSearchResponse;
 
 import java.util.Collection;
 import java.util.HashMap;

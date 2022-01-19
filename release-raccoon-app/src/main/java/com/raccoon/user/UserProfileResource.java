@@ -7,6 +7,7 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -97,5 +98,16 @@ public class UserProfileResource {
         userProfileService.enableTasteSources(email, lastfmUsernameOpt, enableSpotifyOpt);
 
         return Response.temporaryRedirect(URI.create("/me")).build();
+    }
+
+    @GET
+    @Path("/followed-artists")
+    @Transactional
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<ArtistDto> getFollowedArtists() {
+        final String email = idToken.getClaim(EMAIL_CLAIM);
+
+        return userProfileService.getFollowedArtists(email);
     }
 }

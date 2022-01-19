@@ -11,6 +11,7 @@
 * Create DTOs for every Entity class (Decouple)
 * Cucumber tests
 * UserProfileService does too much, break down
+* User hyphen separated uri's all around (/enableServices)
 
 # Additional Integrations
 * Add integrations:

@@ -2,12 +2,13 @@ package com.raccoon.user;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
+import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.ArtistMapper;
+import com.raccoon.search.dto.mapping.ArtistMapper;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +16,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ws.rs.NotFoundException;
@@ -28,10 +31,7 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 
 import static com.raccoon.templatedata.QuteTemplateLoader.PROFILE_TEMPLATE_ID;
-import static io.smallrye.common.constraint.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -84,7 +84,7 @@ class UserProfileServiceTest {
 
         service.getUserArtists(user);
 
-        verify(mockUserArtistRepository, times(1)).findByUserIdByWeight(1L);
+        verify(mockUserArtistRepository, times(1)).findByUserIdSortedByWeight(1L);
     }
 
     @Test
@@ -109,7 +109,7 @@ class UserProfileServiceTest {
         var email = "user@mail.com";
         var userStub = new User();
         userStub.setEmail(email);
-        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
+        when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
 
         final var user = service.completeRegistration(email);
 
@@ -123,8 +123,8 @@ class UserProfileServiceTest {
         var email = "user@mail.com";
         var userStub = new User();
         userStub.setEmail(email);
-        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
-        Mockito.when(mockUserFactory.createUser(email)).thenReturn(userStub);
+        when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
+        when(mockUserFactory.createUser(email)).thenReturn(userStub);
 
         final var user = service.completeRegistration(email);
 
@@ -160,7 +160,7 @@ class UserProfileServiceTest {
     @DisplayName("user not found, returns 404")
     void enableSourceNotExistent() {
         var email = "user@mail.com";
-        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
+        when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
         Optional<String> lastfmUserNameOpt = Optional.of("lastfm");
         Optional<Boolean> enableSpotifyOpt = Optional.empty();
 
@@ -173,7 +173,7 @@ class UserProfileServiceTest {
         var email = "user@mail.com";
         var userStub = new User();
         userStub.setEmail(email);
-        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
+        when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
 
         final var user = service.enableTasteSources(email, Optional.of("lastfm"), Optional.empty());
 
@@ -186,7 +186,7 @@ class UserProfileServiceTest {
         var email = "user@mail.com";
         var userStub = new User();
         userStub.setEmail(email);
-        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
+        when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
 
         final var user = service.enableTasteSources(email, Optional.empty(), Optional.of(Boolean.TRUE));
 
@@ -199,12 +199,58 @@ class UserProfileServiceTest {
         var email = "user@mail.com";
         var userStub = new User();
         userStub.setEmail(email);
-        Mockito.when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
+        when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
 
         final var user = service.enableTasteSources(email, Optional.of("lastfm"), Optional.of(Boolean.TRUE));
 
         assertEquals(Boolean.TRUE, user.getSpotifyEnabled());
         assertEquals("lastfm", user.getLastfmUsername());
+    }
+
+    @Test
+    @DisplayName("getFollowedArtists(): returns list")
+    void getFollowedArtists() {
+        var email = "user@mail.com";
+        var stubUser = new User();
+        stubUser.setEmail(email);
+        stubUser.id = 9L;
+
+        Artist stubArtist = new Artist();
+        stubArtist.setId(9L);
+        stubArtist.setName("name");
+        stubArtist.setSpotifyUri("spotify");
+        stubArtist.setLastfmUri("lastfm");
+        stubArtist.setCreateDate(LocalDateTime.now());
+        UserArtist userArtist = new UserArtist();
+        userArtist.setArtist(stubArtist);
+        userArtist.setUser(stubUser);
+        when(mockUserArtistRepository.findByUserIdSortedByWeight(stubUser.id)).thenReturn(List.of(userArtist));
+
+        when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
+        var dto = new ArtistDto();
+        when(mockArtistMapper.toDto(stubArtist)).thenReturn(dto);
+
+        final var artists = service.getFollowedArtists(email);
+
+        assertEquals(1, artists.size());
+        assertNotNull(artists.get(0));
+        assertEquals(dto, artists.get(0));
+    }
+
+    @Test
+    @DisplayName("getFollowedArtists(): returns empty list")
+    void getFollowedArtistsEmptyList() {
+        var email = "user@mail.com";
+        var stubUser = new User();
+        stubUser.setEmail(email);
+        stubUser.id = 9L;
+        when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
+        when(mockUserArtistRepository.findByUserIdSortedByWeight(stubUser.id)).thenReturn(Collections.emptyList());
+
+        final var artists = service.getFollowedArtists(email);
+
+        assertNotNull(artists);
+        assertTrue(artists.isEmpty());
     }
 
 }

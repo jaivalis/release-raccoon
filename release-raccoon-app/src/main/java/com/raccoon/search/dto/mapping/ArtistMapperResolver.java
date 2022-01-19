@@ -1,7 +1,8 @@
-package com.raccoon.search.dto;
+package com.raccoon.search.dto.mapping;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.repository.ArtistRepository;
+import com.raccoon.search.dto.ArtistDto;
 
 import org.mapstruct.ObjectFactory;
 import org.mapstruct.TargetType;
@@ -18,8 +19,8 @@ public class ArtistMapperResolver {
     private final ArtistRepository artistRepository;
 
     @Inject
-    ArtistMapperResolver(final ArtistRepository userRepository) {
-        this.artistRepository = userRepository;
+    ArtistMapperResolver(final ArtistRepository artistRepository) {
+        this.artistRepository = artistRepository;
     }
 
     @ObjectFactory
