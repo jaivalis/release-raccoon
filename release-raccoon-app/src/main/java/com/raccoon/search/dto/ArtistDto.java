@@ -19,9 +19,17 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 public class ArtistDto {
 
     private Long id;
+
     @NotNull
     private String name;
+
     private String lastfmUri;
+
     private String spotifyUri;
+
+    /**
+     * True if the user searching already follows the artist
+     */
+    private boolean followedByUser = false;
 
 }

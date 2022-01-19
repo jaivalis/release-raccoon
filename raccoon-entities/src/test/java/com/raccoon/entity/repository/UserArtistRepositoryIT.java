@@ -152,6 +152,28 @@ class UserArtistRepositoryIT {
 
     @Test
     @Transactional
+    void findByUserIdAndArtistIds() {
+        var user1Artist1 = stubFactory.stubUserArtist("user1", "artist1");
+        var user1Artist2 = stubFactory.stubUserArtist("user1", "artist2");
+        var user2Artist1 = stubFactory.stubUserArtist("user2", "artist1");
+        user1Artist1.setWeight(0.60f);
+        user1Artist2.setWeight(0.65f);
+        user2Artist1.setWeight(0.10f);
+        userArtistRepository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
+
+        var foundArtists = userArtistRepository.findByUserIdAndArtistIds(
+                user1Artist1.getUser().id,
+                List.of(user1Artist2.getArtist().id, user1Artist1.getArtist().id)
+        );
+
+        assertEquals(2, foundArtists.size());
+        var foundArtistIds = foundArtists.stream().map(userArtist -> userArtist.getArtist().id).toList();
+        assertTrue(foundArtistIds.contains(user1Artist1.getArtist().id));
+        assertTrue(foundArtistIds.contains(user1Artist1.getArtist().id));
+    }
+
+    @Test
+    @Transactional
     void deleteAssociation() {
         var userArtist = stubFactory.stubUserArtist("user1", "artist1");
         var userId = userArtist.getUser().id;

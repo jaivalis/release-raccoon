@@ -36,7 +36,7 @@ public class HibernateSearcher implements ArtistSearcher {
 
     @Transactional
     void onStart(@Observes StartupEvent ev) {
-        log.info("Indexing");
+        log.info("Indexing Artist entities");
         searchSession.massIndexer(Artist.class)
                 .threadsToLoadObjects(2)
                 .batchSizeToLoadObjects(25)
