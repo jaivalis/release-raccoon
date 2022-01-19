@@ -18,7 +18,6 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     public List<UserArtist> getUserArtistsWithNewRelease() {
         Stream<UserArtist> stream = find("hasNewRelease", true)
                 .stream();
-
         return stream.toList();
     }
 
@@ -52,6 +51,10 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
 
     public List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
         return find("artist_id in ?1", artistIds).stream().toList();
+    }
+
+    public List<UserArtist> findByUserIdAndArtistIds(final Long userId, final Collection<Long> artistIds) {
+        return find("user_id = ?1 and artist_id in ?1", userId, artistIds).stream().toList();
     }
 
     public void deleteAssociation(Long userId, Long artistId) {
