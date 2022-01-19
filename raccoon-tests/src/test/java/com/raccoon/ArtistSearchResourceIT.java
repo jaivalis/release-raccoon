@@ -28,9 +28,12 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.quarkus.test.security.TestSecurity;
+import io.quarkus.test.security.oidc.Claim;
+import io.quarkus.test.security.oidc.OidcSecurity;
 import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.*;
@@ -68,9 +71,7 @@ class ArtistSearchResourceIT {
             entityManager.persist(artist);
         }
 
-        searchSession
-                .massIndexer(Artist.class)
-                .startAndWait();
+        searchSession.massIndexer(Artist.class).startAndWait();
 
         when(mockRaccoonLastfmApi.searchArtist(anyString())).thenReturn(Collections.emptyList());
     }
@@ -78,6 +79,9 @@ class ArtistSearchResourceIT {
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @DisplayName("successful search, should return single artist")
+    @OidcSecurity(claims = {
+            @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
+    })
     @DataSet(value = "datasets/yml/artist-search.yml")
     void searchExistingName() {
         given()
@@ -88,14 +92,17 @@ class ArtistSearchResourceIT {
                 .statusCode(SC_OK)
                 .assertThat()
                 .body(
-                        "artistsPerResource.fromDb.size()", is(1),
-                        "artistsPerResource.fromDb[0].name", equalTo("Zapp Franka")
+                        "artists.size()", is(1),
+                        "artists[0].name", equalTo("Zapp Franka")
                 );
     }
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @DisplayName("successful search, should return two artists")
+    @OidcSecurity(claims = {
+            @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
+    })
     @DataSet(value = "datasets/yml/artist-search.yml")
     void searchExistingNameReturnsTwo() throws InterruptedException {
         // Something wrong with the timings here, this seems to be necessary:
@@ -114,10 +121,9 @@ class ArtistSearchResourceIT {
                 .statusCode(SC_OK)
                 .assertThat()
                 .body(
-                        "artistsPerResource.fromDb.size()", is(2),
-                        "artistsPerResource.fromDb.name", hasItems( "philip grass", "philip stone"),
-                        "artistsPerResource.fromLastfm.size()", is(1),
-                        "artistsPerResource.fromLastfm", hasItem(
+                        "artists.size()", is(3),
+                        "artists.name", hasItems( "philip grass", "philip stone"),
+                        "artists", hasItem(
                                 allOf(
                                         hasEntry("name", "Philip Glass")
                                 )
@@ -137,6 +143,6 @@ class ArtistSearchResourceIT {
                 .then()
                 .statusCode(SC_OK)
                 .assertThat()
-                .body("artistsPerResource.fromDb.size()", is(0));
+                .body("artists.size()", is(0));
     }
 }
