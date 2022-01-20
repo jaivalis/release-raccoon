@@ -141,6 +141,16 @@
             position: relative;
         }
 
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
+            pointer-events: none;
+        }
+
         #results {
             position: absolute;
             background: #5f2c82;
@@ -150,6 +160,7 @@
             overflow: auto;
             height: 420px;
             width: 192px;
+            z-index: 3;
         }
 
         #results li {
@@ -207,6 +218,7 @@
             }catch{
             }
 
+            document.getElementById('overlay').style.pointerEvents = 'auto';
             const navbarEl = document.getElementById('navbar');
             const resultsParent = document.createElement('ul');
             resultsParent.setAttribute('id', 'results');
@@ -271,6 +283,11 @@
             renderResults(results.artists);
         }
 
+        function hideResults() {
+            document.getElementById('results').remove();
+            document.getElementById('overlay').style.pointerEvents = 'none';
+        }
+
         // Hide results on click out of the results panel
         $(document).mouseup(function(e){
             // var container = $("#results");
@@ -315,6 +332,8 @@
         </div>
     </div>
 </nav>
+
+<div id="overlay" onclick="hideResults()"></div>
 
 <div>
 
