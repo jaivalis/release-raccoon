@@ -2,6 +2,7 @@ package com.raccoon;
 
 import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.Artist;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.ArtistDto;
@@ -50,6 +51,8 @@ class UserProfileResourceIT {
     @Inject
     UserRepository userRepository;
     @Inject
+    ArtistRepository artistRepository;
+    @Inject
     UserArtistRepository userArtistRepository;
 
     @BeforeEach
@@ -58,6 +61,7 @@ class UserProfileResourceIT {
         mockMailbox.clear();
         userArtistRepository.deleteAll();
         userRepository.deleteAll();
+        artistRepository.deleteAll();
     }
 
     @Test
