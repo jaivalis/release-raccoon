@@ -5,7 +5,10 @@ import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.Release;
+import com.raccoon.entity.repository.ArtistReleaseRepository;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.release.ReleaseScrapeResource;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -49,13 +53,25 @@ import static org.mockito.ArgumentMatchers.any;
 class ReleaseScrapeResourceIT {
 
     @Inject
+    UserRepository userRepository;
+    @Inject
+    ArtistRepository artistRepository;
+    @Inject
     UserArtistRepository userArtistRepository;
+    @Inject
+    ArtistReleaseRepository artistReleaseRepository;
     @InjectMock
     SpotifyScraper mockScraper;
 
     @BeforeEach
+    @Transactional
     public void setup() {
         QuarkusMock.installMockForType(mockScraper, SpotifyScraper.class);
+
+        userArtistRepository.deleteAll();
+        artistReleaseRepository.deleteAll();
+        userRepository.deleteAll();
+        artistRepository.deleteAll();
     }
 
     @Test
