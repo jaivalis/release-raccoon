@@ -9,6 +9,7 @@ import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.scraper.ReleaseScraper;
 import com.raccoon.scraper.TasteScraper;
+import com.raccoon.scraper.mapper.SpotifyReleaseMapper;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
@@ -18,7 +19,6 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,22 +38,25 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
-    ArtistFactory artistFactory;
-    ArtistRepository artistRepository;
-    ArtistReleaseRepository artistReleaseRepository;
-    ReleaseRepository releaseRepository;
+    final ArtistFactory artistFactory;
+    final ArtistRepository artistRepository;
+    final ArtistReleaseRepository artistReleaseRepository;
+    final ReleaseRepository releaseRepository;
+    final SpotifyReleaseMapper releaseMapper;
 
-    RaccoonSpotifyApi spotifyApi;
+    final RaccoonSpotifyApi spotifyApi;
 
     public SpotifyScraper(final ArtistFactory artistFactory,
                           final ArtistRepository artistRepository,
                           final ArtistReleaseRepository artistReleaseRepository,
                           final ReleaseRepository releaseRepository,
+                          final SpotifyReleaseMapper releaseMapper,
                           final RaccoonSpotifyApi spotifyApi) {
         this.artistFactory = artistFactory;
         this.artistRepository = artistRepository;
         this.artistReleaseRepository = artistReleaseRepository;
         this.releaseRepository = releaseRepository;
+        this.releaseMapper = releaseMapper;
         this.spotifyApi = spotifyApi;
     }
 
@@ -121,11 +124,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
     private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
         if (releaseRepository.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
-            final var release = new Release();
-            release.setName(albumSimplified.getName());
-            release.setType(albumSimplified.getAlbumType().toString());
-            release.setSpotifyUri(albumSimplified.getUri());
-            release.setReleasedOn(LocalDate.parse(albumSimplified.getReleaseDate()));
+            final var release = releaseMapper.fromAlbumSimplified(albumSimplified);
 
             releaseRepository.persist(release);  // do I need this many persists?
 
@@ -144,8 +143,10 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
         }
         return Optional.empty();
     }
+
     // ========================================== End of ReleaseScraper API ========================================= //
     // ============================================== TasteScraper API ============================================== //
+
     @Override
     public Collection<MutablePair<Artist, Float>> scrapeTaste(String username, Optional<Integer> limit) {
         throw new UnsupportedOperationException("Invoked asynchronously from the Spotify OAuth cycle instead.");

@@ -6,6 +6,7 @@ import com.raccoon.entity.factory.ArtistFactory;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.ReleaseRepository;
+import com.raccoon.scraper.mapper.SpotifyReleaseMapper;
 import com.wrapper.spotify.enums.AlbumType;
 import com.wrapper.spotify.enums.ModelObjectType;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -53,6 +54,8 @@ class SpotifyScraperTest {
     @Mock
     RaccoonSpotifyApi raccoonSpotifyApiMock;
 
+    SpotifyReleaseMapper mockReleaseMapper = new SpotifyReleaseMapper();
+
     @Mock
     Paging<AlbumSimplified> albumSimplifiedPagingMock;
     @Mock
@@ -67,6 +70,7 @@ class SpotifyScraperTest {
                 artistRepositoryMock,
                 artistReleaseRepository,
                 releaseRepositoryMock,
+                mockReleaseMapper,
                 raccoonSpotifyApiMock
         );
     }
