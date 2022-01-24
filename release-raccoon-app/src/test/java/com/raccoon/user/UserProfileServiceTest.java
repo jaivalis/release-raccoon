@@ -230,11 +230,11 @@ class UserProfileServiceTest {
         var dto = new ArtistDto();
         when(mockArtistMapper.toDto(stubArtist)).thenReturn(dto);
 
-        final var artists = service.getFollowedArtists(email);
+        final var response = service.getFollowedArtists(email);
 
-        assertEquals(1, artists.size());
-        assertNotNull(artists.get(0));
-        assertEquals(dto, artists.get(0));
+        assertEquals(1, response.getTotal());
+        assertNotNull(response.getRows().get(0));
+        assertEquals(dto, response.getRows().get(0));
     }
 
     @Test
@@ -247,10 +247,11 @@ class UserProfileServiceTest {
         when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
         when(mockUserArtistRepository.findByUserIdSortedByWeight(stubUser.id)).thenReturn(Collections.emptyList());
 
-        final var artists = service.getFollowedArtists(email);
+        final var response = service.getFollowedArtists(email);
 
-        assertNotNull(artists);
-        assertTrue(artists.isEmpty());
+        assertNotNull(response);
+        assertEquals(0, response.getTotal());
+        assertTrue(response.getRows().isEmpty());
     }
 
 }

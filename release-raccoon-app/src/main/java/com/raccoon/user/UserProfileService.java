@@ -72,14 +72,18 @@ public class UserProfileService {
      * @return
      */
     @NotNull
-    public List<ArtistDto> getFollowedArtists(final String userEmail) {
+    public FollowedArtistsResponse getFollowedArtists(final String userEmail) {
         var user = userRepository.findByEmail(userEmail);
 
-        return userArtistRepository.findByUserIdSortedByWeight(user.id)
+        List<ArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
                 .stream()
                 .map(UserArtist::getArtist)
                 .map(artistMapper::toDto)
                 .toList();
+        return FollowedArtistsResponse.builder()
+                .rows(rows)
+                .total(rows.size())
+                .build();
     }
 
     public String renderTemplateInstance(final String userEmail) {

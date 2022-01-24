@@ -149,7 +149,7 @@ class UserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "user@gmail.com")
     })
-    @DisplayName("delete artist association")
+    @DisplayName("DELETE `/me/artist` deletes UserArtist association")
     void unfollowArtist() {
         // create the user
         given()
@@ -222,7 +222,7 @@ class UserProfileResourceIT {
                 .when().get("followed-artists")
                 .then()
                 .statusCode(SC_OK)
-                .extract().body().jsonPath().getList(".", ArtistDto.class);
+                .extract().body().jsonPath().getList("rows", ArtistDto.class);
 
         assertEquals(1, list.size());
         assertEquals(artistDto.getName(), list.get(0).getName());

@@ -7,7 +7,6 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -105,7 +104,7 @@ public class UserProfileResource {
     @Transactional
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ArtistDto> getFollowedArtists() {
+    public FollowedArtistsResponse getFollowedArtists() {
         final String email = idToken.getClaim(EMAIL_CLAIM);
 
         return userProfileService.getFollowedArtists(email);

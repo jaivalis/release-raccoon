@@ -12,6 +12,9 @@
 * Cucumber tests
 * UserProfileService does too much, break down
 * User hyphen separated uri's all around (/enableServices)
+* use assertj assertions
+* Remove @Data from entities!!
+* Unfollow should be a `DELETE` call returning no-content
 
 # Additional Integrations
 * Add integrations:
