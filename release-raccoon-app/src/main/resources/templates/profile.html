@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap" rel="stylesheet">
 
     <!-- Searchable artists -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Reloading table -->
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/defer-url/bootstrap-table-defer-url.min.js"></script>
@@ -220,16 +220,6 @@
 
     </style>
     <script>
-        // Search artist table
-        $(document).ready(function(){
-            $("#tableSearch").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#artistTable tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-        });
-
         const filterArtistsTable = () => {
             const trs = document.querySelectorAll('#artistTableParent tr:not(.header)')
             const filter = document.querySelector('#tableSearch').value
