@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -72,17 +73,16 @@ public class UserProfileResource {
     }
 
     @Path("/unfollow/{artistId}")
-    @POST
+    @DELETE
     @NoCache
     @Transactional
     @Valid
-    @Produces(MediaType.TEXT_HTML)
     public Response unfollowArtist(@NotNull @PathParam("artistId") Long artistId) {
         log.info("Unfollowing artist {}", artistId);
         final String email = idToken.getClaim(EMAIL_CLAIM);
         userProfileService.unfollowArtist(email, artistId);
 
-        return Response.ok(userProfileService.renderTemplateInstance(email)).build();
+        return Response.noContent().build();
     }
 
     @GET

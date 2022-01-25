@@ -160,9 +160,9 @@ class UserProfileResourceIT {
 
         given()
                 .contentType(ContentType.JSON)
-                .when().post("/unfollow/1")
+                .when().delete("/unfollow/1")
                 .then()
-                .statusCode(SC_OK);
+                .statusCode(SC_NO_CONTENT);
     }
 
     @Test
