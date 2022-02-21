@@ -28,7 +28,7 @@ class ReleaseScrapeSchedulerTest {
 
     @Test
     @DisplayName("releaseScrapeCronJob() calls mockService.scrape()")
-    void releaseScrapeCronJob() {
+    void releaseScrapeCronJob() throws InterruptedException {
         scheduler.releaseScrapeCronJob();
 
         verify(mockService, times(1)).scrapeReleases();

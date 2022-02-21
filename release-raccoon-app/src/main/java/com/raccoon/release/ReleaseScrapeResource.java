@@ -18,7 +18,7 @@ public class ReleaseScrapeResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Set<Release> scrapeReleases() {
+    public Set<Release> scrapeReleases() throws InterruptedException {
         return service.scrapeReleases();
     }
 

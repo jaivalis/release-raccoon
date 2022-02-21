@@ -87,7 +87,6 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
             log.error("Something went wrong when fetching new albums.", e);
             return Collections.emptySet();
         } catch (InterruptedException e) {
-            log.error("", e);
             throw e;
         }
         return releases;

@@ -9,6 +9,7 @@ import com.raccoon.scraper.musicbrainz.MusicbrainzScraper;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -25,6 +26,7 @@ import java.util.stream.Stream;
 
 import javax.enterprise.inject.Instance;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -106,4 +108,19 @@ class ReleaseScrapeServiceTest {
         // ids are given through `stubReleases` are lte `releaseCount`
         arg.forEach(artistId -> assertTrue(artistId < releaseCount));
     }
+
+    @Test
+    @DisplayName("Identical Releases returned by both scrapers, should be merged")
+    void scrapeScrapersReturnIdenticalAlbums() throws Exception {
+        var releaseCount = 5;
+        Set<Release> stubReleases = stubReleases(releaseCount);
+        when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(stubReleases);
+        // Second scraper returns only one Release already returned by the first
+        when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(Set.of(stubReleases.iterator().next()));
+
+        Set<Release> releases = service.scrapeReleases();
+
+        assertThat(releases).hasSize(stubReleases.size());
+    }
+
 }

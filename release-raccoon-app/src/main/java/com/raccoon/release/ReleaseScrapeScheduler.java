@@ -18,7 +18,7 @@ public class ReleaseScrapeScheduler {
     }
 
     @Scheduled(cron="{release.scrape.cron.expr}")
-    public void releaseScrapeCronJob() {
+    public void releaseScrapeCronJob() throws InterruptedException {
         log.info("Release scrape cronjob triggered");
         service.scrapeReleases();
     }

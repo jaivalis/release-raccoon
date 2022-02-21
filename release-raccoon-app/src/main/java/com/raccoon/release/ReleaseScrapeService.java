@@ -6,10 +6,10 @@ import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.scraper.ReleaseScraper;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -34,22 +34,14 @@ public class ReleaseScrapeService {
     }
 
     @Transactional
-    public Set<Release> scrapeReleases() {
-        Set<Release> releases = releaseScrapers.stream()
-                .map(searcher -> {
-                    try {
-                        return searcher.scrapeReleases(Optional.empty());
-                    } catch (InterruptedException e) {
-                        log.error("Exception while scraping releases");
-                        throw new RuntimeException(e);
-                    }
-                })
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+    public Set<Release> scrapeReleases() throws InterruptedException {
+        Set<Release> releases = new HashSet<>();
+        for (ReleaseScraper scraper : releaseScrapers) {
+            releases.addAll(scraper.scrapeReleases(Optional.empty()));
+        }
+
         updateHasNewRelease(releases);
-
         log.info("Found {} new releases", releases.size());
-
         return releases;
     }
 
