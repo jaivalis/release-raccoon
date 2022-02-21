@@ -100,4 +100,14 @@ class MusicbrainzScraperTest {
         assertThat(scraper.processRelease(release)).isEmpty();
     }
 
+    @Test
+    @TestTransaction
+    void processReleaseNoArtists() {
+        JFixture fixture = new JFixture();
+        MusicbrainzReleasesResponse.MusicbrainzRelease release = fixture.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
+        release.setArtistCredits(null);
+
+        assertThat(scraper.processRelease(release)).isEmpty();
+    }
+
 }
