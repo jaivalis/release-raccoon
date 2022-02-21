@@ -1,7 +1,6 @@
 package com.raccoon.scraper.spotify;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.factory.ArtistFactory;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
@@ -138,20 +137,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
         if (existing.isEmpty()) {
             final var release = releaseMapper.fromAlbumSimplified(albumSimplified);
 
-            releaseRepository.persist(release);  // do I need this many persists?
-
-            release.setReleases(releaseArtists
-                    .stream()
-                    .map(artist -> {
-                        var artistRelease = new ArtistRelease();
-                        artistRelease.setArtist(artist);
-                        artistRelease.setRelease(release);
-
-                        artistReleaseRepository.persist(artistRelease);
-                        return artistRelease;
-                    }).toList());
-            releaseRepository.persist(release);
-            return Optional.of(release);
+            return persistRelease(releaseArtists, release, releaseRepository, artistReleaseRepository);
         }
         return Optional.empty();
     }
@@ -196,6 +182,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
         }
         throw new IllegalArgumentException("Got an object type that is not supported.");
     }
+
     // =========================================== End of TasteScraper API ========================================== //
 
 }

@@ -1,7 +1,6 @@
 package com.raccoon.scraper.musicbrainz;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.factory.ArtistFactory;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
@@ -119,21 +118,7 @@ public class MusicbrainzScraper implements ReleaseScraper {
 
             var release = releaseOptional.get();
 
-            releaseRepository.persist(release);
-
-            release.setReleases(
-                    releaseArtists
-                            .stream()
-                            .map(artist -> {
-                                var artistRelease = new ArtistRelease();
-                                artistRelease.setArtist(artist);
-                                artistRelease.setRelease(release);
-
-                                artistReleaseRepository.persist(artistRelease);
-                                return artistRelease;
-                            }).toList());
-            releaseRepository.persist(release);
-            return Optional.of(release);
+            return persistRelease(releaseArtists, release, releaseRepository, artistReleaseRepository);
         }
 
         return Optional.empty();
