@@ -190,4 +190,46 @@ class ReleaseRepositoryTest {
         assertTrue(found.isEmpty());
     }
 
+    @Test
+    @TestTransaction
+    void findByMusicbrainzIdOptional() {
+        var id = "id";
+        var release = new Release();
+        release.setMusicbrainzId(id);
+        repository.persist(List.of(release));
+
+        final var found = repository.findByMusicbrainzIdOptional(id);
+
+        assertThat(found).isPresent();
+    }
+
+    @Test
+    @TestTransaction
+    void findByMusicbrainzIdOptionalEmpty() {
+        final var found = repository.findByMusicbrainzIdOptional("notFound");
+
+        assertThat(found).isEmpty();
+    }
+
+    @Test
+    @TestTransaction
+    void findBySpotifyUriOptional() {
+        var id = "id";
+        var release = new Release();
+        release.setSpotifyUri(id);
+        repository.persist(List.of(release));
+
+        final var found = repository.findBySpotifyUriOptional(id);
+
+        assertThat(found).isPresent();
+    }
+
+    @Test
+    @TestTransaction
+    void findBySpotifyUriOptionalEmpty() {
+        final var found = repository.findBySpotifyUriOptional("notFound");
+
+        assertThat(found).isEmpty();
+    }
+
 }

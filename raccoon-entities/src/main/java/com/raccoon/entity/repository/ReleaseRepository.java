@@ -40,14 +40,6 @@ public class ReleaseRepository implements PanacheRepository<Release> {
                 .or(() -> findByNameAndArtistsOptional(albumName, releaseArtists));
     }
 
-    public Optional<Release> findByMusicbrainzIdOptional(String uri) {
-        return Optional.ofNullable(find("musicbrainzId", uri).firstResult());
-    }
-
-    public Optional<Release> findBySpotifyUriOptional(String uri) {
-        return Optional.ofNullable(find("spotifyUri", uri).firstResult());
-    }
-
     /**
      * Finds a Release based on the name of the Release and the Artists involved.
      * @param name the name of the Release
@@ -83,4 +75,15 @@ public class ReleaseRepository implements PanacheRepository<Release> {
                 .filter(release -> release.getArtists().stream().anyMatch(artists::contains))
                 .toList();
     }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Optional<Release> findByMusicbrainzIdOptional(String musicbrainzId) {
+        return Optional.ofNullable(find("musicbrainzId", musicbrainzId).firstResult());
+    }
+
+    Optional<Release> findBySpotifyUriOptional(String spotifyUri) {
+        return Optional.ofNullable(find("spotifyUri", spotifyUri).firstResult());
+    }
+
 }
