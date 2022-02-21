@@ -83,6 +83,16 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.flextrade.jfixture</groupId>
+            <artifactId>jfixture</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- testcontainers -->
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -109,7 +119,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <groupId>org.apache.maven.plugins</groupId>
                 <configuration>
-                    <argLine>@{argLine} -Xmx1024m</argLine>
+<!--                    <argLine>@{argLine} -Xmx1024m</argLine>-->
+                    <argLine>@{argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
                 </configuration>
             </plugin>
 

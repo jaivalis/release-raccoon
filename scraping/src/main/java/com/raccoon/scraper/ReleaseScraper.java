@@ -2,13 +2,12 @@ package com.raccoon.scraper;
 
 import com.raccoon.entity.Release;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ReleaseScraper {
 
-    List<Release> scrapeReleases(Optional<Integer> limit) throws IOException, InterruptedException;
+    Set<Release> scrapeReleases(Optional<Integer> limit) throws InterruptedException;
 
     Optional<Release> processRelease(Object release);
 

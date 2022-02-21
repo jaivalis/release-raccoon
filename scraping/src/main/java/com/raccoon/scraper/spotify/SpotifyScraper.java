@@ -22,12 +22,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +49,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
     final RaccoonSpotifyApi spotifyApi;
 
+    @Inject
     public SpotifyScraper(final ArtistFactory artistFactory,
                           final ArtistRepository artistRepository,
                           final ArtistReleaseRepository artistReleaseRepository,
@@ -63,8 +67,8 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     // ============================================= ReleaseScraper API ============================================= //
 
     @Override
-    public List<Release> scrapeReleases(Optional<Integer> limit) throws IOException, InterruptedException {
-        List<Release> releases = new ArrayList<>();
+    public Set<Release> scrapeReleases(Optional<Integer> limit) throws InterruptedException {
+        Set<Release> releases = new HashSet<>();
         var offset = 0;
         Paging<AlbumSimplified> response;
         try {
@@ -80,8 +84,8 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
                 offset = response.getOffset() + response.getLimit();
             } while(response.getNext() != null);
         } catch (IOException | SpotifyWebApiException | ParseException e) {
-            log.error("Something went wrong when fetching new albums.\n", e);
-            throw new IOException("Something went wrong when fetching new albums.", e);
+            log.error("Something went wrong when fetching new albums.", e);
+            return Collections.emptySet();
         } catch (InterruptedException e) {
             log.error("", e);
             throw e;
@@ -100,10 +104,17 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     private Optional<Release> processRelease(AlbumSimplified albumSimplified) {
         log.debug("Processing release: {}", albumSimplified.getName());
         Set<Artist> releaseArtists = persistArtists(albumSimplified.getArtists());
+        if (releaseArtists.isEmpty()) {
+            return Optional.empty();
+        }
         return persistRelease(albumSimplified, releaseArtists);
     }
 
     private Set<Artist> persistArtists(ArtistSimplified[] artists) {
+        if (artists == null || artists.length == 0) {
+            return Collections.emptySet();
+        }
+
         return Arrays.stream(artists)
                 .distinct()
                 .map(artistSimplified -> {
@@ -123,7 +134,9 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     }
 
     private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
-        if (releaseRepository.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
+        Optional<Release> existing = releaseRepository.findSpotifyRelease(albumSimplified.getUri(), albumSimplified.getName(), releaseArtists);
+
+        if (existing.isEmpty()) {
             final var release = releaseMapper.fromAlbumSimplified(albumSimplified);
 
             releaseRepository.persist(release);  // do I need this many persists?

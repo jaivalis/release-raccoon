@@ -1,7 +1,6 @@
 package com.raccoon.release;
 
 import com.raccoon.entity.Release;
-import com.raccoon.exception.ReleaseScrapeException;
 
 import java.util.Set;
 
@@ -19,8 +18,8 @@ public class ReleaseScrapeResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Set<Release> scrapeReleases() throws InterruptedException, ReleaseScrapeException {
-        return service.scrape();
+    public Set<Release> scrapeReleases() {
+        return service.scrapeReleases();
     }
 
 }

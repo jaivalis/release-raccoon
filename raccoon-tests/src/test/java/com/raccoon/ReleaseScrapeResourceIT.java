@@ -4,6 +4,7 @@ import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.common.ElasticSearchTestResource;
+import com.raccoon.common.WiremockExtensions;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
 import com.raccoon.entity.repository.ArtistRepository;
@@ -18,11 +19,11 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.mockito.Mockito;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -33,14 +34,14 @@ import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
-import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 
 @QuarkusTest
@@ -50,6 +51,7 @@ import static org.mockito.ArgumentMatchers.any;
 @DBRider
 @DBUnit(caseSensitiveTableNames = true)
 @QuarkusTestResource(ElasticSearchTestResource.class)
+@QuarkusTestResource(WiremockExtensions.class)
 class ReleaseScrapeResourceIT {
 
     @Inject
@@ -80,12 +82,12 @@ class ReleaseScrapeResourceIT {
     @DisplayName("new releases should set UserArtist.hasNewRelease")
     void releaseScrape_should_mark_hasNewRelease() throws IOException, InterruptedException {
         Release scrapedRelease = Release.findById(100L);
-        List<Release> mockReleases = List.of(
+        Set<Release> mockReleases = Set.of(
                 scrapedRelease
         );
-        Mockito.when(mockScraper.scrapeReleases(any())).thenReturn(mockReleases);
+        when(mockScraper.scrapeReleases(any())).thenReturn(mockReleases);
 
-        final ValidatableResponse response = given()
+        given()
                 .when().get()
                 .then()
                 .statusCode(200)
@@ -99,9 +101,9 @@ class ReleaseScrapeResourceIT {
     @Test
     @Order(2)
     @DataSet(value = "datasets/yml/release-scrape.yml")
-    @DisplayName("no new releases should return empty list")
-    void releaseScrape_emptyList() throws IOException, InterruptedException {
-        Mockito.when(mockScraper.scrapeReleases(any())).thenReturn(emptyList());
+    @DisplayName("no new releases should return stubbed response 22 releases")
+    void releaseScrape_emptyList() throws InterruptedException {
+        when(mockScraper.scrapeReleases(any())).thenReturn(Collections.emptySet());
 
         Release[] result = given()
                 .when().get()
@@ -109,8 +111,10 @@ class ReleaseScrapeResourceIT {
                 .statusCode(200)
                 .contentType(ContentType.JSON)
                 .extract()
+                // todo: define a Dto for this
                 .as(Release[].class);
-        assertEquals(0, result.length);
+
+        assertThat(result).hasSize(22);
     }
 
 }

@@ -1,13 +1,13 @@
 Artist:
   - artistId: 200
     name: "led zeppeling"
-    spotifyUri: "uri1"
+    spotifyUri: "uri0"
   - artistId: 201
     name: "Zapp Franka"
-    spotifyUri: "uri2"
+    spotifyUri: "uri1"
   - artistId: 202
     name: "put metheny"
-    spotifyUri: "uri3"
+    spotifyUri: "uri2"
 
   - artistId: 203
     name: "vangelio"
@@ -45,10 +45,10 @@ Artist:
 
   - artistId: 100
     name: "artist1"
-    spotifyUri: "uri1"
+    spotifyUri: "uri100"
   - artistId: 101
     name: "artist2"
-    spotifyUri: "uri1"
+    spotifyUri: "uri101"
 
 ArtistRelease:
   - release_id: 100

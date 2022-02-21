@@ -55,11 +55,14 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @FullTextField(analyzer = "name")
     String name;
 
-    @Column
+    @Column(unique = true)
     String lastfmUri;
 
-    @Column
+    @Column(unique = true)
     String spotifyUri;
+
+    @Column(unique = true)
+    String musicbrainzId;
 
     @JsonIgnore
     @ToString.Exclude

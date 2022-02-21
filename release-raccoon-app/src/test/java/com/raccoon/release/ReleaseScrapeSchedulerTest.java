@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -29,12 +28,10 @@ class ReleaseScrapeSchedulerTest {
 
     @Test
     @DisplayName("releaseScrapeCronJob() calls mockService.scrape()")
-    void releaseScrapeCronJob() throws Exception {
-        ReleaseScrapeScheduler serviceMock = mock(ReleaseScrapeScheduler.class);
-
+    void releaseScrapeCronJob() {
         scheduler.releaseScrapeCronJob();
 
-        verify(mockService, times(1)).scrape();
+        verify(mockService, times(1)).scrapeReleases();
     }
 
 }
