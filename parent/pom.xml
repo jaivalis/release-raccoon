@@ -169,11 +169,6 @@
                 <artifactId>quarkus-scheduler</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-resteasy-mutiny</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
             <!-- Search -->
             <dependency>
                 <groupId>io.quarkus</groupId>
@@ -316,13 +311,6 @@
                 <artifactId>wiremock-jre8</artifactId>
                 <scope>test</scope>
                 <version>${wiremock-jre8.version}</version>
-            </dependency>
-            <!-- https://quarkus.io/guides/security-openid-connect -->
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-test-keycloak-server</artifactId>
-                <version>${quarkus.platform.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.quarkus</groupId>

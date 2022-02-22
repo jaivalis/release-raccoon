@@ -2,6 +2,8 @@ All important changes to this project are tracked here:
 ---
 
 **main**
+* Integration to Musicbrainz for Release scrape
+* Unfollow is a `DELETE` call returning no-content
 * Artist Search
 * Welcome to release-raccoon email upon signup
 * Adding an artist to user taste should potentially trigger an update email
