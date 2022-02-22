@@ -1,5 +1,7 @@
 package com.raccoon.search.dto;
 
+import com.raccoon.search.dto.mapping.LastFmArtistMapper;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;

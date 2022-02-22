@@ -2,7 +2,7 @@ package com.raccoon.search.impl;
 
 import com.raccoon.Constants;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
-import com.raccoon.search.dto.LastFmArtistMapper;
+import com.raccoon.search.dto.mapping.LastFmArtistMapper;
 
 import de.umass.lastfm.Artist;
 

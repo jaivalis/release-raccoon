@@ -1,5 +1,7 @@
 package com.raccoon.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,6 +47,9 @@ public class Release extends PanacheEntityBase implements Serializable {
     @Column(unique = true)
     String spotifyUri;
 
+    @Column(unique = true)
+    String musicbrainzId;
+
     @Column
     LocalDate releasedOn;
 
@@ -60,6 +65,7 @@ public class Release extends PanacheEntityBase implements Serializable {
                 .toList();
     }
 
+    @JsonIgnore
     public String getSpotifyUriId() {
         if (StringUtil.isNullOrEmpty(spotifyUri)) {
             return "";

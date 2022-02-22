@@ -6,7 +6,7 @@ import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.ArtistSearchResponse;
+import com.raccoon.search.dto.mapping.ArtistSearchResponse;
 import com.raccoon.search.impl.HibernateSearcher;
 import com.raccoon.search.impl.LastfmSearcher;
 

@@ -44,7 +44,7 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         return find("user_id = ?1", userId).stream().toList();
     }
 
-    public List<UserArtist> findByUserIdByWeight(final long userId) {
+    public List<UserArtist> findByUserIdSortedByWeight(final long userId) {
         return find("user_id = ?1", Sort.by("weight", Sort.Direction.Descending), userId)
                 .stream().toList();
     }

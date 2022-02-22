@@ -1,7 +1,7 @@
 Artist:
   - artistId: 100
     name: "artist1"
-    spotifyUri: "uri1"
+    spotifyUri: "uri0"
   - artistId: 101
     name: "artist2"
     spotifyUri: "uri1"

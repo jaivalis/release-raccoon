@@ -1,6 +1,6 @@
 package com.raccoon.search;
 
-import com.raccoon.search.dto.ArtistSearchResponse;
+import com.raccoon.search.dto.mapping.ArtistSearchResponse;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;

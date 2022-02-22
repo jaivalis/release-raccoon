@@ -9,7 +9,7 @@ import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.ArtistMapper;
+import com.raccoon.search.dto.mapping.ArtistMapper;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
 import java.util.List;
@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.NotFoundException;
 
 import io.netty.util.internal.StringUtil;
@@ -60,10 +61,29 @@ public class UserProfileService {
 
 
     public List<Artist> getUserArtists(final User user) {
-        return userArtistRepository.findByUserIdByWeight(user.id)
+        return userArtistRepository.findByUserIdSortedByWeight(user.id)
                 .stream()
                 .map(UserArtist::getArtist)
                 .toList();
+    }
+
+    /**
+     * @param userEmail the user of requesting followed Artists
+     * @return
+     */
+    @NotNull
+    public FollowedArtistsResponse getFollowedArtists(final String userEmail) {
+        var user = userRepository.findByEmail(userEmail);
+
+        List<ArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
+                .stream()
+                .map(UserArtist::getArtist)
+                .map(artistMapper::toDto)
+                .toList();
+        return FollowedArtistsResponse.builder()
+                .rows(rows)
+                .total(rows.size())
+                .build();
     }
 
     public String renderTemplateInstance(final String userEmail) {

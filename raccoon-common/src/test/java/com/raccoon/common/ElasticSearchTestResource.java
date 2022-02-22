@@ -1,4 +1,5 @@
 package com.raccoon.common;
+
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.utility.DockerImageName;

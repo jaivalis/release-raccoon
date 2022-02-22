@@ -2,6 +2,8 @@ package com.raccoon;
 
 import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.Artist;
+import com.raccoon.entity.repository.ArtistReleaseRepository;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.ArtistDto;
@@ -13,6 +15,8 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -48,14 +52,21 @@ class UserProfileResourceIT {
     @Inject
     UserRepository userRepository;
     @Inject
+    ArtistRepository artistRepository;
+    @Inject
     UserArtistRepository userArtistRepository;
+    @Inject
+    ArtistReleaseRepository artistReleaseRepository;
 
     @BeforeEach
     @Transactional
     public void setup() {
         mockMailbox.clear();
+
+        artistReleaseRepository.deleteAll();
         userArtistRepository.deleteAll();
         userRepository.deleteAll();
+        artistRepository.deleteAll();
     }
 
     @Test
@@ -110,12 +121,12 @@ class UserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
+        // follow the artist
         ArtistDto artistDto = ArtistDto.builder()
                 .name("name")
                 .spotifyUri("spotifyUri")
                 .lastfmUri("lastfmUri")
                 .build();
-
         given()
                 .contentType(ContentType.JSON)
                 .with().body(
@@ -138,7 +149,7 @@ class UserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "user@gmail.com")
     })
-    @DisplayName("delete artist association")
+    @DisplayName("DELETE `/me/artist` deletes UserArtist association")
     void unfollowArtist() {
         // create the user
         given()
@@ -149,9 +160,9 @@ class UserProfileResourceIT {
 
         given()
                 .contentType(ContentType.JSON)
-                .when().post("/unfollow/1")
+                .when().delete("/unfollow/1")
                 .then()
-                .statusCode(SC_OK);
+                .statusCode(SC_NO_CONTENT);
     }
 
     @Test
@@ -175,6 +186,48 @@ class UserProfileResourceIT {
                 .when().get("/enableServices/")
                 .then()
                 .statusCode(SC_OK);
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = EMAIL_CLAIM, value = "user@gmail.com")
+    })
+    @DisplayName("GET `/me/followed-artists` returns list of Artists")
+    void getUserArtists() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+        // follow the artist
+        ArtistDto artistDto = ArtistDto.builder()
+                .name("name")
+                .spotifyUri("spotifyUri")
+                .lastfmUri("lastfmUri")
+                .build();
+        given()
+                .contentType(ContentType.JSON)
+                .with().body(
+                        artistDto
+                )
+                .when().post("/follow")
+                .then()
+                .statusCode(SC_NO_CONTENT);
+
+        // get followed artists
+        List<ArtistDto> list = given()
+                .contentType(ContentType.JSON)
+                .when().get("followed-artists")
+                .then()
+                .statusCode(SC_OK)
+                .extract().body().jsonPath().getList("rows", ArtistDto.class);
+
+        assertEquals(1, list.size());
+        assertEquals(artistDto.getName(), list.get(0).getName());
+        assertEquals(artistDto.getSpotifyUri(), list.get(0).getSpotifyUri());
+        assertEquals(artistDto.getLastfmUri(), list.get(0).getLastfmUri());
     }
 
     @Test
