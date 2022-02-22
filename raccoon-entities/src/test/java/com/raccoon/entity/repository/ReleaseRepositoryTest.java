@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -182,8 +183,7 @@ class ReleaseRepositoryTest {
         artistReleaseAssociation1.setArtist(artist);
         artistReleaseAssociation1.setRelease(release);
         release.setReleases(List.of(artistReleaseAssociation1));
-
-        repository.persist(List.of(release));
+        repository.persist(release);
 
         final var found = repository.findByArtistsSinceDays(List.of(artist), 2);
 
@@ -192,11 +192,125 @@ class ReleaseRepositoryTest {
 
     @Test
     @TestTransaction
+    @DisplayName("findSpotifyRelease(): All args match, should be returned")
+    void findSpotifyRelease() {
+        var artistName = "artist";
+        var releaseName = "release1";
+        var artist = new Artist();
+        artist.setName(artistName);
+        artistRepository.persist(artist);
+
+        var release = new Release();
+        release.setReleasedOn(LocalDate.now().minusDays(3));
+        release.setName(releaseName);
+        var artistReleaseAssociation1 = new ArtistRelease();
+        artistReleaseAssociation1.setArtist(artist);
+        artistReleaseAssociation1.setRelease(release);
+        release.setReleases(List.of(artistReleaseAssociation1));
+        repository.persist(release);
+
+        final var found = repository.findSpotifyRelease(
+                release.getSpotifyUri(),
+                release.getName(),
+                new HashSet<>(release.getArtists())
+        );
+
+        assertThat(found).isPresent()
+                .get().isEqualTo(release);
+    }
+
+    @Test
+    @TestTransaction
+    @DisplayName("findSpotifyRelease(): SpotifyUri not provided, rest match, should be returned")
+    void findSpotifyReleaseArtistsDontMatch() {
+        var artistName = "artist";
+        var releaseName = "release1";
+        var artist = new Artist();
+        artist.setName(artistName);
+        artistRepository.persist(artist);
+
+        var release = new Release();
+        release.setReleasedOn(LocalDate.now().minusDays(3));
+        release.setName(releaseName);
+        var artistReleaseAssociation1 = new ArtistRelease();
+        artistReleaseAssociation1.setArtist(artist);
+        artistReleaseAssociation1.setRelease(release);
+        release.setReleases(List.of(artistReleaseAssociation1));
+        repository.persist(release);
+
+        final var found = repository.findSpotifyRelease(
+                null,
+                release.getName(),
+                new HashSet<>(release.getArtists())
+        );
+
+        assertThat(found).isPresent()
+                .get().isEqualTo(release);
+    }
+
+    @DisplayName("findMusicbrainzRelease(): All args match, should be returned")
+    void findMusicbrainzReleaseRelease() {
+        var artistName = "artist";
+        var releaseName = "release1";
+        var artist = new Artist();
+        artist.setName(artistName);
+        artistRepository.persist(artist);
+
+        var release = new Release();
+        release.setReleasedOn(LocalDate.now().minusDays(3));
+        release.setName(releaseName);
+        var artistReleaseAssociation1 = new ArtistRelease();
+        artistReleaseAssociation1.setArtist(artist);
+        artistReleaseAssociation1.setRelease(release);
+        release.setReleases(List.of(artistReleaseAssociation1));
+        repository.persist(release);
+
+        final var found = repository.findMusicbrainzRelease(
+                release.getSpotifyUri(),
+                release.getName(),
+                new HashSet<>(release.getArtists())
+        );
+
+        assertThat(found).isPresent()
+                .get().isEqualTo(release);
+    }
+
+    @Test
+    @TestTransaction
+    @DisplayName("findMusicbrainzRelease(): SpotifyUri not provided, rest match, should be returned")
+    void findMusicbrainzReleaseArtistsDontMatch() {
+        var artistName = "artist";
+        var releaseName = "release1";
+        var artist = new Artist();
+        artist.setName(artistName);
+        artistRepository.persist(artist);
+
+        var release = new Release();
+        release.setReleasedOn(LocalDate.now().minusDays(3));
+        release.setName(releaseName);
+        var artistReleaseAssociation1 = new ArtistRelease();
+        artistReleaseAssociation1.setArtist(artist);
+        artistReleaseAssociation1.setRelease(release);
+        release.setReleases(List.of(artistReleaseAssociation1));
+        repository.persist(release);
+
+        final var found = repository.findMusicbrainzRelease(
+                null,
+                release.getName(),
+                new HashSet<>(release.getArtists())
+        );
+
+        assertThat(found).isPresent()
+                .get().isEqualTo(release);
+    }
+
+    @Test
+    @TestTransaction
     void findByMusicbrainzIdOptional() {
         var id = "id";
         var release = new Release();
         release.setMusicbrainzId(id);
-        repository.persist(List.of(release));
+        repository.persist(release);
 
         final var found = repository.findByMusicbrainzIdOptional(id);
 
@@ -217,7 +331,7 @@ class ReleaseRepositoryTest {
         var id = "id";
         var release = new Release();
         release.setSpotifyUri(id);
-        repository.persist(List.of(release));
+        repository.persist(release);
 
         final var found = repository.findBySpotifyUriOptional(id);
 

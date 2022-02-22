@@ -10,35 +10,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.validation.constraints.NotNull;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 @ApplicationScoped
 public class ReleaseRepository implements PanacheRepository<Release> {
-
-    /**
-     * First lookup on SpotifyUri else on combination of albumName, releaseArtists
-     * @param spotifyUri release spotifyUri
-     * @param albumName release name
-     * @param releaseArtists release artists
-     * @return Optional of Release if exists else empty
-     */
-    public Optional<Release> findSpotifyRelease(String spotifyUri, String albumName, Set<Artist> releaseArtists) {
-        return findBySpotifyUriOptional(spotifyUri)
-                .or(() -> findByNameAndArtistsOptional(albumName, releaseArtists));
-    }
-
-    /**
-     * Lookup on musicbrainzId, if not found on combination of albumName, releaseArtists
-     * @param musicbrainzId release musicbrainzId
-     * @param albumName release name
-     * @param releaseArtists release artists
-     * @return Optional of Release if exists else empty
-     */
-    public Optional<Release> findMusicbrainzRelease(String musicbrainzId, String albumName, Set<Artist> releaseArtists) {
-        return findByMusicbrainzIdOptional(musicbrainzId)
-                .or(() -> findByNameAndArtistsOptional(albumName, releaseArtists));
-    }
 
     /**
      * Finds a Release based on the name of the Release and the Artists involved.
@@ -74,6 +51,34 @@ public class ReleaseRepository implements PanacheRepository<Release> {
                 .map(Release.class::cast)
                 .filter(release -> release.getArtists().stream().anyMatch(artists::contains))
                 .toList();
+    }
+
+    /**
+     * First lookup on SpotifyUri else on combination of albumName, releaseArtists
+     * @param spotifyUri release spotifyUri
+     * @param albumName release name
+     * @param releaseArtists release artists
+     * @return Optional of Release if exists else empty
+     */
+    public Optional<Release> findSpotifyRelease(@NotNull String spotifyUri,
+                                                String albumName,
+                                                Set<Artist> releaseArtists) {
+        return findBySpotifyUriOptional(spotifyUri)
+                .or(() -> findByNameAndArtistsOptional(albumName, releaseArtists));
+    }
+
+    /**
+     * Lookup on musicbrainzId, if not found on combination of albumName, releaseArtists
+     * @param musicbrainzId release musicbrainzId
+     * @param albumName release name
+     * @param releaseArtists release artists
+     * @return Optional of Release if exists else empty
+     */
+    public Optional<Release> findMusicbrainzRelease(@NotNull String musicbrainzId,
+                                                    String albumName,
+                                                    Set<Artist> releaseArtists) {
+        return findByMusicbrainzIdOptional(musicbrainzId)
+                .or(() -> findByNameAndArtistsOptional(albumName, releaseArtists));
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
