@@ -37,7 +37,9 @@ public class ReleaseScrapeService {
     public Set<Release> scrapeReleases() throws InterruptedException {
         Set<Release> releases = new HashSet<>();
         for (ReleaseScraper scraper : releaseScrapers) {
-            releases.addAll(scraper.scrapeReleases(Optional.empty()));
+            Set<Release> releasesPerScraper = scraper.scrapeReleases(Optional.empty());
+            releases.addAll(releasesPerScraper);
+            log.info("Found {} releases through {}", releasesPerScraper.size(), scraper.getClass().getSimpleName());
         }
 
         updateHasNewRelease(releases);

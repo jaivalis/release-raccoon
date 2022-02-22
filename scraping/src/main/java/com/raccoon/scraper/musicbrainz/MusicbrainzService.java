@@ -35,8 +35,8 @@ public interface MusicbrainzService {
      *
      * @param query the search query
      * @param format format of results
-     * @param limit count of results to be returned (maximum of 100) defaults to 25
-     * @param offset offset of the first returned release
+     * @param limit An integer value defining how many entries should be returned. Only values between 1 and 100 (both inclusive) are allowed. If not given, this defaults to 25.
+     * @param offset Return search results starting at a given offset. Used for paging through more than one page of results.
      * @return MusicbrainzReleasesResponse object
      */
     @GET

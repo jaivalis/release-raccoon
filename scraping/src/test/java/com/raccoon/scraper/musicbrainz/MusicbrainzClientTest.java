@@ -40,9 +40,9 @@ class MusicbrainzClientTest {
         when(mockMusicbrainzService.getReleasesByQuery(any(), any(), any(), any())).thenReturn(musicbrainzReleasesResponse);
         var date = LocalDate.of(2022, 1, 15);
 
-        client.getForDate(date);
+        client.getForDate(date, 200);
 
-        verify(mockMusicbrainzService, times(1)).getReleasesByQuery("date:(2022\\-01\\-15)", "json", "100", "0");
+        verify(mockMusicbrainzService, times(1)).getReleasesByQuery("date:(2022\\-01\\-15)", "json", "100", "200");
     }
 
     @Test

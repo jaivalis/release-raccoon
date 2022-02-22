@@ -12,6 +12,7 @@ import com.raccoon.scraper.musicbrainz.dto.MusicbrainzReleasesResponse.Musicbrai
 import com.raccoon.scraper.musicbrainz.dto.mapper.MusicbrainzReleaseMapper;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -52,16 +53,10 @@ public class MusicbrainzScraper implements ReleaseScraper {
 
     @Override
     public Set<Release> scrapeReleases(Optional<Integer> limit) {
-        LocalDate daysAgo7 = LocalDate.now().minusDays(7);
+        List<MusicbrainzReleasesResponse> pages = fetchAllReleasePages();
 
-        Optional<MusicbrainzReleasesResponse> responseForDate = client.getForDate(daysAgo7);
-        if (responseForDate.isEmpty()) {
-            return Collections.emptySet();
-        }
-
-        return responseForDate.get()
-                .getReleases()
-                .stream()
+        return pages.stream()
+                .flatMap(response -> response.getReleases().stream())
                 .map(this::processRelease)
                 .flatMap(Optional::stream)
                 .collect(Collectors.toSet());
@@ -75,10 +70,26 @@ public class MusicbrainzScraper implements ReleaseScraper {
         throw new IllegalArgumentException("Got an object type that is not supported.");
     }
 
+    private List<MusicbrainzReleasesResponse> fetchAllReleasePages() {
+        List<MusicbrainzReleasesResponse> pages = new ArrayList<>();
+        int offset = 0;
+        MusicbrainzReleasesResponse responseForDate;
+
+        LocalDate today = LocalDate.now();
+        do {
+            responseForDate = client.getForDate(today, offset);
+            pages.add(responseForDate);
+            offset += 100;
+        } while (responseForDate != null && offset < responseForDate.getCount());
+
+        return pages;
+    }
+
     private Optional<Release> processRelease(MusicbrainzRelease musicbrainzRelease) {
         log.debug("Processing release: {}", musicbrainzRelease.getTitle());
         Set<Artist> releaseArtists = persistArtists(musicbrainzRelease.getArtistCredits());
         if (releaseArtists.isEmpty()) {
+            log.warn("No artists found for release {}", musicbrainzRelease.getId());
             return Optional.empty();
         }
         return persistRelease(musicbrainzRelease, releaseArtists);
@@ -119,9 +130,10 @@ public class MusicbrainzScraper implements ReleaseScraper {
             var release = releaseOptional.get();
 
             return persistRelease(releaseArtists, release, releaseRepository, artistReleaseRepository);
+        } else {
+            log.info("Release {} already in the database", musicbrainzRelease.getId());
+            return Optional.empty();
         }
-
-        return Optional.empty();
     }
 
 }

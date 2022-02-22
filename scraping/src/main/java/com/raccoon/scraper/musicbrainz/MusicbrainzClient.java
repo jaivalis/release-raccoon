@@ -6,7 +6,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -31,12 +30,13 @@ public class MusicbrainzClient {
     /**
      * Queries MusicbrainzService for Releases occurred after a specific date.
      * @param date the date for which to query Musicbrainz API
+     * @param offset the date for which to query Musicbrainz API
      * @return Optional<MusicbrainzReleasesResponse> response wrapped
      */
-    public Optional<MusicbrainzReleasesResponse> getForDate(LocalDate date) {
+    public MusicbrainzReleasesResponse getForDate(LocalDate date, int offset) {
         var query = formatQuery(date);
-        log.debug("Executing Musicbrainz query {}", query);
-        return Optional.of(musicbrainzService.getReleasesByQuery(query, "json", "100", "0"));
+        log.info("Executing Musicbrainz query {}, offset {}", query, offset);
+        return musicbrainzService.getReleasesByQuery(query, "json", "100", String.valueOf(offset));
     }
 
     String formatQuery(LocalDate date) {
