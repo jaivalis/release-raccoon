@@ -9,16 +9,15 @@
 * Per DomainDrivenDesign book getOrCreate is an anti-pattern. It is useful to know whether the entity existed or was just created. Separate those.
 * Separate the domain from the Controllers and the Quarkus Qute dependencies
 * Create DTOs for every Entity class (Decouple)
-* Cucumber tests
+* Cucumber BDD tests
 * UserProfileService does too much, break down
-* User hyphen separated uri's all around (/enableServices)
+* Use hyphen separated uri's all around (e.g. `/enableServices` to `/enable-services`)
 * use assertj assertions
 * Remove @Data from entities!!
-* Unfollow should be a `DELETE` call returning no-content
 * JFixture
 * api versioning, nest everything under `/api/v1`
-* ReleaseScraper implementers should not contain persistence layer dependencied, should create Entities and leave persistence for another anti-corruption layer
-* Database reconciliation/enrichment. Artists fields missing should be added
+* ReleaseScraper implementers should not contain persistence layer dependencies, should create Entities and leave persistence for another anti-corruption layer
+* Database reconciliation/enrichment. Missing Artist fields (SpotifyUri, LastfmUri) should be added
 * Either raise an exception OR log an error, but not both (https://www.morling.dev/blog/whats-in-a-good-error-message/)
 * Dependency cleanup: org.apache.maven.plugins:maven-dependency-plugin:analyze-only
 

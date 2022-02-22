@@ -102,12 +102,14 @@ public class SearchService {
 
         var idsOfArtistsFollowedByUser = idsOfArtistsFollowedByUser(searchingUser.id, distinctArtistIds);
 
-        return hibernateHits.stream()
-                .peek(artistDto -> {
-                    if (idsOfArtistsFollowedByUser.contains(artistDto.getId())) {
-                        artistDto.setFollowedByUser(Boolean.TRUE);
-                    }
-                }).toList();
+        List<ArtistDto> list = new ArrayList<>();
+        for (ArtistDto artistDto : hibernateHits) {
+            if (idsOfArtistsFollowedByUser.contains(artistDto.getId())) {
+                artistDto.setFollowedByUser(Boolean.TRUE);
+            }
+            list.add(artistDto);
+        }
+        return list;
     }
 
     private List<Long> idsOfArtistsFollowedByUser(final Long userId, List<Long> allArtistResults) {
