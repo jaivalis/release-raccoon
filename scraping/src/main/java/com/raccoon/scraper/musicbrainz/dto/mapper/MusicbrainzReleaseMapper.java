@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @ApplicationScoped
-public class  MusicbrainzReleaseMapper {
+public class MusicbrainzReleaseMapper {
 
     /**
      * Projects a dto onto a Release Entity if the MusicbrainzRelease has already been released.

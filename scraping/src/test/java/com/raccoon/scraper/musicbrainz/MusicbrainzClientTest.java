@@ -40,7 +40,7 @@ class MusicbrainzClientTest {
         when(mockMusicbrainzService.getReleasesByQuery(any(), any(), any(), any())).thenReturn(musicbrainzReleasesResponse);
         var date = LocalDate.of(2022, 1, 15);
 
-        client.getForDate(date, 200);
+        client.searchReleasesByDate(date, 200);
 
         verify(mockMusicbrainzService, times(1)).getReleasesByQuery("date:(2022\\-01\\-15)", "json", "100", "200");
     }
@@ -50,7 +50,7 @@ class MusicbrainzClientTest {
     void formatQuery() {
         var date = LocalDate.of(2022, 1, 15);
 
-        String encoded = client.formatQuery(date);
+        String encoded = client.formatDateQuery(date);
 
         assertThat(encoded)
                 .as("Date encoding should follow the pattern: (`date:(yyyy\\-MM\\-dd`)")

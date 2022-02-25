@@ -11,7 +11,12 @@ public interface ArtistSearcher {
      * Used to identify the results in the dynamically generated ArtistSearchResponse dto
      * @return unique searcher id
      */
-    String getSearcherId();
+    String id();
+
+    /**
+     * Searcher confidence, used to rank the results returned to the user
+     */
+    Double trustworthiness();
 
     /**
      * Search for an artist against available Searchers

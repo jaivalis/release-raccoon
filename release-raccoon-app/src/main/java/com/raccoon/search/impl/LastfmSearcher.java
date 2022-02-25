@@ -30,8 +30,13 @@ public class LastfmSearcher implements ArtistSearcher {
     }
 
     @Override
-    public String getSearcherId() {
+    public String id() {
         return Constants.LASTFM_SEARCHER_ID;
+    }
+
+    @Override
+    public Double trustworthiness() {
+        return .5;
     }
 
     @Override
