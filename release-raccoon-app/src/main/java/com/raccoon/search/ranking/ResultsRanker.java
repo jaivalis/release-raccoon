@@ -14,13 +14,12 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ResultsRanker {
 
-    public ResultsRanker() {}
-
-    public List<ArtistDto> rankSearchResults(Map<ArtistSearcher, Collection<ArtistDto>> searchResultsPerSource,
-                                             List<ArtistDto> rankedResults) {
-        List<ArtistSearcher> searchersSortedOnTrustworthiness = searchResultsPerSource.keySet().stream().sorted(
-                Comparator.comparing(ArtistSearcher::trustworthiness)
-        ).toList();
+    public List<ArtistDto> rankSearchResults(final Map<ArtistSearcher, Collection<ArtistDto>> searchResultsPerSource,
+                                             final List<ArtistDto> rankedResults) {
+        List<ArtistSearcher> searchersSortedOnTrustworthiness =
+                searchResultsPerSource.keySet().stream().sorted(
+                        Comparator.comparing(ArtistSearcher::trustworthiness)
+                ).toList();
 
         for (ArtistSearcher searcher : searchersSortedOnTrustworthiness) {
             if (searcher instanceof HibernateSearcher) {

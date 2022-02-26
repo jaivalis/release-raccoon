@@ -86,17 +86,8 @@ public class SearchService {
             }
         }
 
-        // rank the rest
-        ranker.rankSearchResults(perSource, rankedResultList);
-
-        for (Map.Entry<ArtistSearcher, Collection<ArtistDto>> searcherHits : perSource.entrySet()) {
-            // Hibernate results have already been ranked
-            if (!(searcherHits.getKey() instanceof HibernateSearcher)) {
-                rankedResultList.addAll(searcherHits.getValue());
-            }
-        }
-
-        return rankedResultList;
+        // rank and merge the rest
+        return ranker.rankSearchResults(perSource, rankedResultList);
     }
 
     /**

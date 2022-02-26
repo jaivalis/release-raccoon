@@ -81,7 +81,6 @@ class SearchServiceTest {
     @Test
     @DisplayName("searchArtists(): Populates the result as expected")
     void searchArtistsReturns() {
-        var email = "email";
         var pattern = "pattern";
         var size = Optional.of(10);
         ArtistDto stubArtist1 = ArtistDto.builder().name("hibernate").id(3L).build();
@@ -90,7 +89,6 @@ class SearchServiceTest {
         when(mockHibernateSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist1, stubArtist2));
         when(mockLastfmSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist3));
 
-        //
         var stubUser = new User();
         stubUser.id = 1L;
         var stubArtist = new Artist();
@@ -105,10 +103,11 @@ class SearchServiceTest {
                         stubUserArtist
                 ));
 
-        ArtistSearchResponse response = service.searchArtists(email, pattern, size);
+        ArtistSearchResponse response = service.searchArtists("email", pattern, size);
 
         assertThat(response.getArtists()).hasSize(3);
-
+        assertThat(response.getArtists())
+                .containsAll(List.of(stubArtist1, stubArtist2, stubArtist3));
         for (var dto : response.getArtists()) {
             if ("hibernate2 followed by user should appear first".equals(dto.getName())) {
                 assertTrue(dto.isFollowedByUser());
@@ -116,10 +115,6 @@ class SearchServiceTest {
                 assertFalse(dto.isFollowedByUser());
             }
         }
-        var returnedNames = response.getArtists().stream().map(ArtistDto::getName).toList();
-        assertTrue(returnedNames.contains(stubArtist1.getName()));
-        assertTrue(returnedNames.contains(stubArtist2.getName()));
-        assertTrue(returnedNames.contains(stubArtist3.getName()));
     }
 
 }
