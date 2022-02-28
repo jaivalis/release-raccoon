@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class ArtistSearchResponse {
 
+    @JsonProperty
     private int count;
 
     /**

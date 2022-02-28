@@ -2,14 +2,17 @@ package com.raccoon.search.impl;
 
 import com.raccoon.Constants;
 import com.raccoon.scraper.musicbrainz.MusicbrainzClient;
+import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtist;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtistsResponse;
 import com.raccoon.search.ArtistSearcher;
 import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.search.dto.mapping.MusicbrainzArtistMapper;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,17 +37,22 @@ public class MusicbrainzSearcher implements ArtistSearcher {
 
     @Override
     public Double trustworthiness() {
-        return null;
+        return .8;
     }
 
     @Override
     public Collection<ArtistDto> searchArtist(String pattern, Optional<Integer> size) {
         MusicbrainzArtistsResponse response = musicbrainzClient.searchArtistsByName(pattern, size.orElse(20), 0);
-//        Stream<Artist> lastfmArtistStream = lastfmApi.searchArtist(pattern).stream();
-//        if (size.isPresent()) {
-//            lastfmArtistStream = lastfmArtistStream.limit(size.get());
-//        }
-        return response.getArtists().stream()
+        if (response == null || response.getCount() == 0 || response.getArtists() == null) {
+            return Collections.emptyList();
+        }
+
+        Stream<MusicbrainzArtist> artists = response.getArtists().stream();
+        if (size.isPresent()) {
+            artists = artists.limit(size.get());
+        }
+
+        return artists
                 .map(artistMapper::toDto)
                 .collect(Collectors.toSet());
     }

@@ -1,12 +1,33 @@
 {
   "mappings": [
+
+    {
+      "priority": 20,
+      "request": {
+        "method": "GET",
+        "urlPattern": "/ws/2/artist/.*"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "created": "2022-01-30T21:38:20.877Z",
+          "count": 0,
+          "offset": 0,
+          "releases": [
+          ]
+        }
+      }
+    },
+
     {
       "priority": 10,
       "request": {
         "method": "GET",
         "urlPattern": "/ws/2/release/.*"
       },
-
       "response": {
         "status": 200,
         "headers": {
