@@ -1,8 +1,8 @@
 package com.raccoon.search.ranking;
 
+import com.raccoon.Constants;
 import com.raccoon.search.ArtistSearcher;
 import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.impl.HibernateSearcher;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -14,15 +14,21 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ResultsRanker {
 
+    /**
+     * Ranks results by searcher trustworthiness. Merges artists with same name.
+     * @param searchResultsPerSource search results per search source
+     * @param rankedResults artists that might have been appended to from hibernate searcher
+     * @return ordered artist search results
+     */
     public List<ArtistDto> rankSearchResults(final Map<ArtistSearcher, Collection<ArtistDto>> searchResultsPerSource,
                                              final List<ArtistDto> rankedResults) {
         List<ArtistSearcher> searchersSortedOnTrustworthiness =
                 searchResultsPerSource.keySet().stream().sorted(
-                        Comparator.comparing(ArtistSearcher::trustworthiness)
+                        Comparator.comparing(ArtistSearcher::trustworthiness).reversed()
                 ).toList();
 
         for (ArtistSearcher searcher : searchersSortedOnTrustworthiness) {
-            if (searcher instanceof HibernateSearcher) {
+            if (Constants.HIBERNATE_SEARCHER_ID.equals(searcher.id())) {
                 // Hibernate results have already been ranked top of the list
                 continue;
             }
