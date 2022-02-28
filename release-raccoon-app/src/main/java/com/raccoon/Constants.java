@@ -16,6 +16,8 @@ public class Constants {
     public static final String RELEASE_SCRAPE_RESPONSE_FAILURE_TEMPLATE = "Failed to scrape new releases. Cause: %s";
 
     // Searcher IDs
-    public static final String HIBERNATE_SEARCHER_ID = "fromDb";
-    public static final String LASTFM_SEARCHER_ID = "fromLastfm";
+    public static final String HIBERNATE_SEARCHER_ID = "Db";
+    public static final String LASTFM_SEARCHER_ID = "Lastfm";
+    public static final String MUSICBRAINZ_SEARCHER_ID = "Musicbrainz";
+
 }

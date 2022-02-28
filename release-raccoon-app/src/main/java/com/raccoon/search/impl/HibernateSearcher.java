@@ -44,8 +44,13 @@ public class HibernateSearcher implements ArtistSearcher {
     }
 
     @Override
-    public String getSearcherId() {
+    public String id() {
         return Constants.HIBERNATE_SEARCHER_ID;
+    }
+
+    @Override
+    public Double trustworthiness() {
+        return 1.;
     }
 
     @Override

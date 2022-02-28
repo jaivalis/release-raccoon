@@ -43,9 +43,9 @@ class LastfmSearcherTest {
     }
 
     @Test
-    @DisplayName("Some artists returned")
+    @DisplayName("id()")
     void searcherId() {
-        assertEquals(Constants.LASTFM_SEARCHER_ID, searcher.getSearcherId());
+        assertEquals(Constants.LASTFM_SEARCHER_ID, searcher.id());
     }
 
     @Test

@@ -38,7 +38,7 @@ class HibernateSearcherTest {
     @Test
     @DisplayName("Some artists returned")
     void searcherId() {
-        assertEquals(Constants.HIBERNATE_SEARCHER_ID, searcher.getSearcherId());
+        assertEquals(Constants.HIBERNATE_SEARCHER_ID, searcher.id());
     }
 
     @Test

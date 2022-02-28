@@ -5,6 +5,8 @@ import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.search.dto.mapping.ArtistSearchResponse;
+import com.raccoon.search.impl.HibernateSearcher;
+import com.raccoon.search.ranking.ResultsRanker;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,15 +28,18 @@ import static com.raccoon.Constants.HIBERNATE_SEARCHER_ID;
 public class SearchService {
 
     final List<ArtistSearcher> searchers;
+    final ResultsRanker ranker;
     final UserRepository userRepository;
     final UserArtistRepository userArtistRepository;
 
     @Inject
     public SearchService(final Instance<ArtistSearcher> searchers,
+                         final ResultsRanker ranker,
                          final UserRepository userRepository,
                          final UserArtistRepository userArtistRepository) {
         this.searchers = searchers.stream().toList();
         log.info("Found {} artist searchers in classpath", this.searchers.size());
+        this.ranker = ranker;
         this.userRepository = userRepository;
         this.userArtistRepository = userArtistRepository;
     }
@@ -49,42 +54,40 @@ public class SearchService {
     public ArtistSearchResponse searchArtists(final String userEmail,
                                               final String pattern,
                                               final Optional<Integer> size) {
+        Map<ArtistSearcher, Collection<ArtistDto>> searchResultsPerSource = new HashMap<>();
         log.info("Searching for artist {}", pattern);
-
-        Map<String, Collection<ArtistDto>> artistsPerResource = new HashMap<>();
 
         searchers.parallelStream().forEach(
                 searcher -> {
-                    var searcherId = searcher.getSearcherId();
                     var results = searcher.searchArtist(pattern, size);
-                    log.info("Search hits, source `{}`: {} ", searcherId, results);
-
-                    artistsPerResource.put(searcherId, results);
+                    log.info("Search hits, source `{}`: {}", searcher.id(), results);
+                    searchResultsPerSource.put(searcher, results);
                 }
         );
 
         return ArtistSearchResponse.builder()
-                .artists(postProcessSearchResults(userEmail, artistsPerResource))
+                .artists(postProcessSearchResults(userEmail, searchResultsPerSource))
                 .build();
     }
 
-    List<ArtistDto> postProcessSearchResults(String userEmail, Map<String, Collection<ArtistDto>> perSource) {
-        List<ArtistDto> sortedResultList = new ArrayList<>();
+    List<ArtistDto> postProcessSearchResults(String userEmail, Map<ArtistSearcher, Collection<ArtistDto>> perSource) {
+        List<ArtistDto> rankedResultList = new ArrayList<>();
 
-        Collection<ArtistDto> hibernateResults = perSource.get(HIBERNATE_SEARCHER_ID);
-        if (!hibernateResults.isEmpty()) {
-            // Add the artists from the database first
-            var followedFlagSet = setAlreadyFollowed(userEmail, hibernateResults);
-
-            sortedResultList.addAll(followedFlagSet);
+        // Mark followed artists
+        var hibernateSearcher = perSource.keySet().stream()
+                .filter(artistSearcher -> HIBERNATE_SEARCHER_ID.equals(artistSearcher.id()))
+                .findFirst();
+        if (hibernateSearcher.isPresent()) {
+            Collection<ArtistDto> hibernateResults = perSource.get(hibernateSearcher.get());
+            if (!hibernateResults.isEmpty()) {
+                var followedFlagSet = setAlreadyFollowed(userEmail, hibernateResults);
+                // Artists from the database are top ranked
+                rankedResultList.addAll(followedFlagSet);
+            }
         }
-        perSource.remove(HIBERNATE_SEARCHER_ID);
 
-        for (Map.Entry<String, Collection<ArtistDto>> searcherHits : perSource.entrySet()) {
-            sortedResultList.addAll(searcherHits.getValue());
-        }
-
-        return sortedResultList;
+        // rank and merge the rest
+        return ranker.rankSearchResults(perSource, rankedResultList);
     }
 
     /**

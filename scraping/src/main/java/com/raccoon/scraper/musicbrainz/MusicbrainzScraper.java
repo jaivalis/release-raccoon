@@ -77,7 +77,7 @@ public class MusicbrainzScraper implements ReleaseScraper {
 
         LocalDate today = LocalDate.now();
         do {
-            responseForDate = client.getForDate(today, offset);
+            responseForDate = client.searchReleasesByDate(today, offset);
             pages.add(responseForDate);
             offset += 100;
         } while (responseForDate != null && offset < responseForDate.getCount());

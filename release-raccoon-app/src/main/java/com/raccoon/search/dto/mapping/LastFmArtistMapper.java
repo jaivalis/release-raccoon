@@ -16,7 +16,6 @@ public class LastFmArtistMapper {
         return ArtistDto.builder()
                 .name(artist.getName())
                 .lastfmUri(artist.getUrl())
-                .spotifyUri("")
                 .build();
     }
 

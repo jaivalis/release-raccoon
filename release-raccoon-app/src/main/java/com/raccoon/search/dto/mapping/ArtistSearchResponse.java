@@ -12,10 +12,18 @@ import lombok.Data;
 @Data
 public class ArtistSearchResponse {
 
+    @JsonProperty
+    private int count;
+
     /**
      * Results sorted by relevance
      */
     @JsonProperty
-    List<ArtistDto> artists;
+    private List<ArtistDto> artists;
+
+    public void setArtists(List<ArtistDto> artists) {
+        this.artists = artists;
+        this.count = artists.size();
+    }
 
 }

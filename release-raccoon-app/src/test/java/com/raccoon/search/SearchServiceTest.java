@@ -9,6 +9,7 @@ import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.search.dto.mapping.ArtistSearchResponse;
 import com.raccoon.search.impl.HibernateSearcher;
 import com.raccoon.search.impl.LastfmSearcher;
+import com.raccoon.search.ranking.ResultsRanker;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +25,8 @@ import java.util.stream.Stream;
 
 import javax.enterprise.inject.Instance;
 
-import static com.raccoon.Constants.HIBERNATE_SEARCHER_ID;
-import static com.raccoon.Constants.LASTFM_SEARCHER_ID;
 import static io.smallrye.common.constraint.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -46,6 +45,7 @@ class SearchServiceTest {
     LastfmSearcher mockLastfmSearcher;
     @Mock
     Instance<ArtistSearcher> searchers;
+    ResultsRanker ranker = new ResultsRanker();
     @Mock
     UserRepository userRepository;
     @Mock
@@ -55,10 +55,12 @@ class SearchServiceTest {
     void setUp() {
         openMocks(this);
         when(searchers.stream()).thenReturn(Stream.of(mockHibernateSearcher, mockLastfmSearcher));
-        when(mockLastfmSearcher.getSearcherId()).thenReturn(LASTFM_SEARCHER_ID);
-        when(mockHibernateSearcher.getSearcherId()).thenReturn(HIBERNATE_SEARCHER_ID);
+        when(mockLastfmSearcher.id()).thenCallRealMethod();
+        when(mockLastfmSearcher.trustworthiness()).thenCallRealMethod();
+        when(mockHibernateSearcher.id()).thenCallRealMethod();
+        when(mockHibernateSearcher.trustworthiness()).thenCallRealMethod();
 
-        service = new SearchService(searchers, userRepository, userArtistRepository);
+        service = new SearchService(searchers, ranker, userRepository, userArtistRepository);
     }
 
     @Test
@@ -79,7 +81,6 @@ class SearchServiceTest {
     @Test
     @DisplayName("searchArtists(): Populates the result as expected")
     void searchArtistsReturns() {
-        var email = "email";
         var pattern = "pattern";
         var size = Optional.of(10);
         ArtistDto stubArtist1 = ArtistDto.builder().name("hibernate").id(3L).build();
@@ -88,7 +89,6 @@ class SearchServiceTest {
         when(mockHibernateSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist1, stubArtist2));
         when(mockLastfmSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist3));
 
-        //
         var stubUser = new User();
         stubUser.id = 1L;
         var stubArtist = new Artist();
@@ -103,10 +103,11 @@ class SearchServiceTest {
                         stubUserArtist
                 ));
 
-        ArtistSearchResponse response = service.searchArtists(email, pattern, size);
+        ArtistSearchResponse response = service.searchArtists("email", pattern, size);
 
-        assertEquals(3, response.getArtists().size());
-
+        assertThat(response.getArtists()).hasSize(3);
+        assertThat(response.getArtists())
+                .containsAll(List.of(stubArtist1, stubArtist2, stubArtist3));
         for (var dto : response.getArtists()) {
             if ("hibernate2 followed by user should appear first".equals(dto.getName())) {
                 assertTrue(dto.isFollowedByUser());
@@ -114,10 +115,6 @@ class SearchServiceTest {
                 assertFalse(dto.isFollowedByUser());
             }
         }
-        var returnedNames = response.getArtists().stream().map(ArtistDto::getName).toList();
-        assertTrue(returnedNames.contains(stubArtist1.getName()));
-        assertTrue(returnedNames.contains(stubArtist2.getName()));
-        assertTrue(returnedNames.contains(stubArtist3.getName()));
     }
 
 }
