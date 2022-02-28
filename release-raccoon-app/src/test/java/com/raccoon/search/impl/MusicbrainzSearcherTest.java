@@ -48,6 +48,12 @@ class MusicbrainzSearcherTest {
     }
 
     @Test
+    @DisplayName("trustworthiness()")
+    void trustworthiness() {
+        assertEquals(0.8, searcher.trustworthiness());
+    }
+
+    @Test
     @DisplayName("searchArtists(): Some artists returned")
     void artistsFound() {
         String name = "name";
@@ -70,6 +76,35 @@ class MusicbrainzSearcherTest {
         Optional<Integer> size = Optional.of(10);
         MusicbrainzArtistsResponse response = new MusicbrainzArtistsResponse();
         response.setArtists(Collections.emptyList());
+        response.setCount(0);
+        when(mockMusicbrainzClient.searchArtistsByName(name, 10, 0)).thenReturn(response);
+
+        searcher.searchArtist(name, size);
+
+        verify(mockMusicbrainzClient, times(1)).searchArtistsByName(name, 10, 0);
+        verify(mockArtistMapper, never()).toDto(any());
+    }
+
+    @Test
+    @DisplayName("searchArtists(): Null response returned")
+    void nullReponse() {
+        String name = "name";
+        Optional<Integer> size = Optional.of(10);
+        when(mockMusicbrainzClient.searchArtistsByName(name, 10, 0)).thenReturn(null);
+
+        searcher.searchArtist(name, size);
+
+        verify(mockMusicbrainzClient, times(1)).searchArtistsByName(name, 10, 0);
+        verify(mockArtistMapper, never()).toDto(any());
+    }
+
+    @Test
+    @DisplayName("searchArtists(): Null response returned")
+    void nullArtists() {
+        String name = "name";
+        Optional<Integer> size = Optional.of(10);
+        MusicbrainzArtistsResponse response = new MusicbrainzArtistsResponse();
+        response.setArtists(null);
         response.setCount(0);
         when(mockMusicbrainzClient.searchArtistsByName(name, 10, 0)).thenReturn(response);
 
