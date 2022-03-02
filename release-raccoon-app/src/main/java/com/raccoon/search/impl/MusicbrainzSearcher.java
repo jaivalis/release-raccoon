@@ -17,6 +17,9 @@ import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @ApplicationScoped
 public class MusicbrainzSearcher implements ArtistSearcher {
 
@@ -37,24 +40,29 @@ public class MusicbrainzSearcher implements ArtistSearcher {
 
     @Override
     public Double trustworthiness() {
-        return .8;
+        return Constants.MUSICBRAINZ_SEARCHER_TRUSTWORTHINESS;
     }
 
     @Override
     public Collection<ArtistDto> searchArtist(String pattern, Optional<Integer> size) {
-        MusicbrainzArtistsResponse response = musicbrainzClient.searchArtistsByName(pattern, size.orElse(20), 0);
-        if (response == null || response.getCount() == 0 || response.getArtists() == null) {
+        try {
+            MusicbrainzArtistsResponse response = musicbrainzClient.searchArtistsByName(pattern, size.orElse(20), 0);
+            if (response == null || response.getCount() == 0 || response.getArtists() == null) {
+                return Collections.emptyList();
+            }
+
+            Stream<MusicbrainzArtist> artists = response.getArtists().stream();
+            if (size.isPresent()) {
+                artists = artists.limit(size.get());
+            }
+
+            return artists
+                    .map(artistMapper::toDto)
+                    .collect(Collectors.toSet());
+        } catch (RuntimeException e) {
+            log.error("Something went wrong when trying to scrape Musicbrainz", e);
             return Collections.emptyList();
         }
-
-        Stream<MusicbrainzArtist> artists = response.getArtists().stream();
-        if (size.isPresent()) {
-            artists = artists.limit(size.get());
-        }
-
-        return artists
-                .map(artistMapper::toDto)
-                .collect(Collectors.toSet());
     }
 
 }

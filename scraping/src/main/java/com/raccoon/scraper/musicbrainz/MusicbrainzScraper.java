@@ -71,15 +71,19 @@ public class MusicbrainzScraper implements ReleaseScraper {
     }
 
     private List<MusicbrainzReleasesResponse> fetchAllReleasePages() {
-        List<MusicbrainzReleasesResponse> pages = new ArrayList<>();
+        final List<MusicbrainzReleasesResponse> pages = new ArrayList<>();
         int offset = 0;
-        MusicbrainzReleasesResponse responseForDate;
+        MusicbrainzReleasesResponse responseForDate = null;
 
         LocalDate today = LocalDate.now();
         do {
-            responseForDate = client.searchReleasesByDate(today, offset);
-            pages.add(responseForDate);
-            offset += 100;
+            try {
+                responseForDate = client.searchReleasesByDate(today, offset);
+                pages.add(responseForDate);
+                offset += 100;
+            } catch (RuntimeException e) {
+                log.error("Exception while scraping Musicbrainz releases", e);
+            }
         } while (responseForDate != null && offset < responseForDate.getCount());
 
         return pages;

@@ -36,9 +36,15 @@ class HibernateSearcherTest {
     }
 
     @Test
-    @DisplayName("Some artists returned")
-    void searcherId() {
+    @DisplayName("id()")
+    void id() {
         assertEquals(Constants.HIBERNATE_SEARCHER_ID, searcher.id());
+    }
+
+    @Test
+    @DisplayName("trustworthiness()")
+    void trustworthiness() {
+        assertEquals(Constants.HIBERNATE_SEARCHER_TRUSTWORTHINESS, searcher.trustworthiness());
     }
 
     @Test

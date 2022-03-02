@@ -50,7 +50,7 @@ public class HibernateSearcher implements ArtistSearcher {
 
     @Override
     public Double trustworthiness() {
-        return 1.;
+        return Constants.HIBERNATE_SEARCHER_TRUSTWORTHINESS;
     }
 
     @Override
