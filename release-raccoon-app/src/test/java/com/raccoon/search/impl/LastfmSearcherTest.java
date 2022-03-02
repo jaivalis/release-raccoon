@@ -49,6 +49,12 @@ class LastfmSearcherTest {
     }
 
     @Test
+    @DisplayName("trustworthiness()")
+    void trustworthiness() {
+        assertEquals(Constants.LASTFM_SEARCHER_TRUSTWORTHINESS, searcher.trustworthiness());
+    }
+
+    @Test
     @DisplayName("Some artists returned")
     void artistsFound() {
         String pattern = "pattern";

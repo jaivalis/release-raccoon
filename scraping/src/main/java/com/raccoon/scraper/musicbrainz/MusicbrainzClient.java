@@ -58,7 +58,7 @@ public class MusicbrainzClient {
     }
 
     String formatNameQuery(String name) {
-        return "name:(" + name + ")";
+        return name.replace(" ", "+");
     }
 
 }

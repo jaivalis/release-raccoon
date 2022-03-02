@@ -45,11 +45,11 @@ class MusicbrainzClientTest {
     @Test
     @DisplayName("searchArtistsByName(): Query should be formatted for Lucene")
     void searchArtistsByName() {
-        var name = "artist name";
+        var name = "artist";
 
         client.searchArtistsByName(name, 20, 30);
 
-        verify(mockMusicbrainzService, times(1)).getArtistsByQuery("name:(" + name + ")", "json", "20", "30");
+        verify(mockMusicbrainzService, times(1)).getArtistsByQuery(name, "json", "20", "30");
     }
 
 
@@ -66,15 +66,27 @@ class MusicbrainzClientTest {
     }
 
     @Test
-    @DisplayName("formatNameQuery(): Query should be formatted for Lucene: name:(<artistname>)")
+    @DisplayName("formatNameQuery(): Query should be formatted for Lucene: artist+name")
     void formatQuery() {
         var name = "artist name";
 
         String query = client.formatNameQuery(name);
 
         assertThat(query)
-                .as("Name should follow the pattern: (`name:(<artistname>)`")
-                .isEqualTo("name:(" + name + ")");
+                .as("Name should follow the pattern: `artist+name`")
+                .isEqualTo("artist+name");
+    }
+
+    @Test
+    @DisplayName("formatNameQuery(): Name contains no spaces")
+    void formatQueryNoSpaces() {
+        var name = "artistname";
+
+        String query = client.formatNameQuery(name);
+
+        assertThat(query)
+                .as("Name should follow the pattern: `artistname`")
+                .isEqualTo("artistname");
     }
 
 }

@@ -2,11 +2,9 @@ package com.raccoon.scraper.musicbrainz.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
 public class MusicbrainzArtist {
 
     private String id;

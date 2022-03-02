@@ -4,6 +4,7 @@ import com.raccoon.Constants;
 import com.raccoon.scraper.musicbrainz.MusicbrainzClient;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtist;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtistsResponse;
+import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.search.dto.mapping.MusicbrainzArtistMapper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +15,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -50,7 +53,7 @@ class MusicbrainzSearcherTest {
     @Test
     @DisplayName("trustworthiness()")
     void trustworthiness() {
-        assertEquals(0.8, searcher.trustworthiness());
+        assertEquals(Constants.MUSICBRAINZ_SEARCHER_TRUSTWORTHINESS, searcher.trustworthiness());
     }
 
     @Test
@@ -59,7 +62,7 @@ class MusicbrainzSearcherTest {
         String name = "name";
         Optional<Integer> size = Optional.of(10);
         MusicbrainzArtistsResponse response = new MusicbrainzArtistsResponse();
-        response.setArtists(List.of(MusicbrainzArtist.builder().build()));
+        response.setArtists(List.of(new MusicbrainzArtist()));
         response.setCount(1);
         when(mockMusicbrainzClient.searchArtistsByName(name, 10, 0)).thenReturn(response);
 
@@ -86,8 +89,22 @@ class MusicbrainzSearcherTest {
     }
 
     @Test
+    @DisplayName("searchArtists(): Exception thrown")
+    void exceptionThrown() {
+        String name = "name";
+        Optional<Integer> size = Optional.of(10);
+        when(mockMusicbrainzClient.searchArtistsByName(name, 10, 0)).thenThrow(RuntimeException.class);
+
+        Collection<ArtistDto> dtos = searcher.searchArtist(name, size);
+
+        assertThat(dtos).isEmpty();
+        verify(mockMusicbrainzClient, times(1)).searchArtistsByName(name, 10, 0);
+        verify(mockArtistMapper, never()).toDto(any());
+    }
+
+    @Test
     @DisplayName("searchArtists(): Null response returned")
-    void nullReponse() {
+    void nullResponse() {
         String name = "name";
         Optional<Integer> size = Optional.of(10);
         when(mockMusicbrainzClient.searchArtistsByName(name, 10, 0)).thenReturn(null);
