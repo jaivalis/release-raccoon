@@ -8,6 +8,8 @@ import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
+import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.mapping.ArtistMapper;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.NotFoundException;
 
 import io.netty.util.internal.StringUtil;
@@ -28,12 +31,14 @@ import static com.raccoon.templatedata.QuteTemplateLoader.PROFILE_TEMPLATE_ID;
 @ApplicationScoped
 public class UserProfileService {
 
-    UserRepository userRepository;
-    UserFactory userFactory;
-    UserArtistRepository userArtistRepository;
-    LastfmTasteUpdatingService lastfmTasteUpdatingService;
-    RaccoonMailer mailer;
-    Template profile;
+    private final UserRepository userRepository;
+    private final UserFactory userFactory;
+    private final UserArtistRepository userArtistRepository;
+    private final LastfmTasteUpdatingService lastfmTasteUpdatingService;
+    private final RaccoonMailer mailer;
+    private final Template profile;
+    private final ArtistFollowingService artistFollowingService;
+    private final ArtistMapper artistMapper;
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
@@ -41,21 +46,44 @@ public class UserProfileService {
                               final UserArtistRepository userArtistRepository,
                               final LastfmTasteUpdatingService lastfmTasteUpdatingService,
                               final RaccoonMailer mailer,
-                              final Engine engine) {
+                              final Engine engine,
+                              final ArtistFollowingService artistFollowingService,
+                              final ArtistMapper artistMapper) {
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.userArtistRepository = userArtistRepository;
         this.lastfmTasteUpdatingService = lastfmTasteUpdatingService;
         this.mailer = mailer;
         this.profile = engine.getTemplate(PROFILE_TEMPLATE_ID);
+        this.artistFollowingService = artistFollowingService;
+        this.artistMapper = artistMapper;
     }
 
 
     public List<Artist> getUserArtists(final User user) {
-        return userArtistRepository.findByUserIdByWeight(user.id)
+        return userArtistRepository.findByUserIdSortedByWeight(user.id)
                 .stream()
                 .map(UserArtist::getArtist)
                 .toList();
+    }
+
+    /**
+     * @param userEmail the user of requesting followed Artists
+     * @return
+     */
+    @NotNull
+    public FollowedArtistsResponse getFollowedArtists(final String userEmail) {
+        var user = userRepository.findByEmail(userEmail);
+
+        List<ArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
+                .stream()
+                .map(UserArtist::getArtist)
+                .map(artistMapper::toDto)
+                .toList();
+        return FollowedArtistsResponse.builder()
+                .rows(rows)
+                .total(rows.size())
+                .build();
     }
 
     public String renderTemplateInstance(final String userEmail) {
@@ -80,14 +108,14 @@ public class UserProfileService {
 
     /**
      * Fetches the user from the database. Sends welcome email blocking in case the user was just created.
-     * @param email unique user identifier
+     * @param userEmail unique user identifier
      * @return user from the database.
      */
-    public User completeRegistration(final String email) {
-        Optional<User> optionalUser = userRepository.findByEmailOptional(email);
+    public User completeRegistration(final String userEmail) {
+        Optional<User> optionalUser = userRepository.findByEmailOptional(userEmail);
 
         return optionalUser.orElseGet(() -> {
-            var user = userFactory.createUser(email);
+            var user = userFactory.createUser(userEmail);
             mailer.sendWelcome(
                     user,
                     () -> {
@@ -100,15 +128,23 @@ public class UserProfileService {
         });
     }
 
-    public void unfollowArtist(final String userEmail, final Long artistId) {
-        var user = userRepository.findByEmail(userEmail);
-        userArtistRepository.deleteAssociation(user.id, artistId);
+    /**
+     * Create a new UserArtist association
+     * @param userEmail user requesting the follow
+     * @param artistDto artistDto as it originates from an Artist search.
+     */
+    public void followArtist(final String userEmail, final ArtistDto artistDto) {
+        artistFollowingService.followArtist(userEmail, artistMapper.fromDto(artistDto));
     }
 
-    public User enableTasteSources(final String email,
+    public void unfollowArtist(final String userEmail, final Long artistId) {
+        artistFollowingService.unfollowArtist(userEmail, artistId);
+    }
+
+    public User enableTasteSources(final String userEmail,
                                    final Optional<String> lastfmUsernameOpt,
                                    final Optional<Boolean> enableSpotifyOpt) {
-        Optional<User> existing = userRepository.findByEmailOptional(email);
+        Optional<User> existing = userRepository.findByEmailOptional(userEmail);
         if (existing.isEmpty()) {
             log.info("User does not exist.");
             throw new NotFoundException("User not found");

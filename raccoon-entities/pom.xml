@@ -14,6 +14,20 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <dependencies>
+        <!-- submodules -->
+        <dependency>
+            <groupId>com.raccoon</groupId>
+            <artifactId>raccoon-common</artifactId>
+        </dependency>
+        <!-- test-jar important here such that test classes can be imported
+     see: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html -->
+        <dependency>
+            <groupId>com.raccoon</groupId>
+            <artifactId>raccoon-common</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
         <!-- quarkus -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -30,6 +44,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-orm</artifactId>
+        </dependency>
+        <!-- Search -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-search-orm-elasticsearch</artifactId>
         </dependency>
 
         <!-- util -->
@@ -51,6 +70,11 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jacoco</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
             <artifactId>quarkus-test-h2</artifactId>
             <scope>test</scope>
         </dependency>
@@ -64,6 +88,32 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.flextrade.jfixture</groupId>
+            <artifactId>jfixture</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- testcontainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -74,7 +124,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <groupId>org.apache.maven.plugins</groupId>
                 <configuration>
-                    <argLine>@{argLine} -Xmx1024m</argLine>
+                    <argLine>@{argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
                 </configuration>
             </plugin>
 

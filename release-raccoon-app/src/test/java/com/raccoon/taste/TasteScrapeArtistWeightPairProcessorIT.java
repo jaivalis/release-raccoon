@@ -3,6 +3,7 @@ package com.raccoon.taste;
 import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
@@ -20,6 +21,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @Transactional
 @DBRider
 @DBUnit(caseSensitiveTableNames = true)
+@QuarkusTestResource(ElasticSearchTestResource.class)
 class TasteScrapeArtistWeightPairProcessorIT {
 
     @Inject

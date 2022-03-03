@@ -3,20 +3,19 @@ package com.raccoon;
 import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.repository.UserArtistRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import io.quarkus.mailer.MockMailbox;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 
@@ -28,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 @QuarkusTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
 @DBRider
 @DBUnit(caseSensitiveTableNames = true)
+@QuarkusTestResource(ElasticSearchTestResource.class)
 class NotifyingResourceIT {
 
     @Inject
@@ -46,7 +45,6 @@ class NotifyingResourceIT {
     }
 
     @Test
-    @Order(1)
     @DataSet(value = "datasets/yml/notify.yml")
     @DisplayName("Given 1 release from yesterday, notify user and unset UserArtist.hasNewRelease")
     void test_should_notify_user_artist_hasNewRelease() {

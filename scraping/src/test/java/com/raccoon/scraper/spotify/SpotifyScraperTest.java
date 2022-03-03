@@ -6,6 +6,7 @@ import com.raccoon.entity.factory.ArtistFactory;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.ReleaseRepository;
+import com.raccoon.scraper.mapper.SpotifyReleaseMapper;
 import com.wrapper.spotify.enums.AlbumType;
 import com.wrapper.spotify.enums.ModelObjectType;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -27,13 +28,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.IntStream;
 
-import static io.smallrye.common.constraint.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,6 +57,8 @@ class SpotifyScraperTest {
     @Mock
     RaccoonSpotifyApi raccoonSpotifyApiMock;
 
+    SpotifyReleaseMapper mockReleaseMapper = new SpotifyReleaseMapper();
+
     @Mock
     Paging<AlbumSimplified> albumSimplifiedPagingMock;
     @Mock
@@ -67,6 +73,7 @@ class SpotifyScraperTest {
                 artistRepositoryMock,
                 artistReleaseRepository,
                 releaseRepositoryMock,
+                mockReleaseMapper,
                 raccoonSpotifyApiMock
         );
     }
@@ -103,7 +110,7 @@ class SpotifyScraperTest {
         when(albumSimplifiedPagingMock.getItems())
                 .thenReturn(mockSpotifyAlbums(0, limit, type));
 
-        final var releases = scraper.scrapeReleases(Optional.of(limit));
+        final Set<Release> releases = scraper.scrapeReleases(Optional.of(limit));
 
         assertEquals(limit, releases.size());
     }
@@ -114,8 +121,8 @@ class SpotifyScraperTest {
         when(raccoonSpotifyApiMock.fetchNewReleasesPaginated(anyInt()))
                 .thenThrow(IOException.class);
 
-        assertThrows(IOException.class,
-                () -> scraper.scrapeReleases(Optional.of(limit)));
+        assertThat(scraper.scrapeReleases(Optional.of(limit)))
+                .isEmpty();
     }
 
     @Test
@@ -137,17 +144,17 @@ class SpotifyScraperTest {
         verify(artistRepositoryMock).persist(any(Artist.class));
     }
 
-    @DisplayName("Return empty if url is present")
+    @DisplayName("processRelease(): Returns empty if Release is already found")
     @ParameterizedTest
     @EnumSource(AlbumType.class)
     void processExistingRelease(AlbumType type) {
         var album = mockSpotifyAlbum(100, type);
-        when(releaseRepositoryMock.findBySpotifyUriOptional(album.getUri()))
+        when(releaseRepositoryMock.findSpotifyRelease(eq(album.getUri()), eq(album.getName()), anySet()))
                 .thenReturn(Optional.of(new Release()));
 
         final var release = scraper.processRelease(album);
 
-        assertTrue(release.isEmpty());
+        assertThat(release).isEmpty();
     }
 
     @Test
@@ -165,7 +172,7 @@ class SpotifyScraperTest {
         when(authorizer.executeGetUsersTopArtists(anyInt()))
                 .thenThrow(IOException.class);
 
-        assertEquals(0, scraper.fetchTopArtists(authorizer).size());
+        assertThat(scraper.fetchTopArtists(authorizer)).isEmpty();
     }
 
     @Test

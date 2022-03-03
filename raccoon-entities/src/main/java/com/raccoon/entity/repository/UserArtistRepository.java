@@ -18,7 +18,6 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     public List<UserArtist> getUserArtistsWithNewRelease() {
         Stream<UserArtist> stream = find("hasNewRelease", true)
                 .stream();
-
         return stream.toList();
     }
 
@@ -45,13 +44,19 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         return find("user_id = ?1", userId).stream().toList();
     }
 
-    public List<UserArtist> findByUserIdByWeight(final long userId) {
+    public List<UserArtist> findByUserIdSortedByWeight(final long userId) {
         return find("user_id = ?1", Sort.by("weight", Sort.Direction.Descending), userId)
                 .stream().toList();
     }
 
     public List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {
         return find("artist_id in ?1", artistIds).stream().toList();
+    }
+
+    // Could be simplified further if it returned only a list of ids, since that's the only way it's
+    // used right now.
+    public List<UserArtist> findByUserIdAndArtistIds(final Long userId, final Collection<Long> artistIds) {
+        return find("user_id = ?1 and artist_id in ?2", userId, artistIds).stream().toList();
     }
 
     public void deleteAssociation(Long userId, Long artistId) {

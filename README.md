@@ -59,10 +59,12 @@ consult https://quarkus.io/guides/maven-tooling.html.
 Create a .env file containing all the environment variables that are referred to from the [docker-compose](docker/docker-compose.yml) file.
 Place that file under [release-raccoon-app](release-raccoon-app).
 
+> **NOTE:**  The images in docker-compose.yml are currently set for development on arm CPUs, commented you will find the amd64 counterparts.
+
 From the root of the project run:
 ```shell script
 source release-raccoon-app/.env
-docker-compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.yml up
+docker compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.yml up -d
 ```
 
 ## Setting up Keycloak
@@ -75,7 +77,7 @@ You should be good to start the quarkus app.
 
 > In case after a docker restart the redirect back from keycloak stops working in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the [properties](release-raccoon-app/src/main/resources/application.properties) again.
 
-## Deploying the image to heroku (manually)
+# Deploying the image to heroku
 
 Build the project to get the jar
 ```shell

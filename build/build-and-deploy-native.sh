@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 #################################################################################################
-# Builds the docker image and deploys it on heroku						#
-# Pre-steps:											#
-#	- executable *-runner binary is present in build/					#
-#	- logged in to heroku:									#
-#		heroku login									#
-#	- logged in to heroku docker registry:							#
-#		docker login --username=_ --password=$(heroku auth:token) registry.heroku.com	#
-# Execute this script from the root of the project:						#
-#												#
-# $> ./build/build-and-deploy.sh								#
+# Builds the docker image and deploys it on heroku                                              #
+# Pre-steps:                                                                                    #
+#	- executable *-runner binary is present in build/                                             #
+#	- logged in to heroku:                                                                        #
+#	      heroku login                                                                            #
+#	- logged in to heroku docker registry:                                                        #
+#	      docker login --username=_ --password=$(heroku auth:token) registry.heroku.com           #
+# Execute this script from the root of the project:                                             #
+#	                                                                                              #
+# $> ./build/build-and-deploy.sh                                                                #
 #################################################################################################
 
 # exit when any command fails

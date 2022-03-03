@@ -38,22 +38,28 @@
         <!-- tests -->
         <testcontainers.version>1.15.3</testcontainers.version>
         <testcontainers-keycloak.version>1.7.1</testcontainers-keycloak.version>
+        <testcontainers-elasticsearch.version>1.16.2</testcontainers-elasticsearch.version>
         <rider.version>1.21.1</rider.version>
         <awaitility.version>4.0.3</awaitility.version>
+        <rest.assured.version>4.3.3</rest.assured.version>
+        <wiremock-jre8.version>2.32.0</wiremock-jre8.version>
+        <assertj-core.version>3.22.0</assertj-core.version>
 
         <!-- util -->
         <lombok.version>1.18.20</lombok.version>
         <apache.commons.version>3.9</apache.commons.version>
-        <rest.assured.version>4.3.3</rest.assured.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
         <failsafe-plugin.version>3.0.0-M5</failsafe-plugin.version>
+        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 
         <jandex-maven-plugin.version>1.1.0</jandex-maven-plugin.version>
         <webjars-bootstrap.version>4.4.1</webjars-bootstrap.version>
+        <jfixture.version>2.7.2</jfixture.version>
     </properties>
 
     <dependencyManagement>
@@ -71,6 +77,15 @@
                 <groupId>com.raccoon</groupId>
                 <artifactId>raccoon-common</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <!-- test-jar important here such that test classes can be imported
+                 see: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html -->
+            <dependency>
+                <groupId>com.raccoon</groupId>
+                <artifactId>raccoon-common</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.raccoon</groupId>
@@ -154,9 +169,10 @@
                 <artifactId>quarkus-scheduler</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
+            <!-- Search -->
             <dependency>
                 <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-resteasy-mutiny</artifactId>
+                <artifactId>quarkus-hibernate-search-orm-elasticsearch</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
 
@@ -235,6 +251,7 @@
                 <version>${rest.assured.version}</version>
                 <scope>test</scope>
             </dependency>
+            <!-- testcontainers -->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers</artifactId>
@@ -251,6 +268,12 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>${testcontainers-elasticsearch.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -287,14 +310,7 @@
                 <groupId>com.github.tomakehurst</groupId>
                 <artifactId>wiremock-jre8</artifactId>
                 <scope>test</scope>
-                <version>2.28.1</version>
-            </dependency>
-            <!-- https://quarkus.io/guides/security-openid-connect -->
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-test-keycloak-server</artifactId>
-                <version>${quarkus.platform.version}</version>
-                <scope>test</scope>
+                <version>${wiremock-jre8.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.quarkus</groupId>
@@ -320,6 +336,18 @@
                 <version>${quarkus.platform.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj-core.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.flextrade.jfixture</groupId>
+                <artifactId>jfixture</artifactId>
+                <version>${jfixture.version}</version>
+                <scope>test</scope>
+            </dependency>
 
             <!-- util -->
             <dependency>
@@ -332,6 +360,19 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${apache.commons.version}</version>
+            </dependency>
+            <!-- mapstruct -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+                <scope>provided</scope>
             </dependency>
 
         </dependencies>
@@ -377,6 +418,12 @@
                     <groupId>org.jboss.jandex</groupId>
                     <artifactId>jandex-maven-plugin</artifactId>
                     <version>${jandex-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
                 </plugin>
 
             </plugins>

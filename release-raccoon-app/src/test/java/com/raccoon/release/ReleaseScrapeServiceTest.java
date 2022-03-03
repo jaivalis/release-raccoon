@@ -4,8 +4,12 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.scraper.ReleaseScraper;
+import com.raccoon.scraper.musicbrainz.MusicbrainzScraper;
+import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,9 +22,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import javax.enterprise.inject.Instance;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,17 +40,23 @@ class ReleaseScrapeServiceTest {
     ReleaseScrapeService service;
 
     @Mock
-    ReleaseScrapers releaseScrapersMock;
-    @Mock
     UserArtistRepository userArtistRepositoryMock;
+    @Mock
+    Instance<ReleaseScraper> mockScrapers;
+    @Mock
+    MusicbrainzScraper mockMusicbrainzScraper;
+    @Mock
+    SpotifyScraper mockSpotifyScraper;
 
     @Captor
     ArgumentCaptor<List<Long>> captor;
 
     @BeforeEach
     void setUp() {
+        when(mockScrapers.stream()).thenReturn(Stream.of(mockMusicbrainzScraper, mockSpotifyScraper));
+
         service = new ReleaseScrapeService(
-                releaseScrapersMock,
+                mockScrapers,
                 userArtistRepositoryMock
         );
     }
@@ -69,21 +84,23 @@ class ReleaseScrapeServiceTest {
     }
 
     @Test
-    void verifyInteractions() throws Exception {
-        when(releaseScrapersMock.scrape()).thenReturn(Collections.emptySet());
+    void scrapeReleasesVerifyInteractions() throws Exception {
+        when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(Collections.emptySet());
+        when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(Collections.emptySet());
 
-        service.scrape();
+        service.scrapeReleases();
         
-        verify(releaseScrapersMock, times(1)).scrape();
+        verify(mockMusicbrainzScraper, times(1)).scrapeReleases(any());
+        verify(mockSpotifyScraper, times(1)).scrapeReleases(any());
     }
 
     @Test
     void scrapeReturnsAlbums() throws Exception {
         var releaseCount = 5;
-        when(releaseScrapersMock.scrape())
-                .thenReturn(stubReleases(releaseCount));
+        when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
+        when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
 
-        service.scrape();
+        service.scrapeReleases();
 
         verify(userArtistRepositoryMock, times(1)).markNewRelease(captor.capture());
         final var arg = captor.getValue();
@@ -91,4 +108,19 @@ class ReleaseScrapeServiceTest {
         // ids are given through `stubReleases` are lte `releaseCount`
         arg.forEach(artistId -> assertTrue(artistId < releaseCount));
     }
+
+    @Test
+    @DisplayName("Identical Releases returned by both scrapers, should be merged")
+    void scrapeScrapersReturnIdenticalAlbums() throws Exception {
+        var releaseCount = 5;
+        Set<Release> stubReleases = stubReleases(releaseCount);
+        when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(stubReleases);
+        // Second scraper returns only one Release already returned by the first
+        when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(Set.of(stubReleases.iterator().next()));
+
+        Set<Release> releases = service.scrapeReleases();
+
+        assertThat(releases).hasSize(stubReleases.size());
+    }
+
 }

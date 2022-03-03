@@ -36,4 +36,9 @@ public class RaccoonLastfmApi {
     public Collection<Artist> getUserTopArtists(String username, Period period) {
         return User.getTopArtists(username, period, apiKey);
     }
+
+    public Collection<Artist> searchArtist(String pattern) {
+        return Artist.search(pattern, apiKey);
+    }
+
 }

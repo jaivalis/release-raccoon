@@ -4,7 +4,27 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Bootstrap -->
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
     <link rel="icon" type="image/ico" href="images/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap" rel="stylesheet">
+
+    <!-- Searchable artists -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Reloading table -->
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/defer-url/bootstrap-table-defer-url.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/auto-refresh/bootstrap-table-auto-refresh.min.js"></script>
+
     <title>ReleaseRaccoon | Profile</title>
     <style>
         html,
@@ -13,9 +33,9 @@
         }
 
         body {
-            margin: 15%;
+            margin: 5%;
             background: linear-gradient(90deg, #49a09d, #5f2c82);
-            font-family: sans-serif;
+            font-family: 'Titilium Web', sans-serif;
             font-weight: 100;
             color: white;
         }
@@ -24,12 +44,12 @@
             horiz-align: center;
         }
 
-        .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+        /*.container { */
+        /*    position: absolute;*/
+        /*    top: 50%;*/
+        /*    left: 50%;*/
+        /*    transform: translate(-50%, -50%);*/
+        /*}*/
 
         .banner {
             font-size: 2.7rem;
@@ -49,6 +69,11 @@
             color: white;
             text-align: center;
             font-weight: bolder;
+        }
+
+        .artists {
+            padding: 2rem 1rem;
+            background-color: rgba(255,255,255,0.2);
         }
 
         .lead {
@@ -99,13 +124,394 @@
             background-color: red;
         }
 
+        button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        input {
+            margin: 0;
+        }
+
+        /* bootstrap */
+        /*
+         * Top navigation
+         * Hide default border to remove 1px line.
+         */
+        .navbar-fixed-top {
+            border: 0;
+        }
+
+        #navbar {
+            position: relative;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        #results {
+            position: absolute;
+            background: #5f2c82;
+            list-style-type: none;
+            padding: 10px;
+            color: white;
+            overflow: auto;
+            height: 420px;
+            width: 218px;
+            z-index: 3;
+        }
+
+        #results li {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* loading element */
+        .loader {
+            width: 60px;
+            horiz-align: center;
+        }
+
+        .loader-wheel {
+            animation: spin 1s infinite linear;
+            border: 2px solid rgba(30, 30, 30, 0.5);
+            border-left: 4px solid #fff;
+            border-radius: 50%;
+            height: 100px;
+            margin-bottom: 10px;
+            width: 100px;
+            horiz-align: center;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        /* loading element */
+
+        /* nav search box element */
+        .has-search .form-control {
+            padding-left: 2.375rem;
+        }
+
+        .has-search .form-control-feedback {
+            position: absolute;
+            z-index: 2;
+            display: block;
+            width: 2.375rem;
+            height: 2.375rem;
+            line-height: 2.375rem;
+            text-align: center;
+            pointer-events: none;
+            color: #aaa;
+        }
+        /* nav search box element */
+
     </style>
+    <script>
+        const filterArtistsTable = () => {
+            const trs = document.querySelectorAll('#artistTableParent tr:not(.header)')
+            const filter = document.querySelector('#tableSearch').value
+            const regex = new RegExp(filter, 'i')
+            const isFoundInTds = td => regex.test(td.innerHTML)
+            const isFound = childrenArr => childrenArr.some(isFoundInTds)
+            const setTrStyleDisplay = ({ style, children }) => {
+                style.display = isFound([
+                    ...children // <-- All columns
+                ]) ? '' : 'none'
+            }
+
+            trs.forEach(setTrStyleDisplay)
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchForm = document.getElementById('search-form');
+            searchForm.addEventListener("submit", getResults, false);
+        });
+
+        function renderResults(results) {
+            safeDeleteById('results')
+
+            document.getElementById('overlay').style.pointerEvents = 'auto';
+            const navbarEl = document.getElementById('navbar');
+            const resultsParent = document.createElement('ul');
+            resultsParent.setAttribute('id', 'results');
+            navbarEl.appendChild(resultsParent);
+
+            if (results.length !== 0) {
+                results.map((result) => {
+                    let listEl = document.createElement("li");
+
+                    let button = document.createElement("button");
+                    button.user = result
+                    button.setAttribute('dataJson', JSON.stringify(result))
+                    button.addEventListener('click', follow, false);
+                    button.innerHTML = 'follow';
+
+                    listEl.innerHTML = result.name;
+                    resultsParent.appendChild(listEl);
+                    listEl.appendChild(button);
+                });
+            } else {
+                let listEl = document.createElement("li");
+                listEl.innerHTML = 'No artists found';
+                resultsParent.appendChild(listEl);
+            }
+
+        }
+
+        function follow(e) {
+            e.currentTarget.disabled = true;
+            const tmpData = e.currentTarget.getAttribute('dataJson');
+
+            fetch('/me/follow', {
+                method: 'POST',
+                mode: 'cors', // no-cors, *cors, same-origin
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: tmpData
+            }).then(result => {
+                console.log('Success:', result);
+                clearTableFilterInput();
+                refreshFollowedArtists();
+            }).catch(error => {
+                console.error('Error:', JSON.stringify(error));
+                e.currentTarget.disabled = false;
+            }).finally(()=>{
+                // e.currentTarget.disabled = false;
+            });
+        }
+
+        function unfollow(artistId) {
+            console.log('Unfollowing artist with id: ', artistId);
+            fetch('/me/unfollow/' + artistId, {
+                method: 'DELETE',
+                mode: 'cors', // no-cors, *cors, same-origin
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            }).then(result => {
+                console.log('Unfollowed success:', result);
+                clearTableFilterInput();
+                refreshFollowedArtists();
+            }).catch(error => {
+                console.error('Unfollowed error:', JSON.stringify(error));
+                e.currentTarget.disabled = false;
+            }).finally(()=>{
+                // e.currentTarget.disabled = false;
+            });
+        }
+
+        async function getResults(e){
+            e.preventDefault();
+            // show loading element
+            const navbarEl = document.getElementById('navbar');
+            const resultsParent = document.createElement('div');
+            resultsParent.setAttribute('class', 'loader');
+            resultsParent.setAttribute('id', 'results');
+
+            const loaderWheel = document.createElement('div');
+            loaderWheel.setAttribute('class', 'loader-wheel');
+            loaderWheel.setAttribute('id', 'wheel');
+
+            resultsParent.appendChild(loaderWheel);
+            navbarEl.appendChild(resultsParent);
+
+            const results = await fetch('/artist/search?pattern=' + e.target.elements.searchTerm.value)
+                .then(response => response.json())
+                .then(data => data);
+            renderResults(results.artists);
+        }
+
+        function hideResults() {
+            document.getElementById('results').remove();
+            document.getElementById('overlay').style.pointerEvents = 'none';
+            document.getElementById('artistSearchBox').value = '';
+        }
+
+        async function refreshFollowedArtists() {
+            const followedArtistsResponse = await fetch('/me/followed-artists')
+                .then(response => response.json())
+                .then(data => data);
+
+            if (followedArtistsResponse.total !== 0) {
+                renderFollowedArtists(followedArtistsResponse.rows);
+            } else {
+                renderNoFollowedArtists();
+            }
+        }
+
+        function renderNoFollowedArtists() {
+            safeDeleteById('tableSearch');
+            safeDeleteById('artistTable');
+            safeDeleteById('nothing-text');
+
+            let followedArtistsTableContainer = document.getElementById('artist-table-container');
+
+            const nothing = document.createElement('p');
+            nothing.setAttribute('id', 'nothing-text');
+            nothing.innerHTML = 'No artists followed, use panel above to add some';
+
+            followedArtistsTableContainer.appendChild(nothing);
+        }
+
+        function safeDeleteById(elementId) {
+            try {
+                document.getElementById(elementId).remove();
+            } catch {
+            }
+        }
+
+        function clearTableFilterInput() {
+            if (document.getElementById('tableSearch') !== null) {
+                document.getElementById('tableSearch').value = '';
+            }
+        }
+
+        function renderFollowedArtists(followedArtistRows) {
+            safeDeleteById('artistTable');
+            safeDeleteById('nothing-text');
+
+            let followedArtistsTableContainer = document.getElementById('artist-table-container');
+
+            if (document.getElementById('tableSearch') === null) {
+                const searchInput = document.createElement('input');
+                searchInput.className = 'form-control mb-4';
+                searchInput.setAttribute('id', 'tableSearch');
+                searchInput.setAttribute('type', 'text');
+                searchInput.setAttribute('placeholder', 'Filter followed artists');
+                searchInput.onkeyup = filterArtistsTable;
+                followedArtistsTableContainer.appendChild(searchInput);
+
+                const tableParent = document.createElement('table');
+                tableParent.className = 'horizaligned table';
+                tableParent.setAttribute('id', 'artistTableParent');
+                followedArtistsTableContainer.appendChild(tableParent);
+            }
+
+            const tbody = document.createElement('tbody');
+            tbody.setAttribute('id', 'artistTable');
+
+            const table = document.getElementById('artistTableParent')
+            table.appendChild(tbody);
+
+            followedArtistRows.map((artist) => {
+                let trEl = document.createElement("tr");
+
+                let tdNameEl = document.createElement("td");
+                tdNameEl.innerHTML = artist.name;
+                trEl.appendChild(tdNameEl);
+
+                // render lastfm column
+                let tdLastfmEl = document.createElement("td");
+                if (artist.lastfmUri) {
+                    let aLastfmEl = document.createElement('a');
+                    aLastfmEl.className = 'path-link';
+                    aLastfmEl.setAttribute('href', artist.lastfmUri);
+                    aLastfmEl.setAttribute('target', '_blank');
+
+                    let lastfmImg = document.createElement('img');
+                    lastfmImg.setAttribute('height', '30px');
+                    lastfmImg.setAttribute('src', 'images/lastfm.icon.svg');
+                    aLastfmEl.appendChild(lastfmImg);
+
+                    tdLastfmEl.appendChild(aLastfmEl);
+                } else {
+                    tdLastfmEl.innerHTML = '';
+                }
+                trEl.appendChild(tdLastfmEl);
+
+                // render spotify column
+                let tdSpotifyEl = document.createElement("td");
+                if (artist.spotifyUri) {
+                    let aSpotifyEl = document.createElement('a');
+                    aSpotifyEl.setAttribute('href', 'https://open.spotify.com/artist/' + artist.spotifyUri.replace('spotify:artist:',''));
+                    aSpotifyEl.setAttribute('class', 'path-link');
+                    aSpotifyEl.setAttribute('target', '_blank');
+
+                    let spotifyImg = document.createElement('img');
+                    spotifyImg.setAttribute('height', '30px');
+                    spotifyImg.setAttribute('src', 'images/spotify.icon.svg');
+                    aSpotifyEl.appendChild(spotifyImg);
+
+                    tdSpotifyEl.appendChild(aSpotifyEl);
+                } else {
+                    tdSpotifyEl.innerHTML = '';
+                }
+                trEl.appendChild(tdSpotifyEl);
+
+                // render unfollow column
+                let tdUnfollowEl = document.createElement("td");
+
+                let unfollowInput = document.createElement('input');
+                unfollowInput.setAttribute('type', 'submit');
+                unfollowInput.setAttribute('class', 'path-link');
+                unfollowInput.setAttribute('value', 'unfollow');
+                unfollowInput.setAttribute('artistId', artist.id);
+                unfollowInput.addEventListener('click', function() {
+                    unfollow(artist.id);
+                });
+
+                tdUnfollowEl.appendChild(unfollowInput);
+
+                trEl.appendChild(tdUnfollowEl);
+
+                tbody.appendChild(trEl);
+            })
+        }
+    </script>
 </head>
 
-<body>
-<h1>Your Release Raccoon</h1>
+<body onload="refreshFollowedArtists()">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            {!<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">!}
+                {!<span class="sr-only">Toggle navigation</span>!}
+                {!<span class="icon-bar"></span>!}
+                {!<span class="icon-bar"></span>!}
+                {!<span class="icon-bar"></span>!}
+            {!</button>!}
+            <a class="navbar-brand" href="#">Release Raccoon</a>
+        </div>
+        <div id="navbar">
+            <!--           <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>
+                      </ul> -->
+            <div class="form-group has-search">
+                <form id="search-form" class="navbar-form navbar-right">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input type="text" id="artistSearchBox" class="form-control" name="searchTerm" placeholder="Search for artists" autocomplete="off">
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div id="overlay" onclick="hideResults()"></div>
+
 <div>
-    <div class="banner lead">
+
+    {!<div class="title">!}
+        {!<h1 >Your Release Raccoon</h1>!}
+    {!</div>!}
+
+    <div class="content">
         {#if contents.isSpotifyEnabled() == false}
             Enable
             <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
@@ -114,7 +520,7 @@
             </a>
             </br>
             {#else}
-                Spotify enabled ⛓
+                Spotify paired 🦝
                 {#if contents.isCanScrapeSpotify()}
                     <a href="/scrape-taste/spotify" class="pathlink" target="_blank">
                         scrape
@@ -123,63 +529,33 @@
                 {/if}
             </br>
         {/if}
+
         {#if contents.isLastfmEnabled() == false}
-            Your Last.fm username is
-            <form method="GET" action="/me/enableServices">
-                <input type="text" id="lastfmname" name="lastfmUsername">
-                <input type="submit" class="path-link" value="enable">
-            </form>
-            </br>
+            <p>
+                Your Last.fm username is
+                <form method="GET" action="/me/enableServices">
+                    <input type="text" id="lastfmname" name="lastfmUsername">
+                    <input type="submit" class="path-link" value="enable">
+                </form>
+                </br>
+            </p>
         {#else}
-            Last.fm scraping enabled ⛓
+            Last.fm paired 🦝
             </br>
         {/if}
     </div>
 
-    {#if contents.artistsFollowed != null && contents.artistsFollowed.size != 0}
+    <div class="artists">
+        <div id="artist-table-container" class="container">
+            {! Populated using js !}
+        </div>
+    </div>
+</div>
 
-        <p>Artists tracked:</p>
-        <table class="horizaligned">
-            <tr>
-
-                <th>Artist Name</th>
-                <th></th>
-
-                {#for artist in contents.getArtistsFollowed()}
-                    <tr>
-                        <td>{artist.name}</td>
-
-                        <td>
-                            {#if artist.lastfmUri != null}
-                                <a href="{artist.lastfmUri}" class="path-link" target="_blank">
-                                    <img height="30px" src="images/lastfm.icon.svg"/>
-                                </a>
-                            {/if}
-                        </td>
-
-                        <td>
-                            {#if artist.getSpotifyUriId() != ""}
-                                <a href="https://open.spotify.com/artist/{artist.getSpotifyUriId()}" class="path-link" target="_blank">
-                                    <img height="30px" src="images/spotify.icon.svg"/>
-                                </a>
-                            {/if}
-                        </td>
-
-                        <td>
-                            <form method="POST" action="/me/unfollow/{artist.id}">
-                                <input type="submit" class="path-link" value="unfollow">
-                            </form>
-                        </td>
-
-                    </tr>
-                {/for}
-            </tr>
-        </table>
-    {#else}
-
-        <p>No artists tracked yet. Use the panel above to set your taste</p>
-
-    {/if}
+<div class="footer">
+    <p>
+        &reg; Release Raccoon, 2022
+    </p>
 </div>
 
 </body>

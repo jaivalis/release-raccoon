@@ -3,6 +3,8 @@ package com.raccoon.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -37,6 +39,7 @@ import static com.raccoon.entity.Constants.SPOTIFY_ARTIST_URI_PATTERN;
 })
 @EqualsAndHashCode
 @NoArgsConstructor
+@Indexed
 public class Artist extends PanacheEntityBase implements Serializable {
 
     @Id
@@ -49,6 +52,7 @@ public class Artist extends PanacheEntityBase implements Serializable {
     LocalDateTime createDate;
 
     @Column
+    @FullTextField(analyzer = "name")
     String name;
 
     @Column
@@ -56,6 +60,9 @@ public class Artist extends PanacheEntityBase implements Serializable {
 
     @Column
     String spotifyUri;
+
+    @Column
+    String musicbrainzId;
 
     @JsonIgnore
     @ToString.Exclude

@@ -3,13 +3,16 @@ package com.raccoon.release;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.exception.ReleaseScrapeException;
+import com.raccoon.scraper.ReleaseScraper;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -19,30 +22,29 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class ReleaseScrapeService {
 
-    ReleaseScrapers releaseScrapers;
+    List<ReleaseScraper> releaseScrapers;
     UserArtistRepository userArtistRepository;
 
     @Inject
-    ReleaseScrapeService(final ReleaseScrapers releaseScrapers,
+    ReleaseScrapeService(final Instance<ReleaseScraper> releaseScrapers,
                          final UserArtistRepository userArtistRepository) {
-        this.releaseScrapers = releaseScrapers;
+        this.releaseScrapers = releaseScrapers.stream().toList();
+        log.info("Found {} release scrapers in classpath", this.releaseScrapers.size());
         this.userArtistRepository = userArtistRepository;
     }
 
     @Transactional
-    public Set<Release> scrape() throws ReleaseScrapeException, InterruptedException {
-        try {
-            // Could optimize the txs by localizing and batching.
-            Set<Release> releases = releaseScrapers.scrape();
-            updateHasNewRelease(releases);
-
-            return releases;
-        } catch (InterruptedException e) {
-            log.warn("Scrape interrupted.", e);
-            throw e;
-        } catch (Exception e) {
-            throw new ReleaseScrapeException("Exception thrown while scraping releases.", e);
+    public Set<Release> scrapeReleases() throws InterruptedException {
+        Set<Release> releases = new HashSet<>();
+        for (ReleaseScraper scraper : releaseScrapers) {
+            Set<Release> releasesPerScraper = scraper.scrapeReleases(Optional.empty());
+            releases.addAll(releasesPerScraper);
+            log.info("Found {} releases through {}", releasesPerScraper.size(), scraper.getClass().getSimpleName());
         }
+
+        updateHasNewRelease(releases);
+        log.info("Found {} new releases", releases.size());
+        return releases;
     }
 
     private void updateHasNewRelease(Collection<Release> releases) {

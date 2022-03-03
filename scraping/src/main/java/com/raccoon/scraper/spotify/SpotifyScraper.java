@@ -1,7 +1,6 @@
 package com.raccoon.scraper.spotify;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.ArtistRelease;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.factory.ArtistFactory;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
@@ -9,6 +8,7 @@ import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.scraper.ReleaseScraper;
 import com.raccoon.scraper.TasteScraper;
+import com.raccoon.scraper.mapper.SpotifyReleaseMapper;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
 import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
@@ -18,16 +18,18 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,30 +40,34 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
-    ArtistFactory artistFactory;
-    ArtistRepository artistRepository;
-    ArtistReleaseRepository artistReleaseRepository;
-    ReleaseRepository releaseRepository;
+    final ArtistFactory artistFactory;
+    final ArtistRepository artistRepository;
+    final ArtistReleaseRepository artistReleaseRepository;
+    final ReleaseRepository releaseRepository;
+    final SpotifyReleaseMapper releaseMapper;
 
-    RaccoonSpotifyApi spotifyApi;
+    final RaccoonSpotifyApi spotifyApi;
 
+    @Inject
     public SpotifyScraper(final ArtistFactory artistFactory,
                           final ArtistRepository artistRepository,
                           final ArtistReleaseRepository artistReleaseRepository,
                           final ReleaseRepository releaseRepository,
+                          final SpotifyReleaseMapper releaseMapper,
                           final RaccoonSpotifyApi spotifyApi) {
         this.artistFactory = artistFactory;
         this.artistRepository = artistRepository;
         this.artistReleaseRepository = artistReleaseRepository;
         this.releaseRepository = releaseRepository;
+        this.releaseMapper = releaseMapper;
         this.spotifyApi = spotifyApi;
     }
 
     // ============================================= ReleaseScraper API ============================================= //
 
     @Override
-    public List<Release> scrapeReleases(Optional<Integer> limit) throws IOException, InterruptedException {
-        List<Release> releases = new ArrayList<>();
+    public Set<Release> scrapeReleases(Optional<Integer> limit) throws InterruptedException {
+        Set<Release> releases = new HashSet<>();
         var offset = 0;
         Paging<AlbumSimplified> response;
         try {
@@ -77,10 +83,9 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
                 offset = response.getOffset() + response.getLimit();
             } while(response.getNext() != null);
         } catch (IOException | SpotifyWebApiException | ParseException e) {
-            log.error("Something went wrong when fetching new albums.\n", e);
-            throw new IOException("Something went wrong when fetching new albums.", e);
+            log.error("Something went wrong when fetching new albums.", e);
+            return Collections.emptySet();
         } catch (InterruptedException e) {
-            log.error("", e);
             throw e;
         }
         return releases;
@@ -97,10 +102,17 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     private Optional<Release> processRelease(AlbumSimplified albumSimplified) {
         log.debug("Processing release: {}", albumSimplified.getName());
         Set<Artist> releaseArtists = persistArtists(albumSimplified.getArtists());
+        if (releaseArtists.isEmpty()) {
+            return Optional.empty();
+        }
         return persistRelease(albumSimplified, releaseArtists);
     }
 
     private Set<Artist> persistArtists(ArtistSimplified[] artists) {
+        if (artists == null || artists.length == 0) {
+            return Collections.emptySet();
+        }
+
         return Arrays.stream(artists)
                 .distinct()
                 .map(artistSimplified -> {
@@ -120,32 +132,19 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
     }
 
     private Optional<Release> persistRelease(AlbumSimplified albumSimplified, Set<Artist> releaseArtists) {
-        if (releaseRepository.findBySpotifyUriOptional(albumSimplified.getUri()).isEmpty()) {
-            final var release = new Release();
-            release.setName(albumSimplified.getName());
-            release.setType(albumSimplified.getAlbumType().toString());
-            release.setSpotifyUri(albumSimplified.getUri());
-            release.setReleasedOn(LocalDate.parse(albumSimplified.getReleaseDate()));
+        Optional<Release> existing = releaseRepository.findSpotifyRelease(albumSimplified.getUri(), albumSimplified.getName(), releaseArtists);
 
-            releaseRepository.persist(release);  // do I need this many persists?
+        if (existing.isEmpty()) {
+            final var release = releaseMapper.fromAlbumSimplified(albumSimplified);
 
-            release.setReleases(releaseArtists
-                    .stream()
-                    .map(artist -> {
-                        var artistRelease = new ArtistRelease();
-                        artistRelease.setArtist(artist);
-                        artistRelease.setRelease(release);
-
-                        artistReleaseRepository.persist(artistRelease);
-                        return artistRelease;
-                    }).toList());
-            releaseRepository.persist(release);
-            return Optional.of(release);
+            return persistRelease(releaseArtists, release, releaseRepository, artistReleaseRepository);
         }
         return Optional.empty();
     }
+
     // ========================================== End of ReleaseScraper API ========================================= //
     // ============================================== TasteScraper API ============================================== //
+
     @Override
     public Collection<MutablePair<Artist, Float>> scrapeTaste(String username, Optional<Integer> limit) {
         throw new UnsupportedOperationException("Invoked asynchronously from the Spotify OAuth cycle instead.");
@@ -183,6 +182,7 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
         }
         throw new IllegalArgumentException("Got an object type that is not supported.");
     }
+
     // =========================================== End of TasteScraper API ========================================== //
 
 }

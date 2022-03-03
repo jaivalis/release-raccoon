@@ -1,5 +1,7 @@
 package com.raccoon.user;
 
+import com.raccoon.search.dto.ArtistDto;
+
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
@@ -11,6 +13,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -54,18 +58,31 @@ public class UserProfileResource {
         return Response.ok(userProfileService.renderTemplateInstance(email)).build();
     }
 
-    @Path("/unfollow/{artistId}")
+    @Path("/follow")
     @POST
     @NoCache
     @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response followArtist(@Valid @NotNull ArtistDto artistDto) {
+        log.info("Following artist {}", artistDto);
+        final String email = idToken.getClaim(EMAIL_CLAIM);
+
+        userProfileService.followArtist(email, artistDto);
+
+        return Response.noContent().build();
+    }
+
+    @Path("/unfollow/{artistId}")
+    @DELETE
+    @NoCache
+    @Transactional
     @Valid
-    @Produces(MediaType.TEXT_HTML)
     public Response unfollowArtist(@NotNull @PathParam("artistId") Long artistId) {
         log.info("Unfollowing artist {}", artistId);
         final String email = idToken.getClaim(EMAIL_CLAIM);
         userProfileService.unfollowArtist(email, artistId);
 
-        return Response.ok(userProfileService.renderTemplateInstance(email)).build();
+        return Response.noContent().build();
     }
 
     @GET
@@ -80,5 +97,16 @@ public class UserProfileResource {
         userProfileService.enableTasteSources(email, lastfmUsernameOpt, enableSpotifyOpt);
 
         return Response.temporaryRedirect(URI.create("/me")).build();
+    }
+
+    @GET
+    @Path("/followed-artists")
+    @Transactional
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    public FollowedArtistsResponse getFollowedArtists() {
+        final String email = idToken.getClaim(EMAIL_CLAIM);
+
+        return userProfileService.getFollowedArtists(email);
     }
 }
