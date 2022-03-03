@@ -44,8 +44,10 @@ public class Release extends PanacheEntityBase implements Serializable {
     @Column
     String type;
 
+    @Column
     String spotifyUri;
 
+    @Column
     String musicbrainzId;
 
     @Column
