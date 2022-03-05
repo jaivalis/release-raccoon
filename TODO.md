@@ -12,7 +12,6 @@
 * Cucumber BDD tests
 * UserProfileService does too much, break down
 * Use hyphen separated uri's all around (e.g. `/enableServices` to `/enable-services`)
-* use assertj assertions
 * Remove @Data from entities!!
 * api versioning, nest everything under `/api/v1`
 * ReleaseScraper implementers should not contain persistence layer dependencies, should create Entities and leave persistence for another anti-corruption layer
