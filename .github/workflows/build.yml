@@ -8,6 +8,7 @@ on:
 
 env:
   JAVA_VERSION: 16
+  JDK_DISTRIBUTION: 'temurin'
 
 jobs:
   build:
@@ -23,6 +24,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JDK_DISTRIBUTION }}
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v2.1.7
