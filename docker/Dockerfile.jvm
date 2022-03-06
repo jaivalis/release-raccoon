@@ -21,9 +21,9 @@
 # docker run -i --rm -p 8080:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" quarkus/release.com.raccoon-jvm
 #
 ###
-FROM adoptopenjdk/openjdk16:jre-16.0.1_9-ubi-minimal
+FROM adoptopenjdk/openjdk17:jre-17.0.1_9-ubi-minimal
 
-ARG JAVA_PACKAGE=java-16-openjdk-headless
+ARG JAVA_PACKAGE=java-17-openjdk-headless
 ARG RUN_JAVA_VERSION=1.3.8
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 # Install java and the run-java script

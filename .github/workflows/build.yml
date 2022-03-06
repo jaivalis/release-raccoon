@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 
 env:
-  JAVA_VERSION: 16
+  JAVA_VERSION: 17
   JDK_DISTRIBUTION: 'temurin'
 
 jobs:
