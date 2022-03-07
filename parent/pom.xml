@@ -38,8 +38,8 @@
         <!-- tests -->
         <testcontainers.version>1.15.3</testcontainers.version>
         <testcontainers-keycloak.version>1.7.1</testcontainers-keycloak.version>
-        <testcontainers-elasticsearch.version>1.16.2</testcontainers-elasticsearch.version>
-        <rider.version>1.21.1</rider.version>
+        <testcontainers-elasticsearch.version>1.16.3</testcontainers-elasticsearch.version>
+        <rider.version>1.32.3</rider.version>
         <awaitility.version>4.0.3</awaitility.version>
         <rest.assured.version>4.3.3</rest.assured.version>
         <wiremock-jre8.version>2.32.0</wiremock-jre8.version>
