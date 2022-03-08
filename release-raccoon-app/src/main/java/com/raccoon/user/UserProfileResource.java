@@ -86,7 +86,7 @@ public class UserProfileResource {
     }
 
     @GET
-    @Path("/enableServices")
+    @Path("/enable-services")
     @Transactional
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)

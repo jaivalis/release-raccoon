@@ -13,11 +13,13 @@ import com.raccoon.scraper.musicbrainz.dto.mapper.MusicbrainzReleaseMapper;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -71,11 +73,20 @@ public class MusicbrainzScraper implements ReleaseScraper {
     }
 
     private List<MusicbrainzReleasesResponse> fetchAllReleasePages() {
+        List<MusicbrainzReleasesResponse> pages;
+        LocalDate today = LocalDate.now();
+        pages = IntStream.range(0, 7)
+                .mapToObj(i -> fetchReleasePagesForDay(today.minusDays(i)))
+                .flatMap(Collection::stream)
+                .toList();
+
+        return pages;
+    }
+
+    private List<MusicbrainzReleasesResponse> fetchReleasePagesForDay(LocalDate today) {
         final List<MusicbrainzReleasesResponse> pages = new ArrayList<>();
         int offset = 0;
         MusicbrainzReleasesResponse responseForDate = null;
-
-        LocalDate today = LocalDate.now();
         do {
             try {
                 responseForDate = client.searchReleasesByDate(today, offset);
@@ -106,16 +117,16 @@ public class MusicbrainzScraper implements ReleaseScraper {
 
         return artistCredits.stream()
                 .distinct()
-                .map(musicbrainzRelease -> {
-                    final String name = musicbrainzRelease.getName();
-                    Optional<Artist> byNameOptional = artistRepository.findByNameOptional(name);
+                .map(artistCredit -> {
+                    final String releaseName = artistCredit.getArtist().getName();
+                    Optional<Artist> byNameOptional = artistRepository.findByNameOptional(releaseName);
 
                     Artist artist = byNameOptional.isEmpty() ? new Artist() : byNameOptional.get();
                     if (byNameOptional.isEmpty()) {
-                        artist.setName(name);
+                        artist.setName(releaseName);
                     }
                     if (artist.getMusicbrainzId() == null || artist.getMusicbrainzId().isEmpty()) {
-                        artist.setMusicbrainzId(musicbrainzRelease.getArtist().getId());
+                        artist.setMusicbrainzId(artistCredit.getArtist().getId());
                     }
                     artistRepository.persist(artist);
                     return artist;

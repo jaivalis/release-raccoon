@@ -49,6 +49,7 @@
         <lombok.version>1.18.20</lombok.version>
         <apache.commons.version>3.9</apache.commons.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <guava.version>31.1-jre</guava.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.10.0</maven-compiler-plugin.version>
@@ -373,6 +374,11 @@
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
         </dependencies>
