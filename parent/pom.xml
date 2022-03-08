@@ -29,7 +29,7 @@
 
         <!-- Native image build fixes -->
         <jboss-jacc.version>1.0.2.Final</jboss-jacc.version>
-        <jna-platform.version>5.3.1</jna-platform.version>
+        <jna-platform.version>5.10.0</jna-platform.version>
 
         <!-- Scrapers -->
         <lastfm.client.version>0.1.2</lastfm.client.version>
@@ -38,7 +38,7 @@
         <!-- tests -->
         <testcontainers.version>1.15.3</testcontainers.version>
         <testcontainers-keycloak.version>1.7.1</testcontainers-keycloak.version>
-        <testcontainers-elasticsearch.version>1.16.2</testcontainers-elasticsearch.version>
+        <testcontainers-elasticsearch.version>1.16.3</testcontainers-elasticsearch.version>
         <rider.version>1.32.3</rider.version>
         <awaitility.version>4.0.3</awaitility.version>
         <rest.assured.version>4.3.3</rest.assured.version>
