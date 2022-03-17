@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -90,7 +91,12 @@ public class MusicbrainzScraper implements ReleaseScraper {
         do {
             try {
                 responseForDate = client.searchReleasesByDate(today, offset);
-                pages.add(responseForDate);
+
+                if (Objects.isNull(responseForDate.getError())) {
+                    pages.add(responseForDate);
+                } else {
+                    log.error("Error while scraping Releases from Musicbrainz: {}", responseForDate.getError());
+                }
                 offset += 100;
             } catch (RuntimeException e) {
                 log.error("Exception while scraping Musicbrainz releases", e);
