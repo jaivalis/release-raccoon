@@ -1,7 +1,6 @@
 package com.raccoon.scraper.musicbrainz;
 
-import com.flextrade.jfixture.JFixture;
-import com.raccoon.scraper.musicbrainz.dto.MusicbrainzReleasesResponse;
+import com.raccoon.scraper.config.MusicbrainzConfig;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +14,7 @@ import java.time.LocalDate;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MusicbrainzClientTest {
@@ -23,13 +23,14 @@ class MusicbrainzClientTest {
 
     @Mock
     MusicbrainzService mockMusicbrainzService;
-
-    JFixture fixture = new JFixture();
-    MusicbrainzReleasesResponse musicbrainzReleasesResponse = fixture.create(MusicbrainzReleasesResponse.class);
+    @Mock
+    MusicbrainzConfig musicbrainzConfig;
 
     @BeforeEach
     void setUp() {
-        client = new MusicbrainzClient(mockMusicbrainzService);
+        when(musicbrainzConfig.queriesPerSecond()).thenReturn(5.0);
+
+        client = new MusicbrainzClient(mockMusicbrainzService, musicbrainzConfig);
     }
 
     @Test

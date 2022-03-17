@@ -1,5 +1,8 @@
 package com.raccoon.scraper.musicbrainz;
 
+import com.google.common.util.concurrent.RateLimiter;
+
+import com.raccoon.scraper.config.MusicbrainzConfig;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtistsResponse;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzReleasesResponse;
 
@@ -22,10 +25,14 @@ public class MusicbrainzClient {
 
     private static final String ENCODED_DATE_PATTERN = "yyyy\\-MM\\-dd";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(ENCODED_DATE_PATTERN);
+    // see https://wiki.musicbrainz.org/MusicBrainz_API/Rate_Limiting
+    private final RateLimiter rateLimiter;
 
     @Inject
-    public MusicbrainzClient(@RestClient MusicbrainzService musicbrainzService) {
+    public MusicbrainzClient(@RestClient MusicbrainzService musicbrainzService,
+                             MusicbrainzConfig config) {
         this.musicbrainzService = musicbrainzService;
+        rateLimiter = RateLimiter.create(config.queriesPerSecond());
     }
 
     /**
@@ -36,6 +43,7 @@ public class MusicbrainzClient {
      */
     public MusicbrainzReleasesResponse searchReleasesByDate(LocalDate date, int offset) {
         var query = formatDateQuery(date);
+        rateLimiter.acquire();
         log.info("Executing Musicbrainz release query {}, offset {}", query, offset);
         return musicbrainzService.getReleasesByQuery(query, "json", "100", String.valueOf(offset));
     }
@@ -48,6 +56,7 @@ public class MusicbrainzClient {
      */
     public MusicbrainzArtistsResponse searchArtistsByName(String name, int limit, int offset) {
         var query = formatNameQuery(name);
+        rateLimiter.acquire();
         log.info("Executing Musicbrainz artist query {}, offset {}", name, offset);
         return musicbrainzService.getArtistsByQuery(query, "json", String.valueOf(limit), String.valueOf(offset));
     }

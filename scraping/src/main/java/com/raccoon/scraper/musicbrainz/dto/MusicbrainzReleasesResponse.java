@@ -19,6 +19,8 @@ public class MusicbrainzReleasesResponse {
     private String created;
     private List<MusicbrainzRelease> releases;
 
+    private String error;
+
     @Data
     public static class MusicbrainzRelease {
         private String id;
