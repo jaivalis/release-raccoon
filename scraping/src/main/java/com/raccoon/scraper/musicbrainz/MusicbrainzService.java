@@ -18,7 +18,9 @@ import javax.ws.rs.core.MediaType;
 import static com.raccoon.scraper.musicbrainz.MusicbrainzService.RACCOON_USER_AGENT;
 
 /**
- * RestClient that calls Musicbrainz API
+ * RestClient that calls Musicbrainz API.
+ *
+ * Calls to Musicbrainz should be throttled to 50 per second, otherwise 503 are thrown.
  */
 @Path("/ws/2/")
 @RegisterRestClient
@@ -27,7 +29,7 @@ import static com.raccoon.scraper.musicbrainz.MusicbrainzService.RACCOON_USER_AG
 @ClientHeaderParam(name = HttpHeaders.CONTENT_TYPE, value = MediaType.APPLICATION_FORM_URLENCODED)
 public interface MusicbrainzService {
 
-    String RACCOON_USER_AGENT = "release-raccoon/0.0.1";
+    String RACCOON_USER_AGENT = "release-raccoon/0.0.1 ( releaseraccoon@gmail.com )";
 
     /**
      * Performs a GET against `release/` endpoint.

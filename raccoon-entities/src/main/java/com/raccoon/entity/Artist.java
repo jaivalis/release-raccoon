@@ -51,7 +51,7 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @Column(name = "create_date")
     LocalDateTime createDate;
 
-    @Column
+    @Column(length = 300)
     @FullTextField(analyzer = "name")
     String name;
 

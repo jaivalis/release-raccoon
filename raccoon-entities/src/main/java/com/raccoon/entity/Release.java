@@ -38,7 +38,7 @@ public class Release extends PanacheEntityBase implements Serializable {
     @GeneratedValue
     public Long id;
 
-    @Column
+    @Column(length = 300)
     String name;
 
     @Column

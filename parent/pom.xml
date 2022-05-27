@@ -37,10 +37,10 @@
         <spotify.client.version>6.5.4</spotify.client.version>
 
         <!-- tests -->
-        <testcontainers.version>1.15.3</testcontainers.version>
+        <testcontainers.version>1.16.3</testcontainers.version>
         <testcontainers-keycloak.version>1.7.1</testcontainers-keycloak.version>
-        <testcontainers-elasticsearch.version>1.16.2</testcontainers-elasticsearch.version>
-        <rider.version>1.21.1</rider.version>
+        <testcontainers-elasticsearch.version>1.16.3</testcontainers-elasticsearch.version>
+        <rider.version>1.32.3</rider.version>
         <awaitility.version>4.0.3</awaitility.version>
         <rest.assured.version>4.3.3</rest.assured.version>
         <wiremock-jre8.version>2.32.0</wiremock-jre8.version>
@@ -50,6 +50,7 @@
         <lombok.version>1.18.20</lombok.version>
         <apache.commons.version>3.9</apache.commons.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <guava.version>31.1-jre</guava.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.10.0</maven-compiler-plugin.version>
@@ -58,7 +59,7 @@
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
 
-        <jandex-maven-plugin.version>1.1.0</jandex-maven-plugin.version>
+        <jandex-maven-plugin.version>1.2.2</jandex-maven-plugin.version>
         <webjars-bootstrap.version>4.4.1</webjars-bootstrap.version>
         <jfixture.version>2.7.2</jfixture.version>
     </properties>
@@ -374,6 +375,11 @@
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
         </dependencies>

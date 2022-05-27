@@ -23,7 +23,6 @@ public class WiremockExtensions implements QuarkusTestResourceLifecycleManager {
     public Map<String, String> start() {
         wireMockServer = new WireMockServer(options().dynamicPort());
         wireMockServer.start();
-
         log.info("{} Stub Mappings found, using baseUrl: {}", wireMockServer.getStubMappings().size(), wireMockServer.baseUrl());
         return Collections.singletonMap(
                 "quarkus.rest-client.\"com.raccoon.scraper.musicbrainz.MusicbrainzService\".url", wireMockServer.baseUrl()

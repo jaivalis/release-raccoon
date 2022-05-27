@@ -170,7 +170,7 @@ class UserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "user@gmail.com")
     })
-    @DisplayName("enableServices")
+    @DisplayName("enable-services")
     void enableServices() {
         // create the user
         given()
@@ -183,7 +183,7 @@ class UserProfileResourceIT {
                 .contentType(ContentType.JSON)
                 .param("lastfmUsername", "username")
                 .param("enableSpotify", false)
-                .when().get("/enableServices/")
+                .when().get("/enable-services/")
                 .then()
                 .statusCode(SC_OK);
     }
