@@ -13,23 +13,23 @@ import com.raccoon.scraper.musicbrainz.dto.mapper.MusicbrainzReleaseMapper;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-public class MusicbrainzScraper implements ReleaseScraper {
+public class MusicbrainzScraper implements ReleaseScraper<MusicbrainzRelease> {
 
     final MusicbrainzClient client;
 
@@ -54,35 +54,62 @@ public class MusicbrainzScraper implements ReleaseScraper {
         this.client = client;
     }
 
-    @Override
-    public Set<Release> scrapeReleases(Optional<Integer> limit) {
-        List<MusicbrainzReleasesResponse> pages = fetchAllReleasePages();
-
-        return pages.stream()
-                .flatMap(response -> response.getReleases().stream())
-                .map(this::processRelease)
-                .flatMap(Optional::stream)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Optional<Release> processRelease(Object release) {
-        if (release instanceof MusicbrainzRelease album) {
-            return processRelease(album);
-        }
-        throw new IllegalArgumentException("Got an object type that is not supported.");
-    }
-
-    private List<MusicbrainzReleasesResponse> fetchAllReleasePages() {
-        List<MusicbrainzReleasesResponse> pages;
+    public Set<MusicbrainzRelease> queryService(Optional<Integer> limit) {
+        Set<MusicbrainzRelease> musicbrainzReleases = new HashSet<>();
         LocalDate today = LocalDate.now();
-        pages = IntStream.range(0, 7)
-                .mapToObj(i -> fetchReleasePagesForDay(today.minusDays(i)))
-                .flatMap(Collection::stream)
-                .toList();
 
-        return pages;
+        for (int i = 0; i < 7 && musicbrainzReleases.size() < limit.orElse(Integer.MAX_VALUE); i++) {
+            List<MusicbrainzReleasesResponse> musicbrainzReleasesResponses = fetchReleasePagesForDay(today.minusDays(i));
+
+            musicbrainzReleases.addAll(
+                    musicbrainzReleasesResponses.stream()
+                            .flatMap(musicbrainzReleasesResponse -> musicbrainzReleasesResponse.getReleases().stream())
+                            .collect(Collectors.toSet())
+            );
+        }
+
+        return musicbrainzReleases;
     }
+
+//    @Override
+//    @Transactional
+//    public Set<Release> persistReleases(Set<MusicbrainzRelease> releases) {
+//        return releases.stream()
+//                .map(this::processRelease)
+//                .flatMap(Optional::stream)
+//                .collect(Collectors.toSet());
+//    }
+
+    @Override
+    @Transactional
+    public Optional<Release> processRelease(MusicbrainzRelease musicbrainzRelease) {
+        log.debug("Processing release: {}", musicbrainzRelease.getTitle());
+        Set<Artist> releaseArtists = persistArtists(musicbrainzRelease.getArtistCredits());
+        if (releaseArtists.isEmpty()) {
+            log.warn("No artists found for release {}", musicbrainzRelease.getId());
+            return Optional.empty();
+        }
+        return persistRelease(musicbrainzRelease, releaseArtists);
+    }
+
+//    @Transactional
+//    public Optional<Release> processRelease(Object release) {
+//        if (release instanceof MusicbrainzRelease album) {
+//            return processRelease(album);
+//        }
+//        throw new IllegalArgumentException("Got an object type that is not supported.");
+//    }
+
+//    private List<MusicbrainzReleasesResponse> fetchAllReleasePages() {
+//        List<MusicbrainzReleasesResponse> pages;
+//        LocalDate today = LocalDate.now();
+//        pages = IntStream.range(0, 7)
+//                .mapToObj(i -> fetchReleasePagesForDay(today.minusDays(i)))
+//                .flatMap(Collection::stream)
+//                .toList();
+//
+//        return pages;
+//    }
 
     private List<MusicbrainzReleasesResponse> fetchReleasePagesForDay(LocalDate today) {
         final List<MusicbrainzReleasesResponse> pages = new ArrayList<>();
@@ -104,16 +131,6 @@ public class MusicbrainzScraper implements ReleaseScraper {
         } while (responseForDate != null && offset < responseForDate.getCount());
 
         return pages;
-    }
-
-    private Optional<Release> processRelease(MusicbrainzRelease musicbrainzRelease) {
-        log.debug("Processing release: {}", musicbrainzRelease.getTitle());
-        Set<Artist> releaseArtists = persistArtists(musicbrainzRelease.getArtistCredits());
-        if (releaseArtists.isEmpty()) {
-            log.warn("No artists found for release {}", musicbrainzRelease.getId());
-            return Optional.empty();
-        }
-        return persistRelease(musicbrainzRelease, releaseArtists);
     }
 
     private Set<Artist> persistArtists(List<MusicbrainzReleasesResponse.ArtistCredit> artistCredits) {
@@ -152,7 +169,7 @@ public class MusicbrainzScraper implements ReleaseScraper {
 
             return persistRelease(releaseArtists, release, releaseRepository, artistReleaseRepository);
         } else {
-            log.info("Release {} already in the database", musicbrainzRelease.getId());
+            log.info("Release {} is already in the database", musicbrainzRelease.getId());
             return Optional.empty();
         }
     }

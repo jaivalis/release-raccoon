@@ -1,5 +1,9 @@
 package com.raccoon.release;
 
+import com.raccoon.entity.Release;
+
+import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -20,7 +24,8 @@ public class ReleaseScrapeScheduler {
     @Scheduled(cron="{release.scrape.cron.expr}")
     public void releaseScrapeCronJob() throws InterruptedException {
         log.info("Release scrape cronjob triggered");
-        service.scrapeReleases();
+        Set<Release> releases = service.scrapeReleases();
+        service.updateHasNewRelease(releases);
     }
 
 }

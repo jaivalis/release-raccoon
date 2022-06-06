@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @ApplicationScoped
-public class SpotifyScraper implements ReleaseScraper, TasteScraper {
+public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScraper {
 
     final ArtistFactory artistFactory;
     final ArtistRepository artistRepository;
@@ -65,41 +66,31 @@ public class SpotifyScraper implements ReleaseScraper, TasteScraper {
 
     // ============================================= ReleaseScraper API ============================================= //
 
-    @Override
-    public Set<Release> scrapeReleases(Optional<Integer> limit) throws InterruptedException {
-        Set<Release> releases = new HashSet<>();
+    public Set<AlbumSimplified> queryService(Optional<Integer> limit) throws InterruptedException {
+        Set<AlbumSimplified> albums = new HashSet<>();
+
         var offset = 0;
         Paging<AlbumSimplified> response;
         try {
             do {
                 response = spotifyApi.fetchNewReleasesPaginated(offset);
-                releases.addAll(
-                        Arrays.stream(response.getItems())
-                                .map(this::processRelease)
-                                .filter(Optional::isPresent)
-                                .map(Optional::get)
-                                .toList()
-                );
+                AlbumSimplified[] pageItems = response.getItems();
+                albums.addAll(Arrays.asList(pageItems));
+
                 offset = response.getOffset() + response.getLimit();
-            } while(response.getNext() != null);
+            } while(response.getNext() != null && albums.size() < limit.orElse(Integer.MAX_VALUE));
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             log.error("Something went wrong when fetching new albums.", e);
-            return Collections.emptySet();
+            return albums;
         } catch (InterruptedException e) {
             throw e;
         }
-        return releases;
+        return albums;
     }
 
     @Override
-    public Optional<Release> processRelease(Object release) {
-        if (release instanceof AlbumSimplified album) {
-            return processRelease(album);
-        }
-        throw new IllegalArgumentException("Got an object type that is not supported.");
-    }
-
-    private Optional<Release> processRelease(AlbumSimplified albumSimplified) {
+    @Transactional
+    public Optional<Release> processRelease(AlbumSimplified albumSimplified) {
         log.debug("Processing release: {}", albumSimplified.getName());
         Set<Artist> releaseArtists = persistArtists(albumSimplified.getArtists());
         if (releaseArtists.isEmpty()) {

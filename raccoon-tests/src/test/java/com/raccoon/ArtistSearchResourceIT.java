@@ -1,8 +1,5 @@
 package com.raccoon;
 
-import com.github.database.rider.cdi.api.DBRider;
-import com.github.database.rider.core.api.configuration.DBUnit;
-import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.Artist;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
@@ -41,12 +38,36 @@ import static org.jboss.resteasy.spi.HttpResponseCodes.SC_OK;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+/**
+ * Comments are not allowed in the `import-test.sql` file so clarifying here. These tests depend on
+ * the following data being present in the db:
+ *
+ * INSERT INTO
+ *     Artist
+ *     (name)
+ * VALUES
+ *     ('led zeppeling'),
+ *     ('Zapp Franka'),
+ *     ('vangelio'),
+ *     ('krs-two'),
+ *     ('me-roy'),
+ *     ('philip grass'),
+ *     ('kanye east'),
+ *     ('min Romeo'),
+ *     ('Inner Kamoze'),
+ *     ('Beta Blondy'),
+ *     ('philip stone');
+ *
+ * INSERT INTO
+ *     User
+ *     (email)
+ * VALUES
+ *     ('user100@mail.com');
+ */
 @Slf4j
 @QuarkusTest
 @Testcontainers
 @TestHTTPEndpoint(ArtistSearchResource.class)
-@DBRider
-@DBUnit(caseSensitiveTableNames = true)
 @QuarkusTestResource(ElasticSearchTestResource.class)
 @TestTransaction
 class ArtistSearchResourceIT {
@@ -82,7 +103,6 @@ class ArtistSearchResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
-    @DataSet(value = "datasets/yml/artist-search.yml")
     void searchExistingName() {
         given()
                 .contentType(ContentType.JSON)
@@ -103,7 +123,6 @@ class ArtistSearchResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
-    @DataSet(value = "datasets/yml/artist-search.yml")
     void searchExistingNameReturnsTwo() throws InterruptedException {
         // Something wrong with the timings here, this seems to be necessary:
         searchSession.massIndexer(Artist.class).startAndWait();
@@ -134,7 +153,6 @@ class ArtistSearchResourceIT {
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @DisplayName("successful search, should return no artists")
-    @DataSet(value = "datasets/yml/artist-search.yml")
     void searchNonExistingName() {
         given()
                 .contentType(ContentType.JSON)
@@ -145,4 +163,5 @@ class ArtistSearchResourceIT {
                 .assertThat()
                 .body("artists.size()", is(0));
     }
+
 }

@@ -8,13 +8,29 @@ import com.raccoon.entity.repository.ReleaseRepository;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public interface ReleaseScraper {
+import javax.transaction.Transactional;
 
-    Set<Release> scrapeReleases(Optional<Integer> limit) throws InterruptedException;
+public interface ReleaseScraper<T> {
 
-    Optional<Release> processRelease(Object release);
+    default Set<Release> scrapeReleases(Optional<Integer> limit) throws InterruptedException {
+        return persistReleases(queryService(limit));
+    }
 
+    Set<T> queryService(Optional<Integer> limit) throws InterruptedException;
+
+    @Transactional
+    default Set<Release> persistReleases(Set<T> releases) {
+        return releases.stream()
+                .map(this::processRelease)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toSet());
+    }
+
+    Optional<Release> processRelease(T release);
+
+    @Transactional
     default Optional<Release> persistRelease(Set<Artist> releaseArtists,
                                              Release release,
                                              ReleaseRepository releaseRepository,

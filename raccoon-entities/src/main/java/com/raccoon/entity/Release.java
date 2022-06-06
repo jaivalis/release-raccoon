@@ -1,6 +1,6 @@
 package com.raccoon.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.raccoon.common.StringUtil;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -12,12 +12,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import io.netty.util.internal.StringUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,7 +35,7 @@ public class Release extends PanacheEntityBase implements Serializable {
 
     @Id
     @Column(name = "releaseId")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
     @Column(length = 300)
@@ -65,7 +65,7 @@ public class Release extends PanacheEntityBase implements Serializable {
                 .toList();
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public String getSpotifyUriId() {
         if (StringUtil.isNullOrEmpty(spotifyUri)) {
             return "";
