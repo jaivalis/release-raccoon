@@ -71,15 +71,6 @@ public class MusicbrainzScraper implements ReleaseScraper<MusicbrainzRelease> {
         return musicbrainzReleases;
     }
 
-//    @Override
-//    @Transactional
-//    public Set<Release> persistReleases(Set<MusicbrainzRelease> releases) {
-//        return releases.stream()
-//                .map(this::processRelease)
-//                .flatMap(Optional::stream)
-//                .collect(Collectors.toSet());
-//    }
-
     @Override
     @Transactional
     public Optional<Release> processRelease(MusicbrainzRelease musicbrainzRelease) {
@@ -91,25 +82,6 @@ public class MusicbrainzScraper implements ReleaseScraper<MusicbrainzRelease> {
         }
         return persistRelease(musicbrainzRelease, releaseArtists);
     }
-
-//    @Transactional
-//    public Optional<Release> processRelease(Object release) {
-//        if (release instanceof MusicbrainzRelease album) {
-//            return processRelease(album);
-//        }
-//        throw new IllegalArgumentException("Got an object type that is not supported.");
-//    }
-
-//    private List<MusicbrainzReleasesResponse> fetchAllReleasePages() {
-//        List<MusicbrainzReleasesResponse> pages;
-//        LocalDate today = LocalDate.now();
-//        pages = IntStream.range(0, 7)
-//                .mapToObj(i -> fetchReleasePagesForDay(today.minusDays(i)))
-//                .flatMap(Collection::stream)
-//                .toList();
-//
-//        return pages;
-//    }
 
     private List<MusicbrainzReleasesResponse> fetchReleasePagesForDay(LocalDate today) {
         final List<MusicbrainzReleasesResponse> pages = new ArrayList<>();
