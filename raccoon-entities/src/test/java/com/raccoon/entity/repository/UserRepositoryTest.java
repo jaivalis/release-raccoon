@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -34,7 +35,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    @Transactional
+    @TestTransaction
     void findByEmailEmpty() {
         var email = "does not exist";
 
@@ -42,7 +43,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    @Transactional
+    @TestTransaction
     void findByEmailOptional() {
         var email = "email@mail.com";
         factory.createUser(email);
@@ -54,7 +55,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    @Transactional
+    @TestTransaction
     void findByEmailNotFound() {
         var email = "does not exist";
 
@@ -62,7 +63,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    @Transactional
+    @TestTransaction
     void findByEmail() {
         var email = "email@mail.com";
         factory.createUser(email);

@@ -1,8 +1,5 @@
 package com.raccoon;
 
-import com.github.database.rider.cdi.api.DBRider;
-import com.github.database.rider.core.api.configuration.DBUnit;
-import com.github.database.rider.core.api.dataset.DataSet;
 import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.repository.UserArtistRepository;
 
@@ -21,15 +18,49 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Comments are not allowed in the `import-test.sql` file so clarifying here. These tests depend on
+ * the following data being present in the db:
+ *
+ * INSERT INTO
+ *     Releases
+ *     (releaseId, name, type, releasedOn, spotifyUri)
+ * VALUES
+ *     (300, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:zzzzzz');
+ *
+ * INSERT INTO
+ *     User
+ *     (user_id, email)
+ * VALUES
+ *     (300, 'user300@mail.com');
+ *
+ * INSERT INTO
+ *     Artist
+ *     (artistId, name)
+ * VALUES
+ *     (300, 'existentArtist2');
+ *
+ * INSERT INTO
+ *     UserArtist
+ *     (user_id, artist_id, hasNewRelease)
+ * VALUES
+ *     (300, 300, true),
+ *     (200, 300, false);
+ *
+ * INSERT INTO
+ *     ArtistRelease
+ *     (artist_id, release_id)
+ * VALUES
+ *     (300, 300);
+ */
 @Testcontainers
 @QuarkusTest
 @Transactional
-@DBRider
-@DBUnit(caseSensitiveTableNames = true)
 @QuarkusTestResource(ElasticSearchTestResource.class)
 class NotifyingResourceIT {
 
@@ -45,7 +76,6 @@ class NotifyingResourceIT {
     }
 
     @Test
-    @DataSet(value = "datasets/yml/notify.yml")
     @DisplayName("Given 1 release from yesterday, notify user and unset UserArtist.hasNewRelease")
     void test_should_notify_user_artist_hasNewRelease() {
         given()
@@ -55,10 +85,14 @@ class NotifyingResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        assertEquals(1, mockMailbox.getMessagesSentTo("user100@mail.com").size());
-        var uaOptional = userArtistRepository.findByUserIdArtistIdOptional(100L, 100L);
+        assertEquals(1, mockMailbox.getTotalMessagesSent());
+        assertNotNull(mockMailbox.getMessagesSentTo("user300@mail.com"));
+        assertEquals(1, mockMailbox.getMessagesSentTo("user300@mail.com").size());
+        var uaOptional = userArtistRepository.findByUserIdArtistIdOptional(300L, 300L);
         assertTrue(uaOptional.isPresent());
-        assertFalse(uaOptional.get().getHasNewRelease(), "Release should be marked processed");
+        assertThat(uaOptional.get().getHasNewRelease())
+                .as("Release should be marked processed")
+                .isFalse();
     }
 
 }

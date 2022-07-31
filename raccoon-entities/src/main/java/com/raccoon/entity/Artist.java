@@ -1,6 +1,6 @@
 package com.raccoon.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.raccoon.common.StringUtil;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
@@ -20,9 +20,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import io.netty.util.internal.StringUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,6 +44,10 @@ public class Artist extends PanacheEntityBase implements Serializable {
 
     @Id
     @Column(name = "artistId")
+    @SequenceGenerator(
+            name = "ART_SEQ",
+            allocationSize = 1
+    )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
@@ -64,13 +68,11 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @Column
     String musicbrainzId;
 
-    @JsonIgnore
     @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
     private Set<ArtistRelease> releases = new HashSet<>();
 
-    @JsonIgnore
     @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)

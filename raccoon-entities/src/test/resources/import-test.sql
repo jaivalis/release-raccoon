@@ -1,35 +1,34 @@
-# -- CREATE DATABASE IF NOT EXISTS `${DB_NAME}`;
-# -- GRANT ALL ON `${DB_NAME}`.* TO '${MYSQL_USER}'@'%';
-#
-# CREATE USER IF NOT EXISTS 'raccoon'@'%';
-# CREATE DATABASE IF NOT EXISTS `raccoondb`;
-# GRANT ALL PRIVILEGES ON `raccoondb`.* TO 'raccoon'@'%';
-#
-# use raccoondb;
+# create database testdb;
+# use testdb;
 #
 # create table Artist
 # (
-#     artistId   bigint auto_increment
+#     artistId      bigint auto_increment
 #         primary key,
-#     lastfmUri  varchar(255) null,
-#     name       varchar(255) null,
-#     spotifyUri varchar(255) null
-# );
+#     name          varchar(300)               null,
+#     spotifyUri    varchar(255)               null,
+#     lastfmUri     varchar(255)               null,
+#     create_date   datetime default curdate() null,
+#     musicbrainzId varchar(255)               null
+# )
+#     engine = InnoDB;
 #
 # create index IDXaoa6nrkwpys16f2yvoqiw8nk6
 #     on Artist (spotifyUri);
 #
 # create table Releases
 # (
-#     releaseId  bigint       not null
+#     releaseId     bigint       not null
 #         primary key,
-#     name       varchar(255) null,
-#     releasedOn date         null,
-#     spotifyUri varchar(255) null,
-#     type       varchar(255) null,
+#     name          varchar(255) null,
+#     releasedOn    date         null,
+#     spotifyUri    varchar(255) null,
+#     type          varchar(255) null,
+#     musicbrainzId varchar(255) null,
 #     constraint UK_qe08hf3mmcyhlore01g4f5vsd
 #         unique (spotifyUri)
-# );
+# )
+#     engine = InnoDB;
 #
 # create table ArtistRelease
 # (
@@ -40,7 +39,8 @@
 #         foreign key (artist_id) references Artist (artistId),
 #     constraint FK76o28jbj8nefc724kfiscvenk
 #         foreign key (release_id) references Releases (releaseId)
-# );
+# )
+#     engine = InnoDB;
 #
 # create index IDXqe08hf3mmcyhlore01g4f5vsd
 #     on Releases (spotifyUri);
@@ -60,7 +60,8 @@
 #     username          varchar(255) null,
 #     constraint UK_e6gkqunxajvyxl5uctpl2vl2p
 #         unique (email)
-# );
+# )
+#     engine = InnoDB;
 #
 # create index IDXe6gkqunxajvyxl5uctpl2vl2p
 #     on User (email);
@@ -76,10 +77,31 @@
 #         foreign key (artist_id) references Artist (artistId),
 #     constraint FKhmmh9wxt9occrvvc58w4ror7m
 #         foreign key (user_id) references User (id)
-# );
+# )
+#     engine = InnoDB;
+#
+# create table flyway_schema_history
+# (
+#     installed_rank int                                   not null
+#         primary key,
+#     version        varchar(50)                           null,
+#     description    varchar(200)                          not null,
+#     type           varchar(20)                           not null,
+#     script         varchar(1000)                         not null,
+#     checksum       int                                   null,
+#     installed_by   varchar(100)                          not null,
+#     installed_on   timestamp default current_timestamp() not null,
+#     execution_time int                                   not null,
+#     success        tinyint(1)                            not null
+# )
+#     engine = InnoDB;
+#
+# create index flyway_schema_history_s_idx
+#     on flyway_schema_history (success);
 #
 # create table hibernate_sequence
 # (
 #     next_val bigint null
-# );
+# )
+#     engine = InnoDB;
 #

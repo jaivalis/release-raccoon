@@ -1,9 +1,8 @@
 package com.raccoon.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.io.Serializable;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.AssociationOverride;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -13,18 +12,20 @@ import javax.persistence.Table;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 
+import static com.raccoon.entity.database.Tables.ARTIST_RELEASE;
+
 @Data
 @Entity
-@Table
+@Table(name = ARTIST_RELEASE)
 @AssociationOverride(name = "key.artist", joinColumns = @JoinColumn(name = "artist_id"))
 @AssociationOverride(name = "key.release", joinColumns = @JoinColumn(name = "release_id"))
 public class ArtistRelease extends PanacheEntityBase implements Serializable {
 
     @EmbeddedId
-    @JsonIgnore
+    @JsonbTransient
     ArtistReleaseKey key = new ArtistReleaseKey();
 
-    @JsonIgnore
+    @JsonbTransient
     public Artist getArtist() {
         return key.getArtist();
     }
@@ -33,7 +34,7 @@ public class ArtistRelease extends PanacheEntityBase implements Serializable {
         key.setArtist(artist);
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public Release getRelease() {
         return key.getRelease();
     }

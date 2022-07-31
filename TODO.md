@@ -1,5 +1,4 @@
 
-* Java 17
 * Upgrade to latest Quarkus 2.5.4 [upgrade guide](https://github.com/quarkusio/quarkus/wiki/Migration-Guide-2.5)
 * Use Oracle cloud free Arm VM for building native [reference](https://www.youtube.com/watch?v=fh009OWr8Ks)
 * Add `Unsubscribe` link to emails

@@ -15,22 +15,32 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Data;
 import lombok.ToString;
 
 @Data
 @ToString(exclude = "artists")
 @Entity
-@Table(indexes = {
-        @Index(columnList = "email")
+@Table(
+//        name = "MyUsers", Name needs to change when migrating to Quarkus 2.9.0.Final for H2 to work
+        indexes = {
+        @Index(name = "email_idx", columnList = "email")
 })
-public class User extends PanacheEntity implements Serializable {
+public class User extends PanacheEntityBase implements Serializable {
+
+    @Id
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     @NotNull
     @Column(unique = true)

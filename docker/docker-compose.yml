@@ -3,7 +3,7 @@ version: "3"
 services:
 
   raccoon-mariadb:
-    image: mariadb:10.5.6
+    image: mariadb:10.8
     environment:
       MYSQL_USER: '${DB_USERNAME}'
       MYSQL_PASSWORD: '${DB_PASSWORD}'

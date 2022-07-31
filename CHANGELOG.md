@@ -2,6 +2,8 @@
 ---
 
 **main**
+* Upgrade to Java 17
+* Upgrade Quarkus to 2.8.3.Final
 * Integration to Musicbrainz for Release scrape
 * Integration to Musicbrainz for Artist search
 * Unfollow is a `DELETE` call returning no-content

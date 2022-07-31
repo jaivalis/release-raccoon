@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -42,7 +43,7 @@ class ReleaseScrapeServiceTest {
     @Mock
     UserArtistRepository userArtistRepositoryMock;
     @Mock
-    Instance<ReleaseScraper> mockScrapers;
+    Instance<ReleaseScraper<?>> mockScrapers;
     @Mock
     MusicbrainzScraper mockMusicbrainzScraper;
     @Mock
@@ -101,6 +102,16 @@ class ReleaseScrapeServiceTest {
         when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
 
         service.scrapeReleases();
+
+        verify(mockMusicbrainzScraper, times(1)).scrapeReleases(Optional.empty());
+        verify(mockSpotifyScraper, times(1)).scrapeReleases(Optional.empty());
+    }
+
+    @Test
+    void updateHasNewReleaseWithAlbums() throws Exception {
+        var releaseCount = 5;
+
+        service.updateHasNewRelease(stubReleases(releaseCount));
 
         verify(userArtistRepositoryMock, times(1)).markNewRelease(captor.capture());
         final var arg = captor.getValue();

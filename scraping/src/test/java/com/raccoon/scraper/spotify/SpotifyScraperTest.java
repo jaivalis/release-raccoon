@@ -157,13 +157,13 @@ class SpotifyScraperTest {
         assertThat(release).isEmpty();
     }
 
-    @Test
-    @DisplayName("Can only process AlbumSimplified")
-    void processNonAlbumSimplified() {
-        final var release = new Release();
-        assertThrows(IllegalArgumentException.class,
-                () -> scraper.processRelease(release));
-    }
+//    @Test
+//    @DisplayName("Can only process AlbumSimplified")
+//    void processNonAlbumSimplified() {
+//        final var release = new Release();
+//        assertThrows(IllegalArgumentException.class,
+//                () -> scraper.processRelease(release));
+//    }
     // ========================================== End of ReleaseScraper API ========================================= //
     // ============================================== TasteScraper API ============================================== //
 
