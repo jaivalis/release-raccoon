@@ -29,7 +29,7 @@
         <quarkus.platform.version>2.13.4.Final</quarkus.platform.version>
 
         <!-- Native image build fixes -->
-        <jboss-jacc.version>1.0.2.Final</jboss-jacc.version>
+        <jboss-jacc.version>2.0.0.Final</jboss-jacc.version>
         <jna-platform.version>5.12.1</jna-platform.version>
 
         <!-- Scrapers -->
