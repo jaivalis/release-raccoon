@@ -1,7 +1,7 @@
 package com.raccoon.taste.spotify;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.entity.repository.UserRepository;
@@ -74,10 +74,10 @@ class SpotifyTasteUpdatingServiceTest {
 
     @Test
     void testScrapeTasteRecentlyScraped() {
-        User user = new User();
-        user.setSpotifyEnabled(true);
-        user.setLastSpotifyScrape(LocalDateTime.now());
-        when(mockUserRepository.findByIdOptional(0L)).thenReturn(Optional.of(user));
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setSpotifyEnabled(true);
+        raccoonUser.setLastSpotifyScrape(LocalDateTime.now());
+        when(mockUserRepository.findByIdOptional(0L)).thenReturn(Optional.of(raccoonUser));
 
         final var response = service.scrapeTaste(0L);
 
@@ -86,10 +86,10 @@ class SpotifyTasteUpdatingServiceTest {
 
     @Test
     void testScrapeTasteShouldRedirect() {
-        User user = new User();
-        user.setSpotifyEnabled(true);
-        user.setLastSpotifyScrape(LocalDateTime.MIN);
-        when(mockUserRepository.findByIdOptional(0L)).thenReturn(Optional.of(user));
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setSpotifyEnabled(true);
+        raccoonUser.setLastSpotifyScrape(LocalDateTime.MIN);
+        when(mockUserRepository.findByIdOptional(0L)).thenReturn(Optional.of(raccoonUser));
 
         final var response = service.scrapeTaste(0L);
 
@@ -97,7 +97,7 @@ class SpotifyTasteUpdatingServiceTest {
     }
 
     @Test
-    @DisplayName("User NotFoundException")
+    @DisplayName("RaccoonUser NotFoundException")
     void testScrapeNotFound() {
         when(mockUserRepository.findByIdOptional(any())).thenReturn(Optional.empty());
 
@@ -105,12 +105,12 @@ class SpotifyTasteUpdatingServiceTest {
     }
 
     @Test
-    @DisplayName("Scrape should update user artists")
+    @DisplayName("Scrape should update raccoonUser artists")
     void testScrape() {
-        User user = new User();
-        user.setLastfmUsername("username");
-        user.setSpotifyEnabled(true);
-        user.setLastSpotifyScrape(LocalDateTime.MIN);
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setLastfmUsername("username");
+        raccoonUser.setSpotifyEnabled(true);
+        raccoonUser.setLastSpotifyScrape(LocalDateTime.MIN);
 
         Artist artist = new Artist();
         artist.setName("stub artist");
@@ -120,18 +120,18 @@ class SpotifyTasteUpdatingServiceTest {
         when(mockSpotifyScraper.fetchTopArtists(any(SpotifyUserAuthorizer.class))).thenReturn(stubTaste);
         var userArtist = new UserArtist();
         userArtist.setArtist(artist);
-        userArtist.setUser(user);
-        when(mockUserRepository.findByIdOptional(any())).thenReturn(Optional.of(user));
-        when(mockTasteScrapeArtistWeightPairProcessor.delegateProcessArtistWeightPair(eq(user), eq(artist), anyFloat(), any()))
+        userArtist.setUser(raccoonUser);
+        when(mockUserRepository.findByIdOptional(any())).thenReturn(Optional.of(raccoonUser));
+        when(mockTasteScrapeArtistWeightPairProcessor.delegateProcessArtistWeightPair(eq(raccoonUser), eq(artist), anyFloat(), any()))
                 .thenReturn(userArtist);
 
-        service.updateTaste(user.id);
+        service.updateTaste(raccoonUser.id);
 
-        assertEquals(1, user.getArtists().size());
-        assertEquals(LocalDateTime.now().getDayOfMonth(), user.getLastSpotifyScrape().getDayOfMonth());
-        assertEquals(artist, user.getArtists().iterator().next().getArtist());
-        verify(mockUserRepository, times(1)).persist(user);
-        verify(mockNotifyService, times(1)).notifySingleUser(eq(user), any());
+        assertEquals(1, raccoonUser.getArtists().size());
+        assertEquals(LocalDateTime.now().getDayOfMonth(), raccoonUser.getLastSpotifyScrape().getDayOfMonth());
+        assertEquals(artist, raccoonUser.getArtists().iterator().next().getArtist());
+        verify(mockUserRepository, times(1)).persist(raccoonUser);
+        verify(mockNotifyService, times(1)).notifySingleUser(eq(raccoonUser), any());
     }
 
 }

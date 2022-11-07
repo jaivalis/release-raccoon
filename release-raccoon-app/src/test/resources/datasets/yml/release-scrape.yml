@@ -12,7 +12,7 @@ Releases:
     name: "newRelease"
     type: "ALBUM"
 
-User:
+RaccoonUser:
   - id: 100
     email: "coon@gmail.com"
     lastfmUsername: "the coon"

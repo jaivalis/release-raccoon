@@ -1,5 +1,5 @@
 INSERT INTO
-    User
+    RaccoonUser
     (user_id, email)
 VALUES
     (100, 'user100@mail.com');
@@ -25,7 +25,7 @@ VALUES
 
 
 INSERT INTO
-    User
+    RaccoonUser
     (user_id, email)
 VALUES
     (200, 'user200@mail.com');
@@ -36,11 +36,16 @@ INSERT INTO
 VALUES
     (100, 'existentArtist');
 
+# INSERT INTO
+#     Releases
+#     (releaseId, name, type)
+# VALUES
+#     (100, 'newRelease', 'ALBUM');
 INSERT INTO
     Releases
-    (releaseId, name, type)
+    (releaseId, name, type, releasedOn, spotifyUri)
 VALUES
-    (100, 'newRelease', 'ALBUM');
+    (100, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:zzzzzz');
 
 INSERT INTO
     UserArtist
@@ -62,10 +67,10 @@ INSERT INTO
     Releases
     (releaseId, name, type, releasedOn, spotifyUri)
 VALUES
-    (300, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:zzzzzz');
+    (300, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:xxxxx');
 
 INSERT INTO
-    User
+    RaccoonUser
     (user_id, email)
 VALUES
     (300, 'user300@mail.com');
@@ -97,16 +102,16 @@ INSERT INTO
     Artist
     (artistId, name, spotifyUri)
 VALUES
-    (400, 'existentArtist3', 'uri3');
+    (400, 'existentArtist4', 'uri4');
 
 INSERT INTO
     Releases
     (releaseId, name, type, releasedOn, spotifyUri)
 VALUES
-    (400, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:zzzzzz');
+    (400, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:yyyyyy');
 
 INSERT INTO
-    User
+    RaccoonUser
     (user_id, email)
 VALUES
     (400, 'user400@mail.com');

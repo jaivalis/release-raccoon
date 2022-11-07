@@ -1,8 +1,8 @@
 package com.raccoon.notify;
 
 import com.raccoon.entity.Artist;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
-import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
@@ -74,31 +74,31 @@ public class NotifyService {
 
     /**
      * Can be broken into `boolean canNotifyUser` & `Uni<Void> notifyUser`
-     * @param user the user to notify
+     * @param raccoonUser the raccoonUser to notify
      * @param mightHaveNewReleases UserArtist associations that potentially have a release,
      *                             hasNewRelease will be marked `false` after the digest is sent.
      * @return
      */
-    public Uni<Void> notifySingleUser(User user, Collection<UserArtist> mightHaveNewReleases) {
-        log.info("Checking for potential digests for {} newly subscribed to artists that were present in the database for user {}", mightHaveNewReleases.size(), user.id);
+    public Uni<Void> notifySingleUser(RaccoonUser raccoonUser, Collection<UserArtist> mightHaveNewReleases) {
+        log.info("Checking for potential digests for {} newly subscribed to artists that were present in the database for raccoonUser {}", mightHaveNewReleases.size(), raccoonUser.id);
         Set<Artist> artists = mightHaveNewReleases.stream()
                 .map(UserArtist::getArtist)
                 .collect(toSet());
         var relevantReleases = releaseRepository.findByArtistsSinceDays(artists, 10);
 
         if (relevantReleases.isEmpty()) {
-            log.info("Nothing found for user {}", user.id);
+            log.info("Nothing found for raccoonUser {}", raccoonUser.id);
             return Uni.createFrom().voidItem();
         }
 
-        return notifyUser(user, relevantReleases, mightHaveNewReleases);
+        return notifyUser(raccoonUser, relevantReleases, mightHaveNewReleases);
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns a list of releases for which the user should be notified.
-     * @param userArtistAssociations The <user, artist> pairs
+     * Returns a list of releases for which the raccoonUser should be notified.
+     * @param userArtistAssociations The <raccoonUser, artist> pairs
      * @return a list of releases
      */
     private List<Release> getLatestReleases(Collection<UserArtist> userArtistAssociations) {
@@ -113,17 +113,17 @@ public class NotifyService {
 
     /**
      * Generates the Digest email and sends it asynchronously.
-     * @param user who needs to be notified.
+     * @param raccoonUser who needs to be notified.
      * @param releases what should be in the notification.
      * @param userArtistList
      */
-    private Uni<Void> notifyUser(final User user,
+    private Uni<Void> notifyUser(final RaccoonUser raccoonUser,
                                  final List<Release> releases,
                                  final Collection<UserArtist> userArtistList) {
         try {
-            return raccoonMailer.sendDigest(user, releases,
-                    () -> mailSuccessCallback(user, userArtistList),
-                    () -> mailFailureCallback(user)
+            return raccoonMailer.sendDigest(raccoonUser, releases,
+                    () -> mailSuccessCallback(raccoonUser, userArtistList),
+                    () -> mailFailureCallback(raccoonUser)
             );
         } catch (TemplateException e) {
             return Uni.createFrom().voidItem();
@@ -132,18 +132,18 @@ public class NotifyService {
 
     /**
      * Mark userArtist.hasNewRelease as false
-     * @param user
+     * @param raccoonUser
      * @param userArtistList
      */
-    void mailSuccessCallback(User user, Collection<UserArtist> userArtistList) {
-        log.info("Notified user {}", user.id);
-        userArtistList.forEach(userArtist -> userArtist.setHasNewRelease(false));
+    void mailSuccessCallback(RaccoonUser raccoonUser, Collection<UserArtist> userArtistList) {
+        log.info("Notified raccoonUser {}", raccoonUser.id);
+        userArtistList.forEach(userArtist -> userArtist.hasNewRelease = (false));
 
         userArtistRepository.persist(userArtistList);
     }
 
-    void mailFailureCallback(User user) {
-        log.warn("Failed to notify user {}", user.id);
+    void mailFailureCallback(RaccoonUser raccoonUser) {
+        log.warn("Failed to notify raccoonUser {}", raccoonUser.id);
     }
 
 }

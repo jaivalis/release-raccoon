@@ -35,7 +35,7 @@ import static com.raccoon.entity.Constants.SPOTIFY_ARTIST_URI_PATTERN;
 @ToString
 @Entity
 @Table(indexes = {
-        @Index(columnList = "spotifyUri")
+        @Index(name = "ArtistSpotifyUri_idx", columnList = "spotifyUri")
 })
 @EqualsAndHashCode
 @NoArgsConstructor

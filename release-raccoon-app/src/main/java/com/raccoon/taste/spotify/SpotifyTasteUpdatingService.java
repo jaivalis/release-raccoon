@@ -1,7 +1,7 @@
 package com.raccoon.taste.spotify;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.notify.NotifyService;
@@ -60,27 +60,27 @@ public class SpotifyTasteUpdatingService implements TasteUpdatingService {
     public Response scrapeTaste(Long userId) {
         final var byIdOptional = userRepository.findByIdOptional(userId);
         if (byIdOptional.isEmpty()) {
-            throw new NotFoundException(String.format("User with id %s not found", userId));
+            throw new NotFoundException(String.format("RaccoonUser with id %s not found", userId));
         }
 
         final var user = byIdOptional.get();
 
         user.setSpotifyEnabled(true);
         if (!user.isSpotifyScrapeRequired(1)) {
-            log.info("User with id {} spotify taste was scraped not long ago, skipping.", userId);
+            log.info("RaccoonUser with id {} spotify taste was scraped not long ago, skipping.", userId);
             return Response.noContent().build();
         }
 
-        log.info("Redirecting user with id {} to spotify auth service", userId);
+        log.info("Redirecting raccoonUser with id {} to spotify auth service", userId);
         return Response
                 .temporaryRedirect(spotifyUserAuthorizer.authorizationCodeUriSync(String.valueOf(userId)))
                 .build();
     }
 
-    public User updateTaste(final Long userId) {
-        Optional<User> existing = userRepository.findByIdOptional(userId);
+    public RaccoonUser updateTaste(final Long userId) {
+        Optional<RaccoonUser> existing = userRepository.findByIdOptional(userId);
         if (existing.isEmpty()) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("RaccoonUser not found");
         }
         var user = existing.get();
 
@@ -116,8 +116,8 @@ public class SpotifyTasteUpdatingService implements TasteUpdatingService {
     }
 
     @Override
-    public void notifyForRecentReleases(User user, Collection<UserArtist> userArtists) {
-        notifyService.notifySingleUser(user, userArtists)
+    public void notifyForRecentReleases(RaccoonUser raccoonUser, Collection<UserArtist> userArtists) {
+        notifyService.notifySingleUser(raccoonUser, userArtists)
                 .await().indefinitely();
     }
 

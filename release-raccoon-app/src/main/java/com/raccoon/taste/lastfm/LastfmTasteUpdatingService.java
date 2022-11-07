@@ -1,7 +1,7 @@
 package com.raccoon.taste.lastfm;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.notify.NotifyService;
@@ -47,7 +47,7 @@ public class LastfmTasteUpdatingService implements TasteUpdatingService {
         this.notifyService = notifyService;
     }
 
-    public User updateTaste(final Long userId) {
+    public RaccoonUser updateTaste(final Long userId) {
         var user = userRepository.findById(userId);
 
         if (!hasLastfmEnabledAndIsScrapeRequired(user)) {
@@ -87,20 +87,20 @@ public class LastfmTasteUpdatingService implements TasteUpdatingService {
     }
 
     @Override
-    public void notifyForRecentReleases(User user, Collection<UserArtist> userArtists) {
-        notifyService.notifySingleUser(user, userArtists)
+    public void notifyForRecentReleases(RaccoonUser raccoonUser, Collection<UserArtist> userArtists) {
+        notifyService.notifySingleUser(raccoonUser, userArtists)
                 .await().indefinitely();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private boolean hasLastfmEnabledAndIsScrapeRequired(User user) {
-        if (StringUtil.isNullOrEmpty(user.getLastfmUsername())) {
-            log.warn("User lastfm username not set, skipping.");
+    private boolean hasLastfmEnabledAndIsScrapeRequired(RaccoonUser raccoonUser) {
+        if (StringUtil.isNullOrEmpty(raccoonUser.getLastfmUsername())) {
+            log.warn("RaccoonUser lastfm username not set, skipping.");
             return false;
         }
-        if (!user.isLastfmScrapeRequired(1)) {
-            log.info("User was lastfm scraped not long ago, skipping.");
+        if (!raccoonUser.isLastfmScrapeRequired(1)) {
+            log.info("RaccoonUser was lastfm scraped not long ago, skipping.");
             return false;
         }
         return true;

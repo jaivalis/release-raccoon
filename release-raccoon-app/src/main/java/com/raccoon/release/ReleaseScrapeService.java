@@ -54,8 +54,9 @@ public class ReleaseScrapeService {
                                 .stream()
                                 .map(Artist::getId)
                 ).toList();
+
         List<UserArtist> userArtists = userArtistRepository.markNewRelease(artistIds);
-        log.info("Updated {} UserArtist(s)", userArtists.size());
+        log.info("Updated {} UserArtist(s) of new releases", userArtists);
     }
 
 }

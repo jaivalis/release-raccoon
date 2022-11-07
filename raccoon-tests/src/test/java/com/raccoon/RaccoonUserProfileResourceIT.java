@@ -11,9 +11,7 @@ import com.raccoon.user.UserProfileResource;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
@@ -22,6 +20,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import io.quarkus.mailer.MockMailbox;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -39,11 +38,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @Testcontainers
-@TestMethodOrder(OrderAnnotation.class)
 @TestHTTPEndpoint(UserProfileResource.class)
 @QuarkusTestResource(ElasticSearchTestResource.class)
-@Transactional
-class UserProfileResourceIT {
+class RaccoonUserProfileResourceIT {
 
     static final String EXISTING_USERNAME = "the coon";
 
@@ -62,17 +59,13 @@ class UserProfileResourceIT {
     @Transactional
     public void setup() {
         mockMailbox.clear();
-
-        artistReleaseRepository.deleteAll();
-        userArtistRepository.deleteAll();
-        userRepository.deleteAll();
-        artistRepository.deleteAll();
     }
 
     @Test
+    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "user@gmail.com")
+            @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
     })
     @DisplayName("successful get, should send welcome mail")
     void getProfileOnce() {
@@ -82,17 +75,18 @@ class UserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        assertEquals(1, mockMailbox.getMessagesSentTo("user@gmail.com").size());
+        assertEquals(1, mockMailbox.getMessagesSentTo("getProfileOnce@gmail.com").size());
     }
 
     @Test
+    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "user@gmail.com")
+            @Claim(key = EMAIL_CLAIM, value = "getProfileTwice@gmail.com")
     })
     @DisplayName("successful get, called twice should send single welcome mail")
     void getProfileTwice() {
-        // create the user
+        // create the raccoonUser
         given()
                 .contentType(ContentType.JSON)
                 .when().get()
@@ -104,17 +98,18 @@ class UserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        assertEquals(1, mockMailbox.getMessagesSentTo("user@gmail.com").size());
+        assertEquals(1, mockMailbox.getMessagesSentTo("getProfileTwice@gmail.com").size());
     }
 
     @Test
+    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
-            @Claim(key = "email", value = "user@gmail.com")
+            @Claim(key = "email", value = "raccoonUser@gmail.com")
     })
     @DisplayName("follow artist")
     void followArtist() {
-        // create the user
+        // create the raccoonUser
         given()
                 .contentType(ContentType.JSON)
                 .when().get()
@@ -136,7 +131,7 @@ class UserProfileResourceIT {
                 .then()
                 .statusCode(SC_NO_CONTENT);
 
-        Long userId = userRepository.findByEmail("user@gmail.com").id;
+        Long userId = userRepository.findByEmail("raccoonUser@gmail.com").id;
         assertEquals(1, userArtistRepository.findByUserId(userId).size());
         Artist followedArtist = userArtistRepository.findByUserId(userId).get(0).getArtist();
         assertEquals("name", followedArtist.getName());
@@ -145,13 +140,14 @@ class UserProfileResourceIT {
     }
 
     @Test
+    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
-            @Claim(key = "email", value = "user@gmail.com")
+            @Claim(key = "email", value = "raccoonUser@gmail.com")
     })
     @DisplayName("DELETE `/me/artist` deletes UserArtist association")
     void unfollowArtist() {
-        // create the user
+        // create the raccoonUser
         given()
                 .contentType(ContentType.JSON)
                 .when().get()
@@ -166,13 +162,14 @@ class UserProfileResourceIT {
     }
 
     @Test
+    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
-            @Claim(key = "email", value = "user@gmail.com")
+            @Claim(key = "email", value = "raccoonUser@gmail.com")
     })
     @DisplayName("enable-services")
     void enableServices() {
-        // create the user
+        // create the raccoonUser
         given()
                 .contentType(ContentType.JSON)
                 .when().get()
@@ -189,13 +186,14 @@ class UserProfileResourceIT {
     }
 
     @Test
+    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "user@gmail.com")
+            @Claim(key = EMAIL_CLAIM, value = "raccoonUser@gmail.com")
     })
     @DisplayName("GET `/me/followed-artists` returns list of Artists")
     void getUserArtists() {
-        // create the user
+        // create the raccoonUser
         given()
                 .contentType(ContentType.JSON)
                 .when().get()
@@ -231,6 +229,7 @@ class UserProfileResourceIT {
     }
 
     @Test
+    @TestTransaction
     @DisplayName("no bearer token, unauthorized")
     void unauthorized() {
         given()

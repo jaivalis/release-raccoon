@@ -33,7 +33,7 @@ public class UserArtistStubFactory {
         return userArtist;
     }
 
-    User stubUser(String email) {
+    RaccoonUser stubUser(String email) {
         return userRepository.findByEmailOptional(email)
                 .orElseGet(() -> userFactory.createUser(email));
     }

@@ -14,7 +14,7 @@ public interface ArtistSearcher {
     String id();
 
     /**
-     * Searcher confidence, used to rank the results returned to the user
+     * Searcher confidence, used to rank the results returned to the raccoonUser
      */
     Double trustworthiness();
 

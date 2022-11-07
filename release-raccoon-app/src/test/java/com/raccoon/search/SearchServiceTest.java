@@ -1,7 +1,7 @@
 package com.raccoon.search;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
@@ -84,12 +84,12 @@ class SearchServiceTest {
         var pattern = "pattern";
         var size = Optional.of(10);
         ArtistDto stubArtist1 = ArtistDto.builder().name("hibernate").id(3L).build();
-        ArtistDto stubArtist2 = ArtistDto.builder().name("hibernate2 followed by user should appear first").id(9L).build();
+        ArtistDto stubArtist2 = ArtistDto.builder().name("hibernate2 followed by raccoonUser should appear first").id(9L).build();
         ArtistDto stubArtist3 = ArtistDto.builder().name("lastfm").build();
         when(mockHibernateSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist1, stubArtist2));
         when(mockLastfmSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist3));
 
-        var stubUser = new User();
+        var stubUser = new RaccoonUser();
         stubUser.id = 1L;
         var stubArtist = new Artist();
         // The artist that we want returned first (since already followed)
@@ -109,7 +109,7 @@ class SearchServiceTest {
         assertThat(response.getArtists())
                 .containsAll(List.of(stubArtist1, stubArtist2, stubArtist3));
         for (var dto : response.getArtists()) {
-            if ("hibernate2 followed by user should appear first".equals(dto.getName())) {
+            if ("hibernate2 followed by raccoonUser should appear first".equals(dto.getName())) {
                 assertTrue(dto.isFollowedByUser());
             } else {
                 assertFalse(dto.isFollowedByUser());

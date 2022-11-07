@@ -1,7 +1,7 @@
 package com.raccoon.templatedata.pojo;
 
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
-import com.raccoon.entity.User;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 public class DigestMailContents {
 
-    private User user;
+    private RaccoonUser raccoonUser;
     private String mailTitle;
     private List<Release> releases;
 

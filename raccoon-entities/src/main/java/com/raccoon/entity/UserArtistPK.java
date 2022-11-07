@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class UserArtistPK implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
-    User user;
+    RaccoonUser raccoonUser;
     
     @ManyToOne(fetch = FetchType.EAGER)
     Artist artist;
@@ -26,11 +26,11 @@ public class UserArtistPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserArtistPK that = (UserArtistPK) o;
-        return Objects.equals(artist.id, that.artist.id) && Objects.equals(user.id, that.user.id);
+        return Objects.equals(artist.id, that.artist.id) && Objects.equals(raccoonUser.id, that.raccoonUser.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(artist.id, user.id);
+        return Objects.hash(artist.id, raccoonUser.id);
     }
 }

@@ -42,7 +42,7 @@ public class ArtistFollowingService {
 
     /**
      * Create a new UserArtist association
-     * @param userEmail user requesting the follow
+     * @param userEmail raccoonUser requesting the follow
      * @param artist artist mapped from dto, might need to be persisted
      */
     public void followArtist(final String userEmail, final Artist artist) {
@@ -54,7 +54,7 @@ public class ArtistFollowingService {
                 .orElseGet(UserArtist::new);
         userArtist.setArtist(artist);
         userArtist.setUser(user);
-        userArtist.setWeight(1.0F);
+        userArtist.weight = 1.0F;
         userArtistRepository.persist(userArtist);
 
         LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);

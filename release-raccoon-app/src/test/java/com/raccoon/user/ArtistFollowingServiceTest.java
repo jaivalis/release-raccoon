@@ -1,7 +1,7 @@
 package com.raccoon.user;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
@@ -45,8 +45,8 @@ class ArtistFollowingServiceTest {
                 mockUserRepository, mockArtistRepository, mockUserArtistRepository, mockNotifyService
         );
 
-        // user is expected to be present
-        var user = new User();
+        // raccoonUser is expected to be present
+        var user = new RaccoonUser();
         user.id = 1L;
         when(mockUserRepository.findByEmail(any())).thenReturn(user);
     }
@@ -54,7 +54,7 @@ class ArtistFollowingServiceTest {
     @Test
     @DisplayName("followArtist() ArtistDto name already in db, should: notify")
     void followArtist() {
-        // Artist existed in the database prior, should look for relevant releases and notify user
+        // Artist existed in the database prior, should look for relevant releases and notify raccoonUser
         var existingArtist = new Artist();
         existingArtist.setCreateDate(LocalDateTime.now().minusDays(2));
 

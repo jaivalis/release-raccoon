@@ -1,7 +1,7 @@
 package com.raccoon.mail;
 
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
-import com.raccoon.entity.User;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class RaccoonMailerTest {
 
     @Test
     void testSendDigest() {
-        var user = new User();
+        var user = new RaccoonUser();
         user.setEmail("email");
         var releases = List.of(new Release());
         when(mockRenderer.renderDigestMail(user, releases)).thenReturn(mockMail);
@@ -56,7 +56,7 @@ class RaccoonMailerTest {
 
     @Test
     void testSendDigestTemplateException() {
-        var user = new User();
+        var user = new RaccoonUser();
         user.setEmail("email");
         var releases = List.of(new Release());
         when(mockRenderer.renderDigestMail(user, releases)).thenThrow(TemplateException.class);
@@ -69,7 +69,7 @@ class RaccoonMailerTest {
 
     @Test
     void testSendWelcome() {
-        var user = new User();
+        var user = new RaccoonUser();
         user.setEmail("email");
         when(mockRenderer.renderWelcomeMail(user)).thenReturn(mockMail);
 
@@ -80,7 +80,7 @@ class RaccoonMailerTest {
 
     @Test
     void testSendWelcomeTemplateException() {
-        var user = new User();
+        var user = new RaccoonUser();
         user.setEmail("email");
         when(mockRenderer.renderWelcomeMail(user)).thenThrow(TemplateException.class);
 

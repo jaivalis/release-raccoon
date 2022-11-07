@@ -8,51 +8,51 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class UserTest {
+class RaccoonUserTest {
 
     @Test
     @DisplayName("Should scrape lastfm if last scrape not set")
     void isLastfmScrapeNullRequired() {
-        User user = new User();
-        assertTrue(user.isLastfmScrapeRequired(1));
+        RaccoonUser raccoonUser = new RaccoonUser();
+        assertTrue(raccoonUser.isLastfmScrapeRequired(1));
     }
 
     @Test
     @DisplayName("Should scrape lastfm if scraped long ago")
     void isLastfmScrapeRequired() {
-        User user = new User();
-        user.setLastLastFmScrape(LocalDateTime.now().minusDays(2));
-        assertTrue(user.isLastfmScrapeRequired(1));
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setLastLastFmScrape(LocalDateTime.now().minusDays(2));
+        assertTrue(raccoonUser.isLastfmScrapeRequired(1));
     }
 
     @Test
     @DisplayName("Should not scrape lastfm if scraped recently")
     void isLastfmScrapeNotRequired() {
-        User user = new User();
-        user.setLastLastFmScrape(LocalDateTime.now());
-        assertFalse(user.isLastfmScrapeRequired(1));
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setLastLastFmScrape(LocalDateTime.now());
+        assertFalse(raccoonUser.isLastfmScrapeRequired(1));
     }
 
     @Test
     @DisplayName("Should scrape spotify if last scrape not set")
     void isSpotifyScrapeNullRequired() {
-        User user = new User();
-        assertTrue(user.isSpotifyScrapeRequired(1));
+        RaccoonUser raccoonUser = new RaccoonUser();
+        assertTrue(raccoonUser.isSpotifyScrapeRequired(1));
     }
 
     @Test
     @DisplayName("Should scrape spotify if scraped long ago")
     void isSpotifyScrapeRequired() {
-        User user = new User();
-        user.setLastSpotifyScrape(LocalDateTime.now().minusDays(2));
-        assertTrue(user.isSpotifyScrapeRequired(1));
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setLastSpotifyScrape(LocalDateTime.now().minusDays(2));
+        assertTrue(raccoonUser.isSpotifyScrapeRequired(1));
     }
 
     @Test
     @DisplayName("Should not scrape spotify if scraped recently")
     void isSpotifyScrapeNotRequired() {
-        User user = new User();
-        user.setLastSpotifyScrape(LocalDateTime.now());
-        assertFalse(user.isSpotifyScrapeRequired(1));
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setLastSpotifyScrape(LocalDateTime.now());
+        assertFalse(raccoonUser.isSpotifyScrapeRequired(1));
     }
 }

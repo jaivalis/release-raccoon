@@ -1,5 +1,5 @@
-# create database testdb;
-# use testdb;
+# create database raccoondb;
+# use raccoondb;
 #
 # create table Artist
 # (
@@ -45,7 +45,7 @@
 # create index IDXqe08hf3mmcyhlore01g4f5vsd
 #     on Releases (spotifyUri);
 #
-# create table User
+# create table RaccoonUser
 # (
 #     id                bigint       not null
 #         primary key,
@@ -64,7 +64,7 @@
 #     engine = InnoDB;
 #
 # create index IDXe6gkqunxajvyxl5uctpl2vl2p
-#     on User (email);
+#     on RaccoonUser (email);
 #
 # create table UserArtist
 # (
@@ -76,7 +76,7 @@
 #     constraint FKaahjoyl914ej2xddcp3ae972v
 #         foreign key (artist_id) references Artist (artistId),
 #     constraint FKhmmh9wxt9occrvvc58w4ror7m
-#         foreign key (user_id) references User (id)
+#         foreign key (user_id) references RaccoonUser (id)
 # )
 #     engine = InnoDB;
 #

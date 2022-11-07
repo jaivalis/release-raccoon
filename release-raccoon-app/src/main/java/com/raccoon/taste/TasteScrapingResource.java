@@ -1,6 +1,6 @@
 package com.raccoon.taste;
 
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
@@ -68,11 +68,11 @@ public class TasteScrapingResource {
         return spotifyTasteUpdatingService.scrapeTaste(existing.id);
     }
 
-    private User getUser(@QueryParam("email") String email) {
-        Optional<User> existing = userRepository.findByEmailOptional(email);
+    private RaccoonUser getUser(@QueryParam("email") String email) {
+        Optional<RaccoonUser> existing = userRepository.findByEmailOptional(email);
         if (existing.isEmpty()) {
-            log.warn("User with email {} not found.", email);
-            throw new NotFoundException("Unknown user with email: " + email);
+            log.warn("RaccoonUser with email {} not found.", email);
+            throw new NotFoundException("Unknown raccoonUser with email: " + email);
         }
         return existing.get();
     }

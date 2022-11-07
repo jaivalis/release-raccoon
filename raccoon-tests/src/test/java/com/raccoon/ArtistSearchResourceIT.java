@@ -59,7 +59,7 @@ import static org.mockito.Mockito.when;
  *     ('philip stone');
  *
  * INSERT INTO
- *     User
+ *     RaccoonUser
  *     (email)
  * VALUES
  *     ('user100@mail.com');

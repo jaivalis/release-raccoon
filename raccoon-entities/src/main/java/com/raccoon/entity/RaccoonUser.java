@@ -31,11 +31,11 @@ import lombok.ToString;
 @ToString(exclude = "artists")
 @Entity
 @Table(
-//        name = "MyUsers", Name needs to change when migrating to Quarkus 2.9.0.Final for H2 to work
+        name = "RaccoonUser", // User is a reserved name from H2 / Quarkus 2.9.x +
         indexes = {
         @Index(name = "email_idx", columnList = "email")
 })
-public class User extends PanacheEntityBase implements Serializable {
+public class RaccoonUser extends PanacheEntityBase implements Serializable {
 
     @Id
     @Column(name = "user_id")
@@ -73,7 +73,7 @@ public class User extends PanacheEntityBase implements Serializable {
     LocalDateTime lastLastFmScrape;
 
     @JsonbTransient
-    @OneToMany(mappedBy = "key.user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "key.raccoonUser", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserArtist> artists = new HashSet<>();
 
     public boolean isLastfmScrapeRequired(int scrapeIntervalDays) {

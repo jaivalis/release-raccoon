@@ -1,7 +1,7 @@
 package com.raccoon.mail;
 
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
-import com.raccoon.entity.User;
 
 import java.util.List;
 
@@ -31,13 +31,13 @@ public class RaccoonMailer {
         this.renderer = renderer;
     }
 
-    public Uni<Void> sendDigest(final User user,
+    public Uni<Void> sendDigest(final RaccoonUser raccoonUser,
                                 final List<Release> releases,
                                 final Runnable successCallback,
                                 final Runnable failureCallback) {
-        log.info("Notifying user {} for releases {}", user.id, releases);
+        log.info("Notifying raccoonUser {} for releases {}", raccoonUser.id, releases);
         try {
-            Mail mail = renderer.renderDigestMail(user, releases);
+            Mail mail = renderer.renderDigestMail(raccoonUser, releases);
 
             return mailer.send(mail).onItem()
                     .invoke(successCallback)
@@ -47,12 +47,12 @@ public class RaccoonMailer {
         }
     }
 
-    public Uni<Void> sendWelcome(final User user,
+    public Uni<Void> sendWelcome(final RaccoonUser raccoonUser,
                                  final Runnable successCallback,
                                  final Runnable failureCallback) {
-        log.info("Welcoming new user {}", user.id);
+        log.info("Welcoming new raccoonUser {}", raccoonUser.id);
         try {
-            Mail mail = renderer.renderWelcomeMail(user);
+            Mail mail = renderer.renderWelcomeMail(raccoonUser);
 
             return mailer.send(mail).onItem()
                     .invoke(successCallback)

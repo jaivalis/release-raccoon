@@ -1,8 +1,8 @@
 package com.raccoon.notify;
 
 import com.raccoon.entity.Artist;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
-import com.raccoon.entity.User;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
@@ -62,13 +62,13 @@ class NotifyServiceTest {
     }
 
     @Test
-    @DisplayName("Mail send success, user gets updated")
+    @DisplayName("Mail send success, raccoonUser gets updated")
     void notifyUsersSuccess() {
-        User user = new User();
-        user.setEmail("email");
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setEmail("email");
         Artist artist = new Artist();
         UserArtist ua = new UserArtist();
-        ua.setUser(user);
+        ua.setUser(raccoonUser);
         ua.setArtist(artist);
         when(mockUserArtistRepository.getUserArtistsWithNewRelease()).thenReturn(List.of(ua));
 
@@ -81,15 +81,15 @@ class NotifyServiceTest {
     @Test
     @DisplayName("Mail send failure, no users modified")
     void notifyUsersMailFailure() {
-        User user = new User();
-        user.setEmail("email");
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setEmail("email");
         Artist artist = new Artist();
         UserArtist ua = new UserArtist();
-        ua.setUser(user);
+        ua.setUser(raccoonUser);
         ua.setArtist(artist);
         when(mockUserArtistRepository.getUserArtistsWithNewRelease()).thenReturn(List.of(ua));
         Uni<Void> failedUni = Uni.createFrom().failure(IllegalArgumentException::new);
-        when(mockMailer.sendDigest(eq(user), anyList(), any(), any())).thenReturn(failedUni);
+        when(mockMailer.sendDigest(eq(raccoonUser), anyList(), any(), any())).thenReturn(failedUni);
 
         Uni<Boolean> uni = notifyService.notifyUsers();
 
@@ -100,36 +100,36 @@ class NotifyServiceTest {
     @Test
     @DisplayName("notifySingleUser(), 1 mail to send")
     void notifySingleUserMailSent() {
-        User user = new User();
-        user.setEmail("email");
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setEmail("email");
         Artist artist = new Artist();
         UserArtist ua = new UserArtist();
-        ua.setUser(user);
+        ua.setUser(raccoonUser);
         ua.setArtist(artist);
         Uni<Void> failedUni = Uni.createFrom().failure(IllegalArgumentException::new);
-        when(mockMailer.sendDigest(eq(user), anyList(), any(), any())).thenReturn(failedUni);
+        when(mockMailer.sendDigest(eq(raccoonUser), anyList(), any(), any())).thenReturn(failedUni);
         Release release = new Release();
         Collection<UserArtist> mightHaveNewReleases = List.of(ua);
         when(mockReleaseRepository.findByArtistsSinceDays(anySet(), anyInt())).thenReturn(List.of(release));
 
-        notifyService.notifySingleUser(user, mightHaveNewReleases);
+        notifyService.notifySingleUser(raccoonUser, mightHaveNewReleases);
 
-        verify(mockMailer, times(1)).sendDigest(eq(user), eq(List.of(release)), any(), any());
+        verify(mockMailer, times(1)).sendDigest(eq(raccoonUser), eq(List.of(release)), any(), any());
     }
 
     @Test
     @DisplayName("notifySingleUser(), no mails sent")
     void notifySingleUserNoMail() {
-        User user = new User();
-        user.setEmail("email");
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setEmail("email");
         Artist artist = new Artist();
         UserArtist ua = new UserArtist();
-        ua.setUser(user);
+        ua.setUser(raccoonUser);
         ua.setArtist(artist);
         Collection<UserArtist> mightHaveNewReleases = List.of(ua);
         when(mockReleaseRepository.findByArtistsSinceDays(anySet(), anyInt())).thenReturn(emptyList());
 
-        notifyService.notifySingleUser(user, mightHaveNewReleases);
+        notifyService.notifySingleUser(raccoonUser, mightHaveNewReleases);
 
         verify(mockMailer, never()).sendDigest(any(), anyList(), any(), any());
     }
@@ -137,25 +137,25 @@ class NotifyServiceTest {
     @Test
     @DisplayName("successCallback should not update any UserArtist")
     void successCallbackUpdatesUserArtist() {
-        User user = new User();
-        user.setEmail("email");
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setEmail("email");
         Artist artist = new Artist();
         UserArtist ua = new UserArtist();
-        ua.setUser(user);
+        ua.setUser(raccoonUser);
         ua.setArtist(artist);
 
-        notifyService.mailSuccessCallback(user, List.of(ua));
+        notifyService.mailSuccessCallback(raccoonUser, List.of(ua));
 
-        assertFalse(ua.getHasNewRelease());
+        assertFalse(ua.hasNewRelease);
         verify(mockUserArtistRepository, times(1)).persist(anyList());
     }
 
     @Test
     @DisplayName("failCallback should not update any UserArtist")
     void failCallbackUpdatesUserArtist() {
-        User user = new User();
+        RaccoonUser raccoonUser = new RaccoonUser();
 
-        notifyService.mailFailureCallback(user);
+        notifyService.mailFailureCallback(raccoonUser);
 
         verify(mockUserArtistRepository, never()).persist(anyList());
         verify(mockUserArtistRepository, never()).persist(any(UserArtist.class));

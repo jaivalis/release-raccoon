@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
-class UserArtistRepositoryIT {
+class RaccoonUserArtistRepositoryIT {
 
     @Inject
     UserArtistRepository userArtistRepository;
@@ -61,8 +61,8 @@ class UserArtistRepositoryIT {
         var userArtist1 = stubFactory.stubUserArtist("user1", "artist1");
         var userArtist2 = stubFactory.stubUserArtist("user2", "artist2");
         // set the flag for one of the two entries
-        userArtist1.setHasNewRelease(true);
-        userArtist2.setHasNewRelease(false);
+        userArtist1.hasNewRelease = true;
+        userArtist2.hasNewRelease = false;
         userArtistRepository.persist(userArtist1, userArtist2);
 
         var userArtists = userArtistRepository.getUserArtistsWithNewRelease();
@@ -138,9 +138,9 @@ class UserArtistRepositoryIT {
         var user1Artist1 = stubFactory.stubUserArtist("user1", "artist1");
         var user1Artist2 = stubFactory.stubUserArtist("user1", "artist2");
         var user2Artist1 = stubFactory.stubUserArtist("user2", "artist1");
-        user1Artist1.setWeight(0.60f);
-        user1Artist2.setWeight(0.65f);
-        user2Artist1.setWeight(0.10f);
+        user1Artist1.weight = 0.60f;
+        user1Artist2.weight = 0.65f;
+        user2Artist1.weight = 0.10f;
         userArtistRepository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
 
         var byWeight = userArtistRepository.findByUserIdSortedByWeight(user1Artist1.getUser().id);
@@ -156,9 +156,9 @@ class UserArtistRepositoryIT {
         var user1Artist1 = stubFactory.stubUserArtist("user1", "artist1");
         var user1Artist2 = stubFactory.stubUserArtist("user1", "artist2");
         var user2Artist1 = stubFactory.stubUserArtist("user2", "artist1");
-        user1Artist1.setWeight(0.60f);
-        user1Artist2.setWeight(0.65f);
-        user2Artist1.setWeight(0.10f);
+        user1Artist1.weight = 0.60f;
+        user1Artist2.weight = 0.65f;
+        user2Artist1.weight = 0.10f;
         userArtistRepository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
 
         var foundArtists = userArtistRepository.findByUserIdAndArtistIds(

@@ -1,6 +1,6 @@
 package com.raccoon.entity.factory;
 
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.repository.UserRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class UserFactoryTest {
+class RaccoonUserFactoryTest {
 
     UserFactory factory;
 
@@ -28,7 +28,7 @@ class UserFactoryTest {
     @Test
     void createUser() {
         var mail = "user";
-        var user = new User();
+        var user = new RaccoonUser();
 
         factory.createUser(mail);
 

@@ -28,7 +28,7 @@ import static com.raccoon.entity.Constants.SPOTIFY_RELEASE_URI_PATTERN;
 @Data
 @Entity(name = "Releases")
 @Table(indexes = {
-        @Index(columnList = "spotifyUri")
+        @Index(name = "ReleaseSpotifyUri_idx", columnList = "spotifyUri")
 })
 @NoArgsConstructor
 public class Release extends PanacheEntityBase implements Serializable {

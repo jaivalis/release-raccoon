@@ -1,7 +1,7 @@
 package com.raccoon.mail;
 
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
-import com.raccoon.entity.User;
 import com.raccoon.templatedata.pojo.DigestMailContents;
 
 import java.util.List;
@@ -37,13 +37,13 @@ class MailTemplateRenderer {
         this.welcomeTemplate = engine.getTemplate(WELCOME_EMAIL_TEMPLATE_ID);
     }
 
-    Mail renderDigestMail(final User user, List<Release> releases) throws TemplateException {
-        var to = user.getEmail();
+    Mail renderDigestMail(final RaccoonUser raccoonUser, List<Release> releases) throws TemplateException {
+        var to = raccoonUser.getEmail();
         var subject = getDigestSubject(releases.size());
         try {
             final var contents = DigestMailContents.builder()
                     .mailTitle(getDigestSubject(releases.size()))
-                    .user(user)
+                    .raccoonUser(raccoonUser)
                     .releases(releases)
                     .build();
 
@@ -53,18 +53,18 @@ class MailTemplateRenderer {
 
             return Mail.withHtml(to, subject, htmlBody);
         } catch (TemplateException e) {
-            log.error("Error occurred when rendering digest mail to {}. Cause: {}", user.id, e.getCause(), e);
+            log.error("Error occurred when rendering digest mail to {}. Cause: {}", raccoonUser.id, e.getCause(), e);
             throw e;
         }
     }
 
-    Mail renderWelcomeMail(final User user) throws TemplateException {
-        var to = user.getEmail();
+    Mail renderWelcomeMail(final RaccoonUser raccoonUser) throws TemplateException {
+        var to = raccoonUser.getEmail();
         try {
             final String htmlBody = welcomeTemplate.render();
             return Mail.withHtml(to, WELCOME_EMAIL_SUBJECT, htmlBody);
         } catch (TemplateException e) {
-            log.error("Error occurred when rendering welcome mail to {}. Cause: {}", user.id, e.getCause(), e);
+            log.error("Error occurred when rendering welcome mail to {}. Cause: {}", raccoonUser.id, e.getCause(), e);
             throw e;
         }
     }

@@ -35,7 +35,7 @@ public class ArtistDto {
     private String musicbrainzId;
 
     /**
-     * True if the user searching already follows the artist
+     * True if the raccoonUser searching already follows the artist
      */
     private boolean followedByUser = false;
 

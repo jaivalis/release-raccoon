@@ -30,7 +30,7 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     public List<UserArtist> markNewRelease(final Collection<Long> artistIds) {
         List<UserArtist> collect = findByArtistIds(artistIds);
         collect.forEach(ua -> {
-            ua.setHasNewRelease(Boolean.TRUE);
+            ua.hasNewRelease = Boolean.TRUE;
             ua.persist();
         });
         return collect;

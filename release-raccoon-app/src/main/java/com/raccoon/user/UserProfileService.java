@@ -2,7 +2,7 @@ package com.raccoon.user;
 
 import com.raccoon.dto.ProfileDto;
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
@@ -60,15 +60,15 @@ public class UserProfileService {
     }
 
 
-    public List<Artist> getUserArtists(final User user) {
-        return userArtistRepository.findByUserIdSortedByWeight(user.id)
+    public List<Artist> getUserArtists(final RaccoonUser raccoonUser) {
+        return userArtistRepository.findByUserIdSortedByWeight(raccoonUser.id)
                 .stream()
                 .map(UserArtist::getArtist)
                 .toList();
     }
 
     /**
-     * @param userEmail the user of requesting followed Artists
+     * @param userEmail the raccoonUser of requesting followed Artists
      * @return
      */
     @NotNull
@@ -92,7 +92,7 @@ public class UserProfileService {
         var lastFmUsername = user.getLastfmUsername();
         var canScrapeSpotify = isSpotifyEnabled && user.isSpotifyScrapeRequired(7);
         var canScrapeLastFm = !StringUtil.isNullOrEmpty(lastFmUsername) && user.isLastfmScrapeRequired(7);
-        log.info("lastFmUsername {}, isSpotifyEnabled {}, showScrapeSpotifyButton {}, showScrapeLastfmButton {}",
+        log.info("lastFmUsername: {}, isSpotifyEnabled: {}, showScrapeSpotifyButton: {}, showScrapeLastfmButton: {}",
                 lastFmUsername, isSpotifyEnabled, canScrapeSpotify, canScrapeLastFm);
         ProfileDto contents = ProfileDto.builder()
                 .spotifyEnabled(isSpotifyEnabled)
@@ -107,19 +107,19 @@ public class UserProfileService {
     }
 
     /**
-     * Fetches the user from the database. Sends welcome email blocking in case the user was just created.
-     * @param userEmail unique user identifier
-     * @return user from the database.
+     * Fetches the raccoonUser from the database. Sends welcome email blocking in case the raccoonUser was just created.
+     * @param userEmail unique raccoonUser identifier
+     * @return raccoonUser from the database.
      */
-    public User completeRegistration(final String userEmail) {
-        Optional<User> optionalUser = userRepository.findByEmailOptional(userEmail);
+    public RaccoonUser completeRegistration(final String userEmail) {
+        Optional<RaccoonUser> optionalUser = userRepository.findByEmailOptional(userEmail);
 
         return optionalUser.orElseGet(() -> {
             var user = userFactory.createUser(userEmail);
             mailer.sendWelcome(
                     user,
                     () -> {
-                        log.info("Welcome sent to user {}", user.id);
+                        log.info("Welcome sent to raccoonUser {}", user.id);
                         userRepository.persist(user);
                     },
                     () -> log.error("Something went wrong while sending welcome to {}", user.id)
@@ -130,7 +130,7 @@ public class UserProfileService {
 
     /**
      * Create a new UserArtist association
-     * @param userEmail user requesting the follow
+     * @param userEmail raccoonUser requesting the follow
      * @param artistDto artistDto as it originates from an Artist search.
      */
     public void followArtist(final String userEmail, final ArtistDto artistDto) {
@@ -141,13 +141,13 @@ public class UserProfileService {
         artistFollowingService.unfollowArtist(userEmail, artistId);
     }
 
-    public User enableTasteSources(final String userEmail,
-                                   final Optional<String> lastfmUsernameOpt,
-                                   final Optional<Boolean> enableSpotifyOpt) {
-        Optional<User> existing = userRepository.findByEmailOptional(userEmail);
+    public RaccoonUser enableTasteSources(final String userEmail,
+                                          final Optional<String> lastfmUsernameOpt,
+                                          final Optional<Boolean> enableSpotifyOpt) {
+        Optional<RaccoonUser> existing = userRepository.findByEmailOptional(userEmail);
         if (existing.isEmpty()) {
-            log.info("User does not exist.");
-            throw new NotFoundException("User not found");
+            log.info("RaccoonUser does not exist.");
+            throw new NotFoundException("RaccoonUser not found");
         }
         var user = existing.get();
         lastfmUsernameOpt.ifPresent(user::setLastfmUsername);

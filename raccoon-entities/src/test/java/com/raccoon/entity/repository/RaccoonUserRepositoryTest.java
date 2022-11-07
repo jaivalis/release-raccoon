@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
-class UserRepositoryTest {
+class RaccoonUserRepositoryTest {
 
     @Inject
     UserRepository repository;

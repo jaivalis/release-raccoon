@@ -44,8 +44,8 @@ public class UserProfileResource {
     }
 
     /**
-     * Also called by the oidc service to complete the user registration.
-     * @return The rendered user profile qute-template
+     * Also called by the oidc service to complete the raccoonUser registration.
+     * @return The rendered raccoonUser profile qute-template
      */
     @GET
     @NoCache

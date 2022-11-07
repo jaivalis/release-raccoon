@@ -32,9 +32,9 @@
 //    }
 //
 //    @Test
-//    @TestSecurity(user = "username", roles = "user")
+//    @TestSecurity(raccoonUser = "username", roles = "raccoonUser")
 //    @OidcSecurity(claims = {
-//            @Claim(key = EMAIL_CLAIM, value = "user@gmail.com")
+//            @Claim(key = EMAIL_CLAIM, value = "raccoonUser@gmail.com")
 //    })
 //    void searchArtists() {
 //        var pattern = "pattern";
@@ -42,7 +42,7 @@
 //
 //        resource.searchArtists(pattern, limit);
 //
-//        verify(mockSearchService, times(1)).searchArtists("user@gmail.com", pattern, limit);
+//        verify(mockSearchService, times(1)).searchArtists("raccoonUser@gmail.com", pattern, limit);
 //    }
 //
 //}

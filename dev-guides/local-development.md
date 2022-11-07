@@ -49,3 +49,12 @@ If you want to build an _über-jar_, execute the following command:
 ```
 
 The application is now runnable using `java -jar target/release.raccoon-0.0.1-SNAPSHOT-runner.jar`.
+
+
+## Testing
+
+For testing we rely on testcontainers:
+
+```shell
+sudo ln -s $HOME/.docker/run/docker.sock /var/run/docker.sock
+```

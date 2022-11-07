@@ -1,7 +1,7 @@
 package com.raccoon.user;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserProfileServiceTest {
+class RaccoonUserProfileServiceTest {
 
     UserProfileService service;
 
@@ -79,7 +79,7 @@ class UserProfileServiceTest {
 
     @Test
     void getUserArtists() {
-        var user = new User();
+        var user = new RaccoonUser();
         user.id = 1L;
 
         service.getUserArtists(user);
@@ -89,7 +89,7 @@ class UserProfileServiceTest {
 
     @Test
     void getTemplateInstance() {
-        var user = new User();
+        var user = new RaccoonUser();
         user.setEmail("some@email.com");
         user.setSpotifyEnabled(true);
         user.setLastfmUsername(null);
@@ -104,10 +104,10 @@ class UserProfileServiceTest {
     }
 
     @Test
-    @DisplayName("completeRegistration() existing user")
+    @DisplayName("completeRegistration() existing raccoonUser")
     void completeRegistrationNew() {
-        var email = "user@mail.com";
-        var userStub = new User();
+        var email = "raccoonUser@mail.com";
+        var userStub = new RaccoonUser();
         userStub.setEmail(email);
         when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
 
@@ -118,10 +118,10 @@ class UserProfileServiceTest {
     }
 
     @Test
-    @DisplayName("completeRegistration() new user created gets Welcome mail")
+    @DisplayName("completeRegistration() new raccoonUser created gets Welcome mail")
     void completeRegistrationExisting() {
-        var email = "user@mail.com";
-        var userStub = new User();
+        var email = "raccoonUser@mail.com";
+        var userStub = new RaccoonUser();
         userStub.setEmail(email);
         when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
         when(mockUserFactory.createUser(email)).thenReturn(userStub);
@@ -157,9 +157,9 @@ class UserProfileServiceTest {
     }
 
     @Test
-    @DisplayName("user not found, returns 404")
+    @DisplayName("raccoonUser not found, returns 404")
     void enableSourceNotExistent() {
-        var email = "user@mail.com";
+        var email = "raccoonUser@mail.com";
         when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.empty());
         Optional<String> lastfmUserNameOpt = Optional.of("lastfm");
         Optional<Boolean> enableSpotifyOpt = Optional.empty();
@@ -170,8 +170,8 @@ class UserProfileServiceTest {
 
     @Test
     void enableLastfm() {
-        var email = "user@mail.com";
-        var userStub = new User();
+        var email = "raccoonUser@mail.com";
+        var userStub = new RaccoonUser();
         userStub.setEmail(email);
         when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
 
@@ -183,8 +183,8 @@ class UserProfileServiceTest {
 
     @Test
     void enableSpotify() {
-        var email = "user@mail.com";
-        var userStub = new User();
+        var email = "raccoonUser@mail.com";
+        var userStub = new RaccoonUser();
         userStub.setEmail(email);
         when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
 
@@ -196,8 +196,8 @@ class UserProfileServiceTest {
 
     @Test
     void enableLastfmAndSpotify() {
-        var email = "user@mail.com";
-        var userStub = new User();
+        var email = "raccoonUser@mail.com";
+        var userStub = new RaccoonUser();
         userStub.setEmail(email);
         when(mockUserRepository.findByEmailOptional(email)).thenReturn(Optional.of(userStub));
 
@@ -210,8 +210,8 @@ class UserProfileServiceTest {
     @Test
     @DisplayName("getFollowedArtists(): returns list")
     void getFollowedArtists() {
-        var email = "user@mail.com";
-        var stubUser = new User();
+        var email = "raccoonUser@mail.com";
+        var stubUser = new RaccoonUser();
         stubUser.setEmail(email);
         stubUser.id = 9L;
 
@@ -240,8 +240,8 @@ class UserProfileServiceTest {
     @Test
     @DisplayName("getFollowedArtists(): returns empty list")
     void getFollowedArtistsEmptyList() {
-        var email = "user@mail.com";
-        var stubUser = new User();
+        var email = "raccoonUser@mail.com";
+        var stubUser = new RaccoonUser();
         stubUser.setEmail(email);
         stubUser.id = 9L;
         when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);

@@ -1,6 +1,6 @@
 package com.raccoon.entity.repository;
 
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 
 import java.util.Optional;
 
@@ -10,15 +10,15 @@ import javax.ws.rs.NotFoundException;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 @ApplicationScoped
-public class UserRepository implements PanacheRepository<User> {
+public class UserRepository implements PanacheRepository<RaccoonUser> {
 
-    public Optional<User> findByEmailOptional(String email) {
+    public Optional<RaccoonUser> findByEmailOptional(String email) {
         return Optional.ofNullable(find("email", email).firstResult());
     }
 
-    public User findByEmail(String email) {
+    public RaccoonUser findByEmail(String email) {
         return findByEmailOptional(email)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("RaccoonUser not found"));
     }
 
 }

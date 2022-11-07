@@ -1,7 +1,7 @@
 package com.raccoon.taste;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.entity.repository.ArtistRepository;
@@ -32,17 +32,17 @@ public class TasteScrapeArtistWeightPairProcessor {
     /**
      * Processes the new UserArtist pair that was returned by some taste scraper.
      *
-     * Creates and persists the new User/Artist/UserArtist objects.
+     * Creates and persists the new RaccoonUser/Artist/UserArtist objects.
      * Adds the created UserArtist to the existingUserArtists if the Artist was in the database such that
      * an email might be sent in case that artist has an association in the Releases Table.
-     * @param user The user scraped
-     * @param artist The artist found as part of the user's taste
+     * @param raccoonUser The raccoonUser scraped
+     * @param artist The artist found as part of the raccoonUser's taste
      * @param weight The weight associated with the UserArtist
      * @param existingUserArtists Collection containing the UserArtist pairs for which the Artist
      *                            was present in the database before.
      * @return new UserArtist created
      */
-    public UserArtist delegateProcessArtistWeightPair(final User user,
+    public UserArtist delegateProcessArtistWeightPair(final RaccoonUser raccoonUser,
                                                       final Artist artist,
                                                       final Float weight,
                                                       final Collection<UserArtist> existingUserArtists) {
@@ -53,9 +53,9 @@ public class TasteScrapeArtistWeightPairProcessor {
             artistRepository.persist(artist);
         }
 
-        var userArtistOpt = userArtistRepository.findByUserIdArtistIdOptional(user.id, artist.id);
-        var userArtist = userArtistOpt.orElseGet(() -> userArtistFactory.createUserArtist(user, artist, weight));
-        userArtist.setWeight(weight);
+        var userArtistOpt = userArtistRepository.findByUserIdArtistIdOptional(raccoonUser.id, artist.id);
+        var userArtist = userArtistOpt.orElseGet(() -> userArtistFactory.createUserArtist(raccoonUser, artist, weight));
+        userArtist.weight = (weight);
         userArtistRepository.persist(userArtist);
 
         if (artist.getCreateDate() == null || twoMinutesAgo.isAfter(artist.getCreateDate())) {

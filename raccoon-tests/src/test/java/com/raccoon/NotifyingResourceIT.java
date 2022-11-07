@@ -9,16 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import io.quarkus.mailer.MockMailbox;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *     (300, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:zzzzzz');
  *
  * INSERT INTO
- *     User
+ *     RaccoonUser
  *     (user_id, email)
  * VALUES
  *     (300, 'user300@mail.com');
@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @Testcontainers
 @QuarkusTest
-@Transactional
+@TestTransaction
 @QuarkusTestResource(ElasticSearchTestResource.class)
 class NotifyingResourceIT {
 
@@ -76,7 +76,7 @@ class NotifyingResourceIT {
     }
 
     @Test
-    @DisplayName("Given 1 release from yesterday, notify user and unset UserArtist.hasNewRelease")
+    @DisplayName("Given 1 release from yesterday, notify raccoonUser and unset UserArtist.hasNewRelease")
     void test_should_notify_user_artist_hasNewRelease() {
         given()
                 .contentType(ContentType.JSON)
@@ -90,7 +90,7 @@ class NotifyingResourceIT {
         assertEquals(1, mockMailbox.getMessagesSentTo("user300@mail.com").size());
         var uaOptional = userArtistRepository.findByUserIdArtistIdOptional(300L, 300L);
         assertTrue(uaOptional.isPresent());
-        assertThat(uaOptional.get().getHasNewRelease())
+        assertThat(uaOptional.get().hasNewRelease)
                 .as("Release should be marked processed")
                 .isFalse();
     }

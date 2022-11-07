@@ -1,7 +1,7 @@
 package com.raccoon.taste.lastfm;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.User;
+import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserArtistFactory;
 import com.raccoon.entity.repository.UserRepository;
@@ -51,7 +51,7 @@ class LastfmTasteUpdatingServiceTest {
     @Mock
     NotifyService mockNotifyService;
 
-    User user = new User();
+    RaccoonUser raccoonUser = new RaccoonUser();
 
     @BeforeEach
     public void setup() {
@@ -67,37 +67,37 @@ class LastfmTasteUpdatingServiceTest {
     @Test
     @DisplayName("No lastFm username should do nothing")
     void scrapeNoLastFmUsername() {
-        user.setLastfmUsername("");
-        user.setArtists(Collections.emptySet());
-        user.id = 1L;
-        when(userRepositoryMock.findById(user.id)).thenReturn(user);
+        raccoonUser.setLastfmUsername("");
+        raccoonUser.setArtists(Collections.emptySet());
+        raccoonUser.id = 1L;
+        when(userRepositoryMock.findById(raccoonUser.id)).thenReturn(raccoonUser);
 
-        service.updateTaste(user.id);
+        service.updateTaste(raccoonUser.id);
 
-        assertEquals(Collections.emptySet(), user.getArtists());
+        assertEquals(Collections.emptySet(), raccoonUser.getArtists());
     }
 
     @Test
     @DisplayName("If scrape took place not to long ago, should do nothing")
     void scrapeAfterJustScraped() {
         Set<UserArtist> artists = Set.of(new UserArtist());
-        user.setLastfmUsername("username");
-        user.setLastLastFmScrape(LocalDateTime.now());
-        user.setArtists(artists);
-        user.id = 1L;
-        when(userRepositoryMock.findById(user.id)).thenReturn(user);
+        raccoonUser.setLastfmUsername("username");
+        raccoonUser.setLastLastFmScrape(LocalDateTime.now());
+        raccoonUser.setArtists(artists);
+        raccoonUser.id = 1L;
+        when(userRepositoryMock.findById(raccoonUser.id)).thenReturn(raccoonUser);
 
-        service.updateTaste(user.id);
+        service.updateTaste(raccoonUser.id);
 
-        assertEquals(artists, user.getArtists());
-        verify(mockNotifyService, never()).notifySingleUser(eq(user), any());
+        assertEquals(artists, raccoonUser.getArtists());
+        verify(mockNotifyService, never()).notifySingleUser(eq(raccoonUser), any());
     }
 
     @Test
-    @DisplayName("Scrape should update user artists and notify of release")
+    @DisplayName("Scrape should update raccoonUser artists and notify of release")
     void testScrape() {
-        user.setLastfmUsername("username");
-        user.setLastLastFmScrape(LocalDateTime.now().minusDays(20));
+        raccoonUser.setLastfmUsername("username");
+        raccoonUser.setLastLastFmScrape(LocalDateTime.now().minusDays(20));
 
         Artist stubArtist = new Artist();
         stubArtist.setName("stub artist");
@@ -107,19 +107,19 @@ class LastfmTasteUpdatingServiceTest {
         when(lastfmScraperMock.scrapeTaste(anyString(), any(Optional.class))).thenReturn(stubTaste);
         var userArtist = new UserArtist();
         userArtist.setArtist(stubArtist);
-        userArtist.setUser(user);
-        user.id = 1L;
-        when(userRepositoryMock.findById(user.id)).thenReturn(user);
-        when(mockTasteScrapeArtistWeightPairProcessor.delegateProcessArtistWeightPair(eq(user), eq(stubArtist), anyFloat(), any()))
+        userArtist.setUser(raccoonUser);
+        raccoonUser.id = 1L;
+        when(userRepositoryMock.findById(raccoonUser.id)).thenReturn(raccoonUser);
+        when(mockTasteScrapeArtistWeightPairProcessor.delegateProcessArtistWeightPair(eq(raccoonUser), eq(stubArtist), anyFloat(), any()))
                 .thenReturn(userArtist);
 
-        service.updateTaste(user.id);
+        service.updateTaste(raccoonUser.id);
 
-        assertEquals(1, user.getArtists().size());
-        assertEquals(LocalDateTime.now().getDayOfMonth(), user.getLastLastFmScrape().getDayOfMonth());
-        assertEquals(stubArtist, user.getArtists().iterator().next().getArtist());
-        verify(userRepositoryMock, times(1)).persist(user);
-        verify(mockNotifyService, times(1)).notifySingleUser(eq(user), any());
+        assertEquals(1, raccoonUser.getArtists().size());
+        assertEquals(LocalDateTime.now().getDayOfMonth(), raccoonUser.getLastLastFmScrape().getDayOfMonth());
+        assertEquals(stubArtist, raccoonUser.getArtists().iterator().next().getArtist());
+        verify(userRepositoryMock, times(1)).persist(raccoonUser);
+        verify(mockNotifyService, times(1)).notifySingleUser(eq(raccoonUser), any());
     }
 
 }

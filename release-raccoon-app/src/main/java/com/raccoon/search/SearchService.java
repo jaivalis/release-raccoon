@@ -5,7 +5,6 @@ import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.ArtistDto;
 import com.raccoon.search.dto.mapping.ArtistSearchResponse;
-import com.raccoon.search.impl.HibernateSearcher;
 import com.raccoon.search.ranking.ResultsRanker;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class SearchService {
 
     /**
      * Search for an artist against available Searchers
-     * @param userEmail user who searches, used to set followedByUser flag of ArtistDto
+     * @param userEmail raccoonUser who searches, used to set followedByUser flag of ArtistDto
      * @param pattern pattern to match artist name against
      * @param size search limit per resource (database and lastfm)
      * @return ArtistSearchResponse
