@@ -26,7 +26,7 @@
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>2.13.4.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.14.1.Final</quarkus.platform.version>
 
         <!-- Native image build fixes -->
         <jboss-jacc.version>1.0.2.Final</jboss-jacc.version>
@@ -37,8 +37,8 @@
         <spotify.client.version>6.5.4</spotify.client.version>
 
         <!-- tests -->
-        <testcontainers.version>1.17.5</testcontainers.version>
-        <testcontainers-elasticsearch.version>1.17.5</testcontainers-elasticsearch.version>
+        <testcontainers.version>1.17.6</testcontainers.version>
+        <testcontainers-elasticsearch.version>1.17.6</testcontainers-elasticsearch.version>
         <rider.version>1.32.3</rider.version>
         <awaitility.version>4.0.3</awaitility.version>
         <rest.assured.version>4.3.3</rest.assured.version>
