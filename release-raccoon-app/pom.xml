@@ -96,7 +96,6 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-hibernate-search-orm-elasticsearch</artifactId>
         </dependency>
-
         <!-- Qute & UI -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -109,6 +108,10 @@
         <dependency>
             <groupId>io.quarkus.qute</groupId>
             <artifactId>qute-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-container-image-jib</artifactId>
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>

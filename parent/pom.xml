@@ -172,6 +172,12 @@
                 <artifactId>quarkus-hibernate-search-orm-elasticsearch</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
+            <!-- Builds -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-container-image-jib</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
 
             <!-- Qute & UI -->
             <dependency>
