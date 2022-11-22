@@ -9,6 +9,7 @@ on:
 env:
   JAVA_VERSION: 17
   JDK_DISTRIBUTION: 'temurin'
+  GITHUB_SHA: ${{ github.sha }}
 
 jobs:
   build:
