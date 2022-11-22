@@ -61,7 +61,7 @@ jobs:
 
       - name: mvn package -DskipTests -Dquarkus.container-image.push=true latest
         if: github.ref == 'refs/heads/master'
-        run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:latest '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ GITHUB_SHA }}
+        run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:latest '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
       - name: mvn package -DskipTests -Dquarkus.container-image.push=true snapshot
         if: github.ref != 'refs/heads/master'
-        run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:snapshot '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ GITHUB_SHA }}
+        run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:snapshot '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
