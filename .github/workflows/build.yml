@@ -59,6 +59,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B -e verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
+      # Docker build
       - name: mvn package -DskipTests -Dquarkus.container-image.push=true latest
         if: github.ref == 'refs/heads/master'
         run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:latest '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
