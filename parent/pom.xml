@@ -41,7 +41,7 @@
         <testcontainers-elasticsearch.version>1.17.6</testcontainers-elasticsearch.version>
         <rider.version>1.32.3</rider.version>
         <awaitility.version>4.0.3</awaitility.version>
-        <rest.assured.version>4.3.3</rest.assured.version>
+        <rest.assured.version>5.3.0</rest.assured.version>
         <wiremock-jre8.version>2.32.0</wiremock-jre8.version>
         <assertj-core.version>3.22.0</assertj-core.version>
 
