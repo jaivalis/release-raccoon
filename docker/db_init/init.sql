@@ -8,51 +8,51 @@ GRANT ALL PRIVILEGES ON `raccoondb`.* TO 'raccoon'@'%';
 use raccoondb;
 
 create table Artist (
-    artistId bigint auto_increment primary key,
-    create_date timestamp,
-    lastfmUri varchar(255),
-    musicbrainzId varchar(255),
-    name varchar(300),
-    spotifyUri varchar(255),
-    primary key (artistId)
+                        artistId bigint auto_increment,
+                        create_date timestamp,
+                        lastfmUri varchar(255),
+                        musicbrainzId varchar(255),
+                        name varchar(300),
+                        spotifyUri varchar(255),
+                        primary key (artistId)
 );
 
 create table ArtistRelease (
-    release_id bigint not null,
-    artist_id bigint not null,
-    primary key (artist_id, release_id)
+                               release_id bigint not null,
+                               artist_id bigint not null,
+                               primary key (artist_id, release_id)
 );
 
 create table RaccoonUser (
-    user_id bigint auto_increment primary key,
-    create_date timestamp,
-    email varchar(255),
-    lastLastFmScrape timestamp,
-    lastNotified date,
-    lastSpotifyScrape timestamp,
-    lastfmUsername varchar(255),
-    modify_date timestamp,
-    spotifyEnabled boolean,
-    username varchar(255),
-    primary key (user_id)
+                             user_id bigint auto_increment,
+                             create_date timestamp,
+                             email varchar(255),
+                             lastLastFmScrape timestamp,
+                             lastNotified date,
+                             lastSpotifyScrape timestamp,
+                             lastfmUsername varchar(255),
+                             modify_date timestamp,
+                             spotifyEnabled boolean,
+                             username varchar(255),
+                             primary key (user_id)
 );
 
 create table Releases (
-    releaseId bigint auto_increment primary key,
-    musicbrainzId varchar(255),
-    name varchar(300),
-    releasedOn date,
-    spotifyUri varchar(255),
-    type varchar(255),
-    primary key (releaseId)
+                          releaseId bigint auto_increment,
+                          musicbrainzId varchar(255),
+                          name varchar(300),
+                          releasedOn date,
+                          spotifyUri varchar(255),
+                          type varchar(255),
+                          primary key (releaseId)
 );
 
 create table UserArtist (
-    hasNewRelease boolean,
-    weight float,
-    user_id bigint not null,
-    artist_id bigint not null,
-    primary key (artist_id, user_id)
+                            hasNewRelease boolean,
+                            weight float,
+                            user_id bigint not null,
+                            artist_id bigint not null,
+                            primary key (artist_id, user_id)
 );
 create index ArtistSpotifyUri_idx on Artist (spotifyUri);
 create index email_idx on RaccoonUser (email);
@@ -64,22 +64,22 @@ create index ReleaseSpotifyUri_idx on Releases (spotifyUri);
 alter table ArtistRelease
     add constraint FK76o28jbj8nefc724kfiscvenk
         foreign key (release_id)
-            references Releases;
+            references Releases(releaseId);
 
 alter table ArtistRelease
     add constraint FK27mlse6dudk4xs9k2hfx8p4gg
         foreign key (artist_id)
-            references Artist;
+            references Artist(artistId);
 
 alter table UserArtist
     add constraint FKkb7vbhl8onwbnkjj9ogpnxq2u
         foreign key (user_id)
-            references RaccoonUser;
+            references RaccoonUser(user_id);
 
 alter table UserArtist
     add constraint FKaahjoyl914ej2xddcp3ae972v
         foreign key (artist_id)
-            references Artist;
+            references Artist(artistId);
 
 create table hibernate_sequence
 (
