@@ -42,7 +42,7 @@
         <rider.version>1.35.0</rider.version>
         <awaitility.version>4.0.3</awaitility.version>
         <rest.assured.version>5.3.0</rest.assured.version>
-        <wiremock-jre8.version>2.32.0</wiremock-jre8.version>
+        <wiremock-jre8.version>2.35.0</wiremock-jre8.version>
         <assertj-core.version>3.23.1</assertj-core.version>
 
         <!-- util -->
