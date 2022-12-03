@@ -1,7 +1,6 @@
-package com.raccoon.user;
+package com.raccoon.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.raccoon.search.dto.ArtistDto;
 
 import java.util.List;
 
@@ -16,6 +15,6 @@ public class FollowedArtistsResponse {
     private int total;
 
     @JsonProperty
-    private List<ArtistDto> rows;
+    private List<FollowedArtistDto> rows;
 
 }

@@ -1,8 +1,8 @@
-package com.raccoon.search.dto.mapping;
+package com.raccoon.dto.mapping;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.repository.ArtistRepository;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import org.mapstruct.ObjectFactory;
 import org.mapstruct.TargetType;
@@ -24,7 +24,7 @@ public class ArtistMapperResolver {
     }
 
     @ObjectFactory
-    public Artist resolve(ArtistDto dto, @TargetType Class<Artist> type) {
+    public Artist resolve(SearchResultArtistDto dto, @TargetType Class<Artist> type) {
         return artistRepository.findByNameOptional(dto.getName())
                 .orElseGet(Artist::new);
     }

@@ -52,7 +52,7 @@ class ArtistFollowingServiceTest {
     }
 
     @Test
-    @DisplayName("followArtist() ArtistDto name already in db, should: notify")
+    @DisplayName("followArtist() SearchResultArtistDto name already in db, should: notify")
     void followArtist() {
         // Artist existed in the database prior, should look for relevant releases and notify raccoonUser
         var existingArtist = new Artist();
@@ -65,7 +65,7 @@ class ArtistFollowingServiceTest {
     }
 
     @Test
-    @DisplayName("followArtist() ArtistDto `id` newly created artist, should: not notify")
+    @DisplayName("followArtist() SearchResultArtistDto `id` newly created artist, should: not notify")
     void followArtistNoId() {
         var existingArtist = new Artist();
         existingArtist.setCreateDate(LocalDateTime.now());

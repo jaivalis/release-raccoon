@@ -1,5 +1,6 @@
 package com.raccoon.user;
 
+import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
@@ -7,9 +8,9 @@ import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
-import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.mapping.ArtistMapper;
+import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
+import com.raccoon.user.dto.FollowedArtistDto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,10 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RaccoonUserProfileServiceTest {
@@ -137,7 +135,7 @@ class RaccoonUserProfileServiceTest {
     @DisplayName("followArtist()")
     void followArtist() {
         var mail = "some@mail.com";
-        var artistDto = ArtistDto.builder().build();
+        var artistDto = SearchResultArtistDto.builder().build();
         var artist = new Artist();
         when(mockArtistMapper.fromDto(artistDto)).thenReturn(artist);
 
@@ -227,12 +225,13 @@ class RaccoonUserProfileServiceTest {
         when(mockUserArtistRepository.findByUserIdSortedByWeight(stubUser.id)).thenReturn(List.of(userArtist));
 
         when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
-        var dto = new ArtistDto();
-        when(mockArtistMapper.toDto(stubArtist)).thenReturn(dto);
+        var dto = mock(FollowedArtistDto.class);
+        when(mockArtistMapper.toFollowedArtistDto(stubArtist)).thenReturn(dto);
 
         final var response = service.getFollowedArtists(email);
 
         assertEquals(1, response.getTotal());
+        assertNotNull(response.getRows());
         assertNotNull(response.getRows().get(0));
         assertEquals(dto, response.getRows().get(0));
     }

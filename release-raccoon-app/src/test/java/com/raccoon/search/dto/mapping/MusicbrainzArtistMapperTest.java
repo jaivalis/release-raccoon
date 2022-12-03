@@ -1,7 +1,7 @@
 package com.raccoon.search.dto.mapping;
 
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtist;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,7 +19,7 @@ class MusicbrainzArtistMapperTest {
         when(artist.getName()).thenReturn("zapp franka");
         when(artist.getId()).thenReturn("id");
 
-        ArtistDto project = mapper.toDto(artist);
+        SearchResultArtistDto project = mapper.toDto(artist);
 
         assertEquals("zapp franka", project.getName());
         assertEquals("id", project.getMusicbrainzId());

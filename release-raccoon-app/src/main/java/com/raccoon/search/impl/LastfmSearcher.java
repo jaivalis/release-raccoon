@@ -3,7 +3,7 @@ package com.raccoon.search.impl;
 import com.raccoon.Constants;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
 import com.raccoon.search.ArtistSearcher;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.search.dto.mapping.LastFmArtistMapper;
 
 import de.umass.lastfm.Artist;
@@ -40,7 +40,7 @@ public class LastfmSearcher implements ArtistSearcher {
     }
 
     @Override
-    public Collection<ArtistDto> searchArtist(String pattern, Optional<Integer> size) {
+    public Collection<SearchResultArtistDto> searchArtist(String pattern, Optional<Integer> size) {
         Stream<Artist> lastfmArtistStream = lastfmApi.searchArtist(pattern).stream();
         if (size.isPresent()) {
             lastfmArtistStream = lastfmArtistStream.limit(size.get());

@@ -6,8 +6,9 @@ import com.raccoon.entity.repository.ArtistReleaseRepository;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.user.UserProfileResource;
+import com.raccoon.user.dto.FollowedArtistDto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -117,7 +118,7 @@ class RaccoonUserProfileResourceIT {
                 .statusCode(SC_OK);
 
         // follow the artist
-        ArtistDto artistDto = ArtistDto.builder()
+        SearchResultArtistDto artistDto = SearchResultArtistDto.builder()
                 .name("name")
                 .spotifyUri("spotifyUri")
                 .lastfmUri("lastfmUri")
@@ -200,7 +201,7 @@ class RaccoonUserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
         // follow the artist
-        ArtistDto artistDto = ArtistDto.builder()
+        FollowedArtistDto artistDto = FollowedArtistDto.builder()
                 .name("name")
                 .spotifyUri("spotifyUri")
                 .lastfmUri("lastfmUri")
@@ -215,12 +216,12 @@ class RaccoonUserProfileResourceIT {
                 .statusCode(SC_NO_CONTENT);
 
         // get followed artists
-        List<ArtistDto> list = given()
+        List<FollowedArtistDto> list = given()
                 .contentType(ContentType.JSON)
                 .when().get("followed-artists")
                 .then()
                 .statusCode(SC_OK)
-                .extract().body().jsonPath().getList("rows", ArtistDto.class);
+                .extract().body().jsonPath().getList("rows", FollowedArtistDto.class);
 
         assertEquals(1, list.size());
         assertEquals(artistDto.getName(), list.get(0).getName());

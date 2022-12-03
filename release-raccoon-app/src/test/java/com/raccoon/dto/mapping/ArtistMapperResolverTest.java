@@ -1,35 +1,29 @@
-package com.raccoon.search.dto.mapping;
+package com.raccoon.dto.mapping;
 
 import com.raccoon.entity.repository.ArtistRepository;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.openMocks;
 
 @ExtendWith(MockitoExtension.class)
 class ArtistMapperResolverTest {
 
+    @InjectMocks
     ArtistMapperResolver resolver;
 
     @Mock
     ArtistRepository mockArtistRepository;
 
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
-        resolver = new ArtistMapperResolver(mockArtistRepository);
-    }
-
     @Test
     void resolve() {
-        var dto = ArtistDto.builder()
+        var dto = SearchResultArtistDto.builder()
                 .name("name")
                 .build();
 

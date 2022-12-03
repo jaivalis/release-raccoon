@@ -1,6 +1,6 @@
 package com.raccoon.search;
 
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -22,8 +22,8 @@ public interface ArtistSearcher {
      * Search for an artist against available Searchers
      * @param pattern pattern to match artist name against
      * @param size search limit per resource (database and lastfm)
-     * @return ArtistDto projection
+     * @return SearchResultArtistDto projection
      */
-    Collection<ArtistDto> searchArtist(String pattern, Optional<Integer> size);
+    Collection<SearchResultArtistDto> searchArtist(String pattern, Optional<Integer> size);
 
 }

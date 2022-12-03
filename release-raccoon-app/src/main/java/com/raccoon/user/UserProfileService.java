@@ -1,6 +1,7 @@
 package com.raccoon.user;
 
 import com.raccoon.dto.ProfileDto;
+import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
@@ -8,9 +9,10 @@ import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
-import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.mapping.ArtistMapper;
+import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
+import com.raccoon.user.dto.FollowedArtistDto;
+import com.raccoon.user.dto.FollowedArtistsResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -75,10 +77,10 @@ public class UserProfileService {
     public FollowedArtistsResponse getFollowedArtists(final String userEmail) {
         var user = userRepository.findByEmail(userEmail);
 
-        List<ArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
+        List<FollowedArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
                 .stream()
                 .map(UserArtist::getArtist)
-                .map(artistMapper::toDto)
+                .map(artistMapper::toFollowedArtistDto)
                 .toList();
         return FollowedArtistsResponse.builder()
                 .rows(rows)
@@ -133,7 +135,7 @@ public class UserProfileService {
      * @param userEmail raccoonUser requesting the follow
      * @param artistDto artistDto as it originates from an Artist search.
      */
-    public void followArtist(final String userEmail, final ArtistDto artistDto) {
+    public void followArtist(final String userEmail, final SearchResultArtistDto artistDto) {
         artistFollowingService.followArtist(userEmail, artistMapper.fromDto(artistDto));
     }
 

@@ -4,7 +4,7 @@ import com.raccoon.Constants;
 import com.raccoon.scraper.musicbrainz.MusicbrainzClient;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtist;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtistsResponse;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.search.dto.mapping.MusicbrainzArtistMapper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -95,7 +95,7 @@ class MusicbrainzSearcherTest {
         Optional<Integer> size = Optional.of(10);
         when(mockMusicbrainzClient.searchArtistsByName(name, 10, 0)).thenThrow(RuntimeException.class);
 
-        Collection<ArtistDto> dtos = searcher.searchArtist(name, size);
+        Collection<SearchResultArtistDto> dtos = searcher.searchArtist(name, size);
 
         assertThat(dtos).isEmpty();
         verify(mockMusicbrainzClient, times(1)).searchArtistsByName(name, 10, 0);

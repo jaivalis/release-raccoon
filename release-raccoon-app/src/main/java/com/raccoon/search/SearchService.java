@@ -3,7 +3,7 @@ package com.raccoon.search;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.search.dto.mapping.ArtistSearchResponse;
 import com.raccoon.search.ranking.ResultsRanker;
 
@@ -45,7 +45,7 @@ public class SearchService {
 
     /**
      * Search for an artist against available Searchers
-     * @param userEmail raccoonUser who searches, used to set followedByUser flag of ArtistDto
+     * @param userEmail raccoonUser who searches, used to set followedByUser flag of SearchResultArtistDto
      * @param pattern pattern to match artist name against
      * @param size search limit per resource (database and lastfm)
      * @return ArtistSearchResponse
@@ -53,7 +53,7 @@ public class SearchService {
     public ArtistSearchResponse searchArtists(final String userEmail,
                                               final String pattern,
                                               final Optional<Integer> size) {
-        Map<ArtistSearcher, Collection<ArtistDto>> searchResultsPerSource = new HashMap<>();
+        Map<ArtistSearcher, Collection<SearchResultArtistDto>> searchResultsPerSource = new HashMap<>();
         log.info("Searching for artist {}", pattern);
 
         searchers.parallelStream().forEach(
@@ -69,15 +69,15 @@ public class SearchService {
                 .build();
     }
 
-    List<ArtistDto> postProcessSearchResults(String userEmail, Map<ArtistSearcher, Collection<ArtistDto>> perSource) {
-        List<ArtistDto> rankedResultList = new ArrayList<>();
+    List<SearchResultArtistDto> postProcessSearchResults(String userEmail, Map<ArtistSearcher, Collection<SearchResultArtistDto>> perSource) {
+        List<SearchResultArtistDto> rankedResultList = new ArrayList<>();
 
         // Mark followed artists
         var hibernateSearcher = perSource.keySet().stream()
                 .filter(artistSearcher -> HIBERNATE_SEARCHER_ID.equals(artistSearcher.id()))
                 .findFirst();
         if (hibernateSearcher.isPresent()) {
-            Collection<ArtistDto> hibernateResults = perSource.get(hibernateSearcher.get());
+            Collection<SearchResultArtistDto> hibernateResults = perSource.get(hibernateSearcher.get());
             if (!hibernateResults.isEmpty()) {
                 var followedFlagSet = setAlreadyFollowed(userEmail, hibernateResults);
                 // Artists from the database are top ranked
@@ -95,17 +95,17 @@ public class SearchService {
      * @param hibernateHits
      * @return
      */
-    private List<ArtistDto> setAlreadyFollowed(final String userEmail,
-                                               final Collection<ArtistDto> hibernateHits) {
+    private List<SearchResultArtistDto> setAlreadyFollowed(final String userEmail,
+                                                           final Collection<SearchResultArtistDto> hibernateHits) {
         var searchingUser = userRepository.findByEmail(userEmail);
         var distinctArtistIds = hibernateHits.stream()
-                .map(ArtistDto::getId)
+                .map(SearchResultArtistDto::getId)
                 .toList();
 
         var idsOfArtistsFollowedByUser = idsOfArtistsFollowedByUser(searchingUser.id, distinctArtistIds);
 
-        List<ArtistDto> list = new ArrayList<>();
-        for (ArtistDto artistDto : hibernateHits) {
+        List<SearchResultArtistDto> list = new ArrayList<>();
+        for (SearchResultArtistDto artistDto : hibernateHits) {
             if (idsOfArtistsFollowedByUser.contains(artistDto.getId())) {
                 artistDto.setFollowedByUser(Boolean.TRUE);
             }

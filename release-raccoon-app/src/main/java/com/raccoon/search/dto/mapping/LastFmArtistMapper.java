@@ -1,6 +1,6 @@
 package com.raccoon.search.dto.mapping;
 
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import de.umass.lastfm.Artist;
 
@@ -12,8 +12,8 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class LastFmArtistMapper {
 
-    public ArtistDto toDto(Artist artist) {
-        return ArtistDto.builder()
+    public SearchResultArtistDto toDto(Artist artist) {
+        return SearchResultArtistDto.builder()
                 .name(artist.getName())
                 .lastfmUri(artist.getUrl())
                 .build();

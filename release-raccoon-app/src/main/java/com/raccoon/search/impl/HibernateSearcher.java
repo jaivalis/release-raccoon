@@ -1,10 +1,10 @@
 package com.raccoon.search.impl;
 
 import com.raccoon.Constants;
+import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
 import com.raccoon.search.ArtistSearcher;
-import com.raccoon.search.dto.ArtistDto;
-import com.raccoon.search.dto.mapping.ArtistMapper;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import org.hibernate.search.mapper.orm.session.SearchSession;
 
@@ -55,7 +55,7 @@ public class HibernateSearcher implements ArtistSearcher {
 
     @Override
     @Transactional
-    public Collection<ArtistDto> searchArtist(String pattern, Optional<Integer> size) {
+    public Collection<SearchResultArtistDto> searchArtist(String pattern, Optional<Integer> size) {
         return searchSession.search(Artist.class)
                 .where(f ->
                         pattern == null || pattern.trim().isEmpty() ?
@@ -65,7 +65,7 @@ public class HibernateSearcher implements ArtistSearcher {
                 )
                 .fetchHits(size.orElse(20))
                 .stream()
-                .map(artistMapper::toDto)
+                .map(artistMapper::toSearchResultArtistDto)
                 .collect(Collectors.toSet());
     }
 

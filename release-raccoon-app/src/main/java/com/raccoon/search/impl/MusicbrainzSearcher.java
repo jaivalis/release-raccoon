@@ -5,7 +5,7 @@ import com.raccoon.scraper.musicbrainz.MusicbrainzClient;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtist;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtistsResponse;
 import com.raccoon.search.ArtistSearcher;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.search.dto.mapping.MusicbrainzArtistMapper;
 
 import java.util.Collection;
@@ -44,7 +44,7 @@ public class MusicbrainzSearcher implements ArtistSearcher {
     }
 
     @Override
-    public Collection<ArtistDto> searchArtist(String pattern, Optional<Integer> size) {
+    public Collection<SearchResultArtistDto> searchArtist(String pattern, Optional<Integer> size) {
         try {
             MusicbrainzArtistsResponse response = musicbrainzClient.searchArtistsByName(pattern, size.orElse(20), 0);
             if (response == null || response.getCount() == 0 || response.getArtists() == null) {

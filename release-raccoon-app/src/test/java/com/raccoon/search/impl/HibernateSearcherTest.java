@@ -1,8 +1,8 @@
 package com.raccoon.search.impl;
 
 import com.raccoon.Constants;
+import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
-import com.raccoon.search.dto.mapping.ArtistMapper;
 
 import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
 import org.hibernate.search.mapper.orm.session.SearchSession;
