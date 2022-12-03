@@ -1,4 +1,4 @@
-package com.raccoon.search.dto.mapping;
+package com.raccoon.dto.mapping;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.repository.ArtistRepository;

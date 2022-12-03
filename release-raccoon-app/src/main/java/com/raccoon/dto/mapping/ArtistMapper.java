@@ -1,4 +1,4 @@
-package com.raccoon.search.dto.mapping;
+package com.raccoon.dto.mapping;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.search.dto.SearchResultArtistDto;
@@ -7,11 +7,10 @@ import com.raccoon.user.dto.FollowedArtistDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-// TODO this needs to be moved out
 @Mapper(componentModel = "cdi", uses = ArtistMapperResolver.class)
 public interface ArtistMapper {
 
-    SearchResultArtistDto toDto(Artist artist);
+    SearchResultArtistDto toSearchResultArtistDto(Artist artist);
 
     FollowedArtistDto toFollowedArtistDto(Artist artist);
 

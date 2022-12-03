@@ -1,5 +1,6 @@
 package com.raccoon.user;
 
+import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
@@ -8,7 +9,6 @@ import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.SearchResultArtistDto;
-import com.raccoon.search.dto.mapping.ArtistMapper;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 import com.raccoon.user.dto.FollowedArtistDto;
 
