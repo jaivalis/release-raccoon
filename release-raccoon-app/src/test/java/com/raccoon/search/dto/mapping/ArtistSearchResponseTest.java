@@ -1,6 +1,6 @@
 package com.raccoon.search.dto.mapping;
 
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ class ArtistSearchResponseTest {
 
     @Test
     void setArtistsNonEmptyList() {
-        response.setArtists(List.of(ArtistDto.builder().build()));
+        response.setArtists(List.of(SearchResultArtistDto.builder().build()));
 
         assertEquals(1, response.getCount());
     }

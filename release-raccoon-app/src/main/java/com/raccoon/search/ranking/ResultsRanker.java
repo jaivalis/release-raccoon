@@ -2,7 +2,7 @@ package com.raccoon.search.ranking;
 
 import com.raccoon.Constants;
 import com.raccoon.search.ArtistSearcher;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -20,8 +20,8 @@ public class ResultsRanker {
      * @param rankedResults artists that might have been appended to from hibernate searcher
      * @return ordered artist search results
      */
-    public List<ArtistDto> rankSearchResults(final Map<ArtistSearcher, Collection<ArtistDto>> searchResultsPerSource,
-                                             final List<ArtistDto> rankedResults) {
+    public List<SearchResultArtistDto> rankSearchResults(final Map<ArtistSearcher, Collection<SearchResultArtistDto>> searchResultsPerSource,
+                                                         final List<SearchResultArtistDto> rankedResults) {
         List<ArtistSearcher> searchersSortedOnTrustworthiness =
                 searchResultsPerSource.keySet().stream().sorted(
                         Comparator.comparing(ArtistSearcher::trustworthiness).reversed()
@@ -33,9 +33,9 @@ public class ResultsRanker {
                 continue;
             }
 
-            Collection<ArtistDto> searcherHits = searchResultsPerSource.get(searcher);
+            Collection<SearchResultArtistDto> searcherHits = searchResultsPerSource.get(searcher);
 
-            for (ArtistDto artistDto : searcherHits) {
+            for (SearchResultArtistDto artistDto : searcherHits) {
                 if (rankedResults.contains(artistDto)) {
                     rankedResults.get(rankedResults.indexOf(artistDto)).merge(artistDto);
                 } else {

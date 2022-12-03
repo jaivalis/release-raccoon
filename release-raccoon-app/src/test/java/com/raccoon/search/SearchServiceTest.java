@@ -5,7 +5,7 @@ import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.search.dto.mapping.ArtistSearchResponse;
 import com.raccoon.search.impl.HibernateSearcher;
 import com.raccoon.search.impl.LastfmSearcher;
@@ -83,9 +83,9 @@ class SearchServiceTest {
     void searchArtistsReturns() {
         var pattern = "pattern";
         var size = Optional.of(10);
-        ArtistDto stubArtist1 = ArtistDto.builder().name("hibernate").id(3L).build();
-        ArtistDto stubArtist2 = ArtistDto.builder().name("hibernate2 followed by raccoonUser should appear first").id(9L).build();
-        ArtistDto stubArtist3 = ArtistDto.builder().name("lastfm").build();
+        SearchResultArtistDto stubArtist1 = SearchResultArtistDto.builder().name("hibernate").id(3L).build();
+        SearchResultArtistDto stubArtist2 = SearchResultArtistDto.builder().name("hibernate2 followed by raccoonUser should appear first").id(9L).build();
+        SearchResultArtistDto stubArtist3 = SearchResultArtistDto.builder().name("lastfm").build();
         when(mockHibernateSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist1, stubArtist2));
         when(mockLastfmSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist3));
 

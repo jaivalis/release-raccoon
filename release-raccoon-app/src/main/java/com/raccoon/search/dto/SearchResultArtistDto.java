@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 /**
- * Artist Entity projection, used for Search and follow operations
+ * Artist Entity projection, used for SearchResults (allows for the id to be null)
  */
 @Builder
 @JsonInclude(NON_NULL)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ArtistDto {
+public class SearchResultArtistDto {
 
     private Long id;
 
@@ -41,9 +41,9 @@ public class ArtistDto {
 
     /**
      * Pull nullable fields of other into this
-     * @param other Other ArtistDto to merge from
+     * @param other Other SearchResultArtistDto to merge from
      */
-    public void merge(ArtistDto other) {
+    public void merge(SearchResultArtistDto other) {
         if (lastfmUri == null && other.lastfmUri != null) {
             lastfmUri = other.lastfmUri;
         }
@@ -57,7 +57,7 @@ public class ArtistDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ArtistDto artistDto = (ArtistDto) o;
+        SearchResultArtistDto artistDto = (SearchResultArtistDto) o;
         return name.equals(artistDto.name);
     }
 

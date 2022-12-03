@@ -1,7 +1,7 @@
 package com.raccoon.search.dto.mapping;
 
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtist;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -11,8 +11,8 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MusicbrainzArtistMapper {
 
-    public ArtistDto toDto(MusicbrainzArtist artist) {
-        return ArtistDto.builder()
+    public SearchResultArtistDto toDto(MusicbrainzArtist artist) {
+        return SearchResultArtistDto.builder()
                 .name(artist.getName())
                 .musicbrainzId(artist.getId())
                 .lastfmUri("https://www.last.fm/music/" + artist.getName().replace(" ", "+"))

@@ -2,7 +2,7 @@ package com.raccoon.search.ranking;
 
 import com.raccoon.Constants;
 import com.raccoon.search.ArtistSearcher;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,14 +47,14 @@ class ResultsRankerTest {
         }
 
         @Override
-        public Collection<ArtistDto> searchArtist(String pattern, Optional<Integer> size) {
+        public Collection<SearchResultArtistDto> searchArtist(String pattern, Optional<Integer> size) {
             throw new UnsupportedOperationException("Should not be called");
         }
     }
 
     @Test
     void rankSearchResultsEmpty() {
-        List<ArtistDto> artists = ranker.rankSearchResults(Collections.emptyMap(), Collections.emptyList());
+        List<SearchResultArtistDto> artists = ranker.rankSearchResults(Collections.emptyMap(), Collections.emptyList());
 
         assertThat(artists).isEmpty();
     }
@@ -63,13 +63,13 @@ class ResultsRankerTest {
     @DisplayName("rankSearchResults(): Same artist returned by two ArtistSearchers, should be merged on name")
     void rankSearchResultsMergeArtistsBasedOnName() {
         var artistName = "name";
-        ArtistDto dto = ArtistDto.builder().name(artistName).build();
-        Map<ArtistSearcher, Collection<ArtistDto>> results = Map.of(
+        SearchResultArtistDto dto = SearchResultArtistDto.builder().name(artistName).build();
+        Map<ArtistSearcher, Collection<SearchResultArtistDto>> results = Map.of(
                 new MockSearchService(.9), List.of(dto),
                 new MockSearchService(.8), List.of(dto)
         );
 
-        List<ArtistDto> artists = ranker.rankSearchResults(results, new ArrayList<>());
+        List<SearchResultArtistDto> artists = ranker.rankSearchResults(results, new ArrayList<>());
 
         assertThat(artists)
                 .hasSize(1)
@@ -79,14 +79,14 @@ class ResultsRankerTest {
     @Test
     @DisplayName("rankSearchResults(): Hibernate results should be ignored in this step")
     void rankSearchResultsHibernateSkipped() {
-        ArtistDto dto1 = ArtistDto.builder().name("artist one").build();
-        ArtistDto dto2 = ArtistDto.builder().name("artist two").build();
-        Map<ArtistSearcher, Collection<ArtistDto>> results = Map.of(
+        SearchResultArtistDto dto1 = SearchResultArtistDto.builder().name("artist one").build();
+        SearchResultArtistDto dto2 = SearchResultArtistDto.builder().name("artist two").build();
+        Map<ArtistSearcher, Collection<SearchResultArtistDto>> results = Map.of(
                 new MockSearchService(Constants.HIBERNATE_SEARCHER_ID, 1.), List.of(dto1),
                 new MockSearchService(.8), List.of(dto2)
         );
 
-        List<ArtistDto> artists = ranker.rankSearchResults(results, new ArrayList<>());
+        List<SearchResultArtistDto> artists = ranker.rankSearchResults(results, new ArrayList<>());
 
         assertThat(artists)
                 .hasSize(1)
@@ -96,16 +96,16 @@ class ResultsRankerTest {
     @Test
     @DisplayName("rankSearchResults(): Highest trustworthiness results should come first")
     void rankSearchResultsSorting() {
-        ArtistDto dto1 = ArtistDto.builder().name("artist one").build();
-        ArtistDto dto2 = ArtistDto.builder().name("artist two").build();
-        ArtistDto dto3 = ArtistDto.builder().name("artist three").build();
-        ArtistDto dto4 = ArtistDto.builder().name("artist four").build();
-        Map<ArtistSearcher, Collection<ArtistDto>> results = Map.of(
+        SearchResultArtistDto dto1 = SearchResultArtistDto.builder().name("artist one").build();
+        SearchResultArtistDto dto2 = SearchResultArtistDto.builder().name("artist two").build();
+        SearchResultArtistDto dto3 = SearchResultArtistDto.builder().name("artist three").build();
+        SearchResultArtistDto dto4 = SearchResultArtistDto.builder().name("artist four").build();
+        Map<ArtistSearcher, Collection<SearchResultArtistDto>> results = Map.of(
                 new MockSearchService(.2), List.of(dto1, dto2),
                 new MockSearchService(.8), List.of(dto3, dto4)
         );
 
-        List<ArtistDto> artists = ranker.rankSearchResults(results, new ArrayList<>());
+        List<SearchResultArtistDto> artists = ranker.rankSearchResults(results, new ArrayList<>());
 
         assertThat(artists)
                 .hasSize(4)

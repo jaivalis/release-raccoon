@@ -1,6 +1,7 @@
 package com.raccoon.user;
 
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
+import com.raccoon.user.dto.FollowedArtistsResponse;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.cache.NoCache;
@@ -63,7 +64,7 @@ public class UserProfileResource {
     @NoCache
     @Transactional
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response followArtist(@Valid @NotNull ArtistDto artistDto) {
+    public Response followArtist(@Valid @NotNull SearchResultArtistDto artistDto) {
         log.info("Following artist {}", artistDto);
         final String email = idToken.getClaim(EMAIL_CLAIM);
 
@@ -109,4 +110,5 @@ public class UserProfileResource {
 
         return userProfileService.getFollowedArtists(email);
     }
+
 }

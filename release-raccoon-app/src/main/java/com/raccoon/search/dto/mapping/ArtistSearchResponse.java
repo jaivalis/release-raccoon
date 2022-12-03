@@ -1,7 +1,7 @@
 package com.raccoon.search.dto.mapping;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import java.util.List;
 
@@ -19,9 +19,9 @@ public class ArtistSearchResponse {
      * Results sorted by relevance
      */
     @JsonProperty
-    private List<ArtistDto> artists;
+    private List<SearchResultArtistDto> artists;
 
-    public void setArtists(List<ArtistDto> artists) {
+    public void setArtists(List<SearchResultArtistDto> artists) {
         this.artists = artists;
         this.count = artists.size();
     }

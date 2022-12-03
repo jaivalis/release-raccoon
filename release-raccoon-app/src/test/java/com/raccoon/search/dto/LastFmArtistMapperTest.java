@@ -21,7 +21,7 @@ class LastFmArtistMapperTest {
         when(artist.getName()).thenReturn("name");
         when(artist.getUrl()).thenReturn("uri");
 
-        ArtistDto project = mapper.toDto(artist);
+        SearchResultArtistDto project = mapper.toDto(artist);
 
         assertEquals("name", project.getName());
         assertEquals("uri", project.getLastfmUri());

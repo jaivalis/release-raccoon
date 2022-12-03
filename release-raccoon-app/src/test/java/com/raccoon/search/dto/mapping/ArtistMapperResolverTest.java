@@ -1,7 +1,7 @@
 package com.raccoon.search.dto.mapping;
 
 import com.raccoon.entity.repository.ArtistRepository;
-import com.raccoon.search.dto.ArtistDto;
+import com.raccoon.search.dto.SearchResultArtistDto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class ArtistMapperResolverTest {
 
     @Test
     void resolve() {
-        var dto = ArtistDto.builder()
+        var dto = SearchResultArtistDto.builder()
                 .name("name")
                 .build();
 
