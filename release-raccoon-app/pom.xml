@@ -125,7 +125,7 @@
         <!-- database -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-flyway</artifactId>
+            <artifactId>quarkus-liquibase</artifactId>
             <version>${quarkus.platform.version}</version>
         </dependency>
 

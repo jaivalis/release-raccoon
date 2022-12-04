@@ -12,6 +12,46 @@ source release-raccoon-app/.env
 docker compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.yml up -d
 ```
 
+### Setting up liquibase
+For db schema migrations Liquibase is used.
+Prior to the first run you will need to generate two tables used to track liquibase versions.
+
+To create the two tables needed run the following against your sql database.
+```mariadb
+create table DATABASECHANGELOG
+(
+    ID            varchar(255) not null,
+    AUTHOR        varchar(255) not null,
+    FILENAME      varchar(255) not null,
+    DATEEXECUTED  datetime     not null,
+    ORDEREXECUTED int          not null,
+    EXECTYPE      varchar(10)  not null,
+    MD5SUM        varchar(35)  null,
+    DESCRIPTION   varchar(255) null,
+    COMMENTS      varchar(255) null,
+    TAG           varchar(255) null,
+    LIQUIBASE     varchar(20)  null,
+    CONTEXTS      varchar(255) null,
+    LABELS        varchar(255) null,
+    DEPLOYMENT_ID varchar(10)  null
+);
+
+create table DATABASECHANGELOGLOCK
+(
+    ID          int          not null
+        primary key,
+    LOCKED      bit          not null,
+    LOCKGRANTED datetime     null,
+    LOCKEDBY    varchar(255) null
+);
+```
+
+Alternatively, you can install  and use the liquibase executable directly like so:
+```shell
+sdk install liquibase
+liquibase --driver=org.mariadb.jdbc.Driver --changeLogFile=src/main/resources/db/changeLog.xml --url="jdbc:mariadb://localhost:3305/raccoondb" --username=${DB_USERNAME} --password=${DB_PASSWORD} generateChangeLog
+```
+
 ## Setting up Keycloak
 Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the [docker-compose](docker/docker-compose.yml).
 The realm we will be using is `RaccoonRealm` and is defined in [realm](docker/keycloak_init/realm-export.json).
