@@ -36,6 +36,9 @@
         <lastfm.client.version>0.1.2</lastfm.client.version>
         <spotify.client.version>6.5.4</spotify.client.version>
 
+        <!-- Observability -->
+        <micrometer-registry-prometheus.version>1.8.3</micrometer-registry-prometheus.version>
+
         <!-- tests -->
         <testcontainers.version>1.17.6</testcontainers.version>
         <testcontainers-elasticsearch.version>1.17.6</testcontainers-elasticsearch.version>
@@ -177,6 +180,13 @@
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-container-image-jib</artifactId>
                 <version>${quarkus.platform.version}</version>
+            </dependency>
+
+            <!-- Observability -->
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-registry-prometheus</artifactId>
+                <version>${micrometer-registry-prometheus.version}</version>
             </dependency>
 
             <!-- Qute & UI -->

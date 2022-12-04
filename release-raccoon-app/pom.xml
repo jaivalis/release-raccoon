@@ -141,6 +141,12 @@
             <!-- Fixes: ClassNotFoundException: com.sun.jna.LastErrorException -->
         </dependency>
 
+        <!-- Observability -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>io.quarkus</groupId>
