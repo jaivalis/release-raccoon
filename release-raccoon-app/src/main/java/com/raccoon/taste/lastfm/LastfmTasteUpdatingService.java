@@ -100,7 +100,7 @@ public class LastfmTasteUpdatingService implements TasteUpdatingService {
             return false;
         }
         if (!raccoonUser.isLastfmScrapeRequired(1)) {
-            log.info("RaccoonUser was lastfm scraped not long ago, skipping.");
+            log.info("RaccoonUser was lastfm taste was scraped not long ago, skipping.");
             return false;
         }
         return true;

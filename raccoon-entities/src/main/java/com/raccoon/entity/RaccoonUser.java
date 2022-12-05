@@ -67,10 +67,10 @@ public class RaccoonUser extends PanacheEntityBase implements Serializable {
     LocalDateTime modifyDate;
 
     @Column
-    LocalDateTime lastSpotifyScrape;
+    LocalDateTime lastSpotifyScrape = LocalDateTime.MIN;
 
     @Column
-    LocalDateTime lastLastFmScrape;
+    LocalDateTime lastLastFmScrape = LocalDateTime.MIN;
 
     @JsonbTransient
     @OneToMany(mappedBy = "key.raccoonUser", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
