@@ -13,11 +13,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import io.quarkus.runtime.StartupEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -32,15 +30,6 @@ public class HibernateSearcher implements ArtistSearcher {
                              final ArtistMapper artistMapper) {
         this.searchSession = searchSession;
         this.artistMapper = artistMapper;
-    }
-
-    @Transactional
-    void onStart(@Observes StartupEvent ev) {
-        log.info("Indexing Artist entities");
-        searchSession.massIndexer(Artist.class)
-                .threadsToLoadObjects(2)
-                .batchSizeToLoadObjects(25)
-                .start();
     }
 
     @Override
