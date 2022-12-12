@@ -37,6 +37,7 @@ public class SearchResultArtistDto {
     /**
      * True if the raccoonUser searching already follows the artist
      */
+    @Builder.Default
     private boolean followedByUser = false;
 
     /**

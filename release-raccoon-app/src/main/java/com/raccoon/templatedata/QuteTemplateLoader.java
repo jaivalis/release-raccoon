@@ -1,17 +1,16 @@
 package com.raccoon.templatedata;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.util.Objects;
+import java.util.Scanner;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import io.quarkus.qute.Engine;
 import io.quarkus.runtime.StartupEvent;
+import lombok.extern.slf4j.Slf4j;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Workaround for Template loading. I seem to be getting some errors when injecting the templates:
@@ -22,19 +21,22 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  *
  * Look into @Location as replacement for this.
  */
+@Slf4j
 public class QuteTemplateLoader {
 
     Engine engine;
 
     @Inject
-    public QuteTemplateLoader(Engine engine) throws IOException {
+    public QuteTemplateLoader(Engine engine) {
         this.engine = engine;
     }
 
-    final String indexContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/index.html")), UTF_8);
-    final String profileContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/profile.html")), UTF_8);
-    final String digestEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/mail-digest.html")), UTF_8);
-    final String welcomeEmailContents = IOUtils.toString(Objects.requireNonNull(this.getClass().getResource("/templates/mail-welcome.html")), UTF_8);
+
+
+    final String indexContents = new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/index.html")π), UTF_8).next();
+    final String profileContents = new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/profile.html")), UTF_8).next();
+    final String digestEmailContents = new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-digest.html")), UTF_8).next();
+    final String welcomeEmailContents = new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-welcome.html")), UTF_8).next();
 
     public static final String DIGEST_EMAIL_TEMPLATE_ID = "digest";
     public static final String INDEX_TEMPLATE_ID = "index";
@@ -42,6 +44,7 @@ public class QuteTemplateLoader {
     public static final String WELCOME_EMAIL_TEMPLATE_ID = "welcome";
 
     void onStart(@Observes StartupEvent event) {
+        log.info(digestEmailContents);
         engine.putTemplate(DIGEST_EMAIL_TEMPLATE_ID, engine.parse(digestEmailContents));
         engine.putTemplate(INDEX_TEMPLATE_ID, engine.parse(indexContents));
         engine.putTemplate(PROFILE_TEMPLATE_ID, engine.parse(profileContents));

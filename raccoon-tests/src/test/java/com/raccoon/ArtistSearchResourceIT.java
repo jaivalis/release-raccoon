@@ -32,9 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.*;
-import static org.jboss.resteasy.spi.HttpResponseCodes.SC_OK;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
