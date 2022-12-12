@@ -1,10 +1,12 @@
 # Local Development
 
 ## Starting the db, keycloak and Elastic using the .env file
-Create a .env file containing all the environment variables that are referred to from the [docker-compose](docker/docker-compose.yml) file.
-Place that file under [release-raccoon-app](release-raccoon-app).
-
-> **NOTE:**  The images in docker-compose.yml are currently set for development on arm CPUs, commented you will find the amd64 counterparts.
+Create env variables that are needed in [docker-compose](../docker/docker-compose.yml) file and update to required values.    
+```shell
+$ cp release-raccoon-app/.env.dist release-raccoon-app/.env
+```
+> **NOTE:**  The images in docker-compose.yml are currently set for development on arm CPUs,
+> commented you will find the amd64 counterparts.
 
 From the root of the project run:
 ```shell script
