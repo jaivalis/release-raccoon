@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import io.quarkus.qute.Engine;
 import io.quarkus.runtime.StartupEvent;
-import lombok.extern.slf4j.Slf4j;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
@@ -21,7 +20,6 @@ import static java.util.Objects.requireNonNull;
  *
  * Look into @Location as replacement for this.
  */
-@Slf4j
 public class QuteTemplateLoader {
 
     Engine engine;
@@ -32,11 +30,18 @@ public class QuteTemplateLoader {
     }
 
 
-
-    final String indexContents = new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/index.html")π), UTF_8).next();
-    final String profileContents = new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/profile.html")), UTF_8).next();
-    final String digestEmailContents = new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-digest.html")), UTF_8).next();
-    final String welcomeEmailContents = new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-welcome.html")), UTF_8).next();
+    final String indexContents =
+            new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/index.html")), UTF_8)
+                    .useDelimiter("\\A").next();
+    final String profileContents =
+            new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/profile.html")), UTF_8)
+                    .useDelimiter("\\A").next();
+    final String digestEmailContents =
+            new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-digest.html")), UTF_8)
+                    .useDelimiter("\\A").next();
+    final String welcomeEmailContents =
+            new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-welcome.html")), UTF_8)
+                    .useDelimiter("\\A").next();
 
     public static final String DIGEST_EMAIL_TEMPLATE_ID = "digest";
     public static final String INDEX_TEMPLATE_ID = "index";
@@ -44,7 +49,6 @@ public class QuteTemplateLoader {
     public static final String WELCOME_EMAIL_TEMPLATE_ID = "welcome";
 
     void onStart(@Observes StartupEvent event) {
-        log.info(digestEmailContents);
         engine.putTemplate(DIGEST_EMAIL_TEMPLATE_ID, engine.parse(digestEmailContents));
         engine.putTemplate(INDEX_TEMPLATE_ID, engine.parse(indexContents));
         engine.putTemplate(PROFILE_TEMPLATE_ID, engine.parse(profileContents));
