@@ -50,7 +50,7 @@
 
         <!-- util -->
         <lombok.version>1.18.20</lombok.version>
-        <apache.commons.version>3.9</apache.commons.version>
+        <apache.commons.version>3.12.0</apache.commons.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <guava.version>31.1-jre</guava.version>
         <jackson-datatype-jsr310.version>2.14.1</jackson-datatype-jsr310.version>
