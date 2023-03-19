@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.concurrent.ExecutionException;
+
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -28,7 +30,7 @@ class ReleaseScrapeSchedulerTest {
 
     @Test
     @DisplayName("releaseScrapeCronJob() calls mockService.scrape()")
-    void releaseScrapeCronJob() throws InterruptedException {
+    void releaseScrapeCronJob() throws InterruptedException, ExecutionException {
         scheduler.releaseScrapeCronJob();
 
         verify(mockService, times(1)).scrapeReleases();

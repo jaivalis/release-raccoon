@@ -1,0 +1,7 @@
+
+### Scrape releases
+PUT http://localhost:8080/release-scrape
+
+
+### Notify
+GET http://localhost:8080/notify-users

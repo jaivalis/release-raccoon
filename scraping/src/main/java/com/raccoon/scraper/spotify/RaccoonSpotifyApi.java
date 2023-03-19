@@ -71,10 +71,7 @@ public class RaccoonSpotifyApi {
 
             log.info("Spotify client credentials expire in: {}", clientCredentials.getExpiresIn());
         } catch (CompletionException | CancellationException | ExecutionException e) {
-            log.error("", e);
-        } catch (InterruptedException e) {
-            log.error("", e);
-            throw e;
+            log.error("Could not validate credentials", e);
         }
     }
 

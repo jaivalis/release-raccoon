@@ -16,6 +16,7 @@
 * Either raise an exception OR log an error, but not both (https://www.morling.dev/blog/whats-in-a-good-error-message/)
 * Dependency cleanup: org.apache.maven.plugins:maven-dependency-plugin:analyze-only
 * Use LRO for release-scrape http://restalk-patterns.org/long-running-operation-polling.html
+* render.com deployments should happen after the pipeline completes
 
 # Additional Integrations
 * Add integrations:
