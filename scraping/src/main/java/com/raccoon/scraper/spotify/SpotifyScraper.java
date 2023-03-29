@@ -82,8 +82,6 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             log.error("Something went wrong when fetching new albums.", e);
             return albums;
-        } catch (InterruptedException e) {
-            throw e;
         }
         return albums;
     }

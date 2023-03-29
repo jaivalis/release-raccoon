@@ -22,7 +22,9 @@ import static java.util.Objects.requireNonNull;
  */
 public class QuteTemplateLoader {
 
-    Engine engine;
+    static final String EOF_DELIMITER = "\\A";
+
+    final Engine engine;
 
     @Inject
     public QuteTemplateLoader(Engine engine) {
@@ -32,16 +34,16 @@ public class QuteTemplateLoader {
 
     final String indexContents =
             new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/index.html")), UTF_8)
-                    .useDelimiter("\\A").next();
+                    .useDelimiter(EOF_DELIMITER).next();
     final String profileContents =
             new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/profile.html")), UTF_8)
-                    .useDelimiter("\\A").next();
+                    .useDelimiter(EOF_DELIMITER).next();
     final String digestEmailContents =
             new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-digest.html")), UTF_8)
-                    .useDelimiter("\\A").next();
+                    .useDelimiter(EOF_DELIMITER).next();
     final String welcomeEmailContents =
             new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-welcome.html")), UTF_8)
-                    .useDelimiter("\\A").next();
+                    .useDelimiter(EOF_DELIMITER).next();
 
     public static final String DIGEST_EMAIL_TEMPLATE_ID = "digest";
     public static final String INDEX_TEMPLATE_ID = "index";

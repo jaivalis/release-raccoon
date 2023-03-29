@@ -32,7 +32,7 @@ public class ReleaseRepository implements PanacheRepository<Release> {
             return Optional.empty();
         } else {
             // Having more than one hits would constitute a database consistency error.
-            assert releasesByNameAndArtists.size() <= 1;
+            assert releasesByNameAndArtists.size() == 1;
             return Optional.of(releasesByName.get(0));
         }
     }

@@ -1,11 +1,11 @@
 package com.raccoon.release;
 
-import com.raccoon.entity.Release;
+import com.raccoon.release.dto.ReleaseScrapeResponse;
 
-import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -16,12 +16,10 @@ public class ReleaseScrapeResource {
     @Inject
     ReleaseScrapeService service;
 
-    @GET
+    @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Set<Release> scrapeReleases() throws InterruptedException {
-        Set<Release> releases = service.scrapeReleases();
-        service.updateHasNewRelease(releases);
-        return releases;
+    public ReleaseScrapeResponse scrapeReleases() throws ExecutionException, InterruptedException {
+        return service.scrapeReleases();
     }
 
 }
