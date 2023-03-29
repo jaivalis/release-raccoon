@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
@@ -78,7 +77,7 @@ public class ReleaseScrapeService {
 
             var releases = future.get().stream()
                     .map(releaseMapper::toSearchResultArtistDto)
-                    .collect(Collectors.toList());
+                    .toList();
             response = new ReleaseScrapeResponse(scrape, releases);
         }
 
@@ -88,14 +87,7 @@ public class ReleaseScrapeService {
     public Set<Release> fetchReleases() {
         Set<Release> releases = new HashSet<>();
         for (ReleaseScraper<?> scraper : releaseScrapers) {
-            final Set<Release> releasesPerScraper;
-            try {
-                releasesPerScraper = scraper.scrapeReleases(Optional.empty());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            releases.addAll(releasesPerScraper);
-            log.info("New releases found through {}: {}", scraper.getClass().getSimpleName(), releasesPerScraper.size());
+            scrapeReleases(releases, scraper);
         }
         log.info("Total new releases found: {}", releases.size());
 
@@ -139,6 +131,17 @@ public class ReleaseScrapeService {
                 ).toList();
         List<UserArtist> userArtists = userArtistRepository.markNewRelease(artistIds);
         log.info("Updated {} UserArtist(s) of new releases", userArtists);
+    }
+
+    private void scrapeReleases(Set<Release> releases, ReleaseScraper<?> scraper) {
+        try {
+            final Set<Release> releasesPerScraper = scraper.scrapeReleases(Optional.empty());
+            releases.addAll(releasesPerScraper);
+            log.info("New releases found through {}: {}", scraper.getClass().getSimpleName(), releasesPerScraper.size());
+        } catch (InterruptedException e) {
+            log.warn("Thread was interrupted while scraping releases");
+            Thread.currentThread().interrupt();
+        }
     }
 
 }

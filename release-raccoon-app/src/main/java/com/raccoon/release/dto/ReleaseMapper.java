@@ -9,15 +9,4 @@ public interface ReleaseMapper {
 
     ReleaseDto toSearchResultArtistDto(Release release);
 
-//    @Mapper(componentModel = "cdi", uses = ArtistMapperResolver.class)
-//public interface ArtistMapper {
-//
-//    SearchResultArtistDto toSearchResultArtistDto(Artist artist);
-//
-//    FollowedArtistDto toFollowedArtistDto(Artist artist);
-//
-//    @Mapping(target = "id", ignore = true)
-//    Artist fromDto(SearchResultArtistDto dto);
-//
-//}
 }
