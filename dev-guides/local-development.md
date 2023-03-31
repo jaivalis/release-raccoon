@@ -51,18 +51,18 @@ create table DATABASECHANGELOGLOCK
 Alternatively, you can install  and use the liquibase executable directly like so:
 ```shell
 sdk install liquibase
-liquibase --driver=org.mariadb.jdbc.Driver --changeLogFile=src/main/resources/db/changeLog.xml --url="jdbc:mariadb://localhost:3305/raccoondb" --username=${DB_USERNAME} --password=${DB_PASSWORD} generateChangeLog
+liquibase --driver=org.mariadb.jdbc.Driver --changeLogFile=release-raccoon-app/src/main/resources/db/changelog/db.changelog-x.x.x.sql --url="jdbc:mariadb://localhost:3305/raccoondb" --username=${DB_USERNAME} --password=${DB_PASSWORD} generateChangeLog
 ```
 
 ## Setting up Keycloak
-Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the [docker-compose](docker/docker-compose.yml).
-The realm we will be using is `RaccoonRealm` and is defined in [realm](docker/keycloak_init/realm-export.json).
+Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the [docker-compose](../docker/docker-compose.yml).
+The realm we will be using is `RaccoonRealm` and is defined in [realm](../docker/keycloak_init/realm-export.json).
 It is mounted to the container on start time.
 You will need to create a new user in order to connect.
-You also need to create a secret (Clients > release-raccoon > Credentials > Regenerate Secret) which you will need to pass as `quarkus.oidc.credentials.secret` to the [properties](release-raccoon-app/src/main/resources/application.properties).
+You also need to create a secret (Clients > release-raccoon > Credentials > Regenerate Secret) which you will need to pass as `quarkus.oidc.credentials.secret` to the [properties](../release-raccoon-app/src/main/resources/application.properties).
 You should be good to start the quarkus app.
 
-> In case after a docker restart the redirect back from keycloak stops working in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the [properties](release-raccoon-app/src/main/resources/application.properties) again.
+> In case after a docker restart the redirect back from keycloak stops working in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the [properties](../release-raccoon-app/src/main/resources/application.properties) again.
 
 
 ## Running the application in dev mode
