@@ -188,6 +188,11 @@
                 <artifactId>micrometer-registry-prometheus</artifactId>
                 <version>${micrometer-registry-prometheus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-logging-sentry</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
 
             <!-- Qute & UI -->
             <dependency>
