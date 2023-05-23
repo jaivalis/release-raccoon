@@ -1,7 +1,9 @@
 
 ### Scrape releases
-PUT http://localhost:8080/release-scrape
-
+PUT {{ baseUrl }}/release-scrape
 
 ### Notify
-GET http://localhost:8080/notify-users
+GET {{ baseUrl }}/notify-users
+
+### Scrape releases
+PUT {{ baseUrl }}/release-scrape
