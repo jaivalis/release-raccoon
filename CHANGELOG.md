@@ -11,6 +11,7 @@
 * Welcome to release-raccoon email upon signup
 * Adding an artist to raccoonUser taste should potentially trigger an update email
 * Docker builds as part of build
+* Added sentry.io configuration
 
 **0.0.1**
 * Introduce Release-Raccoon
