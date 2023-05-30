@@ -96,15 +96,34 @@ class ReleaseScrapeWorkerTest {
     }
 
     @Test
-    void scrapeReleases_should_callBothScrapers() throws Exception {
+    void submit_should_callBothScrapers() throws Exception {
         var releaseCount = 5;
         when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
         when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
 
         worker.submit();
 
+        await("Should complete the scrape before we can query the latest scrape").atMost(Duration.ofSeconds(10))
+                .until(() -> !worker.isRunning());
         verify(mockMusicbrainzScraper, times(1)).scrapeReleases(Optional.empty());
         verify(mockSpotifyScraper, times(1)).scrapeReleases(Optional.empty());
+    }
+
+    @Test
+    @DisplayName("Identical Releases returned by both scrapers, should be merged")
+    void submit_should_mergeIdenticalAlbums() throws Exception {
+        var releaseCount = 5;
+        Set<Release> stubReleases = stubReleases(releaseCount);
+        when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(stubReleases);
+        // Second scraper returns only one Release already returned by the first
+        when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(Set.of(stubReleases.iterator().next()));
+
+        worker.submit();
+
+        await("Should complete the scrape before we can query the latest scrape").atMost(Duration.ofSeconds(10))
+                .until(() -> !worker.isRunning());
+        assertThat(worker.getLatestScrape().getReleaseCount())
+                .isEqualTo(stubReleases.size());
     }
 
     @Test
@@ -119,23 +138,6 @@ class ReleaseScrapeWorkerTest {
                 .isEqualTo(arg.size());
         // ids are given through `stubReleases` are lte `releaseCount`
         arg.forEach(artistId -> assertTrue(artistId < releaseCount));
-    }
-
-    @Test
-    @DisplayName("Identical Releases returned by both scrapers, should be merged")
-    void scrapeReleases_should_mergeIdenticalAlbums() throws Exception {
-        var releaseCount = 5;
-        Set<Release> stubReleases = stubReleases(releaseCount);
-        when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(stubReleases);
-        // Second scraper returns only one Release already returned by the first
-        when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(Set.of(stubReleases.iterator().next()));
-
-        worker.submit();
-
-        await("Should complete the scrape before we can query the latest scrape").atMost(Duration.ofSeconds(10))
-                        .until(() -> !worker.isRunning());
-        assertThat(worker.getLatestScrape().getReleaseCount())
-                .isEqualTo(stubReleases.size());
     }
 
 }
