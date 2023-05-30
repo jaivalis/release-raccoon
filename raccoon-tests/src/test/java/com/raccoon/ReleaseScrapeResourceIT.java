@@ -4,8 +4,8 @@ import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.common.WiremockExtensions;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.release.ReleaseScrapeResource;
-import com.raccoon.release.dto.ReleaseScrapeResponse;
+import com.raccoon.scrape.ReleaseScrapeResource;
+import com.raccoon.scrape.dto.ReleaseScrapeResponse;
 import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import org.junit.jupiter.api.BeforeEach;

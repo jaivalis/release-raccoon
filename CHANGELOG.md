@@ -11,7 +11,8 @@
 * Welcome to release-raccoon email upon signup
 * Adding an artist to raccoonUser taste should potentially trigger an update email
 * Docker builds as part of build
-* Added sentry.io configuration
+* Added sentry.io integration
+* Use LRO for release-scrape http://restalk-patterns.org/long-running-operation-polling.html
 
 **0.0.1**
 * Introduce Release-Raccoon

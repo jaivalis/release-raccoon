@@ -4,6 +4,3 @@ PUT {{ baseUrl }}/release-scrape
 
 ### Notify
 GET {{ baseUrl }}/notify-users
-
-### Scrape releases
-PUT {{ baseUrl }}/release-scrape

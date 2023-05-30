@@ -1,4 +1,4 @@
-package com.raccoon.release;
+package com.raccoon.scrape;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.concurrent.ExecutionException;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -30,7 +28,7 @@ class ReleaseScrapeSchedulerTest {
 
     @Test
     @DisplayName("releaseScrapeCronJob() calls mockService.scrape()")
-    void releaseScrapeCronJob() throws InterruptedException, ExecutionException {
+    void releaseScrapeCronJob() {
         scheduler.releaseScrapeCronJob();
 
         verify(mockService, times(1)).scrapeReleases();

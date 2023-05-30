@@ -1,8 +1,6 @@
-package com.raccoon.release;
+package com.raccoon.scrape;
 
-import com.raccoon.release.dto.ReleaseScrapeResponse;
-
-import java.util.concurrent.ExecutionException;
+import com.raccoon.scrape.dto.ReleaseScrapeResponse;
 
 import javax.inject.Inject;
 import javax.ws.rs.PUT;
@@ -18,7 +16,7 @@ public class ReleaseScrapeResource {
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public ReleaseScrapeResponse scrapeReleases() throws ExecutionException, InterruptedException {
+    public ReleaseScrapeResponse scrapeReleases() {
         return service.scrapeReleases();
     }
 
