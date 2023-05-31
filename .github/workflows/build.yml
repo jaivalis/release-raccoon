@@ -1,6 +1,9 @@
 name: Build
+
 on:
   push:
+    tags:
+      - '*'
     branches:
       - jdevelop
   pull_request:
