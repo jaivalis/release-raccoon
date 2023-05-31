@@ -3,35 +3,28 @@ package com.raccoon;
 import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.common.WiremockExtensions;
 import com.raccoon.entity.Release;
+import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.release.ReleaseScrapeResource;
-import com.raccoon.release.dto.ReleaseScrapeResponse;
+import com.raccoon.scrape.ReleaseScrapeResource;
+import com.raccoon.scrape.ReleaseScrapeWorker;
 import com.raccoon.scraper.spotify.SpotifyScraper;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
-
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
-import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
+import javax.transaction.*;
+import java.time.Duration;
+import java.util.Set;
 
 import static io.quarkus.test.junit.QuarkusMock.installMockForType;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -79,6 +72,10 @@ class ReleaseScrapeResourceIT {
     UserArtistRepository userArtistRepository;
     @InjectMock
     SpotifyScraper mockSpotifyScraper;
+    @Inject
+    ReleaseRepository releaseRepository;
+    @Inject
+    ReleaseScrapeWorker releaseScrapeWorker;
 
     @Inject
     UserTransaction transaction;
@@ -103,18 +100,17 @@ class ReleaseScrapeResourceIT {
                 .thenReturn(Set.of(scrapedRelease));
 
         // When getting for new releases
-        ReleaseScrapeResponse result = given().when()
+        given().when()
                 .put()
                 .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body(containsString(scrapedRelease.getName()))
-                .extract()
-                .as(ReleaseScrapeResponse.class);
+                .statusCode(200);
 
-        assertThat(result.releases())
+        await("Should complete the scrape before we can query the latest scrape").atMost(Duration.ofSeconds(10))
+                .until(() -> !releaseScrapeWorker.isRunning());
+
+        assertThat(releaseRepository.count())
                 .as("23 results in the response (1 mocked above + 22 from stub.json)")
-                .hasSize(23);
+                .isGreaterThanOrEqualTo(23);
 
         var uaOptional = userArtistRepository.findByUserIdArtistIdOptional(400L, 400L);
         assertThat(uaOptional).isPresent();

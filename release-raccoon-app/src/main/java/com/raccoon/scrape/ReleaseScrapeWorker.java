@@ -1,4 +1,4 @@
-package com.raccoon.release;
+package com.raccoon.scrape;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.Release;
@@ -6,43 +6,42 @@ import com.raccoon.entity.Scrape;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ScrapeRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.release.dto.ReleaseMapper;
-import com.raccoon.release.dto.ReleaseScrapeResponse;
+import com.raccoon.scrape.dto.ReleaseMapper;
 import com.raccoon.scraper.ReleaseScraper;
-
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
-
-import io.smallrye.mutiny.Uni;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.raccoon.common.StringUtil.isNullOrEmpty;
 
 @Slf4j
 @ApplicationScoped
-public class ReleaseScrapeService {
+public class ReleaseScrapeWorker {
 
     final List<ReleaseScraper<?>> releaseScrapers;
     final UserArtistRepository userArtistRepository;
     final ScrapeRepository scrapeRepository;
     final ReleaseMapper releaseMapper;
 
+    final AtomicBoolean isRunning = new AtomicBoolean(false);
+    final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private Scrape latestScrape;
+
     @Inject
-    ReleaseScrapeService(final Instance<ReleaseScraper<?>> releaseScrapers,
-                         final UserArtistRepository userArtistRepository,
-                         final ScrapeRepository scrapeRepository,
-                         final ReleaseMapper releaseMapper) {
+    ReleaseScrapeWorker(final Instance<ReleaseScraper<?>> releaseScrapers,
+                        final UserArtistRepository userArtistRepository,
+                        final ScrapeRepository scrapeRepository,
+                        final ReleaseMapper releaseMapper) {
         this.releaseScrapers = releaseScrapers.stream().toList();
         log.info("Found {} release scrapers in classpath", this.releaseScrapers.size());
         this.userArtistRepository = userArtistRepository;
@@ -50,41 +49,37 @@ public class ReleaseScrapeService {
         this.releaseMapper = releaseMapper;
     }
 
-    @Transactional
-    public ReleaseScrapeResponse scrapeReleases() throws ExecutionException, InterruptedException {
-        Scrape scrape;
-        ReleaseScrapeResponse response;
+    /**
+     * Submits a scrape job. If one is active and incomplete, returns that one instead.
+     */
+    public void submit() {
+        log.info("Starting new scrape job");
+        isRunning.set(true);
+        latestScrape = new Scrape();
 
-        var daysSinceLastAllowedScrape = LocalDateTime.now().minusDays(1);
-        Optional<Scrape> mostRecentScrape = scrapeRepository.getMostRecentScrapeFrom(daysSinceLastAllowedScrape);
-        if (mostRecentScrape.isPresent()) {
-            log.info("No scrape is needed, latest scrape took place on: {}", mostRecentScrape.get().getCompleteDate());
-            scrape = mostRecentScrape.get();
-            response = new ReleaseScrapeResponse(scrape, null);
-
-        } else {
-            log.info("Starting new scrape");
-            scrape = new Scrape();
-            scrapeRepository.persist(scrape);
-            CompletableFuture<Set<Release>> future = Uni.createFrom()
-                    .item(() -> {
-                                Set<Release> releases = fetchReleases();
-                                persistScrape(scrape, releases);
-                                return releases;
-                            }
-                    ).subscribe()
-                    .asCompletionStage();
-
-            var releases = future.get().stream()
-                    .map(releaseMapper::toSearchResultArtistDto)
-                    .toList();
-            response = new ReleaseScrapeResponse(scrape, releases);
-        }
-
-        return response;
+        executorService.submit(() -> {
+            try {
+                Set<Release> releases = fetchReleases();
+                persistLatestScrape(releases);
+            } catch (PersistenceException ex) {
+                log.error("Could not persist latest scrape ", ex);
+                throw ex;
+            } finally {
+                log.info("Scrape job complete");
+                isRunning.set(false);
+            }
+        });
     }
 
-    public Set<Release> fetchReleases() {
+    public Scrape getLatestScrape() {
+        return latestScrape;
+    }
+
+    public boolean isRunning() {
+        return isRunning.get();
+    }
+
+    Set<Release> fetchReleases() {
         Set<Release> releases = new HashSet<>();
         for (ReleaseScraper<?> scraper : releaseScrapers) {
             scrapeReleases(releases, scraper);
@@ -96,25 +91,25 @@ public class ReleaseScrapeService {
 
     /**
      * Will persist new releases and mark artists that need to be notified
-     * @param scrape
      * @param releases
      */
     @Transactional
-    public void persistScrape(Scrape scrape, Collection<Release> releases) {
-        scrape.setReleasesFromSpotify(
+    void persistLatestScrape(Collection<Release> releases) {
+        latestScrape.setReleasesFromSpotify(
                 releases.stream()
                         .filter(r -> !isNullOrEmpty(r.getSpotifyUriId()))
                         .count()
         );
-        scrape.setReleasesFromMusicbrainz(
+        latestScrape.setReleasesFromMusicbrainz(
                 releases.stream()
                         .filter(r -> !isNullOrEmpty(r.getMusicbrainzId()))
                         .count()
         );
-        scrape.setReleaseCount(releases.size());
-        scrape.setIsComplete(true);
-        scrape.setCompleteDate(LocalDateTime.now());
-        scrapeRepository.persist(scrape);
+        latestScrape.setReleaseCount(releases.size());
+        latestScrape.setIsComplete(true);
+        latestScrape.setCompleteDate(LocalDateTime.now());
+        latestScrape.getReleases().addAll(releases);
+        scrapeRepository.persist(latestScrape);
         updateHasNewRelease(releases);
     }
 
@@ -122,7 +117,7 @@ public class ReleaseScrapeService {
      * Mark artists that need to be notified
      * @param releases need
      */
-    public void updateHasNewRelease(Collection<Release> releases) {
+    void updateHasNewRelease(Collection<Release> releases) {
         List<Long> artistIds = releases.stream()
                 .flatMap(release ->
                         release.getArtists()
@@ -133,7 +128,7 @@ public class ReleaseScrapeService {
         log.info("Updated {} UserArtist(s) of new releases", userArtists);
     }
 
-    private void scrapeReleases(Set<Release> releases, ReleaseScraper<?> scraper) {
+    void scrapeReleases(Set<Release> releases, ReleaseScraper<?> scraper) {
         try {
             final Set<Release> releasesPerScraper = scraper.scrapeReleases(Optional.empty());
             releases.addAll(releasesPerScraper);

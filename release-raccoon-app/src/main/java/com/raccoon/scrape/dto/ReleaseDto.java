@@ -1,4 +1,4 @@
-package com.raccoon.release.dto;
+package com.raccoon.scrape.dto;
 
 import java.time.LocalDate;
 

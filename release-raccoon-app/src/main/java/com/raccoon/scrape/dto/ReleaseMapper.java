@@ -1,4 +1,4 @@
-package com.raccoon.release.dto;
+package com.raccoon.scrape.dto;
 
 import com.raccoon.entity.Release;
 
