@@ -2,6 +2,8 @@
 ---
 
 **main**
+
+**0.1.0**
 * Upgrade to Java 17
 * Upgrade Quarkus to 2.8.3.Final
 * Integration to Musicbrainz for Release scrape
