@@ -110,7 +110,7 @@ class ReleaseScrapeResourceIT {
 
         assertThat(releaseRepository.count())
                 .as("23 results in the response (1 mocked above + 22 from stub.json)")
-                .isGreaterThan(23);
+                .isGreaterThanOrEqualTo(23);
 
         var uaOptional = userArtistRepository.findByUserIdArtistIdOptional(400L, 400L);
         assertThat(uaOptional).isPresent();
