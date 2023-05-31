@@ -1,13 +1,9 @@
-name: Build
+name: Build tag
 
 on:
   push:
     tags:
       - '*'
-    branches:
-      - jdevelop
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 env:
   JAVA_VERSION: 17
@@ -64,16 +60,9 @@ jobs:
         run: mvn -B -e verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
       # Docker build
-      - name: Dockerhub release-raccoon:latest from jdevelop
-        if: ${{ github.actor != 'dependabot[bot]' && github.ref == 'refs/heads/jdevelop' }}
-        run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:latest '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
-
-      - name: Dockerhub release-raccoon:snapshot from branch
-        if:  ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
-        run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:snapshot '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
-
-      - name: Dockerhub release-raccoon:tag
+      - name: Dockerhub release-raccoon:${{ github.ref_name }}
         if: ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: |
-          TAG=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          TAG=${{ github.ref_name }}
+          echo "Building registry.hub.docker.com/jaivalis/release-raccoon:${TAG}${TAG}"
           mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:${TAG} '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
