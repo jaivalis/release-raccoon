@@ -7,13 +7,13 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.1.0</version>
+        <version>9.9.9-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>raccoon-tests</artifactId>
     <name>raccoon-tests</name>
-    <version>0.1.0</version>
+    <version>9.9.9-SNAPSHOT</version>
 
     <dependencies>
         <!-- submodules -->
