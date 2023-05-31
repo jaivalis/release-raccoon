@@ -8,24 +8,18 @@ import com.raccoon.entity.repository.ScrapeRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.scrape.dto.ReleaseMapper;
 import com.raccoon.scraper.ReleaseScraper;
-
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
-
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.raccoon.common.StringUtil.isNullOrEmpty;
 
@@ -68,7 +62,7 @@ public class ReleaseScrapeWorker {
                 Set<Release> releases = fetchReleases();
                 persistLatestScrape(releases);
             } catch (PersistenceException ex) {
-                log.error("Could not persist latest scrape {}", ex);
+                log.error("Could not persist latest scrape ", ex);
                 throw ex;
             } finally {
                 log.info("Scrape job complete");
@@ -114,6 +108,7 @@ public class ReleaseScrapeWorker {
         latestScrape.setReleaseCount(releases.size());
         latestScrape.setIsComplete(true);
         latestScrape.setCompleteDate(LocalDateTime.now());
+        latestScrape.getReleases().addAll(releases);
         scrapeRepository.persist(latestScrape);
         updateHasNewRelease(releases);
     }

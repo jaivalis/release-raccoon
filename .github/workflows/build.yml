@@ -64,6 +64,13 @@ jobs:
       - name: Dockerhub release-raccoon:latest from jdevelop
         if: ${{ github.actor != 'dependabot[bot]' && github.ref == 'refs/heads/jdevelop' }}
         run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:latest '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
+
       - name: Dockerhub release-raccoon:snapshot from branch
         if:  ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:snapshot '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
+
+      - name: Dockerhub release-raccoon:tag
+        if: ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
+        run: |
+          TAG=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:${TAG} '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
