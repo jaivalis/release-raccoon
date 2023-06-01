@@ -64,5 +64,5 @@ jobs:
         if: ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: |
           TAG=${{ github.ref_name }}
-          echo "Building registry.hub.docker.com/jaivalis/release-raccoon:${TAG}${TAG}"
+          echo "Building registry.hub.docker.com/jaivalis/release-raccoon:${TAG}"
           mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:${TAG} '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}

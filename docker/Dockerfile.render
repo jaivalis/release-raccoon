@@ -1,4 +1,4 @@
 ####
 # This Dockerfile is used in order to deploy to https://render.com/
 ###
-FROM jaivalis/release-raccoon:latest
+FROM jaivalis/release-raccoon:0.1.0
