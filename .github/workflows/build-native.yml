@@ -15,9 +15,4 @@ jobs:
       - name: Dockerhub release-raccoon:snapshot from branch
         if:  ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: |
-          mvn package \
-          -DskipTests \
-          -Dquarkus.native.container-build=true \
-          -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:native \
-          '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
+          mvn package -DskipTests -Dquarkus.native.container-build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:native '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
