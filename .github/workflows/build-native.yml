@@ -3,7 +3,7 @@ name: Build branch
 on:
   push:
     branches:
-      - *
+      - '*'
 
 env:
   JAVA_VERSION: 17
