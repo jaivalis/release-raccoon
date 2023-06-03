@@ -8,7 +8,6 @@
 * Separate the domain from the Controllers and the Quarkus Qute dependencies
 * Create DTOs for every Entity class (Decouple)
 * Cucumber BDD tests
-* UserProfileService does too much, break down
 * Remove @Data from entities!!
 * api versioning, nest everything under `/api/v1`
 * ReleaseScraper implementers should not contain persistence layer dependencies, should create Entities and leave persistence for another anti-corruption layer
