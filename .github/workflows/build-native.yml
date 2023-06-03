@@ -4,8 +4,8 @@ on: push
 
 env:
   JAVA_VERSION: 17
-  JDK_DISTRIBUTION: 'temurin'
-  GITHUB_SHA: ${{ github.sha }}
+#  JDK_DISTRIBUTION: 'temurin'
+  GITHUB_SHA: ${{ github.sha }
 
 jobs:
   build:
@@ -25,10 +25,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: graalvm/setup-graalvm@v1
         with:
           java-version: ${{ env.JAVA_VERSION }}
-          distribution: ${{ env.JDK_DISTRIBUTION }}
+#          distribution: ${{ env.JDK_DISTRIBUTION }}
 #          version:
 
       - name: Build & release native image
