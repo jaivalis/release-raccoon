@@ -1,9 +1,12 @@
 ⚙️ All important changes to this project are tracked here:
 ---
 
-**main**
+## main
 
-**0.1.0**
+## 0.1.1 - 03/05/2023
+* Github actions for native image
+
+## 0.1.0 - 31/05/2023
 * Upgrade to Java 17
 * Upgrade Quarkus to 2.8.3.Final
 * Integration to Musicbrainz for Release scrape
@@ -16,5 +19,5 @@
 * Added sentry.io integration
 * Use LRO for release-scrape http://restalk-patterns.org/long-running-operation-polling.html
 
-**0.0.1**
+## 0.0.1
 * Introduce Release-Raccoon
