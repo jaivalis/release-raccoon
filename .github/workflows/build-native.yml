@@ -1,4 +1,4 @@
-name: Build branch
+name: Build Native Docker
 
 on:
   push:
