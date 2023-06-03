@@ -1,0 +1,26 @@
+name: Build branch
+
+on:
+  push:
+    branches:
+      - *
+
+env:
+  JAVA_VERSION: 17
+  JDK_DISTRIBUTION: 'temurin'
+  GITHUB_SHA: ${{ github.sha }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dockerhub release-raccoon:snapshot from branch
+        if:  ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
+        run: |
+          mvn package \
+          -DskipTests \
+          -Dquarkus.native.container-build=true \
+          -Dquarkus.container-image.push=true \
+          -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:native \
+          '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
