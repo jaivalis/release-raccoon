@@ -1,4 +1,4 @@
-name: Build Native Docker
+name: Native CI
 
 on: push
 
@@ -24,13 +24,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & release native image
-        uses: graalvm/setup-graalvm@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          version: 'latest'
-          java-version: '17'
-          components: 'native-image'
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JDK_DISTRIBUTION }}
+#          version:
 
+      - name: Build & release native image
         if:  ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: |
           echo "GRAALVM_HOME: $GRAALVM_HOME"
