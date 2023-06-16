@@ -50,11 +50,11 @@ public class ArtistFollowingService {
         artistRepository.persist(artist);
 
         var userArtist = userArtistRepository
-                .findByUserIdArtistIdOptional(user.id, artist.id)
+                .findByUserIdArtistIdOptional(user.getId(), artist.getId())
                 .orElseGet(UserArtist::new);
         userArtist.setArtist(artist);
         userArtist.setUser(user);
-        userArtist.weight = 1.0F;
+        userArtist.setWeight(1.0F);
         userArtistRepository.persist(userArtist);
 
         LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
@@ -62,9 +62,9 @@ public class ArtistFollowingService {
             // artist existed in the database prior, might have a release
             notifyService
                     .notifySingleUser(user, List.of(userArtist))
-                    .await().indefinitely();
+                    .await()
+                    .indefinitely();
         }
     }
-
 
 }

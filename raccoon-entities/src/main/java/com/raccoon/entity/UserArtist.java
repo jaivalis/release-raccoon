@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import lombok.Setter;
 import lombok.ToString;
 
 import static com.raccoon.entity.database.Tables.USER_ARTIST;
@@ -21,6 +22,7 @@ import static com.raccoon.entity.database.Tables.USER_ARTIST;
 @Table(name = USER_ARTIST)
 @AssociationOverride(name = "key.raccoonUser", joinColumns = @JoinColumn(name = "user_id"))
 @AssociationOverride(name = "key.artist", joinColumns = @JoinColumn(name = "artist_id"))
+@Setter
 public class UserArtist extends PanacheEntityBase implements Serializable {
 
     @EmbeddedId

@@ -22,8 +22,8 @@ public class UserArtistStubFactory {
         this.artistFactory = artistFactory;
     }
 
-    public UserArtist stubUserArtist(String username, String artistName) {
-        var user = stubUser(username);
+    public UserArtist stubUserArtist(String email, String artistName) {
+        var user = stubUser(email);
         var artist = stubArtist(artistName);
 
         var userArtist = new UserArtist();

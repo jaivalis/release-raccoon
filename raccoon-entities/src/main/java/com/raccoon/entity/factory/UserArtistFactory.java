@@ -15,7 +15,7 @@ public class UserArtistFactory {
         var userArtist = new UserArtist();
         userArtist.setArtist(artist);
         userArtist.setUser(user);
-        userArtist.weight = weight;
+        userArtist.setWeight(weight);
 
         return userArtist;
     }

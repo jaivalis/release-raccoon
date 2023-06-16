@@ -1,11 +1,16 @@
-package com.raccoon.entity.repository;
+package com.raccoon.entity.integration;
 
 import com.raccoon.entity.UserArtistStubFactory;
 import com.raccoon.entity.factory.ArtistFactory;
 import com.raccoon.entity.factory.UserFactory;
+import com.raccoon.entity.repository.ArtistRepository;
+import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.entity.repository.UserRepository;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -22,12 +27,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class RaccoonUserArtistRepositoryIT {
 
     @Inject
     UserArtistRepository userArtistRepository;
     @Inject
     UserRepository userRepository;
+    @Inject
+    ArtistRepository artistRepository;
 
     @Inject
     ArtistFactory artistFactory;
@@ -85,7 +93,7 @@ class RaccoonUserArtistRepositoryIT {
 
     @Test
     @Transactional
-    void markNewReleaseNoIds() {
+    void markNewRelease_should_returnTrue_when_artistIdsEmpty() {
         assertTrue(userArtistRepository.markNewRelease(List.of()).isEmpty());
     }
 
@@ -174,7 +182,7 @@ class RaccoonUserArtistRepositoryIT {
 
     @Test
     @Transactional
-    void deleteAssociation() {
+    void deleteAssociation_should_removeFromTable() {
         var userArtist = stubFactory.stubUserArtist("user1", "artist1");
         var userId = userArtist.getUser().id;
         var artistIdNotExistent = userArtist.getArtist().id;

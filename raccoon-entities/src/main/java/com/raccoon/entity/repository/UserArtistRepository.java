@@ -11,8 +11,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
+import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
+@Slf4j
 public class UserArtistRepository implements PanacheRepository<UserArtist> {
 
     public List<UserArtist> getUserArtistsWithNewRelease() {
@@ -30,7 +32,7 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     public List<UserArtist> markNewRelease(final Collection<Long> artistIds) {
         List<UserArtist> collect = findByArtistIds(artistIds);
         collect.forEach(ua -> {
-            ua.hasNewRelease = Boolean.TRUE;
+            ua.setHasNewRelease(Boolean.TRUE);
             ua.persist();
         });
         return collect;
@@ -62,5 +64,16 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     public void deleteAssociation(Long userId, Long artistId) {
         delete("user_id = ?1 and artist_id = ?2", userId, artistId);
     }
+
+//    public List<Artist> listDistinctArtistsNotFollowedByUser(Page page, Long userId) {
+//        return find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1", userId)
+//                .page(Page.of(page.index, page.size))
+//                .stream()
+//                .peek(userArtist -> {
+//                    log.info("success, {}", userArtist);
+//                })
+//                .map(UserArtist::getArtist)
+//                .toList();
+//    }
 
 }

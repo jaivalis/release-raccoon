@@ -136,8 +136,8 @@ public class NotifyService {
      * @param userArtistList
      */
     void mailSuccessCallback(RaccoonUser raccoonUser, Collection<UserArtist> userArtistList) {
-        log.info("Notified raccoonUser {}", raccoonUser.id);
-        userArtistList.forEach(userArtist -> userArtist.hasNewRelease = (false));
+        log.info("Notified raccoonUser {}", raccoonUser.getId());
+        userArtistList.forEach(userArtist -> userArtist.setHasNewRelease(false));
 
         userArtistRepository.persist(userArtistList);
     }

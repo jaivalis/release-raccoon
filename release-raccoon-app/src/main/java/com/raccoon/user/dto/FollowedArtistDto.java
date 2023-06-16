@@ -19,6 +19,8 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @NoArgsConstructor
 @JsonInclude(NON_NULL)
 @Data
+// todo: maybe rename or extract parent class
+// todo: record?
 public class FollowedArtistDto {
 
     @NotNull
