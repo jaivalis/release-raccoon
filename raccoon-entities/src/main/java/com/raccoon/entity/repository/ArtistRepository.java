@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
@@ -38,7 +39,17 @@ public class ArtistRepository implements PanacheRepository<Artist> {
     }
 
     public List<Artist> listDistinctArtistsNotFollowedByUser(Page page, Long userId) {
-        return UserArtist.find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1", userId)
+        var artistsFollowedByUser = find("SELECT DISTINCT ua.key.artist.id FROM UserArtist ua WHERE ua.key.raccoonUser.id = ?1", userId)
+                .list();
+
+        PanacheQuery<PanacheEntityBase> query;
+        if (artistsFollowedByUser.isEmpty()) {
+            query = UserArtist.find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1", userId);
+        } else {
+            query = UserArtist.find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1 and ua.key.artist.id not in ?2", userId, artistsFollowedByUser);
+        }
+
+        return query
                 .withHint("org.hibernate.cacheable", Boolean.FALSE)
                 .page(Page.of(page.index, page.size))
                 .list();

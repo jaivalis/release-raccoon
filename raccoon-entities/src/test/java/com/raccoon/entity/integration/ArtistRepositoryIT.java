@@ -61,7 +61,7 @@ class ArtistRepositoryIT {
 
     @Test
     @Transactional
-    void listDistinctArtistsNotFollowedByUser_should_returnExpected() {
+    void listDistinctArtistsNotFollowedByUser_should_returnArtistsFollowedByOthersOnly() {
         var user1Artist1 = stubFactory.stubUserArtist("user1@mail.com", "artist1");
         var user1Artist2 = stubFactory.stubUserArtist("user1@mail.com", "artist2");
         var user2Artist1 = stubFactory.stubUserArtist("user2@mail.com", "artist1");
@@ -73,11 +73,8 @@ class ArtistRepositoryIT {
         );
 
         assertThat(foundArtists)
-                .hasSize(2)
-                .contains(
-                        user1Artist1.getArtist(),
-                        user1Artist2.getArtist()
-                );
+                .hasSize(1)
+                .contains(user1Artist2.getArtist());
     }
 
     @Test

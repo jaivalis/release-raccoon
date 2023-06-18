@@ -4,29 +4,30 @@ import com.raccoon.artist.ArtistResource;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.user.ArtistFollowingService;
 import com.raccoon.user.dto.FollowedArtistDto;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
+import javax.transaction.TransactionManager;
 
-import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.quarkus.test.security.oidc.Claim;
 import io.quarkus.test.security.oidc.OidcSecurity;
 import io.restassured.http.ContentType;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.Constants.EMAIL_CLAIM;
@@ -40,9 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 @QuarkusTest
 @Testcontainers
-@TestTransaction
 @TestHTTPEndpoint(ArtistResource.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ArtistResourceIT {
 
     final static String EXISTING_USERNAME = "authenticated";
@@ -50,26 +51,20 @@ class ArtistResourceIT {
     @Inject
     ArtistRepository artistRepository;
     @Inject
-    UserRepository userRepository;
-    @Inject
     UserArtistRepository userArtistRepository;
 
     @Inject
     ArtistFollowingService artistFollowingService;
 
-    @AfterEach
-    @Transactional
-    void tearDown() {
-//        userArtistRepository.deleteAll();
-//        artistRepository.deleteAll();
-//        userRepository.deleteAll();
-    }
+    @Inject
+    TransactionManager tm;
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
+    @Order(1)
     void getRecommendedArtists_should_returnArtistsNotFollowedByUser() {
         List<FollowedArtistDto> artists = given()
                 .contentType(ContentType.JSON)
@@ -92,6 +87,7 @@ class ArtistResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
+    @Order(2)
     void getRecommendedArtists_should_returnPaginatedArtistsNotFollowedByUser() {
         List<FollowedArtistDto> artists = given()
                 .contentType(ContentType.JSON)
@@ -129,7 +125,10 @@ class ArtistResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
+    @SneakyThrows
+    @Order(3)
     void getRecommendedArtists_should_returnArtistsNotFollowedByUser_when_userFollowsNewArtist() {
+        tm.begin();
         List<FollowedArtistDto> recommendedArtists = given()
                 .contentType(ContentType.JSON)
                 .param("page", "0")
@@ -139,13 +138,15 @@ class ArtistResourceIT {
                 .statusCode(SC_OK)
                 .extract()
                 .body().jsonPath().getList("rows", FollowedArtistDto.class);
-        FollowedArtistDto recommendedArtist = recommendedArtists.get(0);
         var artistToFollow = recommendedArtists.get(0);
 
         var userArtistRepoState = userArtistRepository.listAll().stream().toList();
         log.info("userartistrepository size: {}", userArtistRepoState.size());
 
-        artistFollowingService.followArtist("user100@mail.com", artistRepository.findById(artistToFollow.getId()));
+        // When a new artist is followed:
+        Long artistToFollowId = artistToFollow.getId();
+        artistFollowingService.followArtist("user100@mail.com", artistRepository.findById(artistToFollowId));
+        tm.commit();
 
         userArtistRepoState = userArtistRepository.listAll().stream().toList();
         log.info("userartistrepository size: {} \n {}", userArtistRepoState.size(), userArtistRepoState.stream().map(UserArtist::toString).collect(Collectors.joining("\n")));

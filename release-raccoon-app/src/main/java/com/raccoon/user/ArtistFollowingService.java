@@ -55,7 +55,7 @@ public class ArtistFollowingService {
         userArtist.setArtist(artist);
         userArtist.setUser(user);
         userArtist.setWeight(1.0F);
-        userArtistRepository.persist(userArtist);
+        userArtistRepository.persistAndFlush(userArtist);
 
         LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
         if (twoMinutesAgo.isAfter(artist.getCreateDate())) {

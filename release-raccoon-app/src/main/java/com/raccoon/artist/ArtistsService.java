@@ -4,7 +4,6 @@ import com.raccoon.dto.PaginationParams;
 import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.repository.ArtistRepository;
-import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.user.dto.FollowedArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
@@ -24,17 +23,13 @@ public class ArtistsService {
 
     final ArtistRepository artistRepository;
     final UserRepository userRepository;
-    final UserArtistRepository userArtistRepository;
-
     final ArtistMapper artistMapper;
 
     @Inject
     public ArtistsService(ArtistRepository artistRepository,
-                          UserArtistRepository userArtistRepository,
                           UserRepository userRepository,
                           ArtistMapper artistMapper) {
         this.artistRepository = artistRepository;
-        this.userArtistRepository = userArtistRepository;
         this.userRepository = userRepository;
         this.artistMapper = artistMapper;
     }
@@ -47,11 +42,11 @@ public class ArtistsService {
     public FollowedArtistsResponse getOtherUsersFollowedArtists(PaginationParams pageRequest, String email) {
         var user = userRepository.findByEmail(email);
 
-        List<Artist> artists = artistRepository.listDistinctArtistsNotFollowedByUser(
+        List<Artist> followedByOthers = artistRepository.listDistinctArtistsNotFollowedByUser(
                 Page.of(pageRequest.getPage() * pageRequest.getSize(), pageRequest.getSize()), user.getId()
         );
 
-        List<FollowedArtistDto> rows = artists
+        List<FollowedArtistDto> rows = followedByOthers
                 .stream()
                 .map(artistMapper::toFollowedArtistDto)
                 .toList();

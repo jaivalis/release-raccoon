@@ -65,15 +65,4 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         delete("user_id = ?1 and artist_id = ?2", userId, artistId);
     }
 
-//    public List<Artist> listDistinctArtistsNotFollowedByUser(Page page, Long userId) {
-//        return find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1", userId)
-//                .page(Page.of(page.index, page.size))
-//                .stream()
-//                .peek(userArtist -> {
-//                    log.info("success, {}", userArtist);
-//                })
-//                .map(UserArtist::getArtist)
-//                .toList();
-//    }
-
 }

@@ -387,7 +387,7 @@
 
             const nothing = document.createElement('p');
             nothing.setAttribute('id', 'nothing-text');
-            nothing.innerHTML = 'It\'s awfully quiet here, nobody except for you is following any artists!';
+            nothing.innerHTML = '';
 
             othersFollowedArtistTableContainer.appendChild(nothing);
         }
@@ -412,6 +412,10 @@
             let followedArtistsTableContainer = document.getElementById('artist-table-container');
 
             if (document.getElementById('tableSearch') === null) {
+                let artistTableTitle = document.createElement('h2');
+                artistTableTitle.textContent = 'Artists you follow';
+                followedArtistsTableContainer.appendChild(artistTableTitle);
+
                 const searchInput = document.createElement('input');
                 searchInput.className = 'form-control mb-4';
                 searchInput.setAttribute('id', 'tableSearch');
@@ -508,7 +512,7 @@
 
             if (document.getElementById('othersFollowedArtistTableParent') === null) {
                 let othersFollowedTitle = document.createElement('h2');
-                othersFollowedTitle.textContent = 'Other users follow';
+                othersFollowedTitle.textContent = 'Others follow';
                 othersFollowedArtistsTableContainer.appendChild(othersFollowedTitle);
 
                 const tableParent = document.createElement('table');
