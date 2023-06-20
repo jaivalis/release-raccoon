@@ -74,7 +74,7 @@ class ArtistsServiceTest {
         assertThat(response.getRows())
                 .isEmpty();
         assertThat(response.getTotal())
-                .isEqualTo(0);
+                .isZero();
     }
 
     @Test
