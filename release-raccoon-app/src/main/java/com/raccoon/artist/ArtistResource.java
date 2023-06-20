@@ -5,6 +5,7 @@ import com.raccoon.user.dto.FollowedArtistsResponse;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,7 +37,7 @@ public class ArtistResource {
     }
 
     @GET
-    public Response getAll(@BeanParam PaginationParams pageRequest) {
+    public Response getAll(@Valid @BeanParam PaginationParams pageRequest) {
         return Response.ok(
                 artistsService.getArtists(pageRequest)
         ).build();

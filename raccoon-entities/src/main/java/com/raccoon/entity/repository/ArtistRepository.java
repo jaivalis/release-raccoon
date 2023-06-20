@@ -31,7 +31,7 @@ public class ArtistRepository implements PanacheRepository<Artist> {
     }
 
     public List<Artist> listArtistsPaginated(Page page) {
-        PanacheQuery<Artist> query = Artist.findAll(Sort.by("id"));
+        PanacheQuery<Artist> query = findAll(Sort.by("id"));
         query.page(page.index, page.size);
         return query.list();
     }
