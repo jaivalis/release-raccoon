@@ -32,9 +32,9 @@ VALUES
 
 INSERT INTO
     Artist
-    (artistId, name)
+    (artistId, name, create_date)
 VALUES
-    (100, 'existentArtist');
+    (100, 'existentArtist', (SUBDATE(CURDATE(), 1)));
 
 # INSERT INTO
 #     Releases
@@ -77,9 +77,9 @@ VALUES
 
 INSERT INTO
     Artist
-    (artistId, name)
+    (artistId, name, create_date)
 VALUES
-    (300, 'existentArtist2');
+    (300, 'existentArtist2', (SUBDATE(CURDATE(), 1)));
 
 INSERT INTO
     UserArtist
@@ -100,9 +100,9 @@ VALUES
 
 INSERT INTO
     Artist
-    (artistId, name, spotifyUri)
+    (artistId, name, create_date, spotifyUri)
 VALUES
-    (400, 'existentArtist4', 'uri4');
+    (400, 'existentArtist4', (SUBDATE(CURDATE(), 1)), 'uri4');
 
 INSERT INTO
     Releases

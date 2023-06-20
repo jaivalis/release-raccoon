@@ -11,8 +11,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
+import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
+@Slf4j
 public class UserArtistRepository implements PanacheRepository<UserArtist> {
 
     public List<UserArtist> getUserArtistsWithNewRelease() {
@@ -30,7 +32,7 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     public List<UserArtist> markNewRelease(final Collection<Long> artistIds) {
         List<UserArtist> collect = findByArtistIds(artistIds);
         collect.forEach(ua -> {
-            ua.hasNewRelease = Boolean.TRUE;
+            ua.setHasNewRelease(Boolean.TRUE);
             ua.persist();
         });
         return collect;

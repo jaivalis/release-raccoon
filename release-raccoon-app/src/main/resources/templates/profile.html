@@ -352,6 +352,18 @@
             }
         }
 
+        async function refreshOthersFollowedArtists() {
+            const othersFollowedArtistsResponse = await fetch('/artists/recommended?page=0&size=10')
+                    .then(response => response.json())
+                    .then(data => data);
+
+            if (othersFollowedArtistsResponse.total !== 0) {
+                renderOthersFollowedArtists(othersFollowedArtistsResponse.rows);
+            } else {
+                renderOthersNoFollowedArtists();
+            }
+        }
+
         function renderNoFollowedArtists() {
             safeDeleteById('tableSearch');
             safeDeleteById('artistTable');
@@ -361,9 +373,23 @@
 
             const nothing = document.createElement('p');
             nothing.setAttribute('id', 'nothing-text');
-            nothing.innerHTML = 'No artists followed, use panel above to add some';
+            nothing.innerHTML = 'No artists followed, use the panel above to add some';
 
             followedArtistsTableContainer.appendChild(nothing);
+        }
+
+        function renderOthersNoFollowedArtists() {
+            safeDeleteById('tableSearch');
+            safeDeleteById('othersFollowedArtistTable');
+            safeDeleteById('nothing-text');
+
+            let othersFollowedArtistTableContainer = document.getElementById('others-followed-artist-table-container');
+
+            const nothing = document.createElement('p');
+            nothing.setAttribute('id', 'nothing-text');
+            nothing.innerHTML = '';
+
+            othersFollowedArtistTableContainer.appendChild(nothing);
         }
 
         function safeDeleteById(elementId) {
@@ -386,6 +412,10 @@
             let followedArtistsTableContainer = document.getElementById('artist-table-container');
 
             if (document.getElementById('tableSearch') === null) {
+                let artistTableTitle = document.createElement('h2');
+                artistTableTitle.textContent = 'Artists you follow';
+                followedArtistsTableContainer.appendChild(artistTableTitle);
+
                 const searchInput = document.createElement('input');
                 searchInput.className = 'form-control mb-4';
                 searchInput.setAttribute('id', 'tableSearch');
@@ -470,10 +500,103 @@
                 tbody.appendChild(trEl);
             })
         }
+
+        function renderOthersFollowedArtists(othersFollowedArtistRows) {
+            safeDeleteById('othersFollowedArtistTable');
+            safeDeleteById('nothing-text');
+
+            const tbody = document.createElement('tbody');
+            tbody.setAttribute('id', 'othersFollowedArtistTable');
+
+            let othersFollowedArtistsTableContainer = document.getElementById('others-followed-artist-table-container');
+
+            if (document.getElementById('othersFollowedArtistTableParent') === null) {
+                let othersFollowedTitle = document.createElement('h2');
+                othersFollowedTitle.textContent = 'Others follow';
+                othersFollowedArtistsTableContainer.appendChild(othersFollowedTitle);
+
+                const tableParent = document.createElement('table');
+                tableParent.className = 'horizaligned table';
+                tableParent.setAttribute('id', 'othersFollowedArtistTableParent');
+                othersFollowedArtistsTableContainer.appendChild(tableParent);
+            }
+
+            const table = document.getElementById('othersFollowedArtistTableParent')
+            table.appendChild(tbody);
+
+            othersFollowedArtistRows.map((artist) => {
+                let trEl = document.createElement("tr");
+
+                let tdNameEl = document.createElement("td");
+                tdNameEl.innerHTML = artist.name;
+                trEl.appendChild(tdNameEl);
+
+                // render lastfm column
+                let tdLastfmEl = document.createElement("td");
+                if (artist.lastfmUri) {
+                    let aLastfmEl = document.createElement('a');
+                    aLastfmEl.className = 'path-link';
+                    aLastfmEl.setAttribute('href', artist.lastfmUri);
+                    aLastfmEl.setAttribute('target', '_blank');
+
+                    let lastfmImg = document.createElement('img');
+                    lastfmImg.setAttribute('height', '30px');
+                    lastfmImg.setAttribute('src', 'images/lastfm.icon.svg');
+                    aLastfmEl.appendChild(lastfmImg);
+
+                    tdLastfmEl.appendChild(aLastfmEl);
+                } else {
+                    tdLastfmEl.innerHTML = '';
+                }
+                trEl.appendChild(tdLastfmEl);
+
+                // render spotify column
+                let tdSpotifyEl = document.createElement("td");
+                if (artist.spotifyUri) {
+                    let aSpotifyEl = document.createElement('a');
+                    aSpotifyEl.setAttribute('href', 'https://open.spotify.com/artist/' + artist.spotifyUri.replace('spotify:artist:',''));
+                    aSpotifyEl.setAttribute('class', 'path-link');
+                    aSpotifyEl.setAttribute('target', '_blank');
+
+                    let spotifyImg = document.createElement('img');
+                    spotifyImg.setAttribute('height', '30px');
+                    spotifyImg.setAttribute('src', 'images/spotify.icon.svg');
+                    aSpotifyEl.appendChild(spotifyImg);
+
+                    tdSpotifyEl.appendChild(aSpotifyEl);
+                } else {
+                    tdSpotifyEl.innerHTML = '';
+                }
+                trEl.appendChild(tdSpotifyEl);
+
+                // render follow column
+                let tdFollowEl = document.createElement("td");
+
+                // let button = document.createElement("button");
+                // button.user = result
+                // button.setAttribute('dataJson', JSON.stringify(result))
+                // button.addEventListener('click', follow, false);
+                // button.innerHTML = 'follow';
+
+                let followInput = document.createElement('input');
+                followInput.setAttribute('type', 'submit');
+                followInput.setAttribute('class', 'path-link');
+                followInput.setAttribute('value', 'follow');
+                followInput.setAttribute('dataJson', JSON.stringify(artist))
+                followInput.setAttribute('artistId', artist.id);
+                followInput.addEventListener('click', follow, false);
+
+                tdFollowEl.appendChild(followInput);
+
+                trEl.appendChild(tdFollowEl);
+
+                tbody.appendChild(trEl);
+            })
+        }
     </script>
 </head>
 
-<body onload="refreshFollowedArtists()">
+<body onload="refreshFollowedArtists();refreshOthersFollowedArtists()">
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
@@ -543,6 +666,12 @@
             Last.fm paired 🦝
             </br>
         {/if}
+    </div>
+
+    <div class="artists">
+        <div id="others-followed-artist-table-container" class="container">
+            {! Populated using js !}
+        </div>
     </div>
 
     <div class="artists">

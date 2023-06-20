@@ -2,6 +2,7 @@
 ---
 
 ## main
+* Recommended artists
 
 ## 0.1.1 - 03/05/2023
 * Github actions for native image

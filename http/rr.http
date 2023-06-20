@@ -1,3 +1,5 @@
+### Artists
+GET {{ baseUrl }}/artists?page=0&size=10
 
 ### Scrape releases
 PUT {{ baseUrl }}/release-scrape

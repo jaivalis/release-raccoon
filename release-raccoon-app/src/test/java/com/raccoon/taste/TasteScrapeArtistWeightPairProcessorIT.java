@@ -11,9 +11,7 @@ import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @QuarkusTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Transactional
 @DBRider
 @DBUnit(caseSensitiveTableNames = true)

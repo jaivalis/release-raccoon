@@ -1,5 +1,6 @@
 package com.raccoon.user;
 
+import com.raccoon.dto.ArtistDto;
 import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
@@ -10,7 +11,6 @@ import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
-import com.raccoon.user.dto.FollowedArtistDto;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -225,8 +225,8 @@ class RaccoonUserProfileServiceTest {
         when(mockUserArtistRepository.findByUserIdSortedByWeight(stubUser.id)).thenReturn(List.of(userArtist));
 
         when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
-        var dto = mock(FollowedArtistDto.class);
-        when(mockArtistMapper.toFollowedArtistDto(stubArtist)).thenReturn(dto);
+        var dto = mock(ArtistDto.class);
+        when(mockArtistMapper.toArtistDto(stubArtist)).thenReturn(dto);
 
         final var response = service.getFollowedArtists(email);
 

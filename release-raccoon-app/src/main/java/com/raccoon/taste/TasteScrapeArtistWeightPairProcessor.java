@@ -55,7 +55,7 @@ public class TasteScrapeArtistWeightPairProcessor {
 
         var userArtistOpt = userArtistRepository.findByUserIdArtistIdOptional(raccoonUser.id, artist.id);
         var userArtist = userArtistOpt.orElseGet(() -> userArtistFactory.createUserArtist(raccoonUser, artist, weight));
-        userArtist.weight = (weight);
+        userArtist.setWeight(weight);
         userArtistRepository.persist(userArtist);
 
         if (artist.getCreateDate() == null || twoMinutesAgo.isAfter(artist.getCreateDate())) {

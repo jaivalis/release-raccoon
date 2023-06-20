@@ -1,5 +1,6 @@
 package com.raccoon.user;
 
+import com.raccoon.dto.ArtistDto;
 import com.raccoon.dto.ProfileDto;
 import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
@@ -11,7 +12,6 @@ import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
-import com.raccoon.user.dto.FollowedArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 
 import java.util.List;
@@ -77,10 +77,10 @@ public class UserProfileService {
     public FollowedArtistsResponse getFollowedArtists(final String userEmail) {
         var user = userRepository.findByEmail(userEmail);
 
-        List<FollowedArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
+        List<ArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
                 .stream()
                 .map(UserArtist::getArtist)
-                .map(artistMapper::toFollowedArtistDto)
+                .map(artistMapper::toArtistDto)
                 .toList();
         return FollowedArtistsResponse.builder()
                 .rows(rows)
