@@ -1,4 +1,4 @@
-package com.raccoon.user.dto;
+package com.raccoon.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -11,17 +11,12 @@ import lombok.NoArgsConstructor;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-/**
- * Artist Entity projection, used for UserProfile projection
- */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(NON_NULL)
 @Data
-// todo: maybe rename or extract parent class
-// todo: record?
-public class FollowedArtistDto {
+public class ArtistDto {
 
     @NotNull
     private Long id;

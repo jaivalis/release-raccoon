@@ -1,11 +1,11 @@
 package com.raccoon;
 
 import com.raccoon.artist.ArtistResource;
+import com.raccoon.dto.ArtistDto;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.user.ArtistFollowingService;
-import com.raccoon.user.dto.FollowedArtistDto;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -66,7 +66,7 @@ class ArtistResourceIT {
     })
     @Order(1)
     void getRecommendedArtists_should_returnArtistsNotFollowedByUser() {
-        List<FollowedArtistDto> artists = given()
+        List<ArtistDto> artists = given()
                 .contentType(ContentType.JSON)
                 .param("page", "0")
                 .param("size", "100")
@@ -74,7 +74,7 @@ class ArtistResourceIT {
                 .then()
                 .statusCode(SC_OK)
                 .extract()
-                .body().jsonPath().getList("rows", FollowedArtistDto.class);
+                .body().jsonPath().getList("rows", ArtistDto.class);
 
         assertThat(artists)
                 .hasSize(2)
@@ -89,7 +89,7 @@ class ArtistResourceIT {
     })
     @Order(2)
     void getRecommendedArtists_should_returnPaginatedArtistsNotFollowedByUser() {
-        List<FollowedArtistDto> artists = given()
+        List<ArtistDto> artists = given()
                 .contentType(ContentType.JSON)
                 .param("page", "0")
                 .param("size", "1")
@@ -97,7 +97,7 @@ class ArtistResourceIT {
                 .then()
                 .statusCode(SC_OK)
                 .extract()
-                .body().jsonPath().getList("rows", FollowedArtistDto.class);
+                .body().jsonPath().getList("rows", ArtistDto.class);
 
         assertThat(artists)
                 .hasSize(1)
@@ -112,7 +112,7 @@ class ArtistResourceIT {
                 .then()
                 .statusCode(SC_OK)
                 .extract()
-                .body().jsonPath().getList("rows", FollowedArtistDto.class);
+                .body().jsonPath().getList("rows", ArtistDto.class);
 
         assertThat(artists)
                 .hasSize(1)
@@ -129,7 +129,7 @@ class ArtistResourceIT {
     @Order(3)
     void getRecommendedArtists_should_returnArtistsNotFollowedByUser_when_userFollowsNewArtist() {
         tm.begin();
-        List<FollowedArtistDto> recommendedArtists = given()
+        List<ArtistDto> recommendedArtists = given()
                 .contentType(ContentType.JSON)
                 .param("page", "0")
                 .param("size", "100")
@@ -137,7 +137,7 @@ class ArtistResourceIT {
                 .then()
                 .statusCode(SC_OK)
                 .extract()
-                .body().jsonPath().getList("rows", FollowedArtistDto.class);
+                .body().jsonPath().getList("rows", ArtistDto.class);
         var artistToFollow = recommendedArtists.get(0);
 
         var userArtistRepoState = userArtistRepository.listAll().stream().toList();
@@ -151,7 +151,7 @@ class ArtistResourceIT {
         userArtistRepoState = userArtistRepository.listAll().stream().toList();
         log.info("userartistrepository size: {} \n {}", userArtistRepoState.size(), userArtistRepoState.stream().map(UserArtist::toString).collect(Collectors.joining("\n")));
 
-        List<FollowedArtistDto> artistsAfter = given()
+        List<ArtistDto> artistsAfter = given()
                 .contentType(ContentType.JSON)
                 .param("page", "0")
                 .param("size", "100")
@@ -159,7 +159,7 @@ class ArtistResourceIT {
                 .then()
                 .statusCode(SC_OK)
                 .extract()
-                .body().jsonPath().getList("rows", FollowedArtistDto.class);
+                .body().jsonPath().getList("rows", ArtistDto.class);
         assertThat(artistsAfter)
                 .hasSize(1)
                 .extracting("name")

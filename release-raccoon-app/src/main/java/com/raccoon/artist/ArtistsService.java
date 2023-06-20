@@ -1,11 +1,11 @@
 package com.raccoon.artist;
 
+import com.raccoon.dto.ArtistDto;
 import com.raccoon.dto.PaginationParams;
 import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
-import com.raccoon.user.dto.FollowedArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 
 import java.util.List;
@@ -46,9 +46,9 @@ public class ArtistsService {
                 Page.of(pageRequest.getPage() * pageRequest.getSize(), pageRequest.getSize()), user.getId()
         );
 
-        List<FollowedArtistDto> rows = followedByOthers
+        List<ArtistDto> rows = followedByOthers
                 .stream()
-                .map(artistMapper::toFollowedArtistDto)
+                .map(artistMapper::toArtistDto)
                 .toList();
 
         log.info("Artists followed by other users: {}", rows.size());
