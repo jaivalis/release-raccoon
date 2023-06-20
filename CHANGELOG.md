@@ -1,10 +1,12 @@
 ⚙️ All important changes to this project are tracked here:
 ---
 
-## main
+## Unreleased
+
+## 0.2.0 - 20/06/2023
 * Recommended artists
 
-## 0.1.1 - 03/05/2023
+## 0.1.1 - 03/06/2023
 * Github actions for native image
 
 ## 0.1.0 - 31/05/2023
