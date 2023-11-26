@@ -3,6 +3,7 @@ version: "3"
 services:
 
   raccoon-mariadb:
+    container_name: release-raccoon-mariadb
     image: mariadb:10.8
     environment:
       MYSQL_USER: '${DB_USERNAME}'
@@ -11,11 +12,12 @@ services:
       MYSQL_ROOT_HOST: '%'
       MYSQL_DATABASE: '${DB_NAME}'
     ports:
-      - ${DB_PORT}:3306
+      - '${DB_PORT}:3306'
     volumes:
       - ./db_init/:/docker-entrypoint-initdb.d
 
   keycloak:
+    container_name: release-raccoon-keycloak
     # For amd64 CPUs:
 #    image: quay.io/keycloak/keycloak:14.0.0
     # For arm CPUs:
@@ -25,11 +27,12 @@ services:
       KEYCLOAK_PASSWORD: admin
       KEYCLOAK_IMPORT: /tmp/keycloak_init/realm-export.json
     ports:
-      - ${KEYCLOAK_PORT}:8080
+      - '${KEYCLOAK_PORT}:8080'
     volumes:
       - ./keycloak_init/:/tmp/keycloak_init
 
   raccoon-elasticsearch:
+    container_name: release-raccoon-elasticsearch
     # For amd64 CPUs:
 #    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     # For arm CPUs:
@@ -37,4 +40,22 @@ services:
     environment:
       discovery.type: single-node
     ports:
-      - ${ELASTIC_PORT}:9200
+      - '${ELASTIC_PORT}:9200'
+
+  release-raccoon:
+    container_name: release-raccoon-app
+    # *NOTE*: This image currently only supports amd64 CPU architecture
+    image: jaivalis/release-raccoon:latest
+    environment:
+      LASTFM_API_KEY: ${LASTFM_API_KEY}
+      LASTFM_SHARED_SECRET: ${LASTFM_SHARED_SECRET}
+      LASTFM_APPLICATION_NAME: ${LASTFM_APPLICATION_NAME}
+      SPOTIFY_AUTH_CALLBACK_URI: ${SPOTIFY_AUTH_CALLBACK_URI}
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+      MUSICBRAINZ_QUERIES_PER_SECOND: 1
+      ELASTIC_URL: ${ELASTIC_URL}
+      ELASTIC_PROTOCOL: ${ELASTIC_PROTOCOL}
+      QUARKUS_OIDC_AUTH-SERVER-URL: http://localhost:${KEYCLOAK_PORT}/auth/realms/RaccoonRealm
+    ports:
+      - '8080:8080'
