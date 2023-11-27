@@ -34,7 +34,7 @@
 
         <!-- Scrapers -->
         <lastfm.client.version>0.1.2</lastfm.client.version>
-        <spotify.client.version>6.5.4</spotify.client.version>
+        <spotify.client.version>8.3.4</spotify.client.version>
 
         <!-- Observability -->
         <micrometer-registry-prometheus.version>1.8.3</micrometer-registry-prometheus.version>
