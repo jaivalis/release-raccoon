@@ -8,12 +8,11 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import javax.inject.Inject;
-
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

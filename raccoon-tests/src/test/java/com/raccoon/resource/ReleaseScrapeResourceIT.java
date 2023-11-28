@@ -1,6 +1,5 @@
-package com.raccoon;
+package com.raccoon.resource;
 
-import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.common.WiremockExtensions;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.repository.ReleaseRepository;
@@ -8,18 +7,25 @@ import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.scrape.ReleaseScrapeResource;
 import com.raccoon.scrape.ReleaseScrapeWorker;
 import com.raccoon.scraper.spotify.SpotifyScraper;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.transaction.*;
 import java.time.Duration;
 import java.util.Set;
+
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.UserTransaction;
 
 import static io.quarkus.test.junit.QuarkusMock.installMockForType;
 import static io.restassured.RestAssured.given;
@@ -64,7 +70,6 @@ import static org.mockito.Mockito.when;
  */
 @QuarkusTest
 @TestHTTPEndpoint(ReleaseScrapeResource.class)
-@QuarkusTestResource(ElasticSearchTestResource.class)
 @QuarkusTestResource(WiremockExtensions.class)
 class ReleaseScrapeResourceIT {
 

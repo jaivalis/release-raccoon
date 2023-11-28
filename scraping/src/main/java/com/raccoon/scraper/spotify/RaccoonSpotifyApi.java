@@ -16,9 +16,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.validation.constraints.Max;
-
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.constraints.Max;
 import lombok.extern.slf4j.Slf4j;
 
 /**

@@ -3,7 +3,7 @@ package com.raccoon.search.dto.mapping;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzArtist;
 import com.raccoon.search.dto.SearchResultArtistDto;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Makes a projection of MusicbrainzArtistsResponse.MusicbrainzArtist objects to be returned as search results

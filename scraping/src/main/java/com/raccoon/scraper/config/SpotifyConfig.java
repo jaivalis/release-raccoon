@@ -1,8 +1,7 @@
 package com.raccoon.scraper.config;
 
-import javax.validation.constraints.NotNull;
-
 import io.smallrye.config.ConfigMapping;
+import jakarta.validation.constraints.NotNull;
 
 @ConfigMapping(prefix = "spotify")
 public interface SpotifyConfig {

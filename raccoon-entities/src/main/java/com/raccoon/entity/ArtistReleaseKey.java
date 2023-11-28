@@ -1,13 +1,13 @@
 package com.raccoon.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
+
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Embeddable

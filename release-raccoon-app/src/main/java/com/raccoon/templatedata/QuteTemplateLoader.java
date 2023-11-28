@@ -2,11 +2,10 @@ package com.raccoon.templatedata;
 
 import java.util.Scanner;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import io.quarkus.qute.Engine;
 import io.quarkus.runtime.StartupEvent;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;

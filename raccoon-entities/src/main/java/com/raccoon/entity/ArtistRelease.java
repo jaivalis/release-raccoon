@@ -2,14 +2,13 @@ package com.raccoon.entity;
 
 import java.io.Serializable;
 
-import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.AssociationOverride;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
-
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.persistence.AssociationOverride;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 import static com.raccoon.entity.database.Tables.ARTIST_RELEASE;

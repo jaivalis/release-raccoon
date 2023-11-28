@@ -2,8 +2,7 @@ package com.raccoon.scraper.musicbrainz.dto;
 
 import java.util.List;
 
-import javax.json.bind.annotation.JsonbProperty;
-
+import jakarta.json.bind.annotation.JsonbProperty;
 import lombok.Data;
 
 /**

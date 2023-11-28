@@ -8,18 +8,23 @@ import com.raccoon.entity.repository.ScrapeRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.scrape.dto.ReleaseMapper;
 import com.raccoon.scraper.ReleaseScraper;
-import lombok.extern.slf4j.Slf4j;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.persistence.PersistenceException;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.common.StringUtil.isNullOrEmpty;
 

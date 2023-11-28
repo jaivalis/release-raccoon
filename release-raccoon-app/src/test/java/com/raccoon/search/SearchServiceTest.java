@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 import static io.smallrye.common.constraint.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;

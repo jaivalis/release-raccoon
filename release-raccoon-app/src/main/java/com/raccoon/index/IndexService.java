@@ -3,11 +3,10 @@ package com.raccoon.index;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.ReleaseRepository;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import static com.raccoon.templatedata.QuteTemplateLoader.INDEX_TEMPLATE_ID;
 

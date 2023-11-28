@@ -25,11 +25,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ws.rs.NotFoundException;
-
 import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.ws.rs.NotFoundException;
 
 import static com.raccoon.templatedata.QuteTemplateLoader.PROFILE_TEMPLATE_ID;
 import static org.junit.jupiter.api.Assertions.*;

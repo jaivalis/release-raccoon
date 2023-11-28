@@ -1,7 +1,6 @@
 package com.raccoon.scraper.musicbrainz.dto;
 
-import javax.json.bind.annotation.JsonbProperty;
-
+import jakarta.json.bind.annotation.JsonbProperty;
 import lombok.Data;
 
 @Data

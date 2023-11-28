@@ -1,7 +1,6 @@
 package com.raccoon.scraper.musicbrainz;
 
 import com.flextrade.jfixture.JFixture;
-import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.common.WiremockExtensions;
 import com.raccoon.entity.Release;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzReleasesResponse;
@@ -14,17 +13,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-@QuarkusTestResource(ElasticSearchTestResource.class)
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTestResource(WiremockExtensions.class)
 class MusicbrainzScraperTest {

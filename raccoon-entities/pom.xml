@@ -5,13 +5,13 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.2.0</version>
+        <version>9.9.9-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>raccoon-entities</artifactId>
-    <version>0.2.0</version>
+    <version>9.9.9-SNAPSHOT</version>
 
     <dependencies>
         <!-- submodules -->
@@ -108,15 +108,10 @@
             <artifactId>testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
 
     </dependencies>
