@@ -11,8 +11,12 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/release-scrape")
 public class ReleaseScrapeResource {
 
+    final ReleaseScrapeService service;
+
     @Inject
-    ReleaseScrapeService service;
+    public ReleaseScrapeResource(ReleaseScrapeService service) {
+        this.service = service;
+    }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)

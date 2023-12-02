@@ -101,7 +101,7 @@ class ReleaseScrapeWorkerTest {
         when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
         when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
 
-        worker.submit();
+        worker.submitScrapeJobAsync();
 
         await("Should complete the scrape before we can query the latest scrape").atMost(Duration.ofSeconds(10))
                 .until(() -> !worker.isRunning());
@@ -118,7 +118,7 @@ class ReleaseScrapeWorkerTest {
         // Second scraper returns only one Release already returned by the first
         when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(Set.of(stubReleases.iterator().next()));
 
-        worker.submit();
+        worker.submitScrapeJobAsync();
 
         await("Should complete the scrape before we can query the latest scrape").atMost(Duration.ofSeconds(10))
                 .until(() -> !worker.isRunning());

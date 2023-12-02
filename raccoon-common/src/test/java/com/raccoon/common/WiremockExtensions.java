@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class WiremockExtensions implements QuarkusTestResourceLifecycleManager {
 
     @Override
     public void stop() {
-        if (null != wireMockServer) {
+        if (Objects.nonNull(wireMockServer)) {
             wireMockServer.stop();
         }
     }

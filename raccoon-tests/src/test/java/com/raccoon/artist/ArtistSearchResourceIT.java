@@ -1,4 +1,4 @@
-package com.raccoon.resource;
+package com.raccoon.artist;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.profile.ArtistSearchDatabaseProfile;
@@ -36,32 +36,6 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-/**
- * Comments are not allowed in the `import-test.sql` file so clarifying here. These tests depend on
- * the following data being present in the db:
- *
- * INSERT INTO
- *     Artist
- *     (name)
- * VALUES
- *     ('led zeppeling'),
- *     ('Zapp Franka'),
- *     ('vangelio'),
- *     ('krs-two'),
- *     ('me-roy'),
- *     ('philip grass'),
- *     ('kanye east'),
- *     ('min Romeo'),
- *     ('Inner Kamoze'),
- *     ('Beta Blondy'),
- *     ('philip stone');
- *
- * INSERT INTO
- *     RaccoonUser
- *     (email)
- * VALUES
- *     ('user100@mail.com');
- */
 @Slf4j
 @QuarkusTest
 @TestHTTPEndpoint(ArtistSearchResource.class)

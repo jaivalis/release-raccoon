@@ -61,7 +61,7 @@ public class Scrape extends PanacheEntityBase {
 
     @Column
     @Setter
-    Boolean isComplete;
+    Boolean isComplete = Boolean.FALSE;
 
     @Transient
     @Setter

@@ -57,7 +57,7 @@ class ReleaseScrapeServiceTest {
 
         service.scrapeReleases();
 
-        verify(mockWorker).submit();
+        verify(mockWorker).submitScrapeJobAsync();
     }
 
     @Test
@@ -68,6 +68,6 @@ class ReleaseScrapeServiceTest {
         service.scrapeReleases();
 
         verify(mockWorker, times(1)).isRunning();
-        verify(mockWorker, times(0)).submit();
+        verify(mockWorker, times(0)).submitScrapeJobAsync();
     }
 }

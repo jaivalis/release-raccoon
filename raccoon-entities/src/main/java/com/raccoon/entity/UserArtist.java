@@ -10,6 +10,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -32,6 +33,7 @@ public class UserArtist extends PanacheEntityBase implements Serializable {
     public Float weight;
 
     @Column
+    @Getter
     public Boolean hasNewRelease = false;
 
     @JsonbTransient
