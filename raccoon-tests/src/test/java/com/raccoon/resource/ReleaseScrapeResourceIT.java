@@ -8,7 +8,6 @@ import com.raccoon.profile.ReleaseScrapeDatabaseProfile;
 import com.raccoon.scrape.ReleaseScrapeResource;
 import com.raccoon.scrape.ReleaseScrapeWorker;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -45,47 +44,8 @@ class ReleaseScrapeResourceIT {
     @Inject
     ReleaseScrapeWorker releaseScrapeWorker;
 
-//    @Inject
-//    SpotifyScraper mockSpotifyScraper;
-
     @Inject
     UserTransaction transaction;
-
-    @BeforeEach
-    public void setup() throws InterruptedException {
-////        MockitoAnnotations.openMocks(this);
-////        installMockForType(mockSpotifyScraper, SpotifyScraper.class);
-//
-//        SpotifyScraper mock = mock(SpotifyScraper.class);
-////         Given spotifyScraper returns a Release by an artist followed by our raccoonUser
-//        ArtistSimplified existentArtistSimplified = Instancio.of(ArtistSimplified.class)
-//                .set(field(ArtistSimplified::getName), "existentArtist")
-//                .create();
-//        ArtistSimplified[] scrapedAlbumArtists = new ArtistSimplified[1];
-//        scrapedAlbumArtists[0] = existentArtistSimplified;
-////        AlbumSimplified albumSimplified =/
-//        AlbumSimplified scrapedAlbum = Instancio.of(AlbumSimplified.class)
-//                .set(field(AlbumSimplified::getArtists), scrapedAlbumArtists)
-//                .create();
-//        Artist mockArtist = Instancio.of(Artist.class)
-//                .set(field(Artist::getName), "existentArtist")
-//                .create();
-//
-//        Release mockRelease = new Release();
-//        ArtistRelease artistRelease = new ArtistRelease();
-//        artistRelease.setArtist(mockArtist);
-//        mockRelease.setReleases(List.of(artistRelease));
-////        when(mockRelease.getArtists())
-////                .thenReturn(List.of(mockArtist));
-////        Release mockRelease = Instancio.of(Release.class)
-////                .set(field(Release::getArtists), List.of(mockArtist))
-////                .create();
-//
-//        when(mock.queryService(any()))
-//                .thenReturn(Set.of(scrapedAlbum));
-//        when(mock.scrapeReleases(any()))
-//                .thenReturn(Set.of(mockRelease));
-    }
 
     @Test
     void releaseScrape_should_markHasNewRelease() throws HeuristicRollbackException, SystemException, HeuristicMixedException, RollbackException, NotSupportedException {
@@ -103,12 +63,10 @@ class ReleaseScrapeResourceIT {
 
         await("Should complete the scrape before we can query the latest scrape")
                 .atMost(Duration.ofSeconds(20))
-                .until(() -> {
-//                        log.debug("latestScrape exists: {}", Objects.nonNull(releaseScrapeWorker.getLatestScrape()));
-//                        log.debug("latestScrape isComplete: {}", releaseScrapeWorker.getLatestScrape().getIsComplete());
-                        return Objects.nonNull(releaseScrapeWorker.getLatestScrape())
-                                && releaseScrapeWorker.getLatestScrape().getIsComplete();
-                });
+                .until(() ->
+                        Objects.nonNull(releaseScrapeWorker.getLatestScrape())
+                        && releaseScrapeWorker.getLatestScrape().getIsComplete()
+                );
 
         assertThat(releaseRepository.count())
                 .as("23 results in the response (1 mocked above + 22 from stub.json)")

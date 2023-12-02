@@ -71,34 +71,6 @@ public class ReleaseScrapeWorker {
         }
     }
 
-//    /**
-//     * Submits a scrape job. If one is active and incomplete, returns that one instead.
-//     */
-//    public void submitScrapeJobAsyncOld() {
-//        log.info("Starting new scrape job");
-//        latestScrape = new Scrape();
-//
-//        executorService.submit(() -> {
-//            isRunning.set(true);
-//            final Thread currentThread = Thread.currentThread();
-//            currentThread.setName("processing-latest-scrape");
-//            try {
-//                Set<Release> releases = fetchReleases();
-//                log.info("Scraped {} releases", releases.size());
-//                persistLatestScrape(releases);
-//                log.info("Scrape persisted");
-//            } catch (PersistenceException ex) {
-//                log.error("Could not persist latest scrape ", ex);
-//                throw ex;
-//            } catch (Exception e) {
-//                log.error("Exception while fetching releases ", e);
-//            } finally {
-//                log.info("Scrape job complete");
-//                isRunning.set(false);
-//            }
-//        });
-//    }
-
     /**
      * Submits a scrape job
      */
@@ -106,7 +78,13 @@ public class ReleaseScrapeWorker {
         log.info("Starting new scrape job");
         latestScrape = new Scrape();
 
-        CompletableFuture.runAsync(scrapeRunnable(), executorService);
+        CompletableFuture.runAsync(() -> {
+            try {
+                scrapeRunnable().run();
+            } catch (Throwable t) {
+                log.error("Exception thrown when scraping for new releases ", t);
+            }
+        }, executorService);
     }
 
     private Runnable scrapeRunnable() {

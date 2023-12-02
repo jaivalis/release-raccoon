@@ -1,12 +1,10 @@
-INSERT INTO
-    RaccoonUser
-(user_id, email)
+INSERT INTO RaccoonUser
+    (user_id, email)
 VALUES
     (100, 'user100@mail.com');
 
-INSERT INTO
-    Artist
-(name)
+INSERT INTO Artist
+    (name)
 VALUES
     ('led zeppeling'),
     ('Zapp Franka'),

@@ -18,7 +18,7 @@ VALUES
 
 
 INSERT INTO ArtistRelease
-(artist_id, release_id)
+    (artist_id, release_id)
 VALUES
     (300, 300);
 
