@@ -25,7 +25,7 @@
 
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.5.3</quarkus.platform.version>
+        <quarkus.platform.version>3.6.0</quarkus.platform.version>
         <quarkus-logging-sentry.version>2.0.4</quarkus-logging-sentry.version>
 
         <!-- Native image build fixes -->
@@ -37,7 +37,7 @@
         <spotify.client.version>6.5.4</spotify.client.version>
 
         <!-- Observability -->
-        <micrometer-registry-prometheus.version>1.8.3</micrometer-registry-prometheus.version>
+        <micrometer-registry-prometheus.version>1.12.0</micrometer-registry-prometheus.version>
 
         <!-- tests -->
         <testcontainers.version>1.19.3</testcontainers.version>
