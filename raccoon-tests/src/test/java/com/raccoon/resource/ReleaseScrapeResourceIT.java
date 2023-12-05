@@ -7,12 +7,14 @@ import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.profile.ReleaseScrapeDatabaseProfile;
 import com.raccoon.scrape.ReleaseScrapeResource;
 import com.raccoon.scrape.ReleaseScrapeWorker;
+import com.raccoon.scraper.spotify.SpotifyScraper;
 
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.Objects;
 
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -39,6 +41,8 @@ class ReleaseScrapeResourceIT {
 
     @Inject
     UserArtistRepository userArtistRepository;
+    @InjectMock
+    SpotifyScraper mockSpotifyScraper;
     @Inject
     ReleaseRepository releaseRepository;
     @Inject
