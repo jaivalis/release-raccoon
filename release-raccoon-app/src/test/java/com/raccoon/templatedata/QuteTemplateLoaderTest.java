@@ -33,7 +33,7 @@ class QuteTemplateLoaderTest {
 
     @Test
     void onStartParsesAndLoadsTemplates() {
-        loader.onStart(null);
+        loader.onStart();
 
         verify(mockEngine, times(4)).parse(anyString());
         verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.DIGEST_EMAIL_TEMPLATE_ID), any());
