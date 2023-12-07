@@ -81,7 +81,7 @@ public class ReleaseScrapeWorker {
         CompletableFuture.runAsync(() -> {
             try {
                 scrapeRunnable().run();
-            } catch (Throwable t) {
+            } catch (Exception t) {
                 log.error("Exception thrown when scraping for new releases ", t);
             }
         }, executorService);

@@ -3,8 +3,7 @@ package com.raccoon.templatedata;
 import java.util.Scanner;
 
 import io.quarkus.qute.Engine;
-import io.quarkus.runtime.StartupEvent;
-import jakarta.enterprise.event.Observes;
+import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -49,7 +48,8 @@ public class QuteTemplateLoader {
     public static final String PROFILE_TEMPLATE_ID = "profile";
     public static final String WELCOME_EMAIL_TEMPLATE_ID = "welcome";
 
-    void onStart(@Observes StartupEvent event) {
+    @Startup
+    void onStart() {
         engine.putTemplate(DIGEST_EMAIL_TEMPLATE_ID, engine.parse(digestEmailContents));
         engine.putTemplate(INDEX_TEMPLATE_ID, engine.parse(indexContents));
         engine.putTemplate(PROFILE_TEMPLATE_ID, engine.parse(profileContents));

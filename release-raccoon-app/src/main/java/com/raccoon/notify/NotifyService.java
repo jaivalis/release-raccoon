@@ -66,7 +66,7 @@ public class NotifyService {
 
         return Uni.combine().all()
                 .unis(unis)
-                .combinedWith(results -> true)
+                .with(results -> true)
                 .onFailure()
                 .recoverWithUni(failure -> Uni.createFrom().item(false));
     }
