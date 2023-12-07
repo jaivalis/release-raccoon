@@ -140,4 +140,12 @@ class ReleaseScrapeWorkerTest {
         arg.forEach(artistId -> assertTrue(artistId < releaseCount));
     }
 
+    @Test
+    void onStop_ShouldShutdownExecutorService() {
+        worker.onStop();
+
+        assertThat(worker.executorService.isShutdown()).isTrue();
+        assertThat(worker.executorService.isTerminated()).isTrue();
+    }
+
 }
