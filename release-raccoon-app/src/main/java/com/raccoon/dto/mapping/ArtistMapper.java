@@ -6,8 +6,9 @@ import com.raccoon.search.dto.SearchResultArtistDto;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = "cdi", uses = ArtistMapperResolver.class)
+@Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA, uses = ArtistMapperResolver.class)
 public interface ArtistMapper {
 
     SearchResultArtistDto toSearchResultArtistDto(Artist artist);

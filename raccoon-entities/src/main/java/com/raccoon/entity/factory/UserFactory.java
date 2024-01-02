@@ -3,7 +3,7 @@ package com.raccoon.entity.factory;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.repository.UserRepository;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UserFactory {

@@ -4,10 +4,9 @@ import com.raccoon.entity.RaccoonUser;
 
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.NotFoundException;
-
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<RaccoonUser> {

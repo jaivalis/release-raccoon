@@ -3,8 +3,8 @@ package com.raccoon.entity.factory;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.repository.ArtistRepository;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.validation.constraints.NotNull;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.constraints.NotNull;
 
 @ApplicationScoped
 public class ArtistFactory {

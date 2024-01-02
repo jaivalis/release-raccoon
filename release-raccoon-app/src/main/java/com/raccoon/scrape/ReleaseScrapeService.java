@@ -7,10 +7,9 @@ import com.raccoon.scrape.dto.ReleaseScrapeResponse;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,19 +29,31 @@ public class ReleaseScrapeService {
     public ReleaseScrapeResponse scrapeReleases() {
         final Scrape scrape;
 
-        var daysSinceLastAllowedScrape = LocalDateTime.now().minusDays(1);
-        Optional<Scrape> mostRecentScrape = scrapeRepository.getMostRecentScrapeFrom(daysSinceLastAllowedScrape);
-        if (mostRecentScrape.isPresent()) {
-            log.info("No scrape is needed, latest scrape took place on: {}", mostRecentScrape.get().getCompleteDate());
-            scrape = mostRecentScrape.get();
-        } else {
-            if (!worker.isRunning()) {
-                worker.submit();
-            }
-            scrape = worker.getLatestScrape();
+        var existingScrape = getExistingScrape();
+        if (existingScrape.isPresent()) {
+            scrape = existingScrape.get();
+            log.info("No scrape is needed, latest scrape took place on: {}", scrape.getCompleteDate());
+            return new ReleaseScrapeResponse(scrape);
         }
 
+        return getInProgressScrape();
+    }
+
+    private ReleaseScrapeResponse getInProgressScrape() {
+        final Scrape scrape;
+        if (!worker.isRunning()) {
+            log.info("Starting new scrape job");
+            worker.submitScrapeJobAsync();
+        }
+
+        log.info("Returning in progress scrape");
+        scrape = worker.getLatestScrape();
         return new ReleaseScrapeResponse(scrape);
+    }
+
+    Optional<Scrape> getExistingScrape() {
+        var daysSinceLastAllowedScrape = LocalDateTime.now().minusDays(1);
+        return scrapeRepository.getMostRecentScrapeFrom(daysSinceLastAllowedScrape);
     }
 
 }

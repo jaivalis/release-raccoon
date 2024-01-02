@@ -1,8 +1,7 @@
 package com.raccoon.scraper.config;
 
-import javax.resource.spi.ConfigProperty;
-
 import io.smallrye.config.ConfigMapping;
+import jakarta.resource.spi.ConfigProperty;
 
 @ConfigMapping(prefix = "musicbrainz")
 public interface MusicbrainzConfig {

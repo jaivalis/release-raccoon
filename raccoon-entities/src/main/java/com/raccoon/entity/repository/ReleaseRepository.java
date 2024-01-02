@@ -9,10 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.validation.constraints.NotNull;
-
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.constraints.NotNull;
 
 @ApplicationScoped
 public class ReleaseRepository implements PanacheRepository<Release> {

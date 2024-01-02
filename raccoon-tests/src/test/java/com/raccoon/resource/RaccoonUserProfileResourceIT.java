@@ -1,6 +1,5 @@
-package com.raccoon;
+package com.raccoon.resource;
 
-import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.dto.ArtistDto;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
@@ -13,22 +12,19 @@ import com.raccoon.user.UserProfileResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.quarkus.test.security.oidc.Claim;
 import io.quarkus.test.security.oidc.OidcSecurity;
 import io.restassured.http.ContentType;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
@@ -38,9 +34,7 @@ import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@Testcontainers
 @TestHTTPEndpoint(UserProfileResource.class)
-@QuarkusTestResource(ElasticSearchTestResource.class)
 class RaccoonUserProfileResourceIT {
 
     static final String EXISTING_USERNAME = "the coon";

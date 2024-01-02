@@ -7,14 +7,14 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.2.0</version>
+        <version>9.9.9-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>report-aggregate</artifactId>
     <name>report-aggregate</name>
 
-    <version>0.2.0</version>
+    <version>9.9.9-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <dependencies>
@@ -34,6 +34,10 @@
             <groupId>com.raccoon</groupId>
             <artifactId>release-raccoon-app</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
 
     </dependencies>

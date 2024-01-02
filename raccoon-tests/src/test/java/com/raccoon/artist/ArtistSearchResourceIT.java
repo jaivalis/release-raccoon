@@ -1,7 +1,7 @@
-package com.raccoon;
+package com.raccoon.artist;
 
-import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.entity.Artist;
+import com.raccoon.profile.ArtistSearchDatabaseProfile;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
 import com.raccoon.search.ArtistSearchResource;
 
@@ -10,66 +10,37 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.security.TestSecurity;
 import io.quarkus.test.security.oidc.Claim;
 import io.quarkus.test.security.oidc.OidcSecurity;
 import io.restassured.http.ContentType;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-/**
- * Comments are not allowed in the `import-test.sql` file so clarifying here. These tests depend on
- * the following data being present in the db:
- *
- * INSERT INTO
- *     Artist
- *     (name)
- * VALUES
- *     ('led zeppeling'),
- *     ('Zapp Franka'),
- *     ('vangelio'),
- *     ('krs-two'),
- *     ('me-roy'),
- *     ('philip grass'),
- *     ('kanye east'),
- *     ('min Romeo'),
- *     ('Inner Kamoze'),
- *     ('Beta Blondy'),
- *     ('philip stone');
- *
- * INSERT INTO
- *     RaccoonUser
- *     (email)
- * VALUES
- *     ('user100@mail.com');
- */
 @Slf4j
 @QuarkusTest
-@Testcontainers
 @TestHTTPEndpoint(ArtistSearchResource.class)
-@QuarkusTestResource(ElasticSearchTestResource.class)
 @TestTransaction
+@TestProfile(value = ArtistSearchDatabaseProfile.class)
 class ArtistSearchResourceIT {
 
     final static String EXISTING_USERNAME = "authenticated";

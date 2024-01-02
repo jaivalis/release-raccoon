@@ -1,15 +1,22 @@
 package com.raccoon.entity;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Transient;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
@@ -54,7 +61,7 @@ public class Scrape extends PanacheEntityBase {
 
     @Column
     @Setter
-    Boolean isComplete;
+    Boolean isComplete = Boolean.FALSE;
 
     @Transient
     @Setter

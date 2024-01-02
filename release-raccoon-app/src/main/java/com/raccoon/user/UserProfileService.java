@@ -17,14 +17,13 @@ import com.raccoon.user.dto.FollowedArtistsResponse;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.NotFoundException;
-
 import io.netty.util.internal.StringUtil;
 import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.templatedata.QuteTemplateLoader.PROFILE_TEMPLATE_ID;

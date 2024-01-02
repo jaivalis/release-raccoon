@@ -8,18 +8,27 @@ import com.raccoon.entity.repository.ScrapeRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.scrape.dto.ReleaseMapper;
 import com.raccoon.scraper.ReleaseScraper;
-import lombok.extern.slf4j.Slf4j;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.persistence.PersistenceException;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import io.quarkus.runtime.Shutdown;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.common.StringUtil.isNullOrEmpty;
 
@@ -35,6 +44,7 @@ public class ReleaseScrapeWorker {
     final AtomicBoolean isRunning = new AtomicBoolean(false);
     final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    @Getter
     private Scrape latestScrape;
 
     @Inject
@@ -49,30 +59,54 @@ public class ReleaseScrapeWorker {
         this.releaseMapper = releaseMapper;
     }
 
+    @Shutdown
+    void onStop() {
+        executorService.shutdownNow();
+        try {
+            if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
+    }
+
     /**
-     * Submits a scrape job. If one is active and incomplete, returns that one instead.
+     * Submits a scrape job
      */
-    public void submit() {
+    public void submitScrapeJobAsync() {
         log.info("Starting new scrape job");
-        isRunning.set(true);
         latestScrape = new Scrape();
 
-        executorService.submit(() -> {
+        CompletableFuture.runAsync(() -> {
+            try {
+                scrapeRunnable().run();
+            } catch (Exception t) {
+                log.error("Exception thrown when scraping for new releases ", t);
+            }
+        }, executorService);
+    }
+
+    private Runnable scrapeRunnable() {
+        return () -> {
+            isRunning.set(true);
+            final Thread currentThread = Thread.currentThread();
+            currentThread.setName("processing-latest-scrape");
             try {
                 Set<Release> releases = fetchReleases();
+                log.info("Scraped {} releases", releases.size());
                 persistLatestScrape(releases);
+                log.info("Scrape persisted");
             } catch (PersistenceException ex) {
                 log.error("Could not persist latest scrape ", ex);
                 throw ex;
+            } catch (Exception e) {
+                log.error("Exception while fetching releases ", e);
             } finally {
                 log.info("Scrape job complete");
                 isRunning.set(false);
             }
-        });
-    }
-
-    public Scrape getLatestScrape() {
-        return latestScrape;
+        };
     }
 
     public boolean isRunning() {
@@ -82,6 +116,7 @@ public class ReleaseScrapeWorker {
     Set<Release> fetchReleases() {
         Set<Release> releases = new HashSet<>();
         for (ReleaseScraper<?> scraper : releaseScrapers) {
+            log.debug("Scraping using {}", scraper.getClass().getSimpleName());
             scrapeReleases(releases, scraper);
         }
         log.info("Total new releases found: {}", releases.size());
@@ -95,6 +130,7 @@ public class ReleaseScrapeWorker {
      */
     @Transactional
     void persistLatestScrape(Collection<Release> releases) {
+        log.info("Persisting {} releases", releases.size());
         latestScrape.setReleasesFromSpotify(
                 releases.stream()
                         .filter(r -> !isNullOrEmpty(r.getSpotifyUriId()))

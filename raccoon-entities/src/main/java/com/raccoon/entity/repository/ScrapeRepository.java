@@ -5,10 +5,9 @@ import com.raccoon.entity.Scrape;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ScrapeRepository implements PanacheRepository<Scrape> {

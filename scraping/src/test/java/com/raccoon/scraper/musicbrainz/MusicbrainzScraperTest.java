@@ -1,12 +1,13 @@
 package com.raccoon.scraper.musicbrainz;
 
 import com.flextrade.jfixture.JFixture;
-import com.raccoon.common.ElasticSearchTestResource;
 import com.raccoon.common.WiremockExtensions;
 import com.raccoon.entity.Release;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzReleasesResponse;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -14,19 +15,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-@QuarkusTestResource(ElasticSearchTestResource.class)
-@QuarkusTestResource(H2DatabaseTestResource.class)
 @QuarkusTestResource(WiremockExtensions.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class MusicbrainzScraperTest {
 
     @Inject
@@ -48,11 +46,6 @@ class MusicbrainzScraperTest {
                 .as("Should contain releases for which the release date is not ISO_FORMAT")
                 .contains("Lordiversity - Humanimals", "W", "Symphonies nos. 1 & 3");
     }
-
-//    @Test
-//    void processReleaseIllegal() {
-//        assertThrows(IllegalArgumentException.class, () -> scraper.processRelease(2));
-//    }
 
     @Test
     @TestTransaction

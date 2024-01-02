@@ -1,10 +1,10 @@
-package com.raccoon;
+package com.raccoon.artist;
 
-import com.raccoon.artist.ArtistResource;
 import com.raccoon.dto.ArtistDto;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.profile.ArtistResourceDatabaseProfile;
 import com.raccoon.user.ArtistFollowingService;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -13,37 +13,34 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.transaction.TransactionManager;
-
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.security.TestSecurity;
 import io.quarkus.test.security.oidc.Claim;
 import io.quarkus.test.security.oidc.OidcSecurity;
 import io.restassured.http.ContentType;
+import jakarta.inject.Inject;
+import jakarta.transaction.TransactionManager;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Comments are not allowed in the `import-test.sql` file so clarifying here.
- */
 @Slf4j
 @QuarkusTest
-@Testcontainers
 @TestHTTPEndpoint(ArtistResource.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestProfile(value = ArtistResourceDatabaseProfile.class)
 class ArtistResourceIT {
 
     final static String EXISTING_USERNAME = "authenticated";
@@ -64,8 +61,9 @@ class ArtistResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
+    @TestTransaction
     @Order(1)
-    void getRecommendedArtists_should_returnArtistsNotFollowedByUser() {
+    void getRecommendedArtists_should_notReturnArtistsAlreadyFollowedByUser() {
         List<ArtistDto> artists = given()
                 .contentType(ContentType.JSON)
                 .param("page", "0")
@@ -87,6 +85,7 @@ class ArtistResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
+    @TestTransaction
     @Order(2)
     void getRecommendedArtists_should_returnPaginatedArtistsNotFollowedByUser() {
         List<ArtistDto> artists = given()

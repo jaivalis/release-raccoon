@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import javax.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -101,7 +101,7 @@ class ReleaseScrapeWorkerTest {
         when(mockMusicbrainzScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
         when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(stubReleases(releaseCount));
 
-        worker.submit();
+        worker.submitScrapeJobAsync();
 
         await("Should complete the scrape before we can query the latest scrape").atMost(Duration.ofSeconds(10))
                 .until(() -> !worker.isRunning());
@@ -118,7 +118,7 @@ class ReleaseScrapeWorkerTest {
         // Second scraper returns only one Release already returned by the first
         when(mockSpotifyScraper.scrapeReleases(any())).thenReturn(Set.of(stubReleases.iterator().next()));
 
-        worker.submit();
+        worker.submitScrapeJobAsync();
 
         await("Should complete the scrape before we can query the latest scrape").atMost(Duration.ofSeconds(10))
                 .until(() -> !worker.isRunning());
@@ -138,6 +138,14 @@ class ReleaseScrapeWorkerTest {
                 .isEqualTo(arg.size());
         // ids are given through `stubReleases` are lte `releaseCount`
         arg.forEach(artistId -> assertTrue(artistId < releaseCount));
+    }
+
+    @Test
+    void onStop_ShouldShutdownExecutorService() {
+        worker.onStop();
+
+        assertThat(worker.executorService.isShutdown()).isTrue();
+        assertThat(worker.executorService.isTerminated()).isTrue();
     }
 
 }

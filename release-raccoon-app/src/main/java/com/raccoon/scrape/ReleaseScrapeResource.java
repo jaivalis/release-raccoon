@@ -2,17 +2,21 @@ package com.raccoon.scrape;
 
 import com.raccoon.scrape.dto.ReleaseScrapeResponse;
 
-import javax.inject.Inject;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 @Path("/release-scrape")
 public class ReleaseScrapeResource {
 
+    final ReleaseScrapeService service;
+
     @Inject
-    ReleaseScrapeService service;
+    public ReleaseScrapeResource(ReleaseScrapeService service) {
+        this.service = service;
+    }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)

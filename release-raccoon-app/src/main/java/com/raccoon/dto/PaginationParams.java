@@ -1,10 +1,9 @@
 package com.raccoon.dto;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Positive;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.QueryParam;
-
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.QueryParam;
 import lombok.Data;
 
 @Data
