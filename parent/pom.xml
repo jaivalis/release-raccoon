@@ -52,7 +52,7 @@
         <lombok.version>1.18.30</lombok.version>
         <apache.commons.version>3.12.0</apache.commons.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>33.0.0-jre</guava.version>
         <jackson-datatype-jakarta-jsonp.version>2.16.0</jackson-datatype-jakarta-jsonp.version>
         <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
 
