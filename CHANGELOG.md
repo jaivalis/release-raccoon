@@ -1,15 +1,22 @@
 ⚙️ All important changes to this project are tracked here:
 ---
 
-## Unreleased
+## [Unreleased]
+*
 
-## 0.2.0 - 20/06/2023
+## [0.2.2] - 04/01/2024
+* Bump Quarkus version
+
+## [0.2.1] - 20/06/2023
 * Recommended artists
 
-## 0.1.1 - 03/06/2023
+## [0.2.0] - 20/06/2023
+* Recommended artists
+
+## [0.1.1] - 03/06/2023
 * Github actions for native image
 
-## 0.1.0 - 31/05/2023
+## [0.1.0] - 31/05/2023
 * Upgrade to Java 17
 * Upgrade Quarkus to 2.8.3.Final
 * Integration to Musicbrainz for Release scrape
@@ -24,3 +31,11 @@
 
 ## 0.0.1
 * Introduce Release-Raccoon
+
+---
+[unreleased]: https://github.com/jaivalis/release-raccoon/compare/0.2.2...jdevelop
+[0.2.2]: https://github.com/jaivalis/release-raccoon/compare/0.2.1...0.2.2
+[0.2.1]: https://github.com/jaivalis/release-raccoon/compare/0.2.0...0.2.1
+[0.2.0]: https://github.com/jaivalis/release-raccoon/compare/0.1.0...0.2.0
+[0.1.1]: https://github.com/jaivalis/release-raccoon/compare/0.1.0...0.1.1
+[0.1.0]: https://github.com/jaivalis/release-raccoon/compare/0.0.1...0.1.0

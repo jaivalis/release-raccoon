@@ -1,5 +1,4 @@
 
-~~* Upgrade to latest Quarkus 2.5.4 [upgrade guide](https://github.com/quarkusio/quarkus/wiki/Migration-Guide-2.5)~~
 * Use Oracle cloud free Arm VM for building native [reference](https://www.youtube.com/watch?v=fh009OWr8Ks)
 * Add `Unsubscribe` link to emails
 * `Delete account` functionality
@@ -12,7 +11,6 @@
 * api versioning, nest everything under `/api/v1`
 * ReleaseScraper implementers should not contain persistence layer dependencies, should create Entities and leave persistence for another anti-corruption layer
 * Database reconciliation/enrichment. Missing Artist fields (SpotifyUri, LastfmUri) should be populated
-* Either raise an exception OR log an error, but not both (https://www.morling.dev/blog/whats-in-a-good-error-message/)
 * Dependency cleanup: org.apache.maven.plugins:maven-dependency-plugin:analyze-only
 * render.com deployments should happen after the pipeline completes
 

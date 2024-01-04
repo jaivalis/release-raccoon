@@ -6,7 +6,7 @@
     <groupId>com.raccoon</groupId>
     <artifactId>release-raccoon</artifactId>
     <name>release-raccoon</name>
-    <version>9.9.9-SNAPSHOT</version>
+    <version>0.2.2</version>
 
     <packaging>pom</packaging>
 
