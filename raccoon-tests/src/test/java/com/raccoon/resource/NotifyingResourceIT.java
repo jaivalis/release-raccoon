@@ -49,8 +49,8 @@ class NotifyingResourceIT {
                 .statusCode(SC_OK);
 
         assertEquals(1, mockMailbox.getTotalMessagesSent());
-        assertNotNull(mockMailbox.getMessagesSentTo("user300@mail.com"));
-        assertEquals(1, mockMailbox.getMessagesSentTo("user300@mail.com").size());
+        assertNotNull(mockMailbox.getMailsSentTo("user300@mail.com"));
+        assertEquals(1, mockMailbox.getMailsSentTo("user300@mail.com").size());
         var uaOptional = userArtistRepository.findByUserIdArtistIdOptional(300L, 300L);
         assertTrue(uaOptional.isPresent());
         assertThat(uaOptional.get().hasNewRelease)

@@ -70,7 +70,7 @@ class RaccoonUserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        assertEquals(1, mockMailbox.getMessagesSentTo("getProfileOnce@gmail.com").size());
+        assertEquals(1, mockMailbox.getMailsSentTo("getProfileOnce@gmail.com").size());
     }
 
     @Test
@@ -93,7 +93,7 @@ class RaccoonUserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        assertEquals(1, mockMailbox.getMessagesSentTo("getProfileTwice@gmail.com").size());
+        assertEquals(1, mockMailbox.getMailsSentTo("getProfileTwice@gmail.com").size());
     }
 
     @Test
