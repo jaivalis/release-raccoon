@@ -4,6 +4,9 @@
 ## [Unreleased]
 *
 
+## [0.2.3] - 01/06/2024
+* dependency version bumps
+
 ## [0.2.2] - 04/01/2024
 * Bump Quarkus version
 
@@ -33,7 +36,8 @@
 * Introduce Release-Raccoon
 
 ---
-[unreleased]: https://github.com/jaivalis/release-raccoon/compare/0.2.2...jdevelop
+[unreleased]: https://github.com/jaivalis/release-raccoon/compare/0.2.3...jdevelop
+[0.2.3]: https://github.com/jaivalis/release-raccoon/compare/0.2.3...0.2.2
 [0.2.2]: https://github.com/jaivalis/release-raccoon/compare/0.2.2...0.2.1
 [0.2.1]: https://github.com/jaivalis/release-raccoon/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/jaivalis/release-raccoon/compare/0.1.0...0.2.0
