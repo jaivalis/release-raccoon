@@ -1,6 +1,7 @@
 package com.raccoon.scraper.mapper;
 
 import com.raccoon.entity.Release;
+import com.wrapper.spotify.enums.AlbumType;
 import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
 
 import java.time.LocalDate;
@@ -8,6 +9,8 @@ import java.time.format.DateTimeParseException;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
+
+import static java.util.Objects.nonNull;
 
 /**
  * Makes a parses com.wrapper.spotify.model_objects.specification.AlbumSimplified to
@@ -19,9 +22,10 @@ public class SpotifyReleaseMapper {
 
     public Release fromAlbumSimplified(AlbumSimplified albumSimplified) {
         final var release = new Release();
+        AlbumType albumType = albumSimplified.getAlbumType();
 
         release.setName(albumSimplified.getName());
-        release.setType(albumSimplified.getAlbumType().toString());
+        release.setType(nonNull(albumType) ? albumType.toString() : "");
         release.setSpotifyUri(albumSimplified.getUri());
 
         try {

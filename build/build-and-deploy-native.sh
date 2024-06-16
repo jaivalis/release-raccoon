@@ -28,11 +28,11 @@ cp ./build/release-raccoon-app-0.0.1-SNAPSHOT-runner ${EXECUTABLE_TARGET_DIR}
 pushd docker
 
 echo "Building image"
-docker build -f Dockerfile.native -t registry.heroku.com/release-raccoon/web .
+docker build -f Dockerfile.native -t registry.heroku.com/backend-release-raccoon/web .
 echo "Publishing image"
-docker push registry.heroku.com/release-raccoon/web
+docker push registry.heroku.com/backend-release-raccoon/web
 echo "Deploying new executable"
-heroku container:release web --app release-raccoon
+heroku container:release web --app backend-release-raccoon
 
 popd
 
