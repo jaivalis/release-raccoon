@@ -36,7 +36,9 @@ public class ArtistFollowingService {
 
     public void unfollowArtist(final String userEmail, final Long artistId) {
         var user = userRepository.findByEmail(userEmail);
+        log.debug("Unfollow artist {} by user {}", artistId, user.getId());
         userArtistRepository.deleteAssociation(user.id, artistId);
+        log.debug("Unfollowed");
     }
 
     /**
@@ -46,6 +48,7 @@ public class ArtistFollowingService {
      */
     public void followArtist(final String userEmail, final Artist artist) {
         var user = userRepository.findByEmail(userEmail);
+        log.debug("Follow artist {} by user {}", artist.getName(), user.getId());
         artistRepository.persist(artist);
 
         var userArtist = userArtistRepository

@@ -87,7 +87,6 @@ public class UserProfileResource {
 
     @GET
     @Path("/enable-services")
-    @Transactional
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
     public Response enableTasteSources(@QueryParam("lastfmUsername") final Optional<String> lastfmUsernameOpt,

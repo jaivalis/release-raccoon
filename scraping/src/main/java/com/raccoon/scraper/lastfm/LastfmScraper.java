@@ -44,7 +44,8 @@ public class LastfmScraper implements TasteScraper {
         final Set<String> seenNames = new HashSet<>();
 
         for (Period period : Period.values()) {
-            mergeArtists(topArtists, lastfmApi.getUserTopArtists(username, period), seenNames);
+            Collection<de.umass.lastfm.Artist> userTopArtists = lastfmApi.getUserTopArtists(username, period);
+            mergeArtists(topArtists, userTopArtists, seenNames);
         }
 
         return topArtists.stream()
@@ -56,7 +57,7 @@ public class LastfmScraper implements TasteScraper {
     @Override
     public com.raccoon.entity.Artist processArtist(Object artistObj) {
         if (artistObj instanceof de.umass.lastfm.Artist lastfmArtist) {
-            log.debug("Got lastfm artist: {}", lastfmArtist.getName());
+            log.debug("Processing lastfm artist: {}", lastfmArtist.getName());
             var artist = artistFactory.getOrCreateArtist(lastfmArtist.getName());
             artist.setLastfmUri(lastfmArtist.getUrl());
             artistRepository.persist(artist);

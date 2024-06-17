@@ -33,11 +33,17 @@ public class RaccoonLastfmApi {
      * @return
      */
     public Collection<Artist> getUserTopArtists(String username, Period period) {
-        return User.getTopArtists(username, period, apiKey);
+        log.debug("Get user top artists for {} in {}", username, period);
+        Collection<Artist> artists = User.getTopArtists(username, period, apiKey);
+        log.debug("Got {}", artists.size());
+        return artists;
     }
 
     public Collection<Artist> searchArtist(String pattern) {
-        return Artist.search(pattern, apiKey);
+        log.debug("Searching artists by name {}", pattern);
+        Collection<Artist> artists = Artist.search(pattern, apiKey);
+        log.debug("Got {}", artists.size());
+        return artists;
     }
 
 }

@@ -22,6 +22,7 @@ import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -142,6 +143,8 @@ public class UserProfileService {
         artistFollowingService.unfollowArtist(userEmail, artistId);
     }
 
+
+    @Transactional
     public RaccoonUser enableTasteSources(final String userEmail,
                                           final Optional<String> lastfmUsernameOpt,
                                           final Optional<Boolean> enableSpotifyOpt) {
@@ -153,10 +156,11 @@ public class UserProfileService {
         var user = existing.get();
         lastfmUsernameOpt.ifPresent(user::setLastfmUsername);
         enableSpotifyOpt.ifPresent(user::setSpotifyEnabled);
+        userRepository.persist(user);
 
         lastfmTasteUpdatingService.updateTaste(user.id);
-
         userRepository.persist(user);
+
         return user;
     }
 

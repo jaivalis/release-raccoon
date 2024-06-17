@@ -79,7 +79,8 @@ public class NotifyService {
      * @return
      */
     public Uni<Void> notifySingleUser(RaccoonUser raccoonUser, Collection<UserArtist> mightHaveNewReleases) {
-        log.info("Checking for potential digests for {} newly subscribed to artists that were present in the database for raccoonUser {}", mightHaveNewReleases.size(), raccoonUser.id);
+        log.info("Checking for potential digests for {} newly subscribed to artists that were present in the database for raccoonUser {}",
+                mightHaveNewReleases.size(), raccoonUser.id);
         Set<Artist> artists = mightHaveNewReleases.stream()
                 .map(UserArtist::getArtist)
                 .collect(toSet());
