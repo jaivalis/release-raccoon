@@ -4,6 +4,10 @@
 ## [Unreleased]
 *
 
+## [0.2.4] - 18/06/2024
+* heroku fixes
+* SpotifyReleaseMapper `AlbumType` bugfix
+ 
 ## [0.2.3] - 01/06/2024
 * dependency version bumps
 
@@ -36,7 +40,8 @@
 * Introduce Release-Raccoon
 
 ---
-[unreleased]: https://github.com/jaivalis/release-raccoon/compare/0.2.3...jdevelop
+[unreleased]: https://github.com/jaivalis/release-raccoon/compare/0.2.4...jdevelop
+[0.2.3]: https://github.com/jaivalis/release-raccoon/compare/0.2.4...0.2.3
 [0.2.3]: https://github.com/jaivalis/release-raccoon/compare/0.2.3...0.2.2
 [0.2.2]: https://github.com/jaivalis/release-raccoon/compare/0.2.2...0.2.1
 [0.2.1]: https://github.com/jaivalis/release-raccoon/compare/0.2.0...0.2.1
