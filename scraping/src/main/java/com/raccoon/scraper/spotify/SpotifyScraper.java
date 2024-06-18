@@ -15,6 +15,7 @@ import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
 import com.wrapper.spotify.model_objects.specification.Paging;
 
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hc.core5.http.ParseException;
 
 import java.io.IOException;
@@ -156,6 +157,9 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
         } catch (IOException | ParseException | SpotifyWebApiException e) {
             log.error("Something went wrong when fetching Spotify artists ", e);
         }
+
+        artistRepository.persist(artists.stream().map(Pair::getKey));
+
         return artists;
     }
 
@@ -164,8 +168,6 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
             log.info("Got spotify artist: {}", spotifyArtist.getName());
             var artist = artistFactory.getOrCreateArtist(spotifyArtist.getName());
             artist.setSpotifyUri(spotifyArtist.getUri());
-            artistRepository.persist(artist);
-
             return artist;
         }
         throw new IllegalArgumentException("Got an object type that is not supported.");

@@ -8,9 +8,11 @@ import com.raccoon.scraper.TasteScraper;
 import de.umass.lastfm.Period;
 
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,10 +50,14 @@ public class LastfmScraper implements TasteScraper {
             mergeArtists(topArtists, userTopArtists, seenNames);
         }
 
-        return topArtists.stream()
+        List<MutablePair<Artist, Float>> topArtistsWithPlaycounts = topArtists.stream()
                 .map(artistObj ->
                         MutablePair.of(processArtist(artistObj), (float) artistObj.getPlaycount()))
                 .toList();
+
+        artistRepository.persist(topArtistsWithPlaycounts.stream().map(Pair::getKey));
+
+        return topArtistsWithPlaycounts;
     }
 
     @Override
@@ -60,8 +66,6 @@ public class LastfmScraper implements TasteScraper {
             log.debug("Processing lastfm artist: {}", lastfmArtist.getName());
             var artist = artistFactory.getOrCreateArtist(lastfmArtist.getName());
             artist.setLastfmUri(lastfmArtist.getUrl());
-            artistRepository.persist(artist);
-
             return artist;
         }
         throw new IllegalArgumentException("Got an object type that is not supported.");
