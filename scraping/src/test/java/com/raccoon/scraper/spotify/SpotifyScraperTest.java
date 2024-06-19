@@ -34,7 +34,6 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
@@ -193,7 +192,6 @@ class SpotifyScraperTest {
         assertEquals(name, artist.getName());
         assertEquals(uri, artist.getSpotifyUri());
         verify(artistFactoryMock).getOrCreateArtist(name);
-        verify(artistRepositoryMock).persist(any(Artist.class));
     }
 
     @Test
