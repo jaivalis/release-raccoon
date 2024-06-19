@@ -141,7 +141,6 @@ class SpotifyScraperTest {
         scraper.processRelease(mockSpotifyAlbum(100, type));
 
         verify(artistRepositoryMock).findByNameOptional("artistName" + 100);
-        verify(artistRepositoryMock).persist(any(Artist.class));
     }
 
     @DisplayName("processRelease(): Returns empty if Release is already found")

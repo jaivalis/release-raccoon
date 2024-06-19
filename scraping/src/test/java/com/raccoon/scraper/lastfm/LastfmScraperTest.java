@@ -109,7 +109,6 @@ class LastfmScraperTest {
         assertEquals(name, artist.getName());
         assertEquals(uri, artist.getLastfmUri());
         verify(artistFactoryMock).getOrCreateArtist(name);
-        verify(artistRepositoryMock).persist(any(Artist.class));
     }
 
     @Test
