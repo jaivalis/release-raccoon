@@ -9,12 +9,12 @@ VALUES
 INSERT INTO Releases
     (releaseId, name, type, releasedOn, spotifyUri)
 VALUES
-    (300, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:xxxxx');
+    (300, 'new-release-to-notify', 'ALBUM', CURRENT_DATE - INTERVAL '1' DAY, 'spotify:album:xxxxx');
 
 INSERT INTO Artist
     (artistId, name, create_date)
 VALUES
-    (300, 'existentArtist2', (SUBDATE(CURDATE(), 1)));
+    (300, 'existentArtist2', CURRENT_DATE - INTERVAL '1' DAY);
 
 INSERT INTO UserArtist
     (user_id, artist_id, hasNewRelease)
@@ -31,12 +31,12 @@ VALUES
 INSERT INTO Artist
     (artistId, name, create_date, spotifyUri)
 VALUES
-    (400, 'existentArtist4', (SUBDATE(CURDATE(), 1)), 'uri4');
+    (400, 'existentArtist4', CURRENT_DATE - INTERVAL '1' DAY, 'uri4');
 
 INSERT INTO Releases
     (releaseId, name, type, releasedOn, spotifyUri)
 VALUES
-    (400, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:yyyyyy');
+    (400, 'new-release-to-notify', 'ALBUM', CURRENT_DATE - INTERVAL '1' DAY, 'spotify:album:yyyyyy');
 
 INSERT INTO RaccoonUser
     (user_id, email)
