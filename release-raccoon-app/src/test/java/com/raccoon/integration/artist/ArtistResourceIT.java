@@ -1,10 +1,11 @@
-package com.raccoon.artist;
+package com.raccoon.integration.artist;
 
+import com.raccoon.artist.ArtistResource;
 import com.raccoon.dto.ArtistDto;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.profile.ArtistResourceDatabaseProfile;
+import com.raccoon.integration.profile.ArtistResourceDatabaseProfile;
 import com.raccoon.user.ArtistFollowingService;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -61,8 +62,8 @@ class ArtistResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
-    @TestTransaction
     @Order(1)
+    @TestTransaction
     void getRecommendedArtists_should_notReturnArtistsAlreadyFollowedByUser() {
         List<ArtistDto> artists = given()
                 .contentType(ContentType.JSON)
@@ -85,8 +86,8 @@ class ArtistResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
     })
-    @TestTransaction
     @Order(2)
+    @TestTransaction
     void getRecommendedArtists_should_returnPaginatedArtistsNotFollowedByUser() {
         List<ArtistDto> artists = given()
                 .contentType(ContentType.JSON)

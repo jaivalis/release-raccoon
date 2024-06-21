@@ -18,13 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
+@TestTransaction
 class ScrapeRepositoryTest {
 
     @Inject
     ScrapeRepository repository;
 
     @Test
-    @TestTransaction
     void getMostRecentScrapeFrom_should_beEmpty_when_allScrapesAreOld() {
         IntStream.range(0, 10)
                 .mapToObj(i -> {
@@ -41,7 +41,6 @@ class ScrapeRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void getMostRecentScrapeFrom_should_returnMostRecent_when_allScrapesAreRecent() {
         var scrape1 = new Scrape();
         scrape1.setCompleteDate(LocalDateTime.now().minusMinutes(4));
@@ -68,7 +67,6 @@ class ScrapeRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void getMostRecentScrapeFrom_should_returnEmpty_when_completeDateNotSet() {
         IntStream.range(0, 10)
                 .mapToObj(i -> {

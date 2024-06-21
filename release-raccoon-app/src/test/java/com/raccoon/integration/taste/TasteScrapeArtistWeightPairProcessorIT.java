@@ -1,11 +1,12 @@
-package com.raccoon.taste;
+package com.raccoon.integration.taste;
 
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
-import com.raccoon.profile.TasteScrapeDatabaseProfile;
+import com.raccoon.integration.profile.TasteScrapeDatabaseProfile;
+import com.raccoon.taste.TasteScrapeArtistWeightPairProcessor;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

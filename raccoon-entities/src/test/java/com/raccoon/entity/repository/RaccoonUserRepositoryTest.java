@@ -10,7 +10,6 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
+@TestTransaction
 class RaccoonUserRepositoryTest {
 
     @Inject
@@ -28,13 +28,11 @@ class RaccoonUserRepositoryTest {
     UserFactory factory;
 
     @AfterEach
-    @Transactional
     void setup() {
         repository.deleteAll();
     }
 
     @Test
-    @TestTransaction
     void findByEmailEmpty() {
         var email = "does not exist";
 
@@ -42,7 +40,6 @@ class RaccoonUserRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void findByEmailOptional() {
         var email = "email@mail.com";
         factory.createUser(email);
@@ -54,7 +51,6 @@ class RaccoonUserRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void findByEmailNotFound() {
         var email = "does not exist";
 
@@ -62,7 +58,6 @@ class RaccoonUserRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void findByEmail() {
         var email = "email@mail.com";
         factory.createUser(email);

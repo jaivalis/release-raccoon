@@ -1,7 +1,7 @@
-package com.raccoon.resource;
+package com.raccoon.integration.resource;
 
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.profile.NotifyingResourceDatabaseProfile;
+import com.raccoon.integration.profile.NotifyingResourceDatabaseProfile;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

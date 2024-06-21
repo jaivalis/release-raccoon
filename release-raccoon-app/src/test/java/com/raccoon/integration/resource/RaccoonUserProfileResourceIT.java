@@ -1,4 +1,4 @@
-package com.raccoon.resource;
+package com.raccoon.integration.resource;
 
 import com.raccoon.dto.ArtistDto;
 import com.raccoon.entity.Artist;
@@ -17,7 +17,9 @@ import java.util.List;
 
 import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.TestTransaction;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.quarkus.test.security.oidc.Claim;
@@ -35,6 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileResource.class)
+@QuarkusTestResource(H2DatabaseTestResource.class)
+@TestTransaction
 class RaccoonUserProfileResourceIT {
 
     static final String EXISTING_USERNAME = "the coon";
@@ -57,7 +61,6 @@ class RaccoonUserProfileResourceIT {
     }
 
     @Test
-    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
@@ -74,7 +77,6 @@ class RaccoonUserProfileResourceIT {
     }
 
     @Test
-    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "getProfileTwice@gmail.com")
@@ -97,7 +99,6 @@ class RaccoonUserProfileResourceIT {
     }
 
     @Test
-    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "raccoonUser@gmail.com")
@@ -135,7 +136,6 @@ class RaccoonUserProfileResourceIT {
     }
 
     @Test
-    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "raccoonUser@gmail.com")
@@ -157,7 +157,6 @@ class RaccoonUserProfileResourceIT {
     }
 
     @Test
-    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "raccoonUser@gmail.com")
@@ -181,7 +180,6 @@ class RaccoonUserProfileResourceIT {
     }
 
     @Test
-    @TestTransaction
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "raccoonUser@gmail.com")
@@ -224,7 +222,6 @@ class RaccoonUserProfileResourceIT {
     }
 
     @Test
-    @TestTransaction
     @DisplayName("no bearer token, unauthorized")
     void unauthorized() {
         given()

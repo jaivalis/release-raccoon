@@ -16,17 +16,18 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import io.quarkus.panache.common.Page;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@TestTransaction
 class ArtistRepositoryIT {
 
     @Inject
@@ -45,13 +46,11 @@ class ArtistRepositoryIT {
     UserArtistStubFactory stubFactory;
 
     @BeforeEach
-    @Transactional
     void setup() {
         stubFactory = new UserArtistStubFactory(userArtistRepository, userFactory, userRepository, artistFactory);
     }
 
     @AfterEach
-    @Transactional
     void tearDown() {
         userArtistRepository.deleteAll();
         artistRepository.deleteAll();
@@ -59,7 +58,6 @@ class ArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void listDistinctArtistsNotFollowedByUser_should_returnArtistsFollowedByOthersOnly() {
         var user1Artist1 = stubFactory.stubUserArtist("user1@mail.com", "artist1");
         var user1Artist2 = stubFactory.stubUserArtist("user1@mail.com", "artist2");
@@ -77,7 +75,6 @@ class ArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void listDistinctArtistsNotFollowedByUser_should_returnEmptyWhenNotFound() {
         var user1Artist1 = stubFactory.stubUserArtist("user1@mail.com", "artist1");
         var user1Artist2 = stubFactory.stubUserArtist("user1@mail.com", "artist2");

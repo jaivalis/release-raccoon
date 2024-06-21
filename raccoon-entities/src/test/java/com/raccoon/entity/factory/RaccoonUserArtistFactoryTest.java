@@ -7,9 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import io.quarkus.test.TestTransaction;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
+@TestTransaction
 class RaccoonUserArtistFactoryTest {
 
     UserArtistFactory factory = new UserArtistFactory();
