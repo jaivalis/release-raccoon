@@ -270,6 +270,16 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+
         </plugins>
 
         <resources>
@@ -313,42 +323,43 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                     </plugin>
-<!--                    <plugin>-->
-<!--                        <artifactId>maven-failsafe-plugin</artifactId>-->
-<!--                        <version>${failsafe-plugin.version}</version>-->
-<!--                        <configuration>-->
-<!--                            <systemProperties>-->
-<!--                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>-->
-<!--                                &lt;!&ndash; keycloak &ndash;&gt;-->
-<!--                                <keycloak.version>14.0.0</keycloak.version>-->
-<!--                                <keycloak.use.https>false</keycloak.use.https>-->
-<!--                            </systemProperties>-->
-<!--                        </configuration>-->
-<!--                        <executions>-->
-<!--                            <execution>-->
-<!--&lt;!&ndash;                                <goals>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <goal>integration-test</goal>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <goal>verify</goal>&ndash;&gt;-->
-<!--&lt;!&ndash;                                </goals>&ndash;&gt;-->
-<!--                                <configuration>-->
-<!--                                    <systemProperties>-->
-<!--                                        <native.image.path>-->
-<!--                                            ${project.build.directory}/${project.build.finalName}-runner-->
-<!--                                        </native.image.path>-->
 
-<!--                                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>-->
-<!--                                        <maven.home>${maven.home}</maven.home>-->
-<!--                                        <version>${failsafe-plugin.version}</version>-->
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${failsafe-plugin.version}</version>
+                        <configuration>
+                            <systemProperties>
+                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                                <!-- keycloak -->
+                                <keycloak.version>14.0.0</keycloak.version>
+                                <keycloak.use.https>false</keycloak.use.https>
+                            </systemProperties>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <systemProperties>
+                                        <native.image.path>
+                                            ${project.build.directory}/${project.build.finalName}-runner
+                                        </native.image.path>
 
-<!--                                        &lt;!&ndash; keycloak &ndash;&gt;-->
-<!--                                        <keycloak.version>14.0.0</keycloak.version>-->
-<!--                                        <keycloak.use.https>false</keycloak.use.https>-->
+                                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                                        <maven.home>${maven.home}</maven.home>
+                                        <version>${failsafe-plugin.version}</version>
 
-<!--                                    </systemProperties>-->
-<!--                                </configuration>-->
-<!--                            </execution>-->
-<!--                        </executions>-->
-<!--                    </plugin>-->
+                                        <!-- keycloak -->
+                                        <keycloak.version>14.0.0</keycloak.version>
+                                        <keycloak.use.https>false</keycloak.use.https>
+
+                                    </systemProperties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 
                     <plugin>
                         <groupId>org.jboss.jandex</groupId>
