@@ -1,13 +1,12 @@
 services:
-
   raccoon-mariadb:
     image: mariadb:10.8
     environment:
-      MYSQL_USER: '${DB_USERNAME}'
-      MYSQL_PASSWORD: '${DB_PASSWORD}'
-      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: "${DB_NAME}"
     ports:
       - ${DB_PORT}:3306
     volumes:
@@ -27,7 +26,7 @@ services:
 
   raccoon-elasticsearch:
     # For amd64 CPUs:
-#    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    #    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     # For arm CPUs:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2-arm64
     environment:

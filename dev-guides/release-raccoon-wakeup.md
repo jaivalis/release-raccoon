@@ -1,7 +1,7 @@
-cron job to wakeup heroku
----
+## cron job to wakeup heroku
 
 Create the wakeup script with contents:
+
 ```
 #!/bin/bash
 
@@ -9,13 +9,15 @@ http release-raccoon.herokuapp.com
 ```
 
 Create the cron entry:
+
 ```
 $ crontab -u pi -e
 
 crontab: installing new crontab
-``` 
+```
 
 Verify crontab:
+
 ```
 $ crontab -l
 
