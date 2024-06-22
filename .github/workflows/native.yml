@@ -3,7 +3,7 @@ name: Native CI
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 env:
   JAVA_VERSION: 17
@@ -17,7 +17,7 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Login to Docker Hub
         if: ${{ github.actor != 'dependabot[bot]' }}
@@ -29,18 +29,18 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: 'latest'
+          version: "latest"
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: Build & release native image
-        if:  ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
+        if: ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: |
           echo "GRAALVM_HOME: $GRAALVM_HOME"
           echo "JAVA_HOME: $JAVA_HOME"
           java --version
           gu --version
-          
+
           TAG=${{ github.ref_name }}-native
           echo "Building registry.hub.docker.com/jaivalis/release-raccoon:${TAG}"
-          
+
           mvn package -DskipTests -Dquarkus.native.container-build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:${TAG} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'

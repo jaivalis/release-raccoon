@@ -3,11 +3,11 @@ name: Build tag
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 env:
   JAVA_VERSION: 17
-  JDK_DISTRIBUTION: 'temurin'
+  JDK_DISTRIBUTION: "temurin"
   GITHUB_SHA: ${{ github.sha }}
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
       - name: Login to Docker Hub
         if: ${{ github.actor != 'dependabot[bot]' }}
@@ -55,7 +55,7 @@ jobs:
         # see https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
         if: ${{ github.actor != 'dependabot[bot]' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B -e verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 

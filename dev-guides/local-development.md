@@ -1,24 +1,30 @@
 # Local Development
 
 ## Starting the db, keycloak and Elastic using the .env file
-Create env variables that are needed in [docker-compose](../docker/docker-compose.yml) file and update to required values.    
+
+Create env variables that are needed in [docker-compose](../docker/docker-compose.yml) file and update to required values.
+
 ```shell
 $ cp release-raccoon-app/.env.dist release-raccoon-app/.env
 ```
-> **NOTE:**  The images in docker-compose.yml are currently set for development on arm CPUs,
+
+> **NOTE:** The images in docker-compose.yml are currently set for development on arm CPUs,
 > commented you will find the amd64 counterparts.
 
 From the root of the project run:
+
 ```shell script
 source release-raccoon-app/.env
 docker compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.yml up -d
 ```
 
 ### Setting up liquibase
+
 For db schema migrations Liquibase is used.
 Prior to the first run you will need to generate two tables used to track liquibase versions.
 
 To create the two tables needed run the following against your sql database.
+
 ```mariadb
 create table DATABASECHANGELOG
 (
@@ -48,13 +54,15 @@ create table DATABASECHANGELOGLOCK
 );
 ```
 
-Alternatively, you can install  and use the liquibase executable directly like so:
+Alternatively, you can install and use the liquibase executable directly like so:
+
 ```shell
 sdk install liquibase
 liquibase --driver=org.mariadb.jdbc.Driver --changeLogFile=release-raccoon-app/src/main/resources/db/changelog/db.changelog-x.x.x.sql --url="jdbc:mariadb://localhost:3305/raccoondb" --username=${DB_USERNAME} --password=${DB_PASSWORD} generateChangeLog
 ```
 
 ## Setting up Keycloak
+
 Access the [Keycloak Admin Console](http://127.0.0.1:${KEYCLOAK_PORT}/auth/admin) login with the password used by the [docker-compose](../docker/docker-compose.yml).
 The realm we will be using is `RaccoonRealm` and is defined in [realm](../docker/keycloak_init/realm-export.json).
 It is mounted to the container on start time.
@@ -63,7 +71,6 @@ You also need to create a secret (Clients > release-raccoon > Credentials > Rege
 You should be good to start the quarkus app.
 
 > In case after a docker restart the redirect back from keycloak stops working in dev mode, you might need to regenerate a `quarkus.oidc.credentials.secret` and plug it into the [properties](../release-raccoon-app/src/main/resources/application.properties) again.
-
 
 ## Running the application in dev mode
 
@@ -91,7 +98,6 @@ If you want to build an _über-jar_, execute the following command:
 ```
 
 The application is now runnable using `java -jar target/release.raccoon-0.0.1-SNAPSHOT-runner.jar`.
-
 
 ## Testing
 

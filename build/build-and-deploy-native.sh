@@ -21,9 +21,9 @@ set -x
 
 EXECUTABLE_TARGET_DIR="./docker/raccoon"
 
-mkdir -p ${EXECUTABLE_TARGET_DIR}
+mkdir -p "${EXECUTABLE_TARGET_DIR}"
 echo "Copying new executable to: ${EXECUTABLE_TARGET_DIR}..."
-cp ./build/release-raccoon-app-0.0.1-SNAPSHOT-runner ${EXECUTABLE_TARGET_DIR}
+cp ./build/release-raccoon-app-0.0.1-SNAPSHOT-runner "${EXECUTABLE_TARGET_DIR}"
 
 pushd docker
 
