@@ -12,8 +12,7 @@
         "headers": {
           "Content-Type": "application/json"
         },
-        "jsonBody":
-        {
+        "jsonBody": {
           "created": "2022-01-30T21:38:20.877Z",
           "count": 25,
           "offset": 0,
@@ -58,9 +57,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -143,9 +140,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -232,9 +227,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -293,9 +286,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -355,9 +346,7 @@
                     "id": "caac77d1-a5c8-3e6e-8e27-90b44dcc1446",
                     "name": "Austria",
                     "sort-name": "Austria",
-                    "iso-3166-1-codes": [
-                      "AT"
-                    ]
+                    "iso-3166-1-codes": ["AT"]
                   }
                 }
               ],
@@ -408,12 +397,8 @@
                 "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
                 "title": "Eꜱᴘᴇʀᴡᴀᴠᴇ ≈ エスパーウェーブ",
                 "primary-type": "Album",
-                "secondary-types": [
-                  "Remix"
-                ],
-                "secondary-type-ids": [
-                  "0c60f497-ff81-3818-befd-abfc84a4858b"
-                ]
+                "secondary-types": ["Remix"],
+                "secondary-type-ids": ["0c60f497-ff81-3818-befd-abfc84a4858b"]
               },
               "date": "2022",
               "country": "US",
@@ -424,9 +409,7 @@
                     "id": "489ce91b-6658-3307-9877-795b68554c98",
                     "name": "United States",
                     "sort-name": "United States",
-                    "iso-3166-1-codes": [
-                      "US"
-                    ]
+                    "iso-3166-1-codes": ["US"]
                   }
                 }
               ],
@@ -487,9 +470,7 @@
                     "id": "489ce91b-6658-3307-9877-795b68554c98",
                     "name": "United States",
                     "sort-name": "United States",
-                    "iso-3166-1-codes": [
-                      "US"
-                    ]
+                    "iso-3166-1-codes": ["US"]
                   }
                 }
               ],
@@ -549,9 +530,7 @@
                     "id": "489ce91b-6658-3307-9877-795b68554c98",
                     "name": "United States",
                     "sort-name": "United States",
-                    "iso-3166-1-codes": [
-                      "US"
-                    ]
+                    "iso-3166-1-codes": ["US"]
                   }
                 }
               ],
@@ -653,9 +632,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -705,12 +682,8 @@
                 "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
                 "title": "『大正オトメ御伽話』音樂集",
                 "primary-type": "Album",
-                "secondary-types": [
-                  "Soundtrack"
-                ],
-                "secondary-type-ids": [
-                  "22a628ad-c082-3c4f-b1b6-d41665107b88"
-                ]
+                "secondary-types": ["Soundtrack"],
+                "secondary-type-ids": ["22a628ad-c082-3c4f-b1b6-d41665107b88"]
               },
               "date": "2022-01-05",
               "country": "JP",
@@ -721,9 +694,7 @@
                     "id": "2db42837-c832-3c27-b4a3-08198f75693c",
                     "name": "Japan",
                     "sort-name": "Japan",
-                    "iso-3166-1-codes": [
-                      "JP"
-                    ]
+                    "iso-3166-1-codes": ["JP"]
                   }
                 }
               ],
@@ -803,9 +774,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -866,9 +835,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -930,9 +897,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -977,12 +942,8 @@
               "release-group": {
                 "id": "a32617cb-5e5b-4805-9031-5cf9901acd1c",
                 "title": "Triste y Derrotado",
-                "secondary-types": [
-                  "Soundtrack"
-                ],
-                "secondary-type-ids": [
-                  "22a628ad-c082-3c4f-b1b6-d41665107b88"
-                ]
+                "secondary-types": ["Soundtrack"],
+                "secondary-type-ids": ["22a628ad-c082-3c4f-b1b6-d41665107b88"]
               },
               "date": "2022",
               "country": "MX",
@@ -993,9 +954,7 @@
                     "id": "3e08b2cd-69f3-317c-b1e4-e71be581839e",
                     "name": "Mexico",
                     "sort-name": "Mexico",
-                    "iso-3166-1-codes": [
-                      "MX"
-                    ]
+                    "iso-3166-1-codes": ["MX"]
                   }
                 }
               ],
@@ -1048,9 +1007,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1140,9 +1097,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1202,12 +1157,8 @@
                 "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
                 "title": "Cobra Kai: Season 4, Vol. 2 (Soundtrack from the Netflix Original Series)",
                 "primary-type": "Album",
-                "secondary-types": [
-                  "Soundtrack"
-                ],
-                "secondary-type-ids": [
-                  "22a628ad-c082-3c4f-b1b6-d41665107b88"
-                ]
+                "secondary-types": ["Soundtrack"],
+                "secondary-type-ids": ["22a628ad-c082-3c4f-b1b6-d41665107b88"]
               },
               "date": "2022-01-07",
               "country": "XW",
@@ -1218,9 +1169,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1280,12 +1229,8 @@
                 "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
                 "title": "Cobra Kai: Season 4, Vol. 1 (Soundtrack from the Netflix Original Series)",
                 "primary-type": "Album",
-                "secondary-types": [
-                  "Soundtrack"
-                ],
-                "secondary-type-ids": [
-                  "22a628ad-c082-3c4f-b1b6-d41665107b88"
-                ]
+                "secondary-types": ["Soundtrack"],
+                "secondary-type-ids": ["22a628ad-c082-3c4f-b1b6-d41665107b88"]
               },
               "date": "2022-01-07",
               "country": "XW",
@@ -1296,9 +1241,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1380,9 +1323,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1455,9 +1396,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1548,9 +1487,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1623,9 +1560,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1698,9 +1633,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1767,9 +1700,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1839,9 +1770,7 @@
                     "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
                     "name": "[Worldwide]",
                     "sort-name": "[Worldwide]",
-                    "iso-3166-1-codes": [
-                      "XW"
-                    ]
+                    "iso-3166-1-codes": ["XW"]
                   }
                 }
               ],
@@ -1866,7 +1795,6 @@
           ]
         }
       }
-
     }
   ]
 }

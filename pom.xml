@@ -34,7 +34,6 @@
         <module>parent</module>
         <module>scraping</module>
         <module>raccoon-entities</module>
-        <module>raccoon-tests</module>
         <module>release-raccoon-app</module>
         <module>report-aggregate</module>
         <module>raccoon-common</module>

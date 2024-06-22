@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
+@TestTransaction
 class ReleaseRepositoryTest {
 
     @Inject
@@ -34,7 +35,6 @@ class ReleaseRepositoryTest {
 
     @Test
     @DisplayName("A Release with not the same name but matched Artists, should return empty")
-    @TestTransaction
     void findByNameAndArtistsOptionalNameNotMatched() {
         var sharedReleaseName = "Shared release name";
         // persist artists
@@ -62,7 +62,6 @@ class ReleaseRepositoryTest {
 
     @Test
     @DisplayName("Two releases with same name but from different artists")
-    @TestTransaction
     void findByNameAndArtistsOptionalTwoReleases() {
         var sharedReleaseName = "Shared release name";
         // persist artists
@@ -94,7 +93,6 @@ class ReleaseRepositoryTest {
 
     @Test
     @DisplayName("A Release with same name but more than the requested artist, should return empty")
-    @TestTransaction
     void findByNameAndArtistsOptionalNotAllArtistsInQuery() {
         var sharedReleaseName = "Shared release name";
         // persist artists
@@ -122,7 +120,6 @@ class ReleaseRepositoryTest {
 
 
     @Test
-    @TestTransaction
     void findByArtistsSinceDaysEmpty() {
         var artists = List.of(new Artist());
 
@@ -130,7 +127,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void findByArtistsSinceDaysReturnsOne() {
         var artistName = "artist";
         var release1Name = "release1";
@@ -162,7 +158,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     @DisplayName("filters by date")
     void findByArtistsSinceDaysReturnsNone() {
         var artistName = "artist";
@@ -186,7 +181,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     @DisplayName("findSpotifyRelease(): All args match, should be returned")
     void findSpotifyRelease() {
         var artistName = "artist";
@@ -215,7 +209,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     @DisplayName("findSpotifyRelease(): SpotifyUri not provided, rest match, should be returned")
     void findSpotifyReleaseArtistsDontMatch() {
         var artistName = "artist";
@@ -243,6 +236,7 @@ class ReleaseRepositoryTest {
                 .get().isEqualTo(release);
     }
 
+    @Test
     @DisplayName("findMusicbrainzRelease(): All args match, should be returned")
     void findMusicbrainzReleaseRelease() {
         var artistName = "artist";
@@ -271,7 +265,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     @DisplayName("findMusicbrainzRelease(): SpotifyUri not provided, rest match, should be returned")
     void findMusicbrainzReleaseArtistsDontMatch() {
         var artistName = "artist";
@@ -300,7 +293,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void findByMusicbrainzIdOptional() {
         var id = "id";
         var release = new Release();
@@ -313,7 +305,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void findByMusicbrainzIdOptionalEmpty() {
         final var found = repository.findByMusicbrainzIdOptional("notFound");
 
@@ -321,7 +312,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void findBySpotifyUriOptional() {
         var id = "id";
         var release = new Release();
@@ -334,7 +324,6 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    @TestTransaction
     void findBySpotifyUriOptionalEmpty() {
         final var found = repository.findBySpotifyUriOptional("notFound");
 

@@ -1,4 +1,4 @@
-package com.raccoon.profile;
+package com.raccoon.integration.profile;
 
 import java.util.Map;
 

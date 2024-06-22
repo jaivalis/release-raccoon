@@ -14,7 +14,7 @@ VALUES
 INSERT INTO Releases
     (releaseId, name, type, releasedOn, spotifyUri)
 VALUES
-    (300, 'new-release-to-notify', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:zzzzzz');
+    (300, 'new-release-to-notify', 'ALBUM', CURRENT_DATE - INTERVAL '1' DAY, 'spotify:album:zzzzzz');
 
 
 INSERT INTO ArtistRelease

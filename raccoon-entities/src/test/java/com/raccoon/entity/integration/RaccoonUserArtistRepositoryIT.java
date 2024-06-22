@@ -15,17 +15,18 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
+@TestTransaction
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class RaccoonUserArtistRepositoryIT {
 
@@ -44,26 +45,22 @@ class RaccoonUserArtistRepositoryIT {
     UserArtistStubFactory stubFactory;
 
     @BeforeEach
-    @Transactional
     void setup() {
         stubFactory = new UserArtistStubFactory(userArtistRepository, userFactory, userRepository, artistFactory);
     }
 
     @AfterEach
-    @Transactional
     void tearDown() {
         userArtistRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Test
-    @Transactional
     void getUserArtistsWithNewReleaseEmpty() {
         assertTrue(userArtistRepository.getUserArtistsWithNewRelease().isEmpty());
     }
 
     @Test
-    @Transactional
     void getUserArtistsWithNewRelease() {
         var userArtist1 = stubFactory.stubUserArtist("user1", "artist1");
         var userArtist2 = stubFactory.stubUserArtist("user2", "artist2");
@@ -78,7 +75,6 @@ class RaccoonUserArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void markNewReleaseForArtist() {
         var userArtist1 = stubFactory.stubUserArtist("user1", "artist1");
         var userArtist2 = stubFactory.stubUserArtist("user2", "artist2");
@@ -91,13 +87,11 @@ class RaccoonUserArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void markNewRelease_should_returnTrue_when_artistIdsEmpty() {
         assertTrue(userArtistRepository.markNewRelease(List.of()).isEmpty());
     }
 
     @Test
-    @Transactional
     void findByUserArtistOptional() {
         var userArtist = stubFactory.stubUserArtist("user1", "artist1");
         userArtistRepository.persist(userArtist);
@@ -110,7 +104,6 @@ class RaccoonUserArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void findByUserArtistOptionalEmpty() {
         var userArtists = userArtistRepository.findByUserIdArtistIdOptional(1L, 1L);
 
@@ -118,7 +111,6 @@ class RaccoonUserArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void findByUserId() {
         UserArtistStubFactory stubFactory = new UserArtistStubFactory(userArtistRepository, userFactory, userRepository, artistFactory);
         var userArtist1 = stubFactory.stubUserArtist("user1", "artist1");
@@ -132,7 +124,6 @@ class RaccoonUserArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void findByUserIdEmpty() {
         var userArtists = userArtistRepository.findByUserId(1);
 
@@ -140,7 +131,6 @@ class RaccoonUserArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void findByUserIdByWeight() {
         var user1Artist1 = stubFactory.stubUserArtist("user1", "artist1");
         var user1Artist2 = stubFactory.stubUserArtist("user1", "artist2");
@@ -158,7 +148,6 @@ class RaccoonUserArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void findByUserIdAndArtistIds() {
         var user1Artist1 = stubFactory.stubUserArtist("user1", "artist1");
         var user1Artist2 = stubFactory.stubUserArtist("user1", "artist2");
@@ -180,7 +169,6 @@ class RaccoonUserArtistRepositoryIT {
     }
 
     @Test
-    @Transactional
     void deleteAssociation_should_removeFromTable() {
         var userArtist = stubFactory.stubUserArtist("user1", "artist1");
         var userId = userArtist.getUser().id;

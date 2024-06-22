@@ -5,6 +5,9 @@ import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 
+import io.quarkus.test.TestTransaction;
+
+@TestTransaction
 public class UserArtistStubFactory {
 
     UserArtistRepository userArtistRepository;

@@ -46,7 +46,7 @@ class ArtistRepositoryTest {
 
     @Test
     void listArtistsPaginated_should_returnEmpty_when_noArtistsPresent() {
-        var artists = repository.listArtistsPaginated(Page.of(0, 1));
+        var artists = repository.listArtistsPaginated(Page.of(0, 10));
 
         assertThat(artists).isEmpty();
     }
@@ -58,7 +58,7 @@ class ArtistRepositoryTest {
         artist.setName(name);
         repository.persist(artist);
 
-        var artists = repository.listArtistsPaginated(Page.of(0, 1));
+        var artists = repository.listArtistsPaginated(Page.of(0, 10));
 
         assertThat(artists).hasSize(1);
         assertThat(artists).contains(artist);

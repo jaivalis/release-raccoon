@@ -1,10 +1,10 @@
-package com.raccoon.resource;
+package com.raccoon.integration.resource;
 
 import com.raccoon.common.WiremockExtensions;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
-import com.raccoon.profile.ReleaseScrapeDatabaseProfile;
+import com.raccoon.integration.profile.ReleaseScrapeDatabaseProfile;
 import com.raccoon.scrape.ReleaseScrapeResource;
 import com.raccoon.scrape.ReleaseScrapeWorker;
 import com.raccoon.scraper.spotify.SpotifyScraper;
@@ -20,11 +20,6 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
-import jakarta.transaction.HeuristicMixedException;
-import jakarta.transaction.HeuristicRollbackException;
-import jakarta.transaction.NotSupportedException;
-import jakarta.transaction.RollbackException;
-import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,7 +47,7 @@ class ReleaseScrapeResourceIT {
     UserTransaction transaction;
 
     @Test
-    void releaseScrape_should_markHasNewRelease() throws HeuristicRollbackException, SystemException, HeuristicMixedException, RollbackException, NotSupportedException {
+    void releaseScrape_should_markHasNewRelease() throws Exception {
         // The transaction used within the test scope did not contain the changed flag unless this
         // was set per:
         //                  https://github.com/quarkusio/quarkus/issues/6536#issuecomment-699649094

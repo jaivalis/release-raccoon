@@ -1,7 +1,7 @@
-package com.raccoon.artist;
+package com.raccoon.integration.artist;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.profile.ArtistSearchDatabaseProfile;
+import com.raccoon.integration.profile.ArtistSearchDatabaseProfile;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
 import com.raccoon.search.ArtistSearchResource;
 

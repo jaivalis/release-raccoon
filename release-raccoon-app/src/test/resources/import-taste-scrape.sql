@@ -1,13 +1,13 @@
 INSERT INTO Artist
     (artistId, name, create_date, spotifyUri)
 VALUES
-    (500, 'existed before the scrape', (SUBDATE(CURDATE(), 7)), 'uri500'),
-    (501, 'also existed before the scrape', (SUBDATE(CURDATE(), 7)), 'uri501');
+    (500, 'existed before the scrape', CURRENT_DATE - INTERVAL '7' DAY, 'uri500'),
+    (501, 'also existed before the scrape', CURRENT_DATE - INTERVAL '7' DAY, 'uri501');
 
 INSERT INTO Releases
     (releaseId, name, type, releasedOn, spotifyUri)
 VALUES
-    (500, 'newRelease', 'ALBUM', (SUBDATE(CURDATE(), 1)), 'spotify:album:500');
+    (500, 'newRelease', 'ALBUM', CURRENT_DATE - INTERVAL '1' DAY, 'spotify:album:500');
 
 INSERT INTO ArtistRelease
     (artist_id, release_id)
