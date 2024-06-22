@@ -4,6 +4,7 @@
 
 - Moved integration tests into release-raccoon-app module
 - Upgrade Quarkus to to 3.11.3
+- Fix some trunk.io errors
 
 ## [0.2.5] - 18/06/2024
 
