@@ -7,6 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
@@ -17,9 +20,6 @@ import jakarta.inject.Inject;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestTransaction
@@ -48,11 +48,15 @@ class NotifyingResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        assertEquals(1, mockMailbox.getTotalMessagesSent());
-        assertNotNull(mockMailbox.getMailsSentTo("user300@mail.com"));
-        assertEquals(1, mockMailbox.getMailsSentTo("user300@mail.com").size());
+        List<Mail> mailsSent = mockMailbox.getMailsSentTo("user300@mail.com");
+        assertThat(mockMailbox.getTotalMessagesSent())
+                .isEqualTo(1);
+        assertThat(mailsSent)
+                .isNotNull()
+                .hasSize(1);
         var uaOptional = userArtistRepository.findByUserIdArtistIdOptional(300L, 300L);
-        assertTrue(uaOptional.isPresent());
+        assertThat(uaOptional)
+                .isPresent();
         assertThat(uaOptional.get().hasNewRelease)
                 .as("Release should be marked processed")
                 .isFalse();

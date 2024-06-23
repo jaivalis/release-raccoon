@@ -24,8 +24,7 @@ public class RaccoonMailer {
     MailTemplateRenderer renderer;
 
     @Inject
-    RaccoonMailer(final ReactiveMailer mailer,
-                  final MailTemplateRenderer renderer) {
+    RaccoonMailer(final ReactiveMailer mailer, final MailTemplateRenderer renderer) {
         this.mailer = mailer;
         this.renderer = renderer;
     }
@@ -35,6 +34,13 @@ public class RaccoonMailer {
                                 final Runnable successCallback,
                                 final Runnable failureCallback) {
         log.info("Notifying raccoonUser {} for releases {}", raccoonUser.id, releases);
+        if (releases.isEmpty()) {
+            log.warn("No releases to notify for found for user {}", raccoonUser.id);
+            return Uni.createFrom()
+                    .failure(
+                            new IllegalStateException("No releases to notify for found for user " + raccoonUser.id)
+                    );
+        }
         try {
             Mail mail = renderer.renderDigestMail(raccoonUser, releases);
 

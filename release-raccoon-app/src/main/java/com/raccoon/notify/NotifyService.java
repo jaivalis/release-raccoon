@@ -105,7 +105,7 @@ public class NotifyService {
         Set<Artist> artists = userArtistAssociations.stream()
                 .map(UserArtist::getArtist)
                 .collect(toSet());
-        final List<Release> relevantReleases = releaseRepository.findByArtistsSinceDays(artists, 40);
+        final List<Release> relevantReleases = releaseRepository.findByArtistsSinceDays(artists, 30);
         log.info("Found {} releases from {} to report on: {}", relevantReleases.size(), artists, relevantReleases);
 
         return relevantReleases;

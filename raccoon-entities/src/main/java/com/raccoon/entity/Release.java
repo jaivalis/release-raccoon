@@ -5,6 +5,7 @@ import com.raccoon.common.StringUtil;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -62,6 +63,14 @@ public class Release extends PanacheEntityBase implements Serializable {
         return releases.stream()
                 .map(ArtistRelease::getArtist)
                 .toList();
+    }
+
+    public boolean isCreditedToArtist(Collection<Artist> artists) {
+        return artists.stream().anyMatch(this::isCreditedToArtist);
+    }
+
+    public boolean isCreditedToArtist(Artist artist) {
+        return getArtists().contains(artist);
     }
 
     @JsonbTransient

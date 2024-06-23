@@ -15,7 +15,7 @@
 # exit when any command fails
 set -e
 
-export LATEST_TAG=0.2.5
+export LATEST_TAG=0.2.6
 
 echo "Publishing image ${LATEST_TAG}-native..."
 docker pull jaivalis/release-raccoon:"${LATEST_TAG}"-native
