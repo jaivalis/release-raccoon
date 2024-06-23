@@ -17,6 +17,7 @@ public class ArtistFactory {
 
     /**
      * Creates an Artist if it is not found in the database, or returns already existing artist.
+     * The new artist has not been persisted, callers responsibility to do so.
      * @param name
      * @return
      */
@@ -26,7 +27,6 @@ public class ArtistFactory {
         if (existing.isEmpty()) {
             var artist = new Artist();
             artist.setName(name);
-            artistRepository.persist(artist);
             return artist;
         }
         return existing.get();

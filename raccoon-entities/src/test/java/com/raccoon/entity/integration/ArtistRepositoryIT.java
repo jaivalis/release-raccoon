@@ -47,7 +47,7 @@ class ArtistRepositoryIT {
 
     @BeforeEach
     void setup() {
-        stubFactory = new UserArtistStubFactory(userArtistRepository, userFactory, userRepository, artistFactory);
+        stubFactory = new UserArtistStubFactory(userArtistRepository, userFactory, userRepository, artistFactory, artistRepository);
     }
 
     @AfterEach
