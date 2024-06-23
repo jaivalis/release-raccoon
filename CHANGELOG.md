@@ -1,6 +1,9 @@
 ## ⚙️ All important changes to this project are tracked here:
 
 ## [Unreleased]
+-
+
+## [0.2.6] - 23/06/2024
 
 - Moved integration tests into release-raccoon-app module
 - Upgrade Quarkus to to 3.11.3
