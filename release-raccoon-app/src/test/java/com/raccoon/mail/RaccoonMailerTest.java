@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.quarkus.mailer.Mail;
@@ -60,6 +61,17 @@ class RaccoonMailerTest {
         user.setEmail("email");
         var releases = List.of(new Release());
         when(mockRenderer.renderDigestMail(user, releases)).thenThrow(TemplateException.class);
+
+        Uni<Void> uni = mailer.sendDigest(user, releases, mockRunnable, mockRunnable);
+
+        uni.subscribe().withSubscriber(UniAssertSubscriber.create()).assertFailed();
+        verify(mockMailer, times(0)).send(mockMail);
+    }
+
+    @Test
+    void sendDigest_whenReleasesAreEmpty_throwsException() {
+        var user = new RaccoonUser();
+        List<Release> releases = Collections.emptyList();
 
         Uni<Void> uni = mailer.sendDigest(user, releases, mockRunnable, mockRunnable);
 

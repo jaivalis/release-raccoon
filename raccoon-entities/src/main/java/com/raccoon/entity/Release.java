@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import static com.raccoon.entity.Constants.SPOTIFY_RELEASE_URI_PATTERN;
+import static java.util.Objects.isNull;
 
 @Data
 @Entity(name = "Releases")
@@ -66,6 +67,9 @@ public class Release extends PanacheEntityBase implements Serializable {
     }
 
     public boolean isCreditedToArtist(Collection<Artist> artists) {
+        if (isNull(artists)) {
+            return false;
+        }
         return artists.stream().anyMatch(this::isCreditedToArtist);
     }
 

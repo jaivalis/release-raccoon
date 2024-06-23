@@ -9,11 +9,17 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static com.raccoon.entity.database.Tables.ARTIST_RELEASE;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = ARTIST_RELEASE)
 @AssociationOverride(name = "key.artist", joinColumns = @JoinColumn(name = "artist_id"))

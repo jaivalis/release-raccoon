@@ -6,12 +6,16 @@ import java.util.Objects;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Embeddable
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class ArtistReleaseKey implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
