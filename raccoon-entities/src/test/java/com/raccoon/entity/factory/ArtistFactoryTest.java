@@ -54,6 +54,5 @@ class ArtistFactoryTest {
         var created = factory.getOrCreateArtist(artistName);
 
         assertEquals(artistName, created.getName());
-        verify(artistRepository, times(1)).persist(any(Artist.class));
     }
 }

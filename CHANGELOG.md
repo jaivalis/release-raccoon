@@ -5,6 +5,7 @@
 - Moved integration tests into release-raccoon-app module
 - Upgrade Quarkus to to 3.11.3
 - Fix some trunk.io errors
+- Last.fm taste scrape on last 6 months only to improve performance
 
 ## [0.2.5] - 18/06/2024
 

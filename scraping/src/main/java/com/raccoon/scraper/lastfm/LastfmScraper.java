@@ -42,18 +42,16 @@ public class LastfmScraper implements TasteScraper {
     @Override
     public Collection<MutablePair<Artist, Float>> scrapeTaste(final String username,
                                                               final Optional<Integer> limit) {
-        final Set<de.umass.lastfm.Artist> topArtists = new HashSet<>();
-        final Set<String> seenNames = new HashSet<>();
+        final Set<de.umass.lastfm.Artist> topArtists =
+                new HashSet<>(lastfmApi.getUserTopArtists(username, Period.SIX_MONTHS));
 
-        for (Period period : Period.values()) {
-            Collection<de.umass.lastfm.Artist> userTopArtists = lastfmApi.getUserTopArtists(username, period);
-            mergeArtists(topArtists, userTopArtists, seenNames);
-        }
-
+        log.debug("Processing {} lastfm top artists", topArtists.size());
         List<MutablePair<Artist, Float>> topArtistsWithPlaycounts = topArtists.stream()
                 .map(artistObj ->
                         MutablePair.of(processArtist(artistObj), (float) artistObj.getPlaycount()))
                 .toList();
+
+        log.debug("Persisting {} lastfm top artists", topArtists.size());
 
         artistRepository.persist(topArtistsWithPlaycounts.stream().map(Pair::getKey));
 
