@@ -8,7 +8,6 @@ import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
 import java.net.URI;
 
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
@@ -23,12 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 @Path("/spotify-auth-callback")
 public class SpotifyAuthResource {
 
-    @Inject
     SpotifyUserAuthorizer spotifyAuthService;
-    @Inject
     SpotifyTasteUpdatingService spotifyTasteUpdatingService;
-    @Inject
     SpotifyConfig config;
+
+    public SpotifyAuthResource(SpotifyConfig config, SpotifyTasteUpdatingService spotifyTasteUpdatingService, SpotifyUserAuthorizer spotifyAuthService) {
+        this.config = config;
+        this.spotifyTasteUpdatingService = spotifyTasteUpdatingService;
+        this.spotifyAuthService = spotifyAuthService;
+    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
