@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static com.raccoon.entity.Constants.SPOTIFY_ARTIST_PREFIX;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ArtistTest {
 
@@ -12,26 +11,30 @@ class ArtistTest {
 
     @Test
     void getSpotifyUriId() {
+        String spotifyId = "3TsEEdpuuCN1G0dPxV4uOA";
         artist = new Artist();
-        artist.setSpotifyUri(SPOTIFY_ARTIST_PREFIX + "3TsEEdpuuCN1G0dPxV4uOA");
+        artist.setSpotifyUri(SPOTIFY_ARTIST_PREFIX + spotifyId);
 
-        assertEquals("3TsEEdpuuCN1G0dPxV4uOA", artist.getSpotifyUriId());
+        assertThat(artist.getSpotifyUriId())
+                .isEqualTo(spotifyId);
     }
 
     @Test
-    void getSpotifyUriBadInput() {
+    void getSpotifyUriId_should_returnEmptyString_when_badInput() {
         artist = new Artist();
         artist.setSpotifyUri(SPOTIFY_ARTIST_PREFIX);
 
-        assertEquals("", artist.getSpotifyUriId());
+        assertThat(artist.getSpotifyUriId())
+                .isEmpty();
     }
 
     @Test
-    void getSpotifyUriIdNull() {
+    void getSpotifyUriId_should_returnEmptyString_when_null() {
         artist = new Artist();
         artist.setSpotifyUri(null);
 
-        assertEquals("", artist.getSpotifyUriId());
+        assertThat(artist.getSpotifyUriId())
+                .isEmpty();
     }
 
     @Test
@@ -44,9 +47,10 @@ class ArtistTest {
         artist2.setId(1L);
         artist2.setName("Artist Name");
 
-        assertThat(artist1).isEqualTo(artist2);
-        assertThat(artist1).isNotEqualTo(new Object());
-        assertThat(artist1).isEqualTo(artist1);
+        assertThat(artist1)
+                .isEqualTo(artist2)
+                .isNotEqualTo(new Object())
+                .isEqualTo(artist1);
     }
 
     @Test
@@ -60,22 +64,20 @@ class ArtistTest {
 
     @Test
     void equals_checkEquality_worksCorrectly() {
-        // prepare two identical Artist objects
         Artist artist1 = new Artist();
         artist1.setId(1L);
         artist1.setName("Artist Name");
 
-        // prepare an Artist object with a different id
         Artist artist2 = new Artist();
         artist2.setId(2L);
         artist2.setName("Artist Name");
 
-        // prepare an Artist object with a different name
         Artist artist3 = new Artist();
         artist3.setId(1L);
         artist3.setName("Different Name");
 
-        assertThat(artist1).isNotEqualTo(artist3); // test second if branch (different id)
-        assertThat(artist1).isNotEqualTo(artist3); // test second if branch (different name)
+        assertThat(artist1)
+                .isNotEqualTo(artist3)
+                .isNotEqualTo(artist3); // test second if branch (different name)
     }
 }
