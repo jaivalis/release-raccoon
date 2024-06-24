@@ -2,9 +2,10 @@
 
 ## [Unreleased]
 
-## [0.2.7] - 23/06/2024
+## [0.2.7] - 24/06/2024
 
 - Notification fixes
+- Add carbonbadge
 
 ## [0.2.6] - 23/06/2024
 
