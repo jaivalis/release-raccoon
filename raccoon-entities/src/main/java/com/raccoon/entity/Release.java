@@ -5,6 +5,7 @@ import com.raccoon.common.StringUtil;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import static com.raccoon.entity.Constants.SPOTIFY_RELEASE_URI_PATTERN;
+import static java.util.Objects.isNull;
 
 @Data
 @Entity(name = "Releases")
@@ -62,6 +64,17 @@ public class Release extends PanacheEntityBase implements Serializable {
         return releases.stream()
                 .map(ArtistRelease::getArtist)
                 .toList();
+    }
+
+    public boolean isCreditedToArtist(Collection<Artist> artists) {
+        if (isNull(artists)) {
+            return false;
+        }
+        return artists.stream().anyMatch(this::isCreditedToArtist);
+    }
+
+    public boolean isCreditedToArtist(Artist artist) {
+        return getArtists().contains(artist);
     }
 
     @JsonbTransient

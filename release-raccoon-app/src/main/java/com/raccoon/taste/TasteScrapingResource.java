@@ -36,13 +36,17 @@ public class TasteScrapingResource {
     @IdToken
     JsonWebToken idToken;
 
-    @Inject
     LastfmTasteUpdatingService lastfmTasteUpdatingService;
-    @Inject
     SpotifyTasteUpdatingService spotifyTasteUpdatingService;
 
-    @Inject
     UserRepository userRepository;
+
+    @Inject
+    public TasteScrapingResource(LastfmTasteUpdatingService lastfmTasteUpdatingService, SpotifyTasteUpdatingService spotifyTasteUpdatingService, UserRepository userRepository) {
+        this.lastfmTasteUpdatingService = lastfmTasteUpdatingService;
+        this.spotifyTasteUpdatingService = spotifyTasteUpdatingService;
+        this.userRepository = userRepository;
+    }
 
     @GET
     @Path("lastfm")

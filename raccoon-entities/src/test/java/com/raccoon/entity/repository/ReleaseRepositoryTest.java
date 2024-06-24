@@ -127,7 +127,7 @@ class ReleaseRepositoryTest {
     }
 
     @Test
-    void findByArtistsSinceDaysReturnsOne() {
+    void findByArtistsSinceDays_should_returnOne() {
         var artistName = "artist";
         var release1Name = "release1";
         var release2Name = "release2";

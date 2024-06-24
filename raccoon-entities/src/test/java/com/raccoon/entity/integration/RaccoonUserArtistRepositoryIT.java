@@ -112,7 +112,6 @@ class RaccoonUserArtistRepositoryIT {
 
     @Test
     void findByUserId() {
-        UserArtistStubFactory stubFactory = new UserArtistStubFactory(userArtistRepository, userFactory, userRepository, artistFactory, artistRepository);
         var userArtist1 = stubFactory.stubUserArtist("user1", "artist1");
         var userArtist2 = stubFactory.stubUserArtist("user2", "artist2");
         userArtistRepository.persist(userArtist1, userArtist2);

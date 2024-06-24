@@ -47,6 +47,7 @@
         <wiremock.version>2.35.1</wiremock.version>
         <assertj-core.version>3.26.0</assertj-core.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
+        <instancio-core.version>4.8.0</instancio-core.version>
 
         <!-- util -->
         <lombok.version>1.18.30</lombok.version>
@@ -329,6 +330,12 @@
                 <groupId>com.flextrade.jfixture</groupId>
                 <artifactId>jfixture</artifactId>
                 <version>${jfixture.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.instancio</groupId>
+                <artifactId>instancio-core</artifactId>
+                <version>${instancio-core.version}</version>
                 <scope>test</scope>
             </dependency>
 

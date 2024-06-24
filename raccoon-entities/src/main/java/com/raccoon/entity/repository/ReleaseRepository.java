@@ -12,7 +12,9 @@ import java.util.Set;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @ApplicationScoped
 public class ReleaseRepository implements PanacheRepository<Release> {
 
@@ -44,11 +46,11 @@ public class ReleaseRepository implements PanacheRepository<Release> {
      */
     public List<Release> findByArtistsSinceDays(Collection<Artist> artists, int days) {
         LocalDate leastDate = LocalDate.now().minusDays(days);
+        log.debug("Listing releases by artists since {}", leastDate);
 
-        return list("releasedOn > ?1", leastDate)
+        return find("releasedOn > ?1", leastDate)
                 .stream()
-                .map(Release.class::cast)
-                .filter(release -> release.getArtists().stream().anyMatch(artists::contains))
+                .filter(release -> release.isCreditedToArtist(artists))
                 .toList();
     }
 
