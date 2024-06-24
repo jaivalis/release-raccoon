@@ -5,13 +5,13 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.2.7</version>
+        <version>9.9.9-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>scraping</artifactId>
-    <version>0.2.7</version>
+    <version>9.9.9-SNAPSHOT</version>
 
     <dependencies>
         <!-- submodules -->
