@@ -7,14 +7,14 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.3.0</version>
+        <version>9.9.9-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>report-aggregate</artifactId>
     <name>report-aggregate</name>
 
-    <version>0.3.0</version>
+    <version>9.9.9-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <dependencies>
