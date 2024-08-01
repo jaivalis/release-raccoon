@@ -24,6 +24,8 @@ import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +41,8 @@ import static com.raccoon.entity.Constants.SPOTIFY_ARTIST_URI_PATTERN;
 })
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Indexed
 public class Artist extends PanacheEntityBase implements Serializable {

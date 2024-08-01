@@ -36,7 +36,7 @@ class TasteScrapeArtistWeightPairProcessorIT {
 
     @Test
     @DisplayName("Artist present in db, should be added to the userArtistsSet")
-    void testArtistExisted() {
+    void artistExisted() {
         RaccoonUser raccoonUser = userRepository.findById(500L);
         Artist existingArtist = artistRepository.findById(500L);
         Set<UserArtist> userArtists = new HashSet<>();
@@ -56,7 +56,7 @@ class TasteScrapeArtistWeightPairProcessorIT {
 
     @Test
     @DisplayName("Artist not present in db, should not be added to the userArtistsSet")
-    void testArtistNotExisted() {
+    void artistNotExisted() {
         RaccoonUser raccoonUser = userRepository.findById(500L);
         Artist newArtist = new Artist();
         newArtist.setName("new artist");
@@ -80,6 +80,28 @@ class TasteScrapeArtistWeightPairProcessorIT {
     void testUserArtistAssociationExists() {
         RaccoonUser raccoonUser = userRepository.findById(500L);
         Artist artist = artistRepository.findById(501L);
+        Set<UserArtist> userArtists = new HashSet<>();
+
+        UserArtist userArtist = processor.delegateProcessArtistWeightPair(raccoonUser, artist, 0.9F, userArtists);
+
+        assertThat(userArtists)
+                .hasSize(1);
+        assertThat(userArtist.key.getRaccoonUser().id)
+                .isEqualTo(500);
+        assertThat(userArtist.key.getArtist().id)
+                .isEqualTo(501);
+        assertThat(userArtist.weight)
+                .isEqualTo(0.9F);
+    }
+
+    @Test
+    void userArtistScrapedFromDifferentSources_should_updateWeight() {
+        RaccoonUser raccoonUser = userRepository.findById(500L);
+        Artist persistedArtist = artistRepository.findById(501L);
+        Artist artist = Artist.builder()
+                .id(persistedArtist.id)
+                .name(persistedArtist.getName())
+                .build();
         Set<UserArtist> userArtists = new HashSet<>();
 
         UserArtist userArtist = processor.delegateProcessArtistWeightPair(raccoonUser, artist, 0.9F, userArtists);
