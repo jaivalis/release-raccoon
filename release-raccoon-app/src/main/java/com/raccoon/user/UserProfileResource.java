@@ -119,8 +119,8 @@ public class UserProfileResource {
 
     private boolean shouldRedirect(String redirectUrl) {
         return Objects.nonNull(redirectUrl)
-                && Objects.nonNull(redirectConfig.getAllowedUrls())
-                && redirectConfig.getAllowedUrls().orElse(Collections.emptyList()).contains(redirectUrl);
+                && Objects.nonNull(redirectConfig.getWhitelistedUrls())
+                && redirectConfig.getWhitelistedUrls().orElse(Collections.emptyList()).contains(redirectUrl);
     }
 
 }
