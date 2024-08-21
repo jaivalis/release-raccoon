@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.0...jdevelop)
 
+## [0.3.1](https://github.com/jaivalis/release-raccoon/compare/0.3.0...0.3.1) - 21/08/2024
+
+- Redirect on /me for UI
+
 ## [0.3.0](https://github.com/jaivalis/release-raccoon/compare/0.2.7...0.3.0) - 01/08/2024
 
 - default postgres db
