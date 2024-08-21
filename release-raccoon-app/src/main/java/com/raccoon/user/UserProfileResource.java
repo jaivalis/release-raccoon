@@ -8,6 +8,8 @@ import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 import io.quarkus.oidc.IdToken;
@@ -35,12 +37,14 @@ import static com.raccoon.Constants.EMAIL_CLAIM;
 public class UserProfileResource {
 
     UserProfileService userProfileService;
+    RedirectConfig redirectConfig;
     @IdToken
     JsonWebToken idToken;
 
     @Inject
-    public UserProfileResource(final UserProfileService userProfileService) {
+    public UserProfileResource(final UserProfileService userProfileService, final RedirectConfig redirectConfig) {
         this.userProfileService = userProfileService;
+        this.redirectConfig = redirectConfig;
     }
 
     /**
@@ -51,9 +55,13 @@ public class UserProfileResource {
     @NoCache
     @Produces(MediaType.TEXT_HTML)
     @Transactional
-    public Response registrationCallback() {
+    public Response registrationCallback(@QueryParam("redirectUrl") String redirectUrl) {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         userProfileService.completeRegistration(email);
+        if (shouldRedirect(redirectUrl)) {
+            log.info("Redirecting to ");
+            return Response.temporaryRedirect(URI.create(redirectUrl)).build();
+        }
 
         return Response.ok(userProfileService.renderTemplateInstance(email)).build();
     }
@@ -107,6 +115,12 @@ public class UserProfileResource {
         final String email = idToken.getClaim(EMAIL_CLAIM);
 
         return userProfileService.getFollowedArtists(email);
+    }
+
+    private boolean shouldRedirect(String redirectUrl) {
+        return Objects.nonNull(redirectUrl)
+                && Objects.nonNull(redirectConfig.getAllowedUrls())
+                && redirectConfig.getAllowedUrls().orElse(Collections.emptyList()).contains(redirectUrl);
     }
 
 }

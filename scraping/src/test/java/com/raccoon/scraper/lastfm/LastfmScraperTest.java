@@ -45,15 +45,6 @@ class LastfmScraperTest {
         scraper = new LastfmScraper(artistFactoryMock, artistRepositoryMock, lastfmApiMock);
     }
 
-    private de.umass.lastfm.Artist stubArtist(int id) {
-        var uri = "uri" + id;
-        var name = "name" + id;
-        var lastfmArtist = mock(de.umass.lastfm.Artist.class);
-        when(lastfmArtist.getName()).thenReturn(name);
-        when(lastfmArtist.getUrl()).thenReturn(uri);
-        return lastfmArtist;
-    }
-
     @Test
     @DisplayName("no play history")
     void scrapeTasteNoHistory() {

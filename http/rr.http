@@ -1,8 +1,8 @@
 ### Artists
-GET {{ baseUrl }}/artists?page=0&size=10
+GET {{baseUrl}}/artists?page=0&size=10
 
 ### Scrape releases
-PUT {{ baseUrl }}/release-scrape
+PUT {{baseUrl}}/release-scrape
 
 ### Notify
-GET {{ baseUrl }}/notify-users
+GET {{baseUrl}}/notify-users
