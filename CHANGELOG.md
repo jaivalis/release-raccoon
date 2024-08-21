@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.0...jdevelop)
 
+## [0.3.3](https://github.com/jaivalis/release-raccoon/compare/0.3.2...0.3.3) - 21/08/2024
+
+- Bugfix: Fixed config name
+ 
 ## [0.3.2](https://github.com/jaivalis/release-raccoon/compare/0.3.1...0.3.2) - 21/08/2024
 
 - Added debug logs

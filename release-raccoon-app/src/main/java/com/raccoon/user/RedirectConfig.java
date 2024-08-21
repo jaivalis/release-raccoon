@@ -8,6 +8,6 @@ import io.smallrye.config.ConfigMapping;
 @ConfigMapping(prefix = "redirect")
 public interface RedirectConfig {
 
-    Optional<List<String>> getWhitelistedUrls();
+    Optional<List<String>> whitelistedUrls();
 
 }
