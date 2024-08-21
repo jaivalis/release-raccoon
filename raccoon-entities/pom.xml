@@ -5,13 +5,13 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.3.4</version>
+        <version>0.3.5-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>raccoon-entities</artifactId>
-    <version>0.3.4</version>
+    <version>0.3.5-SNAPSHOT</version>
 
     <dependencies>
         <!-- submodules -->
