@@ -55,6 +55,7 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <projectVersionPolicyId>SemVerVersionPolicy</projectVersionPolicyId>
+                    <tagNameFormat>{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
         </plugins>
