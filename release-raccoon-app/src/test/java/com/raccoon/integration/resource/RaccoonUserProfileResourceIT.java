@@ -108,7 +108,7 @@ class RaccoonUserProfileResourceIT {
     @DisplayName("get should redirect when url in whitelist")
     void getWithRedirect_should_redirect_when_urlInWhitelist() {
         String redirectUrl = "https://mock.url.from.whitelist";
-        when(redirectConfig.getWhitelistedUrls()).thenReturn(Optional.of(List.of(redirectUrl)));
+        when(redirectConfig.whitelistedUrls()).thenReturn(Optional.of(List.of(redirectUrl)));
 
         Response response = given()
                 .queryParam("redirectUrl", redirectUrl)
@@ -133,7 +133,7 @@ class RaccoonUserProfileResourceIT {
     @DisplayName("get should not redirect when url not in whitelist")
     void getWithRedirect_should_not_redirect_when_urlNotInWhitelist() {
         String redirectUrl = "https://mock.url.from.whitelist";
-        when(redirectConfig.getWhitelistedUrls()).thenReturn(Optional.of(List.of("not" + redirectUrl)));
+        when(redirectConfig.whitelistedUrls()).thenReturn(Optional.of(List.of("not" + redirectUrl)));
 
         Response response = given()
                 .queryParam("redirectUrl", redirectUrl)
@@ -157,7 +157,7 @@ class RaccoonUserProfileResourceIT {
     @DisplayName("get should not redirect when url not in whitelist")
     void getWithRedirect_should_not_redirect_when_whitelistEmpty() {
         String redirectUrl = "https://mock.url.from.whitelist";
-        when(redirectConfig.getWhitelistedUrls()).thenReturn(Optional.empty());
+        when(redirectConfig.whitelistedUrls()).thenReturn(Optional.empty());
 
         Response response = given()
                 .queryParam("redirectUrl", redirectUrl)

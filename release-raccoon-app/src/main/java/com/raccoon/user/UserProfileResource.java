@@ -118,10 +118,10 @@ public class UserProfileResource {
     }
 
     private boolean shouldRedirect(String redirectUrl) {
-        log.debug("Should redirect whitelist {}", Objects.isNull(redirectConfig) ? "null" : redirectConfig.getWhitelistedUrls());
+        log.debug("Should redirect whitelist {}", Objects.isNull(redirectConfig) ? "null" : redirectConfig.whitelistedUrls());
         return Objects.nonNull(redirectUrl)
-                && Objects.nonNull(redirectConfig.getWhitelistedUrls())
-                && redirectConfig.getWhitelistedUrls().orElse(Collections.emptyList()).contains(redirectUrl);
+                && Objects.nonNull(redirectConfig.whitelistedUrls())
+                && redirectConfig.whitelistedUrls().orElse(Collections.emptyList()).contains(redirectUrl);
     }
 
 }
