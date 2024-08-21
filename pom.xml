@@ -46,4 +46,18 @@
         <module>raccoon-common</module>
     </modules>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <projectVersionPolicyId>SemVerVersionPolicy</projectVersionPolicyId>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
