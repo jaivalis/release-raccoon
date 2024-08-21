@@ -15,13 +15,17 @@
 # exit when any command fails
 set -e
 
-export LATEST_TAG=0.3.0
+export LATEST_TAG=0.3.1
 
-echo "Publishing image ${LATEST_TAG}-native..."
+echo "Pulling ${LATEST_TAG} from dockerhub"
 docker pull jaivalis/release-raccoon:"${LATEST_TAG}"-native
+
+echo "Re-tagging image ${LATEST_TAG}-native..."
 docker tag jaivalis/release-raccoon:"${LATEST_TAG}"-native registry.heroku.com/backend-release-raccoon/web
 
+echo "Pushing to registry.heroku.com/backend-release-raccoon/web"
 docker push registry.heroku.com/backend-release-raccoon/web
+
 echo "Deploying new executable"
 heroku container:release web --app backend-release-raccoon
 
