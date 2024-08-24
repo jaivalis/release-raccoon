@@ -52,10 +52,8 @@ class MusicbrainzScraperTest {
     void processRelease() {
         JFixture fixture = new JFixture();
         MusicbrainzReleasesResponse.MusicbrainzRelease release = fixture.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
-
-        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        release.setDate(DATE_TIME_FORMATTER.format(LocalDate.now()));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        release.setDate(formatter.format(LocalDate.now()));
 
         assertThat(scraper.processRelease(release))
                 .isPresent();
@@ -66,8 +64,8 @@ class MusicbrainzScraperTest {
     void processFutureRelease() {
         JFixture fixture = new JFixture();
         MusicbrainzReleasesResponse.MusicbrainzRelease release = fixture.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
-        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        release.setDate(DATE_TIME_FORMATTER.format(LocalDate.now().plusDays(7)));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        release.setDate(formatter.format(LocalDate.now().plusDays(7)));
 
         assertThat(scraper.processRelease(release)).isEmpty();
     }

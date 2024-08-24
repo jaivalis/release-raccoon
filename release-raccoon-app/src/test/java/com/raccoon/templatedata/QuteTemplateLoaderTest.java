@@ -7,8 +7,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
-
 import io.quarkus.qute.Engine;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +24,7 @@ class QuteTemplateLoaderTest {
     Engine mockEngine;
 
     @BeforeEach
-    public void setup() throws IOException {
+    public void setup() {
         MockitoAnnotations.openMocks(this);
         loader = new QuteTemplateLoader(mockEngine);
     }

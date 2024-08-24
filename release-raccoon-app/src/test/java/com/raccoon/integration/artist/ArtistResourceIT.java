@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestProfile(value = ArtistResourceDatabaseProfile.class)
 class ArtistResourceIT {
 
-    final static String EXISTING_USERNAME = "authenticated";
+    static final String EXISTING_USERNAME = "authenticated";
 
     @Inject
     ArtistRepository artistRepository;

@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 @TestProfile(value = ArtistSearchDatabaseProfile.class)
 class ArtistSearchResourceIT {
 
-    final static String EXISTING_USERNAME = "authenticated";
+    static final String EXISTING_USERNAME = "authenticated";
 
     @InjectMock
     RaccoonLastfmApi mockRaccoonLastfmApi;
