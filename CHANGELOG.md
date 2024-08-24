@@ -1,6 +1,14 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.0...jdevelop)
+## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.6...jdevelop)
+
+## [0.3.6](https://github.com/jaivalis/release-raccoon/compare/0.3.5...0.3.6) - 24/08/2024
+
+- Fixed unique Artist name constraints for Postgresql
+
+## [0.3.5](https://github.com/jaivalis/release-raccoon/compare/0.3.4...0.3.5) - 21/08/2024
+
+- Added maven-release-plugin
 
 ## [0.3.4](https://github.com/jaivalis/release-raccoon/compare/0.3.2...0.3.3) - 21/08/2024
 
