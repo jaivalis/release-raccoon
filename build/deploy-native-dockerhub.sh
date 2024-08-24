@@ -15,7 +15,7 @@
 # exit when any command fails
 set -e
 
-export LATEST_TAG=0.3.6
+export LATEST_TAG=0.3.8
 
 echo "Pulling ${LATEST_TAG} from dockerhub"
 docker pull jaivalis/release-raccoon:"${LATEST_TAG}"-native
