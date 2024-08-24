@@ -1,8 +1,8 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.6...jdevelop)
+## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.7...jdevelop)
 
-## [0.3.7](https://github.com/jaivalis/release-raccoon/compare/0.3.5...0.3.6) - 24/08/2024
+## [0.3.7](https://github.com/jaivalis/release-raccoon/compare/0.3.6...0.3.7) - 24/08/2024
 
 - Added RaccoonUser hashCode override
 
