@@ -7,13 +7,13 @@
     <parent>
         <artifactId>release-raccoon</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.3.5-SNAPSHOT</version>
+        <version>0.3.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>parent</artifactId>
     <name>parent</name>
 
-    <version>0.3.5-SNAPSHOT</version>
+    <version>0.3.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
