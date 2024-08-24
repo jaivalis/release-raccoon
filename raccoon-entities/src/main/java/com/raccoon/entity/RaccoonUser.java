@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -91,6 +92,11 @@ public class RaccoonUser extends PanacheEntityBase implements Serializable {
 
     private boolean isLastSpotifyScrapeLt(int days, LocalDateTime lastSpotifyScrape) {
         return ChronoUnit.DAYS.between(lastSpotifyScrape, LocalDateTime.now()) < days;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }

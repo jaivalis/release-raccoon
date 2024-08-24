@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.6...jdevelop)
 
+## [0.3.7](https://github.com/jaivalis/release-raccoon/compare/0.3.5...0.3.6) - 24/08/2024
+
+- Added RaccoonUser hashCode override
+
 ## [0.3.6](https://github.com/jaivalis/release-raccoon/compare/0.3.5...0.3.6) - 24/08/2024
 
 - Fixed unique Artist name constraints for Postgresql
