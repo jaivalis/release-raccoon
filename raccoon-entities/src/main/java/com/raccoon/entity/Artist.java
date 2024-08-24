@@ -60,17 +60,17 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @Column(name = "create_date")
     LocalDateTime createDate;
 
-    @Column(length = 300)
+    @Column(length = 300, unique = true)
     @FullTextField(analyzer = "name")
     String name;
 
     @Column
     String lastfmUri;
 
-    @Column
+    @Column(unique = true)
     String spotifyUri;
 
-    @Column
+    @Column(unique = true)
     String musicbrainzId;
 
     @ToString.Exclude

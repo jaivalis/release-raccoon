@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.Objects;
 
 import io.quarkus.test.InjectMock;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
@@ -30,7 +30,7 @@ import static org.awaitility.Awaitility.await;
 @Slf4j
 @QuarkusTest
 @TestHTTPEndpoint(ReleaseScrapeResource.class)
-@QuarkusTestResource(WiremockExtensions.class)
+@WithTestResource(WiremockExtensions.class)
 @TestProfile(value = ReleaseScrapeDatabaseProfile.class)
 class ReleaseScrapeResourceIT {
 

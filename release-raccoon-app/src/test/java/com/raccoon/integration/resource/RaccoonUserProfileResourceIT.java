@@ -21,7 +21,7 @@ import io.quarkus.mailer.MockMailbox;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.Mock;
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.when;
 
 @QuarkusTest
 @TestHTTPEndpoint(UserProfileResource.class)
-@QuarkusTestResource(H2DatabaseTestResource.class)
+@WithTestResource(H2DatabaseTestResource.class)
 @TestTransaction
 class RaccoonUserProfileResourceIT {
 
@@ -87,7 +87,7 @@ class RaccoonUserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
     })
-    @DisplayName("successful get, should send welcome mail")
+    @DisplayName("GET should send welcome mail")
     void getProfileOnce() {
         given()
                 .contentType(ContentType.JSON)
@@ -105,7 +105,7 @@ class RaccoonUserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
     })
-    @DisplayName("get should redirect when url in whitelist")
+    @DisplayName("GET should redirect when url in whitelist")
     void getWithRedirect_should_redirect_when_urlInWhitelist() {
         String redirectUrl = "https://mock.url.from.whitelist";
         when(redirectConfig.whitelistedUrls()).thenReturn(Optional.of(List.of(redirectUrl)));
@@ -130,7 +130,7 @@ class RaccoonUserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
     })
-    @DisplayName("get should not redirect when url not in whitelist")
+    @DisplayName("GET should not redirect when url not in whitelist")
     void getWithRedirect_should_not_redirect_when_urlNotInWhitelist() {
         String redirectUrl = "https://mock.url.from.whitelist";
         when(redirectConfig.whitelistedUrls()).thenReturn(Optional.of(List.of("not" + redirectUrl)));
@@ -154,7 +154,7 @@ class RaccoonUserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
     })
-    @DisplayName("get should not redirect when url not in whitelist")
+    @DisplayName("GET should not redirect when url not in whitelist")
     void getWithRedirect_should_not_redirect_when_whitelistEmpty() {
         String redirectUrl = "https://mock.url.from.whitelist";
         when(redirectConfig.whitelistedUrls()).thenReturn(Optional.empty());
@@ -200,7 +200,7 @@ class RaccoonUserProfileResourceIT {
     @OidcSecurity(claims = {
             @Claim(key = "email", value = "raccoonUser@gmail.com")
     })
-    @DisplayName("follow artist")
+    @DisplayName("followArtist")
     void followArtist() {
         // create the raccoonUser
         given()
@@ -209,17 +209,15 @@ class RaccoonUserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        // follow the artist
-        SearchResultArtistDto artistDto = SearchResultArtistDto.builder()
-                .name("name")
-                .spotifyUri("spotifyUri")
-                .lastfmUri("lastfmUri")
+        SearchResultArtistDto searchResultArtistDto = SearchResultArtistDto.builder()
+                .name("new artist")
+                .spotifyUri("new artist spotifyUri")
+                .lastfmUri("new artist lastfmUri")
                 .build();
         given()
                 .contentType(ContentType.JSON)
-                .with().body(
-                        artistDto
-                )
+                .with()
+                .body(searchResultArtistDto)
                 .when().post("/follow")
                 .then()
                 .statusCode(SC_NO_CONTENT);
@@ -227,9 +225,10 @@ class RaccoonUserProfileResourceIT {
         Long userId = userRepository.findByEmail("raccoonUser@gmail.com").id;
         assertEquals(1, userArtistRepository.findByUserId(userId).size());
         Artist followedArtist = userArtistRepository.findByUserId(userId).get(0).getArtist();
-        assertEquals("name", followedArtist.getName());
-        assertEquals("spotifyUri", followedArtist.getSpotifyUri());
-        assertEquals("lastfmUri", followedArtist.getLastfmUri());
+        assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
+        assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
+        assertThat(followedArtist.getSpotifyUri()).isEqualTo(searchResultArtistDto.getSpotifyUri());
+        assertThat(followedArtist.getLastfmUri()).isEqualTo(searchResultArtistDto.getLastfmUri());
     }
 
     @Test

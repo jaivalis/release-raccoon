@@ -16,14 +16,14 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-@QuarkusTestResource(WiremockExtensions.class)
+@WithTestResource(WiremockExtensions.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class MusicbrainzScraperTest {
 

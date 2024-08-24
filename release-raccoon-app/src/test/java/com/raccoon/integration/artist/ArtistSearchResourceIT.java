@@ -3,6 +3,7 @@ package com.raccoon.integration.artist;
 import com.raccoon.entity.Artist;
 import com.raccoon.integration.profile.ArtistSearchDatabaseProfile;
 import com.raccoon.scraper.lastfm.RaccoonLastfmApi;
+import com.raccoon.scraper.musicbrainz.MusicbrainzClient;
 import com.raccoon.search.ArtistSearchResource;
 
 import org.hibernate.search.mapper.orm.session.SearchSession;
@@ -47,6 +48,8 @@ class ArtistSearchResourceIT {
 
     @InjectMock
     RaccoonLastfmApi mockRaccoonLastfmApi;
+    @InjectMock
+    MusicbrainzClient musicbrainzClient;
 
     @Inject
     EntityManager entityManager;

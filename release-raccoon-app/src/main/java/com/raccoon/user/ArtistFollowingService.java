@@ -49,7 +49,10 @@ public class ArtistFollowingService {
     public void followArtist(final String userEmail, final Artist artist) {
         var user = userRepository.findByEmail(userEmail);
         log.debug("Follow artist {} by user {}", artist.getName(), user.getId());
-        artistRepository.persist(artist);
+        if (artistRepository.findByNameOptional(artist.getName()).isEmpty()) {
+            log.info("Persisting new artist");
+            artistRepository.persist(artist);
+        }
 
         var userArtist = userArtistRepository
                 .findByUserIdArtistIdOptional(user.getId(), artist.getId())
