@@ -54,6 +54,7 @@
         <guava.version>33.0.0-jre</guava.version>
         <jackson-datatype-jakarta-jsonp.version>2.16.1</jackson-datatype-jakarta-jsonp.version>
         <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
+        <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
@@ -381,6 +382,11 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jakarta-jsonp</artifactId>
                 <version>${jackson-datatype-jakarta-jsonp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${jakarta.validation-api.version}</version>
             </dependency>
 
         </dependencies>

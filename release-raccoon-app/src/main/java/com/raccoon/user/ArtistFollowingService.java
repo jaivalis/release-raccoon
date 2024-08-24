@@ -9,6 +9,7 @@ import com.raccoon.notify.NotifyService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -48,22 +49,29 @@ public class ArtistFollowingService {
      */
     public void followArtist(final String userEmail, final Artist artist) {
         var user = userRepository.findByEmail(userEmail);
-        log.debug("Follow artist {} by user {}", artist.getName(), user.getId());
-        if (artistRepository.findByNameOptional(artist.getName()).isEmpty()) {
+        log.info("Follow artist {} by user {}", artist, user.getId());
+        Artist persisted;
+        Optional<Artist> byNameOptional = artistRepository.findByNameOptional(artist.getName());
+        if (byNameOptional.isEmpty()) {
             log.info("Persisting new artist");
-            artistRepository.persist(artist);
+            artistRepository.persistAndFlush(artist);
+            persisted = artist;
+        } else {
+            persisted = byNameOptional.get();
         }
 
+        log.info("Follow artist {} by user {}", persisted, user.getId());
+
         var userArtist = userArtistRepository
-                .findByUserIdArtistIdOptional(user.getId(), artist.getId())
+                .findByUserIdArtistIdOptional(user.getId(), persisted.getId())
                 .orElseGet(UserArtist::new);
-        userArtist.setArtist(artist);
+        userArtist.setArtist(persisted);
         userArtist.setUser(user);
         userArtist.setWeight(1.0F);
         userArtistRepository.persist(userArtist);
 
         LocalDateTime twoMinutesAgo = LocalDateTime.now().minusMinutes(2);
-        if (twoMinutesAgo.isAfter(artist.getCreateDate())) {
+        if (twoMinutesAgo.isAfter(persisted.getCreateDate())) {
             // artist existed in the database prior, might have a release
             notifyService
                     .notifySingleUser(user, List.of(userArtist))

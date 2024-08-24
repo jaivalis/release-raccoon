@@ -192,16 +192,17 @@ class RaccoonUserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
-        assertEquals(1, mockMailbox.getMailsSentTo("getProfileTwice@gmail.com").size());
+        assertThat(mockMailbox.getMailsSentTo("getProfileTwice@gmail.com")).hasSize(1);
     }
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(claims = {
-            @Claim(key = "email", value = "raccoonUser@gmail.com")
+            @Claim(key = "email", value = "raccoonUser1@gmail.com")
     })
-    @DisplayName("followArtist")
-    void followArtist() {
+    @TestTransaction
+    @DisplayName("follow should result in UserArtist association")
+    void follow() {
         // create the raccoonUser
         given()
                 .contentType(ContentType.JSON)
@@ -222,8 +223,53 @@ class RaccoonUserProfileResourceIT {
                 .then()
                 .statusCode(SC_NO_CONTENT);
 
+        Long userId = userRepository.findByEmail("raccoonUser1@gmail.com").id;
+        assertThat(userArtistRepository.findByUserId(userId)).hasSize(1);
+        Artist followedArtist = userArtistRepository.findByUserId(userId).get(0).getArtist();
+        assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
+        assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
+        assertThat(followedArtist.getSpotifyUri()).isEqualTo(searchResultArtistDto.getSpotifyUri());
+        assertThat(followedArtist.getLastfmUri()).isEqualTo(searchResultArtistDto.getLastfmUri());
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(claims = {
+            @Claim(key = "email", value = "raccoonUser@gmail.com")
+    })
+    @TestTransaction
+    @DisplayName("follow should be idempotent")
+    void follow_should_beIdempotent() {
+        // create the raccoonUser
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
+        SearchResultArtistDto searchResultArtistDto = SearchResultArtistDto.builder()
+                .name("same-artist-twice")
+                .spotifyUri("same-artist-twice spotifyUri")
+                .lastfmUri("same-artist-twice lastfmUri")
+                .build();
+        // follow twice
+        given()
+                .contentType(ContentType.JSON)
+                .with()
+                .body(searchResultArtistDto)
+                .when().post("/follow")
+                .then()
+                .statusCode(SC_NO_CONTENT);
+        given()
+                .contentType(ContentType.JSON)
+                .with()
+                .body(searchResultArtistDto)
+                .when().post("/follow")
+                .then()
+                .statusCode(SC_NO_CONTENT);
+
         Long userId = userRepository.findByEmail("raccoonUser@gmail.com").id;
-        assertEquals(1, userArtistRepository.findByUserId(userId).size());
+        assertThat(userArtistRepository.findByUserId(userId)).hasSize(1);
         Artist followedArtist = userArtistRepository.findByUserId(userId).get(0).getArtist();
         assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
         assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());

@@ -4,6 +4,7 @@ import com.raccoon.entity.UserArtist;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -38,6 +39,8 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     }
 
     public Optional<UserArtist> findByUserIdArtistIdOptional(final Long userId, final Long artistId) {
+        Objects.requireNonNull(userId);
+        Objects.requireNonNull(artistId);
         return find("(key.raccoonUser.id = ?1 and key.artist.id = ?2)", userId, artistId).stream().findAny();
     }
 
