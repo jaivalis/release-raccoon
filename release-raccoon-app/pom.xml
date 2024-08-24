@@ -3,14 +3,14 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.3.7</version>
+        <version>0.3.8-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>release-raccoon-app</artifactId>
     <name>release-raccoon-app</name>
-    <version>0.3.7</version>
+    <version>0.3.8-SNAPSHOT</version>
 
     <dependencies>
         <!-- submodules -->
