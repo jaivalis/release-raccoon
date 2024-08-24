@@ -1,6 +1,10 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.7...jdevelop)
+## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.8...jdevelop)
+
+## [0.3.7](https://github.com/jaivalis/release-raccoon/compare/0.3.7...0.3.8) - 24/08/2024
+
+- Bugfix: follow recommended Artist
 
 ## [0.3.7](https://github.com/jaivalis/release-raccoon/compare/0.3.6...0.3.7) - 24/08/2024
 
