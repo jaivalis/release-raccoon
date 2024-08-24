@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <artifactId>release-raccoon</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.3.6-SNAPSHOT</version>
+        <version>0.3.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>parent</artifactId>
     <name>parent</name>
 
-    <version>0.3.6-SNAPSHOT</version>
+    <version>0.3.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -23,7 +25,7 @@
 
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.13.2</quarkus.platform.version>
+        <quarkus.platform.version>3.13.0</quarkus.platform.version>
         <quarkus-logging-sentry.version>2.0.7</quarkus-logging-sentry.version>
 
         <!-- Native image build fixes -->
@@ -52,8 +54,8 @@
         <apache.commons.version>3.14.0</apache.commons.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <guava.version>33.0.0-jre</guava.version>
-        <jackson-datatype-jakarta-jsonp.version>2.17.2</jackson-datatype-jakarta-jsonp.version>
-        <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
+        <jackson-datatype-jakarta-jsonp.version>2.16.1</jackson-datatype-jakarta-jsonp.version>
+        <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
