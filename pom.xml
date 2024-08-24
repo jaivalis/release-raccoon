@@ -53,6 +53,7 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>install</goals>
+                    <useReleaseProfile>true</useReleaseProfile>
                 </configuration>
             </plugin>
         </plugins>
