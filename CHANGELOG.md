@@ -2,6 +2,11 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.9...jdevelop)
 
+
+## [0.3.10](https://github.com/jaivalis/release-raccoon/compare/0.3.9...0.3.10) - 26/08/2024
+
+- CI: Fix heroku jobs
+
 ## [0.3.9](https://github.com/jaivalis/release-raccoon/compare/0.3.8...0.3.9) - 26/08/2024
 
 - Experimenting with native heroku workflow tag automation
