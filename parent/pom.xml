@@ -35,7 +35,7 @@
         <spotify.client.version>6.5.4</spotify.client.version>
 
         <!-- Observability -->
-        <micrometer-registry-prometheus.version>1.12.1</micrometer-registry-prometheus.version>
+        <micrometer-registry-prometheus.version>1.13.3</micrometer-registry-prometheus.version>
 
         <!-- tests -->
         <testcontainers.version>1.19.7</testcontainers.version>
