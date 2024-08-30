@@ -71,6 +71,10 @@ jobs:
           justlogin: true
 
       - name: Build & release native image
+        with:
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "release-raccoon-backend"
         run: |
           TAG=${{ github.ref_name }}-native
           REGISTRY="registry.heroku.com"
@@ -83,4 +87,4 @@ jobs:
           -Dquarkus.container-image.push=true \
           -Dquarkus.container-image.image=${IMAGE} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
           
-          heroku container:release web --app ${{ heroku_app_name }}
+          heroku container:release web --app release-raccoon-backend
