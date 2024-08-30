@@ -82,7 +82,8 @@ jobs:
           heroku_app_name: "release-raccoon-backend"
           justlogin: true
 
-      - run: |
+      - name: Set up GraalVM
+        run: |
           TAG=${{ github.ref_name }}-native
           REGISTRY="registry.heroku.com"
           REPOSITORY="jaivalis/release-raccoon"
@@ -91,7 +92,10 @@ jobs:
           echo "Building and pushing ${IMAGE} to registry.heroku.com"
           
           mvn package -DskipTests -Dquarkus.native.container-build=true \
-          -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.image=${IMAGE} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
+            -Dquarkus.container-image.push=true \
+            -Dquarkus.container-image.username=${{ secrets.HEROKU_EMAIL }} \
+            -Dquarkus.container-image.password=${{ secrets.HEROKU_API_KEY }} \
+            -Dquarkus.container-image.image=${IMAGE} \
+            '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
           
           heroku container:release web --app release-raccoon-backend
