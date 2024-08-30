@@ -70,11 +70,6 @@ jobs:
           heroku_app_name: "release-raccoon-backend"
           justlogin: true
 
-      - name: Build & release native image
-        with:
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "release-raccoon-backend"
       - run: |
           heroku auth:whoami
           TAG=${{ github.ref_name }}-native
