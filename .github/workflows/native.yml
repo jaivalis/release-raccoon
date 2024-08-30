@@ -52,10 +52,16 @@ jobs:
             -Dquarkus.container-image.image=${IMAGE} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
 
   publish:
+    name: Deploy
     needs: [build]
     runs-on: ubuntu-latest
     environment: heroku
     steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+
       - name: Login to registry.heroku.com
         uses: docker/login-action@v3
         with:
@@ -71,7 +77,6 @@ jobs:
           justlogin: true
 
       - run: |
-          heroku auth:whoami
           TAG=${{ github.ref_name }}-native
           REGISTRY="registry.heroku.com"
           REPOSITORY="jaivalis/release-raccoon"
