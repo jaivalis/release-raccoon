@@ -62,12 +62,12 @@ jobs:
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Login to registry.heroku.com
-        uses: docker/login-action@v3
-        with:
-          registry: registry.heroku.com
-          username: ${{ secrets.HEROKU_EMAIL }}
-          password: ${{ secrets.HEROKU_API_KEY }}
+#      - name: Login to registry.heroku.com
+#        uses: docker/login-action@v3
+#        with:
+#          registry: registry.heroku.com
+#          username: ${{ secrets.HEROKU_EMAIL }}
+#          password: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
@@ -75,19 +75,20 @@ jobs:
           version: "latest"
           java-version: ${{ env.JAVA_VERSION }}
 
-      - uses: akhileshns/heroku-deploy@v3.13.15
+      - name: Login to heroku
+        uses: akhileshns/heroku-deploy@v3.13.15
         with:
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: "release-raccoon-backend"
           justlogin: true
 
-      - name: Set up GraalVM
+      - name: Build & Deploy to Heroku
         run: |
           TAG=${{ github.ref_name }}-native
           REGISTRY="registry.heroku.com"
-          REPOSITORY="jaivalis/release-raccoon"
-          IMAGE=${REGISTRY}/${REPOSITORY}:${TAG}
+          REPOSITORY="backend-release-raccoon/web"
+          IMAGE=${REGISTRY}/${REPOSITORY}
           
           echo "Building and pushing ${IMAGE} to registry.heroku.com"
           
