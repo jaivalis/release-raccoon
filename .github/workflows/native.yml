@@ -80,7 +80,7 @@ jobs:
         with:
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "release-raccoon-backend"
+          heroku_app_name: "backend-release-raccoon"
           justlogin: true
 
       - name: Build & Deploy to Heroku
@@ -99,4 +99,4 @@ jobs:
             -Dquarkus.container-image.image=${IMAGE} \
             '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
           
-          heroku container:release web --app release-raccoon-backend
+          heroku container:release web --app backend-release-raccoon
