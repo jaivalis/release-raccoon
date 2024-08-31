@@ -3,9 +3,9 @@
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.11...jdevelop)
 
 
-## [0.3.11](https://github.com/jaivalis/release-raccoon/compare/0.3.7...0.3.11) - 26/08/2024
+## [0.3.8](https://github.com/jaivalis/release-raccoon/compare/0.3.7...0.3.11) - 31/08/2024
 
-- Experimenting with native heroku workflow tag automation
+- Heroku workflow tag deploy automation
 
 ## [0.3.7](https://github.com/jaivalis/release-raccoon/compare/0.3.7...0.3.8) - 24/08/2024
 
