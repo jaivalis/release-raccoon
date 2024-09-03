@@ -64,7 +64,7 @@
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
 
         <jandex-maven-plugin.version>1.2.3</jandex-maven-plugin.version>
-        <webjars-bootstrap.version>5.3.1</webjars-bootstrap.version>
+        <webjars-bootstrap.version>5.3.3</webjars-bootstrap.version>
         <jfixture.version>2.7.2</jfixture.version>
     </properties>
 
