@@ -42,7 +42,7 @@
         <testcontainers-elasticsearch.version>1.19.3</testcontainers-elasticsearch.version>
         <awaitility.version>4.2.0</awaitility.version>
         <rest.assured.version>5.4.0</rest.assured.version>
-        <wiremock.version>2.35.1</wiremock.version>
+        <wiremock.version>2.35.2</wiremock.version>
         <assertj-core.version>3.26.3</assertj-core.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <instancio-core.version>4.8.0</instancio-core.version>
