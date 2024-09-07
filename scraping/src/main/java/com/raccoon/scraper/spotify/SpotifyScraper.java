@@ -9,14 +9,15 @@ import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.scraper.ReleaseScraper;
 import com.raccoon.scraper.TasteScraper;
 import com.raccoon.scraper.mapper.SpotifyReleaseMapper;
-import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
-import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
-import com.wrapper.spotify.model_objects.specification.Paging;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.hc.core5.http.ParseException;
+
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
+import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -142,7 +143,7 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
     public Collection<MutablePair<Artist, Float>> fetchTopArtists(final SpotifyUserAuthorizer authorizer) {
         List<MutablePair<Artist, Float>> artists = new ArrayList<>();
         var offset = 0;
-        Paging<com.wrapper.spotify.model_objects.specification.Artist> response;
+        Paging<se.michaelthelin.spotify.model_objects.specification.Artist> response;
         try {
             do {
                 response = authorizer.executeGetUsersTopArtists(offset);
@@ -164,7 +165,7 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
     }
 
     public Artist processArtist(Object entry) {
-        if (entry instanceof com.wrapper.spotify.model_objects.specification.Artist spotifyArtist) {
+        if (entry instanceof se.michaelthelin.spotify.model_objects.specification.Artist spotifyArtist) {
             log.info("Got spotify artist: {}", spotifyArtist.getName());
             var artist = artistFactory.getOrCreateArtist(spotifyArtist.getName());
             artist.setSpotifyUri(spotifyArtist.getUri());

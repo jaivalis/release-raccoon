@@ -7,12 +7,6 @@ import com.raccoon.entity.repository.ArtistReleaseRepository;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.scraper.mapper.SpotifyReleaseMapper;
-import com.wrapper.spotify.enums.AlbumType;
-import com.wrapper.spotify.enums.ModelObjectType;
-import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
-import com.wrapper.spotify.model_objects.specification.ArtistSimplified;
-import com.wrapper.spotify.model_objects.specification.Paging;
 
 import org.apache.hc.core5.http.ParseException;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +18,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import se.michaelthelin.spotify.enums.AlbumType;
+import se.michaelthelin.spotify.enums.ModelObjectType;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
+import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -155,13 +156,6 @@ class SpotifyScraperTest {
         assertThat(release).isEmpty();
     }
 
-//    @Test
-//    @DisplayName("Can only process AlbumSimplified")
-//    void processNonAlbumSimplified() {
-//        final var release = new Release();
-//        assertThrows(IllegalArgumentException.class,
-//                () -> scraper.processRelease(release));
-//    }
     // ========================================== End of ReleaseScraper API ========================================= //
     // ============================================== TasteScraper API ============================================== //
 
@@ -179,8 +173,8 @@ class SpotifyScraperTest {
         var name = "test-name";
         Artist artistStub = new Artist();
         artistStub.setName(name);
-        com.wrapper.spotify.model_objects.specification.Artist spotifyArtist =
-                new com.wrapper.spotify.model_objects.specification.Artist.Builder()
+        se.michaelthelin.spotify.model_objects.specification.Artist spotifyArtist =
+                new se.michaelthelin.spotify.model_objects.specification.Artist.Builder()
                         .setName(name)
                         .setUri(uri)
                         .build();

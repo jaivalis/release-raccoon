@@ -32,7 +32,7 @@
 
         <!-- Scrapers -->
         <lastfm.client.version>0.1.2</lastfm.client.version>
-        <spotify.client.version>6.5.4</spotify.client.version>
+        <spotify.client.version>8.4.1</spotify.client.version>
 
         <!-- Observability -->
         <micrometer-registry-prometheus.version>1.13.3</micrometer-registry-prometheus.version>
@@ -42,29 +42,29 @@
         <testcontainers-elasticsearch.version>1.19.3</testcontainers-elasticsearch.version>
         <awaitility.version>4.2.0</awaitility.version>
         <rest.assured.version>5.4.0</rest.assured.version>
-        <wiremock.version>2.35.1</wiremock.version>
+        <wiremock.version>2.35.2</wiremock.version>
         <assertj-core.version>3.26.3</assertj-core.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <instancio-core.version>4.8.0</instancio-core.version>
 
         <!-- util -->
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <apache.commons.version>3.17.0</apache.commons.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <guava.version>33.2.1-jre</guava.version>
+        <mapstruct.version>1.6.0</mapstruct.version>
+        <guava.version>33.3.0-jre</guava.version>
         <jackson-datatype-jakarta-jsonp.version>2.16.1</jackson-datatype-jakarta-jsonp.version>
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
         <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
 
         <!-- plugins -->
-        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <surefire-plugin.version>3.5.0</surefire-plugin.version>
         <failsafe-plugin.version>3.4.0</failsafe-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <jandex-maven-plugin.version>1.2.3</jandex-maven-plugin.version>
-        <webjars-bootstrap.version>5.3.1</webjars-bootstrap.version>
+        <webjars-bootstrap.version>5.3.3</webjars-bootstrap.version>
         <jfixture.version>2.7.2</jfixture.version>
     </properties>
 
