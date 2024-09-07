@@ -1,14 +1,15 @@
 package com.raccoon.scraper.spotify;
 
 import com.raccoon.scraper.config.SpotifyConfig;
-import com.wrapper.spotify.SpotifyApi;
-import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
-import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
-import com.wrapper.spotify.model_objects.specification.Paging;
-import com.wrapper.spotify.requests.data.browse.GetListOfNewReleasesRequest;
 
 import org.apache.hc.core5.http.ParseException;
+
+import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.credentials.ClientCredentials;
+import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.requests.data.browse.GetListOfNewReleasesRequest;
 
 import java.io.IOException;
 import java.util.concurrent.CancellationException;

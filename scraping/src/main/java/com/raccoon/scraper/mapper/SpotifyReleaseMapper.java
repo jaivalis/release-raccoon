@@ -1,8 +1,9 @@
 package com.raccoon.scraper.mapper;
 
 import com.raccoon.entity.Release;
-import com.wrapper.spotify.enums.AlbumType;
-import com.wrapper.spotify.model_objects.specification.AlbumSimplified;
+
+import se.michaelthelin.spotify.enums.AlbumType;
+import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;

@@ -1,12 +1,13 @@
 package com.raccoon.scraper.spotify;
 
 import com.raccoon.scraper.config.SpotifyConfig;
-import com.wrapper.spotify.SpotifyApi;
-import com.wrapper.spotify.exceptions.SpotifyWebApiException;
-import com.wrapper.spotify.model_objects.specification.Artist;
-import com.wrapper.spotify.model_objects.specification.Paging;
 
 import org.apache.hc.core5.http.ParseException;
+
+import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
 
 import java.io.IOException;
 import java.net.URI;
