@@ -38,7 +38,7 @@
         <micrometer-registry-prometheus.version>1.13.3</micrometer-registry-prometheus.version>
 
         <!-- tests -->
-        <testcontainers.version>1.19.7</testcontainers.version>
+        <testcontainers.version>1.20.1</testcontainers.version>
         <testcontainers-elasticsearch.version>1.19.3</testcontainers-elasticsearch.version>
         <awaitility.version>4.2.0</awaitility.version>
         <rest.assured.version>5.4.0</rest.assured.version>
