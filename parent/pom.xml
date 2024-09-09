@@ -23,7 +23,7 @@
 
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.14.1</quarkus.platform.version>
+        <quarkus.platform.version>3.14.2</quarkus.platform.version>
         <quarkus-logging-sentry.version>2.0.7</quarkus-logging-sentry.version>
 
         <!-- Native image build fixes -->
