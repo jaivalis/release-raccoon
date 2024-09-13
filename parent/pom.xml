@@ -45,7 +45,7 @@
         <wiremock.version>2.35.2</wiremock.version>
         <assertj-core.version>3.26.3</assertj-core.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
-        <instancio-core.version>5.0.1</instancio-core.version>
+        <instancio-core.version>5.0.2</instancio-core.version>
 
         <!-- util -->
         <lombok.version>1.18.34</lombok.version>
