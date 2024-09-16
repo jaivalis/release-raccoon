@@ -29,6 +29,14 @@ public class ArtistRepository implements PanacheRepository<Artist> {
         return Optional.ofNullable(find("name", name).firstResult());
     }
 
+    public Optional<Artist> findByNameOrMusicbrainzId(String name, String musicbrainzId) {
+        return Optional.ofNullable(find("name = ?1 or musicbrainzId = ?2", name, musicbrainzId).firstResult());
+    }
+
+    public Optional<Artist> findByNameOrSpotifyUriOptional(String name, String spotifyUri) {
+        return Optional.ofNullable(find("name = ?1 or spotifyUri = ?2", name, spotifyUri).firstResult());
+    }
+
     public List<Artist> listArtistsPaginated(Page page) {
         PanacheQuery<Artist> query = findAll(Sort.by("id"));
         query.page(page.index, page.size);

@@ -103,6 +103,11 @@
             <artifactId>quarkus-hibernate-search-orm-elasticsearch</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>se.michaelthelin.spotify</groupId>
+            <artifactId>spotify-web-api-java</artifactId>
+        </dependency>
+
         <!-- Qute & UI -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -198,11 +203,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.flextrade.jfixture</groupId>
-            <artifactId>jfixture</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
