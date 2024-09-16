@@ -103,6 +103,11 @@
             <artifactId>quarkus-hibernate-search-orm-elasticsearch</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>se.michaelthelin.spotify</groupId>
+            <artifactId>spotify-web-api-java</artifactId>
+        </dependency>
+
         <!-- Qute & UI -->
         <dependency>
             <groupId>io.quarkus</groupId>

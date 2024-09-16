@@ -107,9 +107,10 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
                 .distinct()
                 .map(artistSimplified -> {
                     final String name = artistSimplified.getName();
-                    Optional<Artist> byNameOptional = artistRepository.findByNameOptional(name);
+                    final String spotifyUri = artistSimplified.getUri();
+                    Optional<Artist> byNameOptional = artistRepository.findByNameOrSpotifyUriOptional(name, spotifyUri);
 
-                    Artist artist = byNameOptional.isEmpty() ? new Artist() : byNameOptional.get();
+                    Artist artist = byNameOptional.orElseGet(Artist::new);
                     if (byNameOptional.isEmpty()) {
                         artist.setName(name);
                     }

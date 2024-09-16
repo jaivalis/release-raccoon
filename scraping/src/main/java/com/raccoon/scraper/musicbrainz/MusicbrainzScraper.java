@@ -112,12 +112,13 @@ public class MusicbrainzScraper implements ReleaseScraper<MusicbrainzRelease> {
         return artistCredits.stream()
                 .distinct()
                 .map(artistCredit -> {
-                    final String releaseName = artistCredit.getArtist().getName();
-                    Optional<Artist> byNameOptional = artistRepository.findByNameOptional(releaseName);
+                    final String artistName = artistCredit.getArtist().getName();
+                    final String musicbrainzId = artistCredit.getArtist().getId();
+                    Optional<Artist> byNameOptional = artistRepository.findByNameOrMusicbrainzId(artistName, musicbrainzId);
 
-                    Artist artist = byNameOptional.isEmpty() ? new Artist() : byNameOptional.get();
+                    Artist artist = byNameOptional.orElseGet(Artist::new);
                     if (byNameOptional.isEmpty()) {
-                        artist.setName(releaseName);
+                        artist.setName(artistName);
                     }
                     if (artist.getMusicbrainzId() == null || artist.getMusicbrainzId().isEmpty()) {
                         artist.setMusicbrainzId(artistCredit.getArtist().getId());
