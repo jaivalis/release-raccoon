@@ -1,7 +1,8 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.11...jdevelop)
+## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.8...jdevelop)
 
+- Bugfix: MusicbrainzScraper ConstraintViolationException
 
 ## [0.3.8](https://github.com/jaivalis/release-raccoon/compare/0.3.7...0.3.11) - 31/08/2024
 
