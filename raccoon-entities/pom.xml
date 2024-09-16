@@ -100,11 +100,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.flextrade.jfixture</groupId>
-            <artifactId>jfixture</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.instancio</groupId>
             <artifactId>instancio-core</artifactId>
         </dependency>

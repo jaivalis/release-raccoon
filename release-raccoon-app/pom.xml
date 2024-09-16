@@ -206,11 +206,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.flextrade.jfixture</groupId>
-            <artifactId>jfixture</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8-standalone</artifactId>
             <scope>test</scope>

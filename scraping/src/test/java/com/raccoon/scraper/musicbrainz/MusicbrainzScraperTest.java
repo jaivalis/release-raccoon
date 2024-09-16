@@ -1,10 +1,10 @@
 package com.raccoon.scraper.musicbrainz;
 
-import com.flextrade.jfixture.JFixture;
 import com.raccoon.common.WiremockExtensions;
 import com.raccoon.entity.Release;
 import com.raccoon.scraper.musicbrainz.dto.MusicbrainzReleasesResponse;
 
+import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -50,8 +50,8 @@ class MusicbrainzScraperTest {
     @Test
     @TestTransaction
     void processRelease() {
-        JFixture fixture = new JFixture();
-        MusicbrainzReleasesResponse.MusicbrainzRelease release = fixture.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
+        MusicbrainzReleasesResponse.MusicbrainzRelease release = Instancio.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         release.setDate(formatter.format(LocalDate.now()));
 
@@ -62,8 +62,7 @@ class MusicbrainzScraperTest {
     @Test
     @TestTransaction
     void processFutureRelease() {
-        JFixture fixture = new JFixture();
-        MusicbrainzReleasesResponse.MusicbrainzRelease release = fixture.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
+        MusicbrainzReleasesResponse.MusicbrainzRelease release = Instancio.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         release.setDate(formatter.format(LocalDate.now().plusDays(7)));
 
@@ -73,8 +72,7 @@ class MusicbrainzScraperTest {
     @Test
     @TestTransaction
     void processReleaseBadDate() {
-        JFixture fixture = new JFixture();
-        MusicbrainzReleasesResponse.MusicbrainzRelease release = fixture.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
+        MusicbrainzReleasesResponse.MusicbrainzRelease release = Instancio.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
         release.setDate("2024");
 
         assertThat(scraper.processRelease(release)).isEmpty();
@@ -83,8 +81,7 @@ class MusicbrainzScraperTest {
     @Test
     @TestTransaction
     void processReleaseNullDate() {
-        JFixture fixture = new JFixture();
-        MusicbrainzReleasesResponse.MusicbrainzRelease release = fixture.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
+        MusicbrainzReleasesResponse.MusicbrainzRelease release = Instancio.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
         release.setDate(null);
 
         assertThat(scraper.processRelease(release)).isEmpty();
@@ -93,8 +90,7 @@ class MusicbrainzScraperTest {
     @Test
     @TestTransaction
     void processReleaseNoArtists() {
-        JFixture fixture = new JFixture();
-        MusicbrainzReleasesResponse.MusicbrainzRelease release = fixture.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
+        MusicbrainzReleasesResponse.MusicbrainzRelease release = Instancio.create(MusicbrainzReleasesResponse.MusicbrainzRelease.class);
         release.setArtistCredits(null);
 
         assertThat(scraper.processRelease(release)).isEmpty();
