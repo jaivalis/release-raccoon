@@ -28,7 +28,7 @@
 
         <!-- Native image build fixes -->
         <jboss-jacc.version>2.0.0.Final</jboss-jacc.version>
-        <jna-platform.version>5.14.0</jna-platform.version>
+        <jna-platform.version>5.15.0</jna-platform.version>
 
         <!-- Scrapers -->
         <lastfm.client.version>0.1.2</lastfm.client.version>
