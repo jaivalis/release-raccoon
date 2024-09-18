@@ -290,7 +290,7 @@
             }).catch(error => {
                 console.error('Error:', JSON.stringify(error));
                 e.currentTarget.disabled = false;
-            }).finally(()=>{
+            }).finally(() => {
                 // e.currentTarget.disabled = false;
             });
         }
@@ -352,15 +352,39 @@
             }
         }
 
-        async function refreshOthersFollowedArtists() {
-            const othersFollowedArtistsResponse = await fetch('/artists/recommended?page=0&size=10')
+        let currentPage = 1;
+        const pageSize = 10;
+
+        async function refreshOthersFollowedArtists(page = 1) {
+            const othersFollowedArtistsResponse = await fetch(`/artists/recommended?page=$\{page\}&size=$\{pageSize\}`)
                     .then(response => response.json())
                     .then(data => data);
 
             if (othersFollowedArtistsResponse.total !== 0) {
                 renderOthersFollowedArtists(othersFollowedArtistsResponse.rows);
+                renderPaginationControls(othersFollowedArtistsResponse.total / pageSize);
             } else {
                 renderOthersNoFollowedArtists();
+            }
+        }
+
+        function renderPaginationControls(totalPages) {
+            let paginationContainer = document.getElementById("pagination-controls");
+            if (!paginationContainer) {
+                const othersFollowedArtistsTableContainer = document.getElementById('others-followed-artist-table-container');
+                const newPaginationContainer = document.createElement('div');
+                newPaginationContainer.setAttribute('id', 'pagination-controls');
+                othersFollowedArtistsTableContainer.appendChild(newPaginationContainer);
+                paginationContainer = newPaginationContainer;
+            }
+
+            paginationContainer.innerHTML = ''; // Clear previous controls
+
+            for (let i = 0; i < totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i + 1;
+                button.onclick = function() { refreshOthersFollowedArtists(i+1) };
+                paginationContainer.appendChild(button);
             }
         }
 
@@ -596,7 +620,7 @@
     </script>
 </head>
 
-<body onload="refreshFollowedArtists();refreshOthersFollowedArtists()">
+<body onload="refreshFollowedArtists();refreshOthersFollowedArtists(currentPage)">
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">

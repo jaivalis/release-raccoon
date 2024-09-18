@@ -19,10 +19,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 
 import io.quarkus.panache.common.Page;
+import jakarta.data.page.PageRequest;
+import jakarta.data.page.impl.PageRecord;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,8 +67,10 @@ class ArtistsServiceTest {
         params.setPage(1);
         params.setSize(10);
 
-        when(userRepository.findByEmail(any())).thenReturn(new RaccoonUser());
-        when(artistRepository.listDistinctArtistsNotFollowedByUser(any(), any())).thenReturn(Collections.emptyList());
+        when(userRepository.findByEmail(any()))
+                .thenReturn(new RaccoonUser());
+        when(artistRepository.distinctArtistsNotFollowedByUser(any(), any()))
+                .thenReturn(new PageRecord<>(PageRequest.ofPage(1, 10, true), List.of(), 0));
 
         FollowedArtistsResponse response = service.getOtherUsersFollowedArtists(params, email);
 
@@ -85,7 +88,8 @@ class ArtistsServiceTest {
         params.setSize(10);
         List<Artist> artists = List.of(new Artist());
         when(userRepository.findByEmail(any())).thenReturn(new RaccoonUser());
-        when(artistRepository.listDistinctArtistsNotFollowedByUser(any(), any())).thenReturn(artists);
+        when(artistRepository.distinctArtistsNotFollowedByUser(any(), any()))
+                .thenReturn(new PageRecord<>(PageRequest.ofPage(1, 10, true), artists, artists.size()));
         ArtistDto expectedDto = new ArtistDto();
         when(artistMapper.toArtistDto(artists.get(0))).thenReturn(expectedDto);
 

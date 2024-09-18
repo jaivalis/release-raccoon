@@ -13,7 +13,7 @@ import lombok.Data;
 public class FollowedArtistsResponse {
 
     @JsonProperty
-    private int total;
+    private long total;
 
     @JsonProperty
     private List<ArtistDto> rows;

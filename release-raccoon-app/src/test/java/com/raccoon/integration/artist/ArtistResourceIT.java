@@ -67,7 +67,7 @@ class ArtistResourceIT {
     void getRecommendedArtists_should_notReturnArtistsAlreadyFollowedByUser() {
         List<ArtistDto> artists = given()
                 .contentType(ContentType.JSON)
-                .param("page", "0")
+                .param("page", "1")
                 .param("size", "100")
                 .when().get("/recommended")
                 .then()
@@ -91,7 +91,7 @@ class ArtistResourceIT {
     void getRecommendedArtists_should_returnPaginatedArtistsNotFollowedByUser() {
         List<ArtistDto> artists = given()
                 .contentType(ContentType.JSON)
-                .param("page", "0")
+                .param("page", "1")
                 .param("size", "1")
                 .when().get("/recommended")
                 .then()
@@ -106,7 +106,7 @@ class ArtistResourceIT {
 
         artists = given()
                 .contentType(ContentType.JSON)
-                .param("page", "1")
+                .param("page", "2")
                 .param("size", "1")
                 .when().get("/recommended")
                 .then()
@@ -131,7 +131,7 @@ class ArtistResourceIT {
         tm.begin();
         List<ArtistDto> recommendedArtists = given()
                 .contentType(ContentType.JSON)
-                .param("page", "0")
+                .param("page", "1")
                 .param("size", "100")
                 .when().get("/recommended")
                 .then()
@@ -153,7 +153,7 @@ class ArtistResourceIT {
 
         List<ArtistDto> artistsAfter = given()
                 .contentType(ContentType.JSON)
-                .param("page", "0")
+                .param("page", "1")
                 .param("size", "100")
                 .when().get("/recommended")
                 .then()
