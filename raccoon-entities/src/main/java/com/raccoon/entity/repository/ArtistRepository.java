@@ -47,10 +47,10 @@ public class ArtistRepository implements PanacheRepository<Artist> {
 
     public jakarta.data.page.Page<Artist> distinctArtistsNotFollowedByUser(PageRequest page, Long userId) {
         var artistsFollowedByUser = find("SELECT DISTINCT ua.key.artist.id FROM UserArtist ua WHERE ua.key.raccoonUser.id = ?1", userId)
-                .count();
+                .list();
 
         PanacheQuery<Artist> query;
-        if (artistsFollowedByUser == 0) {
+        if (artistsFollowedByUser.isEmpty()) {
             query = find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1", userId);
         } else {
             query = find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1 and ua.key.artist.id not in ?2", userId, artistsFollowedByUser);
