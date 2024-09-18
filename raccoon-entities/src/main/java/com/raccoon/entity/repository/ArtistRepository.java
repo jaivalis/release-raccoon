@@ -9,6 +9,8 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
+import jakarta.data.page.PageRequest;
+import jakarta.data.page.impl.PageRecord;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -43,7 +45,7 @@ public class ArtistRepository implements PanacheRepository<Artist> {
         return query.list();
     }
 
-    public List<Artist> listDistinctArtistsNotFollowedByUser(Page page, Long userId) {
+    public jakarta.data.page.Page<Artist> distinctArtistsNotFollowedByUser(PageRequest page, Long userId) {
         var artistsFollowedByUser = find("SELECT DISTINCT ua.key.artist.id FROM UserArtist ua WHERE ua.key.raccoonUser.id = ?1", userId)
                 .list();
 
@@ -54,10 +56,14 @@ public class ArtistRepository implements PanacheRepository<Artist> {
             query = find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1 and ua.key.artist.id not in ?2", userId, artistsFollowedByUser);
         }
 
-        return query
-                .withHint("org.hibernate.cacheable", Boolean.FALSE)
-                .page(Page.of(page.index, page.size))
+        List<Artist> artists = query.withHint("org.hibernate.cacheable", Boolean.FALSE)
+                // PageRequest is 1 indexed
+                .page(Page.of(Long.valueOf(page.page()).intValue() - 1, page.size()))
                 .list();
+
+        long totalCount = query.count();
+
+        return new PageRecord<>(page, artists, totalCount);
     }
 
 }
