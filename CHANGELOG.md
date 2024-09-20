@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.10...jdevelop)
 
+## [0.3.11](https://github.com/jaivalis/release-raccoon/compare/0.3.9...0.3.10) - 20/09/2024
+
+- Fix: Nullable spotifyUrl on search results
+
 ## [0.3.10](https://github.com/jaivalis/release-raccoon/compare/0.3.9...0.3.10) - 18/09/2024
 
 - Feature: `artists/recommended` UI pagination
