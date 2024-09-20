@@ -16,7 +16,6 @@ public class MusicbrainzArtistMapper {
                 .name(artist.getName())
                 .musicbrainzId(artist.getId())
                 .lastfmUri("https://www.last.fm/music/" + artist.getName().replace(" ", "+"))
-                .spotifyUri("")
                 .build();
     }
 
