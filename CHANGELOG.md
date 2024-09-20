@@ -1,8 +1,8 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.10...jdevelop)
+## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.11...jdevelop)
 
-## [0.3.11](https://github.com/jaivalis/release-raccoon/compare/0.3.9...0.3.10) - 20/09/2024
+## [0.3.11](https://github.com/jaivalis/release-raccoon/compare/0.3.10...0.3.11) - 20/09/2024
 
 - Fix: Nullable spotifyUrl on search results
 
