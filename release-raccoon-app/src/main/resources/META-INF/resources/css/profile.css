@@ -20,28 +20,34 @@ body {
 /*}*/
 
 .banner {
-    font-size: 2.7rem;
+    font-size: 2.5rem;
     margin: 0;
-    padding: 2rem 1rem;
-    background-color: rgba(255,255,255,0.2);
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.3);
     color: white;
     text-align: center;
-    font-weight: bolder;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .content {
-    font-size: 2.7rem;
+    font-size: 2.5rem;
     margin: 0;
-    padding: 2rem 1rem;
-    background-color: rgba(255,255,255,0.2);
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.3);
     color: white;
     text-align: center;
-    font-weight: bolder;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .artists {
-    padding: 2rem 1rem;
-    background-color: rgba(255,255,255,0.2);
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .lead {
@@ -50,11 +56,12 @@ body {
 }
 
 table {
-    margin-top: 5%;
+    margin-top: 2rem;
     width: 100%;
     border-collapse: collapse;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 h1 {
@@ -64,9 +71,10 @@ h1 {
 
 th,
 td {
-    padding: 15px;
-    background-color: rgba(255,255,255,0.2);
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.3);
     color: #fff;
+    vertical-align: middle;
 }
 
 th {
@@ -74,31 +82,51 @@ th {
 }
 
 thead {
-    th {
-        background-color: #55608f;
-    }
+    background-color: #55608f;
+}
+th {
+    background-color: #55608f;
 }
 
 a:link, a:visited {
     background-color: #f44336;
     color: white;
-    padding: 14px 25px;
+    padding: 1rem 1.5rem;
     text-align: center;
     text-decoration: none;
     display: inline-block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 a:hover, a:active, pathlink {
-    background-color: red;
+    background-color: darkred;
 }
 
 button {
     background-color: #f44336;
     color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Bootstrap */
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+    border: 0;
 }
 
 input {
-    margin: 0;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 /* bootstrap */
@@ -128,24 +156,28 @@ input {
     position: absolute;
     background: #5f2c82;
     list-style-type: none;
-    padding: 10px;
+    padding: 1rem;
     color: white;
-    overflow: auto;
+    overflow-y: auto;
     height: 420px;
-    width: 218px;
+    width: 220px;
     z-index: 3;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #results li {
     display: flex;
     justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* loading element */
 .loader {
     width: 60px;
-    horiz-align: center;
-}
+    margin: 0 auto;
+    }
 
 .loader-wheel {
     animation: spin 1s infinite linear;

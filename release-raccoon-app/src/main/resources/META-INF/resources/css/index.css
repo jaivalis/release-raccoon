@@ -33,7 +33,7 @@ footer {
 }
 
 .banner {
-    font-size: 2.7rem;
+    font-size: 2.5rem;
     margin: 0;
     padding: 2rem 1rem;
     background-color: rgba(255,255,255,0.2);
@@ -42,15 +42,17 @@ footer {
     font-weight: bolder;
 }
 
-/*.content {*/
-/*    font-size: 2.7rem;*/
-/*    margin: 0;*/
-/*    padding: 2rem 1rem;*/
-/*    background-color: rgba(255,255,255,0.2);*/
-/*    color: white;*/
-/*    text-align: center;*/
-/*    font-weight: bolder;*/
-/*}*/
+.content {
+    font-size: 2.5rem;
+    margin: 0;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
 .artists {
     padding: 2rem 1rem;
@@ -95,19 +97,35 @@ thead {
 a:link, a:visited {
     background-color: #f44336;
     color: white;
-    padding: 14px 25px;
+    padding: 1rem 1.5rem;
     text-align: center;
     text-decoration: none;
     display: inline-block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 a:hover, a:active, pathlink {
-    background-color: red;
+    background-color: darkred;
 }
 
 button {
     background-color: #f44336;
     color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Bootstrap */
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+    border: 0;
 }
 
 input {
