@@ -1,0 +1,218 @@
+html,
+body {
+    height: 100%;
+    margin: 5%;
+    background: linear-gradient(90deg, #49a09d, #5f2c82);
+    font-family: 'Titilium Web', sans-serif;
+    font-weight: 100;
+    color: white;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;  /* adjust as needed */
+    background: linear-gradient(90deg, #49a09d, #5f2c82);
+    font-family: sans-serif;
+    font-weight: 100;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.horizaligned {
+    horiz-align: center;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.banner {
+    font-size: 2.5rem;
+    margin: 0;
+    padding: 2rem 1rem;
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.content {
+    font-size: 2.5rem;
+    margin: 0;
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.artists {
+    padding: 2rem 1rem;
+    background-color: rgba(255,255,255,0.2);
+}
+
+.lead {
+    font-weight: 300;
+    font-size: 2rem;
+}
+
+table {
+    margin-top: 5%;
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+h1 {
+    padding: 15px;
+    color: #fff;
+}
+
+th,
+td {
+    padding: 15px;
+    background-color: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+th {
+    text-align: left;
+}
+
+thead {
+    th {
+        background-color: #55608f;
+    }
+}
+
+a:link, a:visited {
+    background-color: #f44336;
+    color: white;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+a:hover, a:active, pathlink {
+    background-color: darkred;
+}
+
+button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Bootstrap */
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+    border: 0;
+}
+
+input {
+    margin: 0;
+}
+
+/* bootstrap */
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+    border: 0;
+}
+
+#navbar {
+    position: relative;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#results {
+    position: absolute;
+    background: #5f2c82;
+    list-style-type: none;
+    padding: 10px;
+    color: white;
+    overflow: auto;
+    height: 420px;
+    width: 218px;
+    z-index: 3;
+}
+
+#results li {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* loading element */
+.loader {
+    width: 60px;
+    horiz-align: center;
+}
+
+.loader-wheel {
+    animation: spin 1s infinite linear;
+    border: 2px solid rgba(30, 30, 30, 0.5);
+    border-left: 4px solid #fff;
+    border-radius: 50%;
+    height: 100px;
+    margin-bottom: 10px;
+    width: 100px;
+    horiz-align: center;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/* loading element */
+
+/* nav search box element */
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+/* nav search box element */
