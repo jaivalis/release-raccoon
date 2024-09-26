@@ -1,6 +1,10 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.11...jdevelop)
+## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.12...jdevelop)
+
+## [0.3.13](https://github.com/jaivalis/release-raccoon/compare/0.3.12...0.3.13) - 26/09/2024
+
+- Feat: css work
 
 ## [0.3.12](https://github.com/jaivalis/release-raccoon/compare/0.3.10...0.3.11) - 24/09/2024
 

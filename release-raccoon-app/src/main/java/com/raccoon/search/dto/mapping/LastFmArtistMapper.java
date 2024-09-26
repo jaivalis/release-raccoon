@@ -14,7 +14,7 @@ public class LastFmArtistMapper {
 
     public SearchResultArtistDto toDto(Artist artist) {
         return SearchResultArtistDto.builder()
-                .name(artist.getName())
+                .name(artist.getName().trim())
                 .lastfmUri(artist.getUrl())
                 .build();
     }

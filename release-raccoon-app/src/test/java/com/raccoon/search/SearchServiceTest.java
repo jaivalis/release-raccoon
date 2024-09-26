@@ -64,7 +64,7 @@ class SearchServiceTest {
     }
 
     @Test
-    @DisplayName("searchArtists(): Invokes search for all searchers")
+    @DisplayName("searchArtists Invokes search for all searchers")
     void searchArtists() {
         var email = "email";
         var pattern = "pattern";
@@ -79,7 +79,7 @@ class SearchServiceTest {
     }
 
     @Test
-    @DisplayName("searchArtists(): Populates the result as expected")
+    @DisplayName("searchArtists Populates the result as expected")
     void searchArtistsReturns() {
         var pattern = "pattern";
         var size = Optional.of(10);
@@ -115,6 +115,42 @@ class SearchServiceTest {
                 assertFalse(dto.isFollowedByUser());
             }
         }
+    }
+
+    @Test
+    @DisplayName("searchArtists should merge same name artists")
+    void searchArtists_should_mergeResultsFromDifferentSearchers() {
+        var pattern = "pattern";
+        var size = Optional.of(10);
+        String commonName = "same-name";
+        SearchResultArtistDto stubArtist1 = SearchResultArtistDto.builder()
+                .name(commonName)
+                .spotifyUri("uri1")
+                .id(9L)
+                .build();
+        SearchResultArtistDto stubArtist2 = SearchResultArtistDto.builder()
+                .name(commonName)
+                .musicbrainzId("musicbrainzId1")
+                .build();
+        when(mockHibernateSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist1));
+        when(mockLastfmSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist2));
+
+        var stubUser = new RaccoonUser();
+        stubUser.id = 1L;
+        var stubArtist = new Artist();
+        // The artist that we want returned first (since already followed)
+        stubArtist.id = stubArtist2.getId();
+        when(userRepository.findByEmail(any())).thenReturn(stubUser);
+        var stubUserArtist = new UserArtist();
+        stubUserArtist.setUser(stubUser);
+        stubUserArtist.setArtist(stubArtist);
+
+        ArtistSearchResponse response = service.searchArtists("email", pattern, size);
+
+        assertThat(response.getArtists()).hasSize(1);
+        assertThat(response.getArtists().get(0))
+                .extracting("id", "name", "spotifyUri", "musicbrainzId")
+                .containsOnly(9L, commonName, "uri1", "musicbrainzId1");
     }
 
 }

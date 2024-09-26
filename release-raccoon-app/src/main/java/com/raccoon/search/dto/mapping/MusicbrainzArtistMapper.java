@@ -13,7 +13,7 @@ public class MusicbrainzArtistMapper {
 
     public SearchResultArtistDto toDto(MusicbrainzArtist artist) {
         return SearchResultArtistDto.builder()
-                .name(artist.getName())
+                .name(artist.getName().trim())
                 .musicbrainzId(artist.getId())
                 .lastfmUri("https://www.last.fm/music/" + artist.getName().replace(" ", "+"))
                 .build();
