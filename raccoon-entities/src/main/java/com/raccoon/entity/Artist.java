@@ -67,10 +67,10 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @Column
     String lastfmUri;
 
-    @Column(unique = true)
+    @Column
     String spotifyUri;
 
-    @Column(unique = true)
+    @Column
     String musicbrainzId;
 
     @ToString.Exclude

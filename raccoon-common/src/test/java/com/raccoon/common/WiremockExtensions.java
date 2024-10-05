@@ -18,7 +18,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 @Slf4j
 public class WiremockExtensions implements QuarkusTestResourceLifecycleManager {
 
-    private WireMockServer wireMockServer;
+    private static WireMockServer wireMockServer;
 
     @Override
     public Map<String, String> start() {
@@ -28,6 +28,10 @@ public class WiremockExtensions implements QuarkusTestResourceLifecycleManager {
         return Collections.singletonMap(
                 "quarkus.rest-client.\"com.raccoon.scraper.musicbrainz.MusicbrainzService\".url", wireMockServer.baseUrl()
         );
+    }
+
+    public static WireMockServer getWireMockServer() {
+        return wireMockServer;
     }
 
     @Override

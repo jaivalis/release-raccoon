@@ -5,9 +5,11 @@ VALUES
 
 
 INSERT INTO Artist
-    (artistId, name)
+    (artistId, name, musicbrainzId)
 VALUES
-    (100, 'existentArtist');
+    (100, 'existentArtist', '0000000000'),
+    (200, 'another-existent-artist', 'existent-artist-musicbrainzId')
+;
 
 
 INSERT INTO Releases
@@ -19,7 +21,8 @@ VALUES
 INSERT INTO UserArtist
     (user_id, artist_id)
 VALUES
-    (100, 100);
+    (100, 100),
+    (100, 200);
 
 INSERT INTO ArtistRelease
     (artist_id, release_id)

@@ -1,0 +1,182 @@
+{
+  "created": "2022-01-30T21:38:20.877Z",
+  "count": 25,
+  "offset": 0,
+  "releases": [
+    {
+      "id": "d0ca1b93-4d12-439d-bf7e-2a9bb8909415",
+      "score": 100,
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "packaging-id": "119eba76-b343-3e02-a292-f0f00644bb9b",
+      "count": 1,
+      "title": "7",
+      "status": "Official",
+      "packaging": "None",
+      "text-representation": {
+        "language": "eng",
+        "script": "Latn"
+      },
+      "artist-credit": [
+        {
+          "name": "another-existent-artist",
+          "artist": {
+            "id": "d0c4af29-5522-457a-afab-0b3dde253e57",
+            "name": "another-existent-artist",
+            "sort-name": "another-existent-artist",
+            "disambiguation": "psychedelic rock group"
+          }
+        }
+      ],
+      "release-group": {
+        "id": "c0c7cd6f-07b3-44e7-9788-9a6ee2bd759c",
+        "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "7",
+        "primary-type": "Album"
+      },
+      "date": "2022-01-14",
+      "country": "XW",
+      "release-events": [
+        {
+          "date": "2022-01-14",
+          "area": {
+            "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
+            "name": "[Worldwide]",
+            "sort-name": "[Worldwide]",
+            "iso-3166-1-codes": ["XW"]
+          }
+        }
+      ],
+      "barcode": "",
+      "label-info": [
+        {
+          "label": {
+            "id": "33f7ee84-2d12-4bad-bc3f-335484736507",
+            "name": "Stickman Records"
+          }
+        }
+      ],
+      "track-count": 4,
+      "media": [
+        {
+          "format": "Digital Media",
+          "disc-count": 0,
+          "track-count": 4
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "rock"
+        },
+        {
+          "count": 1,
+          "name": "krautrock"
+        },
+        {
+          "count": 1,
+          "name": "experimental"
+        },
+        {
+          "count": 1,
+          "name": "copenhagen"
+        },
+        {
+          "count": 1,
+          "name": "psychedelic"
+        }
+      ]
+    },
+    {
+      "id": "fad008d7-9154-4d4b-bfa6-3f38c888ee4d",
+      "score": 100,
+      "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+      "packaging-id": "9f2e13bc-f84f-428a-8342-fd86ece7fc4d",
+      "count": 1,
+      "title": "Iron Dove - Act I (The Blessed Coast)",
+      "status": "Official",
+      "packaging": "Digibook",
+      "text-representation": {
+        "language": "eng"
+      },
+      "artist-credit": [
+        {
+          "name": "ANOTHER-EXISTENT-ARTIST",
+          "artist": {
+            "id": "d0c4af29-5522-457a-afab-0b3dde253e57",
+            "name": "ANOTHER-EXISTENT-ARTIST",
+            "sort-name": "ANOTHER-EXISTENT-ARTIST",
+            "disambiguation": "psychedelic rock group"
+          }
+        }
+      ],
+      "release-group": {
+        "id": "9448bc7f-f5e8-4456-93b5-a6cb2860d2d3",
+        "type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "Iron Dove - Act I (The Blessed Coast)",
+        "primary-type": "Album"
+      },
+      "date": "2022-01-14",
+      "country": "XW",
+      "release-events": [
+        {
+          "date": "2022-01-14",
+          "area": {
+            "id": "525d4e18-3d00-31b9-a58b-a146a916de8f",
+            "name": "[Worldwide]",
+            "sort-name": "[Worldwide]",
+            "iso-3166-1-codes": ["XW"]
+          }
+        }
+      ],
+      "barcode": "859750260680",
+      "label-info": [
+        {
+          "label": {
+            "id": "b67bdb3d-7639-45a9-bc5b-0474f4eb438b",
+            "name": "Gypsy City Music"
+          }
+        }
+      ],
+      "track-count": 17,
+      "media": [
+        {
+          "format": "Digital Media",
+          "disc-count": 0,
+          "track-count": 17
+        }
+      ],
+      "tags": [
+        {
+          "count": 1,
+          "name": "hip hop"
+        },
+        {
+          "count": 1,
+          "name": "contemporary christian"
+        },
+        {
+          "count": 1,
+          "name": "christian rap"
+        },
+        {
+          "count": 1,
+          "name": "contemporary gospel"
+        },
+        {
+          "count": 1,
+          "name": "christian hip hop"
+        },
+        {
+          "count": 1,
+          "name": "gospel rap"
+        },
+        {
+          "count": 1,
+          "name": "chh"
+        }
+      ]
+    }
+  ]
+}

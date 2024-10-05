@@ -2,9 +2,13 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.12...jdevelop)
 
+## [0.3.14](https://github.com/jaivalis/release-raccoon/compare/0.3.13...0.3.14) - 05/10/2024
+
+- Fix: Non unique musicbrainz and spotifyIds
+
 ## [0.3.13](https://github.com/jaivalis/release-raccoon/compare/0.3.12...0.3.13) - 26/09/2024
 
-- Feat: css work
+- Fix: css retouch
 
 ## [0.3.12](https://github.com/jaivalis/release-raccoon/compare/0.3.10...0.3.11) - 24/09/2024
 
