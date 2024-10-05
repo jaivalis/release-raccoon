@@ -49,17 +49,11 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Maven verify
-        run: |
-          mvn verify -B -Pcoverage
-
-      - name: Sonar Analysis
-        # see https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
-        if: ${{ github.actor != 'dependabot[bot]' }}
+      - name: Maven build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B -e verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn -B -e -Pcoverage verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
       # Docker build
       - name: Dockerhub release-raccoon:latest from jdevelop
