@@ -12,6 +12,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UserSettingsTest {
 
     @Test
+    public void updateFrom_should_updateNotifyIntervalDays() {
+        UserSettings userSettings = new UserSettings();
+        userSettings.setNotifyIntervalDays(5);
+        UserSettings other = new UserSettings();
+        other.setNotifyIntervalDays(10);
+        other.setUnsubscribed(true);
+
+        userSettings.updateFrom(other);
+
+        assertThat(userSettings.getNotifyIntervalDays()).isEqualTo(10);
+        assertThat(userSettings.getUnsubscribed()).isTrue();
+    }
+
+    @Test
     public void shouldNotify_should_returnTrue_when_lastNotifiedNull() {
         UserSettings userSettings = new UserSettings();
         userSettings.setNotifyIntervalDays(1);
