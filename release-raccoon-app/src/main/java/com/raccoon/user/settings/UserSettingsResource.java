@@ -24,8 +24,13 @@ import static com.raccoon.Constants.EMAIL_CLAIM;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserSettingsResource {
 
+    private final UserSettingsService userSettingsService;
+
     @Inject
-    UserSettingsService userSettingsService;
+    public UserSettingsResource(final UserSettingsService userSettingsService) {
+        this.userSettingsService = userSettingsService;
+    }
+
     @IdToken
     JsonWebToken idToken;
 

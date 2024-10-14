@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class UserSettingsTest {
+class UserSettingsTest {
 
     @Test
-    public void updateFrom_should_updateNotifyIntervalDays() {
+    void updateFrom_should_updateNotifyIntervalDays() {
         UserSettings userSettings = new UserSettings();
         userSettings.setNotifyIntervalDays(5);
         UserSettings other = new UserSettings();
@@ -26,7 +26,7 @@ public class UserSettingsTest {
     }
 
     @Test
-    public void shouldNotify_should_returnTrue_when_lastNotifiedNull() {
+    void shouldNotify_should_returnTrue_when_lastNotifiedNull() {
         UserSettings userSettings = new UserSettings();
         userSettings.setNotifyIntervalDays(1);
         userSettings.setUnsubscribed(false);
@@ -35,7 +35,7 @@ public class UserSettingsTest {
     }
 
     @Test
-    public void shouldNotify_should_returnTrue_when_withinInterval() {
+    void shouldNotify_should_returnTrue_when_withinInterval() {
         UserSettings userSettings = new UserSettings();
         userSettings.setNotifyIntervalDays(1);
         userSettings.setUnsubscribed(false);
@@ -45,7 +45,7 @@ public class UserSettingsTest {
     }
 
     @Test
-    public void shouldNotify_should_returnTrue_when_outsideInterval() {
+    void shouldNotify_should_returnTrue_when_outsideInterval() {
         UserSettings userSettings = new UserSettings();
         userSettings.setNotifyIntervalDays(1);
         userSettings.setUnsubscribed(false);
@@ -56,7 +56,7 @@ public class UserSettingsTest {
     }
 
     @Test
-    public void shouldNotify_should_returnTrue_when_outsideInterval2() {
+    void shouldNotify_should_returnTrue_when_outsideInterval2() {
         UserSettings userSettings = new UserSettings();
         userSettings.setNotifyIntervalDays(3);
         userSettings.setUnsubscribed(false);
@@ -68,7 +68,7 @@ public class UserSettingsTest {
     }
 
     @Test
-    public void shouldNotify_should_returnFalse_when_unsubscribed() {
+    void shouldNotify_should_returnFalse_when_unsubscribed() {
         UserSettings userSettings = new UserSettings();
         userSettings.setNotifyIntervalDays(1);
         userSettings.setUnsubscribed(true);
