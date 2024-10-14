@@ -36,6 +36,9 @@ public class QuteTemplateLoader {
     final String profileContents =
             new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/profile.html")), UTF_8)
                     .useDelimiter(EOF_DELIMITER).next();
+    final String userSettingsContents =
+            new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/profile-settings.html")), UTF_8)
+                    .useDelimiter(EOF_DELIMITER).next();
     final String digestEmailContents =
             new Scanner(requireNonNull(this.getClass().getResourceAsStream("/templates/mail-digest.html")), UTF_8)
                     .useDelimiter(EOF_DELIMITER).next();
@@ -46,6 +49,7 @@ public class QuteTemplateLoader {
     public static final String DIGEST_EMAIL_TEMPLATE_ID = "digest";
     public static final String INDEX_TEMPLATE_ID = "index";
     public static final String PROFILE_TEMPLATE_ID = "profile";
+    public static final String USER_SETTINGS_TEMPLATE_ID = "profile-settings";
     public static final String WELCOME_EMAIL_TEMPLATE_ID = "welcome";
 
     @Startup
@@ -53,6 +57,7 @@ public class QuteTemplateLoader {
         engine.putTemplate(DIGEST_EMAIL_TEMPLATE_ID, engine.parse(digestEmailContents));
         engine.putTemplate(INDEX_TEMPLATE_ID, engine.parse(indexContents));
         engine.putTemplate(PROFILE_TEMPLATE_ID, engine.parse(profileContents));
+        engine.putTemplate(USER_SETTINGS_TEMPLATE_ID, engine.parse(userSettingsContents));
         engine.putTemplate(WELCOME_EMAIL_TEMPLATE_ID, engine.parse(welcomeEmailContents));
     }
 

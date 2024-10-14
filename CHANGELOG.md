@@ -1,6 +1,8 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.3.12...jdevelop)
+## [0.4.0](https://github.com/jaivalis/release-raccoon/compare/0.3.14...0.4.0) - 15/10/2024
+
+- Feat: Introduce `UserSettings`
 
 ## [0.3.14](https://github.com/jaivalis/release-raccoon/compare/0.3.13...0.3.14) - 05/10/2024
 

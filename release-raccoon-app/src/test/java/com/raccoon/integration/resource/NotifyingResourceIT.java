@@ -1,6 +1,7 @@
 package com.raccoon.integration.resource;
 
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.integration.profile.NotifyingResourceDatabaseProfile;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,12 +23,13 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-@TestTransaction
 @TestProfile(value = NotifyingResourceDatabaseProfile.class)
 class NotifyingResourceIT {
 
     @Inject
     UserArtistRepository userArtistRepository;
+    @Inject
+    UserRepository userRepository;
 
     @Inject
     MockMailbox mockMailbox;
@@ -60,6 +62,9 @@ class NotifyingResourceIT {
         assertThat(uaOptional.get().hasNewRelease)
                 .as("Release should be marked processed")
                 .isFalse();
+        assertThat(userRepository.findByIdOptional(300L).get().getLastNotified())
+                .isNotNull()
+                .isToday();
     }
 
 }

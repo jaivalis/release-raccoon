@@ -6,6 +6,7 @@ import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.entity.repository.UserSettingsRepository;
 import com.raccoon.mail.RaccoonMailer;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,8 @@ class NotifyServiceTest {
     @Mock
     UserArtistRepository mockUserArtistRepository;
     @Mock
+    UserSettingsRepository userSettingsRepository;
+    @Mock
     RaccoonMailer mockMailer;
 
     @BeforeEach
@@ -48,6 +51,7 @@ class NotifyServiceTest {
         notifyService = new NotifyService(
                 mockReleaseRepository,
                 mockUserArtistRepository,
+                userSettingsRepository,
                 mockMailer
         );
     }
