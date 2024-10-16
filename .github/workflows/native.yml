@@ -6,7 +6,7 @@ on:
       - "*"
 
 env:
-  JAVA_VERSION: 17
+  JAVA_VERSION: 21
   GITHUB_SHA: ${{ github.sha }}
 
 jobs:
@@ -29,14 +29,14 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: "latest"
           java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'graalvm'
 
       - name: Build & release native image
         if: ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: |
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
+          echo "GRAALVM_HOME: ${{ GRAALVM_HOME }}"
+          echo "JAVA_HOME: ${{ JAVA_HOME }}"
           java --version
           gu --version
 
@@ -45,11 +45,11 @@ jobs:
           REPOSITORY="jaivalis/release-raccoon"
           IMAGE=${REGISTRY}/${REPOSITORY}:${TAG}
           
-          echo "Building and pushing ${IMAGE} to dockerhub"
+          echo "Building and pushing ${{ IMAGE }} to dockerhub"
 
           mvn package -DskipTests -Dquarkus.native.container-build=true \
             -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.image=${IMAGE} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
+            -Dquarkus.container-image.image=${{ IMAGE }} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
 
   publish:
     name: Deploy
@@ -76,7 +76,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: Login to heroku
-        uses: akhileshns/heroku-deploy@v4
+        uses: akhileshns/heroku-deploy@v3.13.15
         with:
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
