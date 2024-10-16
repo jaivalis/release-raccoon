@@ -23,7 +23,7 @@ public class UserSettings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userSettingId;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
