@@ -6,8 +6,8 @@ CREATE TABLE if not exists UserSettings (
                                             emailDisabled BOOLEAN,
                                             notifyIntervalDays INT NOT NULL DEFAULT 1,
                                             unsubscribed BOOLEAN NOT NULL DEFAULT FALSE,
-                                            CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES RaccoonUser(id)
-    );
+                                            CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES RaccoonUser(user_id)
+);
 
 -- Add an index on user_id for better performance on joins
 CREATE INDEX if not exists idx_user_id ON UserSettings(user_id);

@@ -1,6 +1,10 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [0.4.0](https://github.com/jaivalis/release-raccoon/compare/0.3.14...0.4.0) - 15/10/2024
+## [0.4.1](https://github.com/jaivalis/release-raccoon/compare/0.4.0...0.4.1) - 16/10/2024
+
+- Fix: liquibase migration
+
+## [0.4.0](https://github.com/jaivalis/release-raccoon/compare/0.3.14...0.4.0) - 16/10/2024
 
 - Feat: Introduce `UserSettings`
 
