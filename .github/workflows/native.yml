@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "*"
+    pull_request:
+      types: [ opened, synchronize, reopened ]
     tags:
       - "*"
 
@@ -31,14 +33,14 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: "latest"
           java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'graalvm'
 
       - name: Build & release native image
         if: ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: |
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
+          echo "GRAALVM_HOME: ${{ GRAALVM_HOME }}"
+          echo "JAVA_HOME: ${{ JAVA_HOME }}"
           java --version
           gu --version
 
@@ -47,11 +49,11 @@ jobs:
           REPOSITORY="jaivalis/release-raccoon"
           IMAGE=${REGISTRY}/${REPOSITORY}:${TAG}
           
-          echo "Building and pushing ${IMAGE} to dockerhub"
+          echo "Building and pushing ${{ IMAGE }} to dockerhub"
 
           mvn package -DskipTests -Dquarkus.native.container-build=true \
             -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.image=${IMAGE} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
+            -Dquarkus.container-image.image=${{ IMAGE }} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
 
   publish:
     name: Deploy
