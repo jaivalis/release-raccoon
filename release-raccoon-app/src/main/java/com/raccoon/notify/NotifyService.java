@@ -4,12 +4,16 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.UserSettings;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.entity.repository.UserSettingsRepository;
 import com.raccoon.mail.RaccoonMailer;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import io.quarkus.qute.TemplateException;
@@ -26,16 +30,19 @@ import static java.util.stream.Collectors.toSet;
 @ApplicationScoped
 public class NotifyService {
 
-    RaccoonMailer raccoonMailer;
-    ReleaseRepository releaseRepository;
-    UserArtistRepository userArtistRepository;
+    private final RaccoonMailer raccoonMailer;
+    private final ReleaseRepository releaseRepository;
+    private final UserArtistRepository userArtistRepository;
+    private final UserSettingsRepository userSettingsRepository;
 
     @Inject
     public NotifyService(final ReleaseRepository releaseRepository,
                          final UserArtistRepository userArtistRepository,
+                         final UserSettingsRepository userSettingsRepository,
                          final RaccoonMailer raccoonMailer) {
         this.userArtistRepository = userArtistRepository;
         this.releaseRepository = releaseRepository;
+        this.userSettingsRepository = userSettingsRepository;
         this.raccoonMailer = raccoonMailer;
     }
 
@@ -55,9 +62,14 @@ public class NotifyService {
                 .map(entry -> {
                     var user = entry.getKey();
                     var userArtistList = entry.getValue();
-                    return notifyUser(user, getLatestReleases(userArtistList), userArtistList);
-                })
-                .toList();
+
+                    if (shouldNotify(user)) {
+                        return notifyUser(user, getLatestReleases(userArtistList), userArtistList);
+                    } else {
+                        log.info("Skipping over user {} because of user settings", user.id);
+                        return Uni.createFrom().voidItem();
+                    }
+                }).toList();
 
         if (unis.isEmpty()) {
             log.info("Nobody to notify");
@@ -69,6 +81,16 @@ public class NotifyService {
                 .with(results -> true)
                 .onFailure()
                 .recoverWithUni(failure -> Uni.createFrom().item(false));
+    }
+
+    private boolean shouldNotify(RaccoonUser user) {
+        Optional<UserSettings> settings = userSettingsRepository.findByUserId(user.id);
+        if (settings.isPresent()) {
+            LocalDate lastNotified = user.getLastNotified();
+            return settings.get().shouldNotify(lastNotified);
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -137,13 +159,14 @@ public class NotifyService {
      */
     void mailSuccessCallback(RaccoonUser raccoonUser, Collection<UserArtist> userArtistList) {
         log.info("Notified raccoonUser {}", raccoonUser.getId());
+        raccoonUser.setLastNotified(LocalDate.now());
         userArtistList.forEach(userArtist -> userArtist.setHasNewRelease(false));
 
         userArtistRepository.persist(userArtistList);
     }
 
     void mailFailureCallback(RaccoonUser raccoonUser) {
-        log.warn("Failed to notify raccoonUser {}", raccoonUser.id);
+        log.warn("Failed to deliver mail to raccoonUser {}", raccoonUser.id);
     }
 
 }

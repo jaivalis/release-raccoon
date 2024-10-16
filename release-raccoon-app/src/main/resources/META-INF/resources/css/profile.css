@@ -117,6 +117,11 @@ button {
     transition: background-color 0.3s ease;
 }
 
+button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
 /* Bootstrap */
 /*
  * Top navigation

@@ -4,8 +4,10 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.UserSettings;
 import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
+import com.raccoon.entity.repository.UserSettingsRepository;
 import com.raccoon.mail.RaccoonMailer;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +19,10 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import io.smallrye.mutiny.Uni;
 
@@ -39,6 +43,8 @@ class NotifyServiceTest {
     @Mock
     UserArtistRepository mockUserArtistRepository;
     @Mock
+    UserSettingsRepository userSettingsRepository;
+    @Mock
     RaccoonMailer mockMailer;
 
     @BeforeEach
@@ -48,6 +54,7 @@ class NotifyServiceTest {
         notifyService = new NotifyService(
                 mockReleaseRepository,
                 mockUserArtistRepository,
+                userSettingsRepository,
                 mockMailer
         );
     }
@@ -76,6 +83,28 @@ class NotifyServiceTest {
 
         var success = uni.await().atMost(Duration.ofSeconds(1));
         assertTrue(success);
+    }
+
+    @Test
+    void notifyUsers_should_notUpdateUser_when_tooSoon() {
+        RaccoonUser raccoonUser = new RaccoonUser();
+        raccoonUser.setId(69L);
+        raccoonUser.setEmail("email");
+        raccoonUser.setLastNotified(LocalDate.now().minusDays(1));
+        Artist artist = new Artist();
+        UserArtist ua = new UserArtist();
+        ua.setUser(raccoonUser);
+        ua.setArtist(artist);
+        when(mockUserArtistRepository.getUserArtistsWithNewRelease()).thenReturn(List.of(ua));
+        UserSettings mockUserSettings = mock(UserSettings.class);
+        when(mockUserSettings.shouldNotify(any())).thenReturn(false);
+        when(userSettingsRepository.findByUserId(raccoonUser.id)).thenReturn(
+                Optional.of(mockUserSettings)
+        );
+
+        notifyService.notifyUsers();
+
+        verifyNoInteractions(mockMailer);
     }
 
     @Test

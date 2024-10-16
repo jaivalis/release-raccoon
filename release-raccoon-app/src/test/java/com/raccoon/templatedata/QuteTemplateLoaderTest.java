@@ -33,10 +33,11 @@ class QuteTemplateLoaderTest {
     void onStartParsesAndLoadsTemplates() {
         loader.onStart();
 
-        verify(mockEngine, times(4)).parse(anyString());
+        verify(mockEngine, times(5)).parse(anyString());
         verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.DIGEST_EMAIL_TEMPLATE_ID), any());
         verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.INDEX_TEMPLATE_ID), any());
         verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.PROFILE_TEMPLATE_ID), any());
+        verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.USER_SETTINGS_TEMPLATE_ID), any());
         verify(mockEngine, times(1)).putTemplate(eq(QuteTemplateLoader.WELCOME_EMAIL_TEMPLATE_ID), any());
     }
 }
