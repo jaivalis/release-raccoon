@@ -38,7 +38,6 @@ jobs:
           echo "GRAALVM_HOME: ${GRAALVM_HOME}"
           echo "JAVA_HOME: ${JAVA_HOME}"
           java --version
-          gu --version
 
           TAG=${{ github.ref_name }}-native
           REGISTRY="registry.hub.docker.com"
@@ -50,7 +49,6 @@ jobs:
           mvn package -DskipTests -Dquarkus.native.container-build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.image=${IMAGE} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
-
   publish:
     name: Deploy
     needs: [build]
