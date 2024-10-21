@@ -54,6 +54,7 @@
         <guava.version>33.3.1-jre</guava.version>
         <jackson-datatype-jakarta-jsonp.version>2.18.0</jackson-datatype-jakarta-jsonp.version>
         <jakarta.annotation-api.version>3.0.0</jakarta.annotation-api.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
         <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
         <jakarta.data-api.version>1.0.1</jakarta.data-api.version>
 
@@ -147,11 +148,6 @@
             </dependency>
             <dependency>
                 <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-mailer</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-oidc</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
@@ -185,6 +181,12 @@
             <dependency>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-container-image-jib</artifactId>
+                <version>${quarkus.platform.version}</version>
+            </dependency>
+            <!-- Notify -->
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-mailer</artifactId>
                 <version>${quarkus.platform.version}</version>
             </dependency>
 
@@ -363,6 +365,11 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jakarta-jsonp</artifactId>
                 <version>${jackson-datatype-jakarta-jsonp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>jakarta.validation</groupId>
