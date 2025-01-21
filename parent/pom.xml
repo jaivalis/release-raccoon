@@ -43,7 +43,7 @@
         <awaitility.version>4.2.2</awaitility.version>
         <rest.assured.version>5.5.0</rest.assured.version>
         <wiremock.version>2.35.2</wiremock.version>
-        <assertj-core.version>3.26.3</assertj-core.version>
+        <assertj-core.version>3.27.3</assertj-core.version>
         <mockito-inline.version>5.2.0</mockito-inline.version>
         <instancio-core.version>5.2.1</instancio-core.version>
 
