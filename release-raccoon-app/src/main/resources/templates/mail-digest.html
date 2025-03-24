@@ -6,56 +6,60 @@
 
     {#contents}
 
-        <div class="container">
-        {! heading !}
         <h1>
             {#if contents.getReleases().size == 1}
-                We found a new Release for you
+                🎵 New Release Alert!
             {#else}
-                We found {contents.getReleases().size} new Releases for you
+                🎵 {contents.getReleases().size} New Releases Found!
             {/if}
         </h1>
 
-        {! Table !}
-        <table class="table table-striped shadowed">
-        {! Table heading !}
-        <thead>
-        <tr>
-            <th scope="col" class="accented-th">Artist</th>
-            <th scope="col" class="accented-th fit">Release Name</th>
-            <th scope="col" class="accented-th fit">Spotify</th>
-            <th scope="col" class="accented-th fit">Released on</th>
-        </tr>
-        </thead>
+        <p style="text-align: center; color: #666666; font-size: 18px;">
+            {#if contents.getReleases().size == 1}
+                We found a new release that matches your taste
+            {#else}
+                We found {contents.getReleases().size} new releases that match your taste
+            {/if}
+        </p>
 
-        {#for release in contents.getReleases()}
-            {! Table row per release !}
-            <tr>
-            <td>
-                {#each release.artists}
-                    {it.name}
-                {/each}
-            </td>
-
-            <td>
-                {release.name}
-            </td>
-            <td>
-                {#if release.getSpotifyUriId() != ""}
-                    <a href="https://open.spotify.com/album/{release.getSpotifyUriId()}" class="path-link" target="_blank">
-                        💿
-                        {!<img height="30px" src="images/spotify.icon.svg"/>!}
-                    </a>
-                {/if}
-            </td>
-
-            <td>
-            {release.releasedOn}
-            </td>
-            </tr>
-
-        {/for}
+        <table class="release-table">
+            <thead>
+                <tr>
+                    <th>Artist</th>
+                    <th>Release</th>
+                    <th>Spotify</th>
+                    <th>Released</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#for release in contents.getReleases()}
+                    <tr>
+                        <td>
+                            {#each release.artists}
+                                <strong>{it.name}</strong>
+                            {/each}
+                        </td>
+                        <td>{release.name}</td>
+                        <td>
+                            {#if release.getSpotifyUriId() != ""}
+                                <a href="https://open.spotify.com/album/{release.getSpotifyUriId()}" 
+                                   class="button" 
+                                   style="padding: 8px 16px; font-size: 14px;"
+                                   target="_blank">
+                                    Listen on Spotify
+                                </a>
+                            {/if}
+                        </td>
+                        <td>{release.releasedOn}</td>
+                    </tr>
+                {/for}
+            </tbody>
         </table>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://release-raccoon.herokuapp.com/me" class="button">
+                Adjust Your Music Taste
+            </a>
         </div>
 
     {/contents}
