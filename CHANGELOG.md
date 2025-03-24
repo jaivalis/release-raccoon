@@ -1,5 +1,9 @@
 ## ⚙️ All important changes to this project are tracked here:
 
+## [0.4.3](https://github.com/jaivalis/release-raccoon/compare/0.4.2...0.4.3) - 24/03/2025
+
+- Chore: Maintenance release
+
 ## [0.4.2](https://github.com/jaivalis/release-raccoon/compare/0.4.1...0.4.2) - 16/10/2024
 
 - Chore: Java 21
