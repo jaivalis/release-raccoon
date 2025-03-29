@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Path("/test-ui")
 @Authenticated
 public class TestResource {
 
