@@ -48,7 +48,7 @@
         <instancio-core.version>5.4.1</instancio-core.version>
 
         <!-- util -->
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <apache.commons.version>3.17.0</apache.commons.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <guava.version>33.4.0-jre</guava.version>
