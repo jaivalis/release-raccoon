@@ -5,160 +5,158 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8">
-  <title>ReleaseRaccoon | Profile</title>
-  <style>
-    html,
-    body {
-      height: 100%;
-    }
-
-    body {
-      margin: 15%;
-      background: linear-gradient(90deg, #49a09d, #5f2c82);
-      font-family: sans-serif;
-      font-weight: 100;
-      color: white;
-    }
-
-    .horizaligned {
-      horiz-align: center;
-    }
-
-    .container {
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .banner {
-      font-size: 2.7rem;
-      margin: 0;
-      padding: 2rem 1rem;
-      background-color: rgba(255,255,255,0.2);
-      color: white;
-      text-align: center;
-      font-weight: bolder;
-    }
-
-    .content {
-      font-size: 2.7rem;
-      margin: 0;
-      padding: 2rem 1rem;
-      background-color: rgba(255,255,255,0.2);
-      color: white;
-      text-align: center;
-      font-weight: bolder;
-    }
-
-    .lead {
-      font-weight: 300;
-      font-size: 2rem;
-    }
-
-    .shadowed {
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-
-    .accented-th,
-    .accented-td {
-      padding: 15px;
-      background-color: rgba(255,255,255,0.2);
-      color: #fff;
-    }
-
-    table {
-      margin-top: 5%;
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-    }
-
-    h1 {
-      padding: 15px;
-      color: #fff;
-    }
-
-    th {
-      text-align: left;
-    }
-    td {
-      padding: 15px;
-    }
-
-    head {
-    th {
-      background-color: #55608f;
-    }
-    }
-
-    a:link, a:visited {
-      background-color: #f44336;
-      color: white;
-      padding: 14px 25px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    a:hover, a:active, pathlink {
-      background-color: red;
-    }
-
-  </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReleaseRaccoon | {#insert title}Welcome{/insert}</title>
+    <style>
+        /* Reset styles */
+        body {
+            margin: 0;
+            padding: 0;
+            min-width: 100%;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Container styles */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Header styles */
+        .header {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .header-emoji {
+            font-size: 64px;
+            margin: 0;
+            line-height: 1;
+        }
+        
+        /* Content styles */
+        .content {
+            padding: 40px 20px;
+            background: #ffffff;
+        }
+        
+        h1 {
+            color: #333333;
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 0 20px;
+            text-align: center;
+        }
+        
+        p {
+            color: #666666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0 0 20px;
+        }
+        
+        /* Table styles */
+        .release-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 20px 0;
+        }
+        
+        .release-table th {
+            background: #f8f9fa;
+            color: #333333;
+            font-weight: 600;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .release-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            color: #666666;
+        }
+        
+        .release-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Button styles */
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            text-align: center;
+            margin: 20px 0;
+            border: none;
+        }
+        
+        /* Footer styles */
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666666;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #000DFF;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive styles */
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+            
+            .release-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .header-emoji {
+                font-size: 48px;
+            }
+        }
+    </style>
 </head>
-<body>
-<table role="presentation">
-  <tr>
-    <td align="center">
-      <table role="presentation">
-        <tr>
-          <td align="center">
-            <img src="images/h1.png" alt="" width="300"/>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <table role="presentation">
-              <tr>
-                <td>
-
-                  {#insert contents}No contents!{/}
-
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <tr>
-          <td>
-            <table role="presentation">
-              <tr>
-                <td>
-                  <p>
-                    &reg; Release Raccoon, 2024<br/><a href="https://backend-release-raccoon-71a89de4778a.herokuapp.com/unsubscribe" align="right">Unsubscribe</a>
-                  </p>
-                </td>
-                <td align="right">
-                  <table role="presentation">
-                    <tr>
-                      <!--                      <td style="padding:0 0 0 10px;width:38px;">-->
-                      <!--                        <a href="http://www.twitter.com/" style="color:#ffffff;"><img src="images/tw.png" alt="Twitter" width="38" style="height:auto;display:block;border:0;" /></a>-->
-                      <!--                      </td>-->
-                      <!--                      <td style="padding:0 0 0 10px;width:38px;">-->
-                      <!--                        <a href="http://www.facebook.com/" style="color:#ffffff;"><img src="images/fb.png" alt="Facebook" width="38" style="height:auto;display:block;border:0;" /></a>-->
-                      <!--                       </td>!} -->
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
+<body style="background-color: #f4f4f4; padding: 20px;">
+    <div class="container">
+        <div class="header">
+            <p class="header-emoji">🦝</p>
+        </div>
+        
+        <div class="content">
+            {#insert contents}No contents!{/insert}
+        </div>
+        
+        <div class="footer">
+            <p>&reg; Release Raccoon, 2025</p>
+            <p><a href="https://backend-release-raccoon-71a89de4778a.herokuapp.com/unsubscribe">Unsubscribe</a></p>
+        </div>
+    </div>
 </body>
 </html>

@@ -24,25 +24,51 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.4
+    container_name: release-raccoon-keycloak
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      KEYCLOAK_IMPORT: /tmp/keycloak_init/realm-export.json
+      KEYCLOAK_IMPORT: /opt/keycloak/data/import/realm-export.json
     ports:
       - ${KEYCLOAK_PORT}:8080
     volumes:
-      - ./keycloak_init/:/tmp/keycloak_init
-    command: start-dev
+      - ./keycloak_init/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    command:
+      - "start-dev"
+      - "--import-realm"
 
   raccoon-elasticsearch:
     # For amd64 CPUs:
     #    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
     # For arm CPUs:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2-arm64
+    container_name: release-raccoon-elastic
     environment:
       discovery.type: single-node
     ports:
       - ${ELASTIC_PORT}:9200
+
+#  release-raccoon-api:
+#    # NOTE: This image currently only supports arm64 CPU architecture
+#    image: registry.hub.docker.com/jaivalis/release-raccoon:latest
+#    container_name: release-raccoon-api
+#    environment:
+#      LASTFM_API_KEY: ${LASTFM_API_KEY}
+#      LASTFM_SHARED_SECRET: ${LASTFM_SHARED_SECRET}
+#      LASTFM_APPLICATION_NAME: ${LASTFM_APPLICATION_NAME}
+#      SPOTIFY_AUTH_CALLBACK_URI: ${SPOTIFY_AUTH_CALLBACK_URI}
+#      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+#      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+#      MUSICBRAINZ_QUERIES_PER_SECOND: 1
+#      ELASTIC_URL: ${ELASTIC_URL}
+#      ELASTIC_PROTOCOL: ${ELASTIC_PROTOCOL}
+#      QUARKUS_OIDC_AUTH-SERVER-URL: http://release-raccoon-keycloak:8181/realms/RaccoonRealm
+#      QUARKUS_OIDC_CLIENT-ID: 'release-raccoon'
+#      QUARKUS_OIDC_CREDENTIALS_SECRET: '**********'
+#      QUARKUS_OIDC_APPLICATION-TYPE: WEB_APP
+#      QUARKUS_OIDC_AUTHENTICATION_SCOPES: email
+#    ports:
+#      - '9898:8080'
 
 volumes:
   postgres_data:
