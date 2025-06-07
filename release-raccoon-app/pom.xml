@@ -3,14 +3,14 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.4.3-SNAPSHOT</version>
+        <version>0.4.4</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>release-raccoon-app</artifactId>
     <name>release-raccoon-app</name>
-    <version>0.4.3-SNAPSHOT</version>
+    <version>0.4.4</version>
 
     <dependencies>
         <!-- submodules -->
@@ -262,6 +262,18 @@
             <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
 
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jacoco</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-test-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -292,6 +304,20 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+
+            <!-- Test Coverage Plugin -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
