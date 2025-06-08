@@ -1,5 +1,15 @@
 ## ⚙️ All important changes to this project are tracked here:
 
+## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.4.5...jdevelop)
+
+## [0.4.5](https://github.com/jaivalis/release-raccoon/compare/0.4.4...0.4.5)
+
+- Chore: Maintenance release
+
+## [0.4.4](https://github.com/jaivalis/release-raccoon/compare/0.4.3...0.4.4)
+
+- Feat: Prettier email templates
+
 ## [0.4.3](https://github.com/jaivalis/release-raccoon/compare/0.4.2...0.4.3) - 24/03/2025
 
 - Chore: Maintenance release
