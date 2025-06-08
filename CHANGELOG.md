@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.4.5...jdevelop)
 
+## [0.4.6](https://github.com/jaivalis/release-raccoon/compare/0.4.5...0.4.6)
+
+- Chore: Maintenance release
+
 ## [0.4.5](https://github.com/jaivalis/release-raccoon/compare/0.4.4...0.4.5)
 
 - Chore: Maintenance release
