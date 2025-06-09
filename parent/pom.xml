@@ -63,7 +63,7 @@
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
         <failsafe-plugin.version>3.5.2</failsafe-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
 
         <jandex-maven-plugin.version>1.2.3</jandex-maven-plugin.version>
         <webjars-bootstrap.version>5.3.3</webjars-bootstrap.version>
