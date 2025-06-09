@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA, uses = ArtistMapperResolver.class)
+@Mapper(componentModel = MappingConstants.ComponentModel.CDI, uses = ArtistMapperResolver.class)
 public interface ArtistMapper {
 
     SearchResultArtistDto toSearchResultArtistDto(Artist artist);
