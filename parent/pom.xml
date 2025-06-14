@@ -110,12 +110,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>io.quarkus.keycloak</groupId>
-                <artifactId>quarkus-keycloak-adapter</artifactId>
-                <version>1.0.0.Alpha1</version>
-            </dependency>
-
             <!-- Observability -->
             <dependency>
                 <groupId>io.micrometer</groupId>

@@ -79,10 +79,6 @@
             <artifactId>quarkus-keycloak-authorization</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus.keycloak</groupId>
-            <artifactId>quarkus-keycloak-adapter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc-deployment</artifactId>
         </dependency>
