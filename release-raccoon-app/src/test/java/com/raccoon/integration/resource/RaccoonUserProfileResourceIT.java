@@ -2,6 +2,7 @@ package com.raccoon.integration.resource;
 
 import com.raccoon.dto.ArtistDto;
 import com.raccoon.entity.Artist;
+import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
 import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
@@ -78,7 +79,7 @@ class RaccoonUserProfileResourceIT {
 
     @BeforeEach
     @Transactional
-    public void setup() {
+    void setup() {
         mockMailbox.clear();
     }
 
@@ -269,8 +270,11 @@ class RaccoonUserProfileResourceIT {
                 .statusCode(SC_NO_CONTENT);
 
         Long userId = userRepository.findByEmail("raccoonUser@gmail.com").id;
-        assertThat(userArtistRepository.findByUserId(userId)).hasSize(1);
-        Artist followedArtist = userArtistRepository.findByUserId(userId).get(0).getArtist();
+        List<UserArtist> followed = userArtistRepository.findByUserId(userId).stream()
+                .filter(ua -> ua.getArtist().getName().equals("same-artist-twice"))
+                .toList();
+        assertThat(followed).hasSize(1);
+        Artist followedArtist = followed.getFirst().getArtist();
         assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
         assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
         assertThat(followedArtist.getSpotifyUri()).isEqualTo(searchResultArtistDto.getSpotifyUri());

@@ -4,7 +4,7 @@ import com.raccoon.entity.UserSettings;
 import com.raccoon.user.settings.dto.UserSettingsDto;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jboss.resteasy.annotations.cache.NoCache;
+import org.jboss.resteasy.reactive.NoCache;
 
 import io.quarkus.oidc.IdToken;
 import jakarta.inject.Inject;

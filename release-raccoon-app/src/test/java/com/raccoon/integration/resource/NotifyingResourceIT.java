@@ -35,7 +35,7 @@ class NotifyingResourceIT {
     MockMailbox mockMailbox;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mockMailbox.clear();
     }
 

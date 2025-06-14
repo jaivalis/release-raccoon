@@ -1,5 +1,6 @@
 package com.raccoon.notify;
 
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -16,6 +17,7 @@ public class NotifyingResource {
     }
 
     @GET
+    @Blocking
     public Uni<Boolean> notifyUsers() {
         return service.notifyUsers();
     }

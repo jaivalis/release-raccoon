@@ -1,8 +1,9 @@
 package com.raccoon.scraper.musicbrainz.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
-import jakarta.json.bind.annotation.JsonbProperty;
 import lombok.Data;
 
 /**
@@ -24,18 +25,18 @@ public class MusicbrainzReleasesResponse {
     public static class MusicbrainzRelease {
         private String id;
         private int score;
-        @JsonbProperty("status-id")
+        @JsonProperty("status-id")
         private String statusId;
-        @JsonbProperty("packaging-id")
+        @JsonProperty("packaging-id")
         private String packagingId;
         private int count;
         private String title;
         private String status;
         private String packaging;
-        @JsonbProperty("artist-credit")
+        @JsonProperty("artist-credit")
         private List<ArtistCredit> artistCredits;
         private String date;
-        @JsonbProperty("release-group")
+        @JsonProperty("release-group")
         private ReleaseGroup releaseGroup;
     }
 
@@ -49,7 +50,7 @@ public class MusicbrainzReleasesResponse {
     public static class MusicBrainsArtist {
         private String id;
         private String name;
-        @JsonbProperty("sort-name")
+        @JsonProperty("sort-name")
         private String sortName;
     }
 
@@ -58,7 +59,7 @@ public class MusicbrainzReleasesResponse {
         private String id;
         private String typeId;
         private String title;
-        @JsonbProperty("primary-type")
+        @JsonProperty("primary-type")
         private String primaryType;
     }
 

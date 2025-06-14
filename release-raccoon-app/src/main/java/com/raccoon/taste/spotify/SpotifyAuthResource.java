@@ -4,7 +4,7 @@ import com.raccoon.dto.RegisterUserRequest;
 import com.raccoon.scraper.config.SpotifyConfig;
 import com.raccoon.scraper.spotify.SpotifyUserAuthorizer;
 
-import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+import org.jboss.resteasy.reactive.RestQuery;
 
 import java.net.URI;
 
@@ -49,9 +49,9 @@ public class SpotifyAuthResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response completeAuth(@QueryParam("code") final String code,
-                                 @QueryParam("state") final String state,
-                                 @QueryParam("error") final String error) {
+    public Response completeAuth(@RestQuery("code") final String code,
+                                 @RestQuery("state") final String state,
+                                 @RestQuery("error") final String error) {
         log.info("Received GET code: {}, state: {}, error: {}", code, state, error);
         if (error != null) {
             log.error("An error occurred with Spotify authentication: {}", error);
@@ -68,7 +68,7 @@ public class SpotifyAuthResource {
     @Path("/user-top-artists")
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response getUserTopArtists(@QueryParam("userId") final String userId) {
+    public Response getUserTopArtists(@RestQuery("userId") final String userId) {
         spotifyTasteUpdatingService.updateTaste(Long.valueOf(userId));
         return Response.temporaryRedirect(URI.create("/me")).build();
     }

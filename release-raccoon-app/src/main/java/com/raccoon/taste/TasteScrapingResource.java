@@ -7,7 +7,7 @@ import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 import com.raccoon.taste.spotify.SpotifyTasteUpdatingService;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+import org.jboss.resteasy.reactive.RestQuery;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -71,7 +71,7 @@ public class TasteScrapingResource {
         return spotifyTasteUpdatingService.scrapeTaste(existing.id);
     }
 
-    private RaccoonUser getUser(@QueryParam("email") String email) {
+    private RaccoonUser getUser(@RestQuery("email") String email) {
         Optional<RaccoonUser> existing = userRepository.findByEmailOptional(email);
         if (existing.isEmpty()) {
             log.warn("RaccoonUser with email {} not found.", email);

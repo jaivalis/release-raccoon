@@ -4,8 +4,8 @@ import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jboss.resteasy.annotations.cache.NoCache;
-import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+import org.jboss.resteasy.reactive.NoCache;
+import org.jboss.resteasy.reactive.RestQuery;
 
 import java.net.URI;
 import java.util.Collections;
@@ -23,7 +23,6 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -55,7 +54,7 @@ public class UserProfileResource {
     @NoCache
     @Produces(MediaType.TEXT_HTML)
     @Transactional
-    public Response registrationCallback(@QueryParam("redirectUrl") String redirectUrl) {
+    public Response registrationCallback(@RestQuery("redirectUrl") String redirectUrl) {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         userProfileService.completeRegistration(email);
         if (shouldRedirect(redirectUrl)) {
@@ -85,7 +84,7 @@ public class UserProfileResource {
     @NoCache
     @Transactional
     @Valid
-    public Response unfollowArtist(@NotNull @PathParam("artistId") Long artistId) {
+    public Response unfollowArtist(@NotNull @RestQuery("artistId") Long artistId) {
         log.info("Unfollowing artist {}", artistId);
         final String email = idToken.getClaim(EMAIL_CLAIM);
         userProfileService.unfollowArtist(email, artistId);
@@ -97,8 +96,8 @@ public class UserProfileResource {
     @Path("/enable-services")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public Response enableTasteSources(@QueryParam("lastfmUsername") final Optional<String> lastfmUsernameOpt,
-                                       @QueryParam("enableSpotify") final Optional<Boolean> enableSpotifyOpt) {
+    public Response enableTasteSources(@RestQuery("lastfmUsername") final Optional<String> lastfmUsernameOpt,
+                                       @RestQuery("enableSpotify") final Optional<Boolean> enableSpotifyOpt) {
         final String email = idToken.getClaim(EMAIL_CLAIM);
 
         userProfileService.enableTasteSources(email, lastfmUsernameOpt, enableSpotifyOpt);

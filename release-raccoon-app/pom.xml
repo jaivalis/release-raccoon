@@ -36,7 +36,7 @@
         <!-- quarkus -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-client-jsonb</artifactId>
+            <artifactId>quarkus-rest-jsonb</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -79,10 +79,6 @@
             <artifactId>quarkus-keycloak-authorization</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus.keycloak</groupId>
-            <artifactId>quarkus-keycloak-adapter</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc-deployment</artifactId>
         </dependency>
@@ -90,12 +86,9 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-scheduler</artifactId>
         </dependency>
-        <!--TODO: is now deprecated:
-            https://github.com/quarkusio/quarkus/wiki/Migration-Guide-2.8#quarkus-resteasy-mutiny-deprecated
-        -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-mutiny</artifactId>
+            <artifactId>quarkus-rest</artifactId>
         </dependency>
         <!-- Search -->
         <dependency>
@@ -115,7 +108,7 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-qute</artifactId>
+            <artifactId>quarkus-rest-qute</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus.qute</groupId>
