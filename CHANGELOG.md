@@ -2,6 +2,10 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.4.5...jdevelop)
 
+## [0.4.7](https://github.com/jaivalis/release-raccoon/compare/0.4.6...0.4.7)
+
+- Reverted to quarkus.platform.version 3.18.4
+
 ## [0.4.6](https://github.com/jaivalis/release-raccoon/compare/0.4.5...0.4.6)
 
 - Chore: Maintenance release
