@@ -23,7 +23,7 @@
 
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.21.0</quarkus.platform.version>
+        <quarkus.platform.version>3.18.4</quarkus.platform.version>
         <quarkus-logging-sentry.version>2.1.2</quarkus-logging-sentry.version>
 
         <!-- Native image build fixes -->
@@ -86,7 +86,7 @@
                 <version>${project.version}</version>
             </dependency>
             <!-- test-jar important here such that test classes can be imported
-                 see: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html -->
+                    see: https://maven.apache.org/plugins/maven-jar-plugin/examples/create-test-jar.html -->
             <dependency>
                 <groupId>com.raccoon</groupId>
                 <artifactId>raccoon-common</artifactId>
@@ -110,84 +110,10 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- quarkus -->
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-resteasy-client-jsonb</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-jdbc-mariadb</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-jdbc-postgresql</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-micrometer</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-arc</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-smallrye-openapi</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-hibernate-orm-rest-data-panache</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-oidc</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-keycloak-authorization</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
             <dependency>
                 <groupId>io.quarkus.keycloak</groupId>
                 <artifactId>quarkus-keycloak-adapter</artifactId>
                 <version>1.0.0.Alpha1</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-arc-deployment</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-scheduler</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <!-- Search -->
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-hibernate-search-orm-elasticsearch</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <!-- Builds -->
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-container-image-jib</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <!-- Notify -->
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-mailer</artifactId>
-                <version>${quarkus.platform.version}</version>
             </dependency>
 
             <!-- Observability -->
@@ -202,17 +128,7 @@
                 <version>${quarkus-logging-sentry.version}</version>
             </dependency>
 
-            <!-- Qute & UI -->
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-resteasy-qute</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-qute</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
+            <!-- UI -->
             <dependency>
                 <groupId>org.webjars</groupId>
                 <artifactId>bootstrap</artifactId>
@@ -220,11 +136,6 @@
             </dependency>
 
             <!-- database -->
-            <dependency>
-                <groupId>io.quarkus</groupId>
-                <artifactId>quarkus-liquibase</artifactId>
-                <version>${quarkus.platform.version}</version>
-            </dependency>
 
             <!-- Native image build fixes -->
             <dependency>

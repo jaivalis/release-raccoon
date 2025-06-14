@@ -3,7 +3,7 @@ package com.raccoon.search;
 import com.raccoon.search.dto.mapping.ArtistSearchResponse;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+import org.jboss.resteasy.reactive.RestQuery;
 
 import java.util.Optional;
 
@@ -36,8 +36,8 @@ public class ArtistSearchResource {
     @GET
     @Path("/search")
     @Produces(MediaType.APPLICATION_JSON)
-    public ArtistSearchResponse searchArtists(@QueryParam String pattern,
-                                              @QueryParam Optional<Integer> size) {
+    public ArtistSearchResponse searchArtists(@RestQuery String pattern,
+                                              @RestQuery Optional<Integer> size) {
         final String email = idToken.getClaim(EMAIL_CLAIM);
         return searchService.searchArtists(email, pattern, size);
     }

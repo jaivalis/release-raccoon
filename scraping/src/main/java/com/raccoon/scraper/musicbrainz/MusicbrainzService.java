@@ -5,7 +5,7 @@ import com.raccoon.scraper.musicbrainz.dto.MusicbrainzReleasesResponse;
 
 import org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+import org.jboss.resteasy.reactive.RestQuery;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Consumes;
@@ -46,10 +46,10 @@ public interface MusicbrainzService {
     @Path("release/")
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    MusicbrainzReleasesResponse getReleasesByQuery(@QueryParam("query") String query,
-                                                   @QueryParam("fmt") String format,
-                                                   @QueryParam("limit") String limit,
-                                                   @QueryParam("offset") String offset);
+    MusicbrainzReleasesResponse getReleasesByQuery(@RestQuery("query") String query,
+                                                   @RestQuery("fmt") String format,
+                                                   @RestQuery("limit") String limit,
+                                                   @RestQuery("offset") String offset);
 
     /**
      * Performs a GET against `artist/` endpoint.
@@ -66,9 +66,9 @@ public interface MusicbrainzService {
     @Path("artist/")
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    MusicbrainzArtistsResponse getArtistsByQuery(@QueryParam("query") String query,
-                                                 @QueryParam("fmt") String format,
-                                                 @QueryParam("limit") String limit,
-                                                 @QueryParam("offset") String offset);
+    MusicbrainzArtistsResponse getArtistsByQuery(@RestQuery("query") String query,
+                                                 @RestQuery("fmt") String format,
+                                                 @RestQuery("limit") String limit,
+                                                 @RestQuery("offset") String offset);
 
 }
