@@ -1,0 +1,5 @@
+build:
+  docker:
+    web: Dockerfile
+run:
+  web: java -jar ./release-raccoon-app/target/release-raccoon-app-*-SNAPSHOT.jar
