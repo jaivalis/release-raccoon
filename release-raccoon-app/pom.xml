@@ -274,6 +274,7 @@
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
                 <version>${quarkus.platform.version}</version>
+                <extensions>true</extensions>
                 <configuration>
                     <buildDir>../build</buildDir>
                     <finalName>${project.artifactId}-${project.version}</finalName>

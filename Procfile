@@ -1,1 +1,1 @@
-web: java ${JAVA_OPTS} ${JAVA_TOOL_OPTIONS} -Dquarkus.http.port=$PORT -jar ./release-raccoon-app/target/release-raccoon-app-*-SNAPSHOT.jar
+web: java ${JAVA_OPTS} ${JAVA_TOOL_OPTIONS} -Dquarkus.http.port=$PORT -jar ./build/quarkus-app/quarkus-run.jar
