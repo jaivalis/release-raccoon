@@ -13,7 +13,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +35,6 @@ public class Scrape extends PanacheEntityBase {
     LocalDateTime modifyDate;
 
     @Setter
-    @OrderColumn
     LocalDateTime completeDate;
 
     @Column
