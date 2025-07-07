@@ -59,7 +59,7 @@
         <jakarta.data-api.version>1.0.1</jakarta.data-api.version>
 
         <!-- plugins -->
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <surefire-plugin.version>3.5.2</surefire-plugin.version>
         <failsafe-plugin.version>3.5.3</failsafe-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
