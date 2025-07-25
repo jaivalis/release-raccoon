@@ -69,6 +69,7 @@ public class SearchService {
     }
 
     List<SearchResultArtistDto> postProcessSearchResults(String userEmail, Map<ArtistSearcher, Collection<SearchResultArtistDto>> perSource) {
+        log.info("Post processing search results");
         List<SearchResultArtistDto> rankedResultList = new ArrayList<>();
 
         // Mark followed artists

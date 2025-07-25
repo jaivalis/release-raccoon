@@ -1,6 +1,5 @@
 package com.raccoon.search.ranking;
 
-import com.raccoon.Constants;
 import com.raccoon.search.ArtistSearcher;
 import com.raccoon.search.dto.SearchResultArtistDto;
 
@@ -10,8 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import lombok.extern.slf4j.Slf4j;
+
+import static com.raccoon.Constants.HIBERNATE_SEARCHER_ID;
 
 @ApplicationScoped
+@Slf4j
 public class ResultsRanker {
 
     /**
@@ -22,13 +25,15 @@ public class ResultsRanker {
      */
     public List<SearchResultArtistDto> rankSearchResults(final Map<ArtistSearcher, Collection<SearchResultArtistDto>> searchResultsPerSource,
                                                          final List<SearchResultArtistDto> rankedResults) {
+        log.info("Ranking: {}", rankedResults);
         List<ArtistSearcher> searchersSortedOnTrustworthiness =
-                searchResultsPerSource.keySet().stream().sorted(
-                        Comparator.comparing(ArtistSearcher::trustworthiness).reversed()
-                ).toList();
+                searchResultsPerSource.keySet().stream()
+                        .sorted(
+                                Comparator.comparing(ArtistSearcher::trustworthiness).reversed()
+                        ).toList();
 
         for (ArtistSearcher searcher : searchersSortedOnTrustworthiness) {
-            if (Constants.HIBERNATE_SEARCHER_ID.equals(searcher.id())) {
+            if (HIBERNATE_SEARCHER_ID.equals(searcher.id())) {
                 // Hibernate results have already been ranked top of the list
                 continue;
             }
