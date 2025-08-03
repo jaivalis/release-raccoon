@@ -20,6 +20,7 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.Constants.HIBERNATE_SEARCHER_ID;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @ApplicationScoped
@@ -98,6 +99,12 @@ public class SearchService {
     private List<SearchResultArtistDto> setAlreadyFollowed(final String userEmail,
                                                            final Collection<SearchResultArtistDto> hibernateHits) {
         var searchingUser = userRepository.findByEmail(userEmail);
+        if (isNull(searchingUser)) {
+            log.error("User not found for email: {}", userEmail);
+            // Return the hits without the followed flag set
+            return new ArrayList<>(hibernateHits);
+        }
+        
         var distinctArtistIds = hibernateHits.stream()
                 .map(SearchResultArtistDto::getId)
                 .toList();
