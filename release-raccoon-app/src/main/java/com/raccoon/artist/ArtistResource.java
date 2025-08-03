@@ -3,9 +3,7 @@ package com.raccoon.artist;
 import com.raccoon.dto.PaginationParams;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
-
-import io.quarkus.oidc.IdToken;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
@@ -17,8 +15,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.Constants.EMAIL_CLAIM;
-
 @Path("/artists")
 @Slf4j
 @Authenticated
@@ -27,12 +23,11 @@ import static com.raccoon.Constants.EMAIL_CLAIM;
 public class ArtistResource {
 
     final ArtistsService artistsService;
+    final UserInfo userInfo;
 
-    @IdToken
-    JsonWebToken idToken;
-
-    public ArtistResource(ArtistsService artistsService) {
+    public ArtistResource(final ArtistsService artistsService, final UserInfo userInfo) {
         this.artistsService = artistsService;
+        this.userInfo = userInfo;
     }
 
     @GET
@@ -45,7 +40,7 @@ public class ArtistResource {
     @GET
     @Path("/recommended")
     public FollowedArtistsResponse getFollowed(@BeanParam PaginationParams pageRequest) {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();;
 
         return artistsService.getOtherUsersFollowedArtists(pageRequest, email);
     }

@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
-import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -26,7 +25,6 @@ public class ArtistSearchResource {
 
     @Inject
     public ArtistSearchResource(final SearchService searchService,
-                                final SecurityIdentity securityIdentity,
                                 final UserInfo userInfo) {
         this.searchService = searchService;
         this.userInfo = userInfo;

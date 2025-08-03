@@ -3,7 +3,6 @@ package com.raccoon.user;
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.NoCache;
 import org.jboss.resteasy.reactive.RestQuery;
 
@@ -12,7 +11,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
-import io.quarkus.oidc.IdToken;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -28,22 +27,22 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.Constants.EMAIL_CLAIM;
-
 @Path("/me")
 @Slf4j
 @Authenticated
 public class UserProfileResource {
 
-    UserProfileService userProfileService;
-    RedirectConfig redirectConfig;
-    @IdToken
-    JsonWebToken idToken;
+    final UserProfileService userProfileService;
+    final RedirectConfig redirectConfig;
+    final UserInfo userInfo;
 
     @Inject
-    public UserProfileResource(final UserProfileService userProfileService, final RedirectConfig redirectConfig) {
+    public UserProfileResource(final UserProfileService userProfileService,
+                               final RedirectConfig redirectConfig,
+                               final UserInfo userInfo) {
         this.userProfileService = userProfileService;
         this.redirectConfig = redirectConfig;
+        this.userInfo = userInfo;
     }
 
     /**
@@ -55,7 +54,7 @@ public class UserProfileResource {
     @Produces(MediaType.TEXT_HTML)
     @Transactional
     public Response registrationCallback(@RestQuery("redirectUrl") String redirectUrl) {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
         userProfileService.completeRegistration(email);
         if (shouldRedirect(redirectUrl)) {
             log.info("Redirecting to ");
@@ -72,7 +71,7 @@ public class UserProfileResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response followArtist(@Valid @NotNull SearchResultArtistDto artistDto) {
         log.info("Following artist {}", artistDto);
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
 
         userProfileService.followArtist(email, artistDto);
 
@@ -86,7 +85,7 @@ public class UserProfileResource {
     @Valid
     public Response unfollowArtist(@NotNull @RestQuery("artistId") Long artistId) {
         log.info("Unfollowing artist {}", artistId);
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
         userProfileService.unfollowArtist(email, artistId);
 
         return Response.noContent().build();
@@ -98,7 +97,7 @@ public class UserProfileResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response enableTasteSources(@RestQuery("lastfmUsername") final Optional<String> lastfmUsernameOpt,
                                        @RestQuery("enableSpotify") final Optional<Boolean> enableSpotifyOpt) {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
 
         userProfileService.enableTasteSources(email, lastfmUsernameOpt, enableSpotifyOpt);
 
@@ -111,7 +110,7 @@ public class UserProfileResource {
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
     public FollowedArtistsResponse getFollowedArtists() {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();;
 
         return userProfileService.getFollowedArtists(email);
     }
