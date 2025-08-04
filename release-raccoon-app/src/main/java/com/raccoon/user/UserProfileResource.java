@@ -89,7 +89,7 @@ public class UserProfileResource {
         log.info("Unfollowing artist {}", artistId);
         final String email = userInfo.getEmail();
         if (!StringUtils.isBlank(artistId)) {
-            var artistIdLong = Long.getLong(artistId);
+            var artistIdLong = Long.parseLong(artistId);
             userProfileService.unfollowArtist(email, artistIdLong);
         }
 
