@@ -110,7 +110,7 @@ public class UserProfileResource {
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
     public FollowedArtistsResponse getFollowedArtists() {
-        final String email = userInfo.getEmail();;
+        final String email = userInfo.getEmail();
 
         return userProfileService.getFollowedArtists(email);
     }
