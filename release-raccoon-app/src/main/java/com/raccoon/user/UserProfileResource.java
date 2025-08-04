@@ -4,6 +4,7 @@ import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 
 import org.jboss.resteasy.reactive.NoCache;
+import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 
 import java.net.URI;
@@ -83,7 +84,7 @@ public class UserProfileResource {
     @NoCache
     @Transactional
     @Valid
-    public Response unfollowArtist(@NotNull @RestQuery("artistId") Long artistId) {
+    public Response unfollowArtist(@NotNull @RestPath("artistId") Long artistId) {
         log.info("Unfollowing artist {}", artistId);
         final String email = userInfo.getEmail();
         userProfileService.unfollowArtist(email, artistId);
