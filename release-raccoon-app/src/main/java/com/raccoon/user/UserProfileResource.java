@@ -3,8 +3,8 @@ package com.raccoon.user;
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.reactive.NoCache;
-import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 
 import java.net.URI;
@@ -23,6 +23,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -84,10 +85,13 @@ public class UserProfileResource {
     @NoCache
     @Transactional
     @Valid
-    public Response unfollowArtist(@NotNull @RestPath("artistId") Long artistId) {
+    public Response unfollowArtist(@NotNull @PathParam("artistId") String artistId) {
         log.info("Unfollowing artist {}", artistId);
         final String email = userInfo.getEmail();
-        userProfileService.unfollowArtist(email, artistId);
+        if (!StringUtils.isBlank(artistId)) {
+            var artistIdLong = Long.getLong(artistId);
+            userProfileService.unfollowArtist(email, artistIdLong);
+        }
 
         return Response.noContent().build();
     }
