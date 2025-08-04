@@ -91,8 +91,9 @@ public class UserProfileResource {
         if (!StringUtils.isBlank(artistId)) {
             var artistIdLong = Long.parseLong(artistId);
             userProfileService.unfollowArtist(email, artistIdLong);
+        } else {
+            log.warn("Artist id {} is not a valid long, ignoring unfollow request.", artistId);
         }
-        log.warn("Artist id {} is not a valid long, ignoring unfollow request.", artistId);
         return Response.noContent().build();
     }
 
