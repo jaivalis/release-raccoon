@@ -1,3 +1,4 @@
+- Use Oracle cloud free Arm VM for building native [reference](https://www.youtube.com/watch?v=fh009OWr8Ks)
 - Add `Unsubscribe` link to emails
 - `Delete account` functionality
 - Look into @Location as replacement for [QuteTemplateLoader](release-raccoon-app/src/main/java/com/raccoon/templatedata/QuteTemplateLoader.java)
