@@ -1,4 +1,3 @@
-- Use Oracle cloud free Arm VM for building native [reference](https://www.youtube.com/watch?v=fh009OWr8Ks)
 - Add `Unsubscribe` link to emails
 - `Delete account` functionality
 - Look into @Location as replacement for [QuteTemplateLoader](release-raccoon-app/src/main/java/com/raccoon/templatedata/QuteTemplateLoader.java)
@@ -11,7 +10,9 @@
 - ReleaseScraper implementers should not contain persistence layer dependencies, should create Entities and leave persistence for another anti-corruption layer
 - Database reconciliation/enrichment. Missing Artist fields (SpotifyUri, LastfmUri) should be populated
 - Dependency cleanup: org.apache.maven.plugins:maven-dependency-plugin:analyze-only
-- tailwind.css
+- Artists who are followed should not appear in the recommended lists
+- Follow record label
+- Show follower count
 
 # Additional Integrations
 
