@@ -21,15 +21,14 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.security.TestSecurity;
-import io.quarkus.test.security.oidc.Claim;
 import io.quarkus.test.security.oidc.OidcSecurity;
+import io.quarkus.test.security.oidc.UserInfo;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.CoreMatchers.allOf;
@@ -74,8 +73,8 @@ class ArtistSearchResourceIT {
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @DisplayName("successful search, should return single artist")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "user100@mail.com")
     })
     void searchExistingName() {
         given()
@@ -94,8 +93,8 @@ class ArtistSearchResourceIT {
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @DisplayName("successful search, should return two artists")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "user100@mail.com")
     })
     void searchExistingNameReturnsTwo() throws InterruptedException {
         // Something wrong with the timings here, this seems to be necessary:

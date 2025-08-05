@@ -27,8 +27,8 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-import io.quarkus.test.security.oidc.Claim;
 import io.quarkus.test.security.oidc.OidcSecurity;
+import io.quarkus.test.security.oidc.UserInfo;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.smallrye.config.SmallRyeConfig;
@@ -36,7 +36,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -85,8 +84,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "getProfileOnce@gmail.com")
     })
     @DisplayName("GET should send welcome mail")
     void getProfileOnce() {
@@ -103,8 +102,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "getProfileOnce@gmail.com")
     })
     @DisplayName("GET should redirect when url in whitelist")
     void getWithRedirect_should_redirect_when_urlInWhitelist() {
@@ -128,8 +127,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "getProfileOnce@gmail.com")
     })
     @DisplayName("GET should not redirect when url not in whitelist")
     void getWithRedirect_should_not_redirect_when_urlNotInWhitelist() {
@@ -152,8 +151,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "getProfileOnce@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "getProfileOnce@gmail.com")
     })
     @DisplayName("GET should not redirect when url not in whitelist")
     void getWithRedirect_should_not_redirect_when_whitelistEmpty() {
@@ -176,8 +175,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "getProfileTwice@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "getProfileTwice@gmail.com")
     })
     @DisplayName("successful get, called twice should send single welcome mail")
     void getProfileTwice() {
@@ -198,8 +197,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = "email", value = "raccoonUser1@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "raccoonUser1@gmail.com")
     })
     @TestTransaction
     @DisplayName("follow should result in UserArtist association")
@@ -235,8 +234,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = "email", value = "raccoonUser@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "raccoonUser@gmail.com")
     })
     @TestTransaction
     @DisplayName("follow should be idempotent")
@@ -283,8 +282,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = "email", value = "raccoonUser@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "raccoonUser@gmail.com")
     })
     @DisplayName("DELETE `/me/artist` deletes UserArtist association")
     void unfollowArtist() {
@@ -304,8 +303,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = "email", value = "raccoonUser@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "raccoonUser@gmail.com")
     })
     @DisplayName("enable-services")
     void enableServices() {
@@ -327,8 +326,8 @@ class RaccoonUserProfileResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "raccoonUser@gmail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "raccoonUser@gmail.com")
     })
     @DisplayName("GET `/me/followed-artists` returns list of Artists")
     void getUserArtists() {

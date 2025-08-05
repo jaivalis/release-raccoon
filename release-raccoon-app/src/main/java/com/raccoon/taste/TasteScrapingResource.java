@@ -6,13 +6,12 @@ import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 import com.raccoon.taste.spotify.SpotifyTasteUpdatingService;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestQuery;
 
 import java.util.Collection;
 import java.util.Optional;
 
-import io.quarkus.oidc.IdToken;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -24,8 +23,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.Constants.EMAIL_CLAIM;
-
 /**
  * Utility class to scrape taste. When deployed this service will be invoked into a cron-job.
  */
@@ -33,8 +30,7 @@ import static com.raccoon.Constants.EMAIL_CLAIM;
 @Path("/scrape-taste")
 public class TasteScrapingResource {
 
-    @IdToken
-    JsonWebToken idToken;
+    final UserInfo userInfo;
 
     LastfmTasteUpdatingService lastfmTasteUpdatingService;
     SpotifyTasteUpdatingService spotifyTasteUpdatingService;
@@ -42,10 +38,14 @@ public class TasteScrapingResource {
     UserRepository userRepository;
 
     @Inject
-    public TasteScrapingResource(LastfmTasteUpdatingService lastfmTasteUpdatingService, SpotifyTasteUpdatingService spotifyTasteUpdatingService, UserRepository userRepository) {
+    public TasteScrapingResource(LastfmTasteUpdatingService lastfmTasteUpdatingService,
+                                 SpotifyTasteUpdatingService spotifyTasteUpdatingService,
+                                 UserRepository userRepository,
+                                 UserInfo userInfo) {
         this.lastfmTasteUpdatingService = lastfmTasteUpdatingService;
         this.spotifyTasteUpdatingService = spotifyTasteUpdatingService;
         this.userRepository = userRepository;
+        this.userInfo = userInfo;
     }
 
     @GET
@@ -54,7 +54,7 @@ public class TasteScrapingResource {
     @Authenticated
     @Transactional
     public Collection<UserArtist> scrapeLastfmTaste() {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
         var existing = getUser(email);
         final var updated = lastfmTasteUpdatingService.updateTaste(existing.id);
         return updated.getArtists();
@@ -66,7 +66,7 @@ public class TasteScrapingResource {
     @Authenticated
     @Transactional
     public Response scrapeSpotifyTaste() {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
         var existing = getUser(email);
         return spotifyTasteUpdatingService.scrapeTaste(existing.id);
     }
