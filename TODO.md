@@ -13,6 +13,7 @@
 - Artists who are followed should not appear in the recommended lists
 - Follow record label
 - Show follower count
+- Search results that contain the search term should be at top of the list
 
 # Additional Integrations
 
