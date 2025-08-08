@@ -100,4 +100,31 @@ class ArtistsServiceTest {
         assertThat(response.getTotal())
                 .isEqualTo(1);
     }
+
+    @Test
+    void getOtherUsersFollowedArtists_should_populateFollowerCount() {
+        var email = "email";
+        var params = new PaginationParams();
+        params.setPage(1);
+        params.setSize(10);
+        
+        Artist artist = new Artist();
+        artist.id = 5L;
+        List<Artist> artists = List.of(artist);
+        
+        when(userRepository.findByEmail(any())).thenReturn(new RaccoonUser());
+        when(artistRepository.distinctArtistsNotFollowedByUser(any(), any()))
+                .thenReturn(new PageRecord<>(PageRequest.ofPage(1, 10, true), artists, artists.size()));
+        
+        ArtistDto expectedDto = new ArtistDto();
+        expectedDto.setId(5L);
+        when(artistMapper.toArtistDto(artist)).thenReturn(expectedDto);
+        when(artistRepository.getFollowerCount(5L)).thenReturn(8);
+
+        FollowedArtistsResponse response = service.getOtherUsersFollowedArtists(params, email);
+
+        assertThat(response.getRows()).hasSize(1);
+        assertThat(response.getRows().get(0).getFollowerCount()).isEqualTo(8);
+        verify(artistRepository).getFollowerCount(5L);
+    }
 }

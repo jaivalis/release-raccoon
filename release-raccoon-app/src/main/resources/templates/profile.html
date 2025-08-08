@@ -69,6 +69,12 @@
                     button.innerHTML = 'follow';
 
                     listEl.innerHTML = result.name;
+                    if (result.followerCount !== undefined && result.followerCount !== null) {
+                        let followerBadge = document.createElement("span");
+                        followerBadge.className = "search-result-follower-count";
+                        followerBadge.textContent = result.followerCount + " followers";
+                        listEl.appendChild(followerBadge);
+                    }
                     resultsParent.appendChild(listEl);
                     listEl.appendChild(button);
                 });
@@ -274,6 +280,12 @@
 
                 let tdNameEl = document.createElement("td");
                 tdNameEl.innerHTML = artist.name;
+                if (artist.followerCount !== undefined && artist.followerCount !== null) {
+                    let followerBadge = document.createElement("span");
+                    followerBadge.className = "follower-count";
+                    followerBadge.textContent = artist.followerCount + " followers";
+                    tdNameEl.appendChild(followerBadge);
+                }
                 trEl.appendChild(tdNameEl);
 
                 // render lastfm column
@@ -362,6 +374,12 @@
 
                 let tdNameEl = document.createElement("td");
                 tdNameEl.innerHTML = artist.name;
+                if (artist.followerCount !== undefined && artist.followerCount !== null) {
+                    let followerBadge = document.createElement("span");
+                    followerBadge.className = "follower-count";
+                    followerBadge.textContent = artist.followerCount + " followers";
+                    tdNameEl.appendChild(followerBadge);
+                }
                 trEl.appendChild(tdNameEl);
 
                 // render lastfm column
