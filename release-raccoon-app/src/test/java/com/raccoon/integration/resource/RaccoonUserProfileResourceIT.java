@@ -367,6 +367,118 @@ class RaccoonUserProfileResourceIT {
     }
 
     @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "raccoonUser2@gmail.com")
+    })
+    @DisplayName("GET `/me/followed-artists` supports pagination")
+    void getFollowedArtists_should_supportPagination() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
+        // follow multiple artists
+        for (int i = 1; i <= 5; i++) {
+            ArtistDto artistDto = ArtistDto.builder()
+                    .name("artist" + i)
+                    .spotifyUri("spotifyUri" + i)
+                    .build();
+            given()
+                    .contentType(ContentType.JSON)
+                    .with().body(artistDto)
+                    .when().post("/follow")
+                    .then()
+                    .statusCode(SC_NO_CONTENT);
+        }
+
+        // Test pagination - first page
+        var response = given()
+                .contentType(ContentType.JSON)
+                .param("page", 0)
+                .param("size", 2)
+                .when().get("followed-artists")
+                .then()
+                .statusCode(SC_OK)
+                .extract().body().jsonPath();
+
+        List<ArtistDto> firstPageArtists = response.getList("rows", ArtistDto.class);
+        Integer total = response.getInt("total");
+
+        assertThat(firstPageArtists).hasSize(2);
+        assertThat(total).isEqualTo(5);
+
+        // Test pagination - second page
+        List<ArtistDto> secondPageArtists = given()
+                .contentType(ContentType.JSON)
+                .param("page", 1)
+                .param("size", 2)
+                .when().get("followed-artists")
+                .then()
+                .statusCode(SC_OK)
+                .extract().body().jsonPath().getList("rows", ArtistDto.class);
+
+        assertThat(secondPageArtists).hasSize(2);
+
+        // Test pagination - third page (partial)
+        List<ArtistDto> thirdPageArtists = given()
+                .contentType(ContentType.JSON)
+                .param("page", 2)
+                .param("size", 2)
+                .when().get("followed-artists")
+                .then()
+                .statusCode(SC_OK)
+                .extract().body().jsonPath().getList("rows", ArtistDto.class);
+
+        assertThat(thirdPageArtists).hasSize(1);
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "raccoonUser3@gmail.com")
+    })
+    @DisplayName("GET `/me/followed-artists` backwards compatibility - no pagination params")
+    void getFollowedArtists_should_returnAllResults_when_noPaginationParams() {
+        // create the user
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
+        // follow multiple artists
+        for (int i = 1; i <= 3; i++) {
+            ArtistDto artistDto = ArtistDto.builder()
+                    .name("artist" + i)
+                    .spotifyUri("spotifyUri" + i)
+                    .build();
+            given()
+                    .contentType(ContentType.JSON)
+                    .with().body(artistDto)
+                    .when().post("/follow")
+                    .then()
+                    .statusCode(SC_NO_CONTENT);
+        }
+
+        // Test without pagination params - should return all results
+        var response = given()
+                .contentType(ContentType.JSON)
+                .when().get("followed-artists")
+                .then()
+                .statusCode(SC_OK)
+                .extract().body().jsonPath();
+
+        List<ArtistDto> allArtists = response.getList("rows", ArtistDto.class);
+        Integer total = response.getInt("total");
+
+        assertThat(allArtists).hasSize(3);
+        assertThat(total).isEqualTo(3);
+    }
+
+    @Test
     @DisplayName("no bearer token, unauthorized")
     void unauthorized() {
         given()

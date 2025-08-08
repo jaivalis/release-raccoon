@@ -34,6 +34,7 @@ import jakarta.ws.rs.NotFoundException;
 import static com.raccoon.templatedata.QuteTemplateLoader.PROFILE_TEMPLATE_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -256,6 +257,79 @@ class RaccoonUserProfileServiceTest {
         assertNotNull(response);
         assertEquals(0, response.getTotal());
         assertTrue(response.getRows().isEmpty());
+    }
+
+    @Test
+    @DisplayName("getFollowedArtists(): returns paginated results when page and size provided")
+    void getFollowedArtists_should_returnPaginatedResults_when_pageAndSizeProvided() {
+        var email = "raccoonUser@mail.com";
+        var stubUser = new RaccoonUser();
+        stubUser.setEmail(email);
+        stubUser.id = 9L;
+
+        Artist stubArtist1 = new Artist();
+        stubArtist1.setId(1L);
+        stubArtist1.setName("Artist 1");
+        UserArtist userArtist1 = new UserArtist();
+        userArtist1.setArtist(stubArtist1);
+        userArtist1.setUser(stubUser);
+
+        Artist stubArtist2 = new Artist();
+        stubArtist2.setId(2L);
+        stubArtist2.setName("Artist 2");
+        UserArtist userArtist2 = new UserArtist();
+        userArtist2.setArtist(stubArtist2);
+        userArtist2.setUser(stubUser);
+
+        when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
+        when(mockUserArtistRepository.findByUserIdSortedByWeight(eq(stubUser.id), any())).thenReturn(List.of(userArtist1));
+        when(mockUserArtistRepository.countByUserId(stubUser.id)).thenReturn(2L);
+
+        var dto1 = mock(ArtistDto.class);
+        when(mockArtistMapper.toArtistDto(stubArtist1)).thenReturn(dto1);
+        when(mockArtistRepository.getFollowerCount(1L)).thenReturn(5);
+
+        final var response = service.getFollowedArtists(email, Optional.of(0), Optional.of(1));
+
+        assertEquals(2, response.getTotal()); // Total count
+        assertEquals(1, response.getRows().size()); // Page size
+        assertEquals(dto1, response.getRows().get(0));
+        verify(mockUserArtistRepository).findByUserIdSortedByWeight(eq(stubUser.id), any());
+        verify(mockUserArtistRepository).countByUserId(stubUser.id);
+        verify(mockArtistRepository).getFollowerCount(1L);
+        verify(dto1).setFollowerCount(5);
+    }
+
+    @Test
+    @DisplayName("getFollowedArtists(): backwards compatibility - no pagination params returns all results")
+    void getFollowedArtists_should_returnAllResults_when_noPaginationParams() {
+        var email = "raccoonUser@mail.com";
+        var stubUser = new RaccoonUser();
+        stubUser.setEmail(email);
+        stubUser.id = 9L;
+
+        Artist stubArtist = new Artist();
+        stubArtist.setId(9L);
+        UserArtist userArtist = new UserArtist();
+        userArtist.setArtist(stubArtist);
+        userArtist.setUser(stubUser);
+
+        when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
+        when(mockUserArtistRepository.findByUserIdSortedByWeight(stubUser.id)).thenReturn(List.of(userArtist));
+
+        var dto = mock(ArtistDto.class);
+        when(mockArtistMapper.toArtistDto(stubArtist)).thenReturn(dto);
+        when(mockArtistRepository.getFollowerCount(9L)).thenReturn(3);
+
+        final var response = service.getFollowedArtists(email, Optional.empty(), Optional.empty());
+
+        assertEquals(1, response.getTotal());
+        assertEquals(1, response.getRows().size());
+        assertEquals(dto, response.getRows().get(0));
+        verify(mockUserArtistRepository).findByUserIdSortedByWeight(stubUser.id);
+        verify(mockUserArtistRepository, never()).countByUserId(anyLong());
+        verify(mockArtistRepository).getFollowerCount(9L);
+        verify(dto).setFollowerCount(3);
     }
 
 }

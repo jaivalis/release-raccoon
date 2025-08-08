@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.netty.util.internal.StringUtil;
+import io.quarkus.panache.common.Page;
 import io.quarkus.qute.Engine;
 import io.quarkus.qute.Template;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -75,14 +76,51 @@ public class UserProfileService {
 
     /**
      * @param userEmail the raccoonUser of requesting followed Artists
-     * @return
+     * @return all followed artists (backwards compatible)
      */
     @NotNull
     public FollowedArtistsResponse getFollowedArtists(final String userEmail) {
-        var user = userRepository.findByEmail(userEmail);
+        return getFollowedArtists(userEmail, Optional.empty(), Optional.empty());
+    }
 
-        List<ArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
-                .stream()
+    /**
+     * @param userEmail the raccoonUser of requesting followed Artists
+     * @param page optional page number (0-based, defaults to 0)
+     * @param size optional page size (defaults to all results)
+     * @return paginated followed artists
+     */
+    @NotNull
+    public FollowedArtistsResponse getFollowedArtists(final String userEmail, 
+                                                     final Optional<Integer> page, 
+                                                     final Optional<Integer> size) {
+        var user = userRepository.findByEmail(userEmail);
+        
+        // If no pagination params provided, return all results (backwards compatibility)
+        if (page.isEmpty() && size.isEmpty()) {
+            List<ArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
+                    .stream()
+                    .map(UserArtist::getArtist)
+                    .map(artist -> {
+                        ArtistDto dto = artistMapper.toArtistDto(artist);
+                        dto.setFollowerCount(artistRepository.getFollowerCount(artist.id));
+                        return dto;
+                    })
+                    .toList();
+            return FollowedArtistsResponse.builder()
+                    .rows(rows)
+                    .total(rows.size())
+                    .build();
+        }
+        
+        // Use pagination
+        int pageNumber = page.orElse(0);
+        int pageSize = size.orElse(10); // Default page size
+        Page pageRequest = Page.of(pageNumber, pageSize);
+        
+        List<UserArtist> pagedUserArtists = userArtistRepository.findByUserIdSortedByWeight(user.id, pageRequest);
+        long totalCount = userArtistRepository.countByUserId(user.id);
+        
+        List<ArtistDto> rows = pagedUserArtists.stream()
                 .map(UserArtist::getArtist)
                 .map(artist -> {
                     ArtistDto dto = artistMapper.toArtistDto(artist);
@@ -90,9 +128,10 @@ public class UserProfileService {
                     return dto;
                 })
                 .toList();
+                
         return FollowedArtistsResponse.builder()
                 .rows(rows)
-                .total(rows.size())
+                .total((int) totalCount)
                 .build();
     }
 

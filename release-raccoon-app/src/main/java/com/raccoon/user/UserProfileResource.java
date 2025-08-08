@@ -115,10 +115,11 @@ public class UserProfileResource {
     @Transactional
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
-    public FollowedArtistsResponse getFollowedArtists() {
+    public FollowedArtistsResponse getFollowedArtists(@RestQuery Optional<Integer> page,
+                                                      @RestQuery Optional<Integer> size) {
         final String email = userInfo.getEmail();
 
-        return userProfileService.getFollowedArtists(email);
+        return userProfileService.getFollowedArtists(email, page, size);
     }
 
     private boolean shouldRedirect(String redirectUrl) {
