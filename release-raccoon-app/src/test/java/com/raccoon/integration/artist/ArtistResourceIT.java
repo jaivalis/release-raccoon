@@ -165,4 +165,37 @@ class ArtistResourceIT {
                 .doesNotContain(artistToFollow.getName());
     }
 
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "user100@mail.com")
+    })
+    @Order(4)
+    @TestTransaction
+    void getRecommendedArtists_should_returnArtistsWithFollowerCounts() {
+        List<ArtistDto> artists = given()
+                .contentType(ContentType.JSON)
+                .param("page", "1")
+                .param("size", "100")
+                .when().get("/recommended")
+                .then()
+                .statusCode(SC_OK)
+                .extract()
+                .body().jsonPath().getList("rows", ArtistDto.class);
+
+        assertThat(artists)
+                .isNotEmpty()
+                .allSatisfy(artist -> {
+                    assertThat(artist.getFollowerCount())
+                            .as("Artist %s should have follower count", artist.getName())
+                            .isNotNull()
+                            .isGreaterThanOrEqualTo(0);
+                });
+
+        // At least one artist should have followers based on test data
+        assertThat(artists.stream().mapToInt(ArtistDto::getFollowerCount).sum())
+                .as("Total follower count should be greater than 0")
+                .isGreaterThan(0);
+    }
+
 }

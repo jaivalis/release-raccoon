@@ -3,6 +3,7 @@ package com.raccoon.search;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.SearchResultArtistDto;
@@ -27,6 +28,7 @@ import jakarta.enterprise.inject.Instance;
 
 import static io.smallrye.common.constraint.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -50,6 +52,8 @@ class SearchServiceTest {
     UserRepository userRepository;
     @Mock
     UserArtistRepository userArtistRepository;
+    @Mock
+    ArtistRepository artistRepository;
 
     @BeforeEach
     void setUp() {
@@ -60,7 +64,7 @@ class SearchServiceTest {
         when(mockHibernateSearcher.id()).thenCallRealMethod();
         when(mockHibernateSearcher.trustworthiness()).thenCallRealMethod();
 
-        service = new SearchService(searchers, ranker, userRepository, userArtistRepository);
+        service = new SearchService(searchers, ranker, userRepository, userArtistRepository, artistRepository);
     }
 
     @Test
@@ -151,6 +155,37 @@ class SearchServiceTest {
         assertThat(response.getArtists().get(0))
                 .extracting("id", "name", "spotifyUri", "musicbrainzId")
                 .containsOnly(9L, commonName, "uri1", "musicbrainzId1");
+    }
+
+    @Test
+    @DisplayName("searchArtists should populate follower count for hibernate search results")
+    void searchArtists_should_populateFollowerCount_when_hibernateResults() {
+        var pattern = "pattern";
+        var size = Optional.of(10);
+        SearchResultArtistDto stubArtist1 = SearchResultArtistDto.builder().name("artist1").id(3L).build();
+        SearchResultArtistDto stubArtist2 = SearchResultArtistDto.builder().name("artist2").id(9L).build();
+        when(mockHibernateSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist1, stubArtist2));
+        when(mockLastfmSearcher.searchArtist(pattern, size)).thenReturn(Collections.emptyList());
+
+        var stubUser = new RaccoonUser();
+        stubUser.id = 1L;
+        when(userRepository.findByEmail(any())).thenReturn(stubUser);
+        when(userArtistRepository.findByUserIdAndArtistIds(stubUser.id, List.of(3L, 9L)))
+                .thenReturn(Collections.emptyList());
+        
+        // Mock follower counts
+        when(artistRepository.getFollowerCount(3L)).thenReturn(5);
+        when(artistRepository.getFollowerCount(9L)).thenReturn(12);
+
+        ArtistSearchResponse response = service.searchArtists("email", pattern, size);
+
+        assertThat(response.getArtists()).hasSize(2);
+        assertThat(response.getArtists())
+                .extracting("name", "followerCount")
+                .containsExactlyInAnyOrder(
+                        tuple("artist1", 5),
+                        tuple("artist2", 12)
+                );
     }
 
 }

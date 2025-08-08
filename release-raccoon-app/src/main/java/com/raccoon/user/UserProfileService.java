@@ -7,6 +7,7 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
@@ -41,6 +42,7 @@ public class UserProfileService {
     private final Template profile;
     private final ArtistFollowingService artistFollowingService;
     private final ArtistMapper artistMapper;
+    private final ArtistRepository artistRepository;
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
@@ -50,7 +52,8 @@ public class UserProfileService {
                               final RaccoonMailer mailer,
                               final Engine engine,
                               final ArtistFollowingService artistFollowingService,
-                              final ArtistMapper artistMapper) {
+                              final ArtistMapper artistMapper,
+                              final ArtistRepository artistRepository) {
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.userArtistRepository = userArtistRepository;
@@ -59,6 +62,7 @@ public class UserProfileService {
         this.profile = engine.getTemplate(PROFILE_TEMPLATE_ID);
         this.artistFollowingService = artistFollowingService;
         this.artistMapper = artistMapper;
+        this.artistRepository = artistRepository;
     }
 
 
@@ -80,7 +84,11 @@ public class UserProfileService {
         List<ArtistDto> rows = userArtistRepository.findByUserIdSortedByWeight(user.id)
                 .stream()
                 .map(UserArtist::getArtist)
-                .map(artistMapper::toArtistDto)
+                .map(artist -> {
+                    ArtistDto dto = artistMapper.toArtistDto(artist);
+                    dto.setFollowerCount(artistRepository.getFollowerCount(artist.id));
+                    return dto;
+                })
                 .toList();
         return FollowedArtistsResponse.builder()
                 .rows(rows)

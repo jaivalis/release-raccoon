@@ -1,6 +1,7 @@
 package com.raccoon.search;
 
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.SearchResultArtistDto;
@@ -30,17 +31,20 @@ public class SearchService {
     final ResultsRanker ranker;
     final UserRepository userRepository;
     final UserArtistRepository userArtistRepository;
+    final ArtistRepository artistRepository;
 
     @Inject
     public SearchService(final Instance<ArtistSearcher> searchers,
                          final ResultsRanker ranker,
                          final UserRepository userRepository,
-                         final UserArtistRepository userArtistRepository) {
+                         final UserArtistRepository userArtistRepository,
+                         final ArtistRepository artistRepository) {
         this.searchers = searchers.stream().toList();
         log.info("Found {} artist searchers in classpath", this.searchers.size());
         this.ranker = ranker;
         this.userRepository = userRepository;
         this.userArtistRepository = userArtistRepository;
+        this.artistRepository = artistRepository;
     }
 
     /**
@@ -115,6 +119,10 @@ public class SearchService {
         for (SearchResultArtistDto artistDto : hibernateHits) {
             if (idsOfArtistsFollowedByUser.contains(artistDto.getId())) {
                 artistDto.setFollowedByUser(Boolean.TRUE);
+            }
+            // Set follower count for each artist
+            if (artistDto.getId() != null) {
+                artistDto.setFollowerCount(artistRepository.getFollowerCount(artistDto.getId()));
             }
             list.add(artistDto);
         }

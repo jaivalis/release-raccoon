@@ -3,6 +3,7 @@
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.4.7...jdevelop)
 
 - Feat: Improve search result rankings
+- Feat: Artist follower count
 - Fix: API improvements for integration with UI project
 
 ## [0.4.7](https://github.com/jaivalis/release-raccoon/compare/0.4.6...0.4.7)

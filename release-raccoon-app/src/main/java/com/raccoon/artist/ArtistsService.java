@@ -49,7 +49,11 @@ public class ArtistsService {
 
         List<ArtistDto> rows = followedByOthers
                 .stream()
-                .map(artistMapper::toArtistDto)
+                .map(artist -> {
+                    ArtistDto dto = artistMapper.toArtistDto(artist);
+                    dto.setFollowerCount(artistRepository.getFollowerCount(artist.id));
+                    return dto;
+                })
                 .toList();
 
         log.info("Artists followed by other users: {}", rows.size());

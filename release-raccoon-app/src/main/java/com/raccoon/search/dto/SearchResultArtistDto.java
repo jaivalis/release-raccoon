@@ -39,6 +39,8 @@ public class SearchResultArtistDto {
     @Builder.Default
     private boolean followedByUser = false;
 
+    private Integer followerCount;
+
     /**
      * Pull nullable fields of other into this
      * @param other Other SearchResultArtistDto to merge from

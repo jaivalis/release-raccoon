@@ -6,6 +6,7 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
@@ -62,6 +63,8 @@ class RaccoonUserProfileServiceTest {
     ArtistFollowingService mockArtistFollowingService;
     @Mock
     ArtistMapper mockArtistMapper;
+    @Mock
+    ArtistRepository mockArtistRepository;
 
     @BeforeEach
     public void setup() {
@@ -70,7 +73,7 @@ class RaccoonUserProfileServiceTest {
 
         service = new UserProfileService(
                 mockUserRepository, mockUserFactory, mockUserArtistRepository, mockLastfmTasteUpdatingService,
-                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper
+                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper, mockArtistRepository
         );
     }
 
@@ -226,6 +229,7 @@ class RaccoonUserProfileServiceTest {
         when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
         var dto = mock(ArtistDto.class);
         when(mockArtistMapper.toArtistDto(stubArtist)).thenReturn(dto);
+        when(mockArtistRepository.getFollowerCount(9L)).thenReturn(3);
 
         final var response = service.getFollowedArtists(email);
 
@@ -233,6 +237,8 @@ class RaccoonUserProfileServiceTest {
         assertNotNull(response.getRows());
         assertNotNull(response.getRows().get(0));
         assertEquals(dto, response.getRows().get(0));
+        verify(mockArtistRepository).getFollowerCount(9L);
+        verify(dto).setFollowerCount(3);
     }
 
     @Test
