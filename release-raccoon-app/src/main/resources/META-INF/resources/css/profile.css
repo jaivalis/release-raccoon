@@ -225,4 +225,29 @@ input {
     pointer-events: none;
     color: #aaa;
 }
+
+/* follower count badge */
+.follower-count {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.search-result-follower-count {
+    background-color: rgba(95, 44, 130, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 8px;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+/* follower count badge */
+
 /* nav search box element */

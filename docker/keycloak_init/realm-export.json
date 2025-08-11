@@ -61,6 +61,23 @@
       "realmRoles": [
         "ADMIN"
       ]
+    },
+    {
+      "username": "developer2",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Rootus",
+      "lastName": "Adminus2",
+      "email": "johnaivalis@gmail.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "developer"
+        }
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
     }
   ],
 

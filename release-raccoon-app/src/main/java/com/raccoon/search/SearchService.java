@@ -1,6 +1,7 @@
 package com.raccoon.search;
 
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.search.dto.SearchResultArtistDto;
@@ -20,6 +21,7 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.Constants.HIBERNATE_SEARCHER_ID;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @ApplicationScoped
@@ -29,46 +31,50 @@ public class SearchService {
     final ResultsRanker ranker;
     final UserRepository userRepository;
     final UserArtistRepository userArtistRepository;
+    final ArtistRepository artistRepository;
 
     @Inject
     public SearchService(final Instance<ArtistSearcher> searchers,
                          final ResultsRanker ranker,
                          final UserRepository userRepository,
-                         final UserArtistRepository userArtistRepository) {
+                         final UserArtistRepository userArtistRepository,
+                         final ArtistRepository artistRepository) {
         this.searchers = searchers.stream().toList();
         log.info("Found {} artist searchers in classpath", this.searchers.size());
         this.ranker = ranker;
         this.userRepository = userRepository;
         this.userArtistRepository = userArtistRepository;
+        this.artistRepository = artistRepository;
     }
 
     /**
      * Search for an artist against available Searchers
      * @param userEmail raccoonUser who searches, used to set followedByUser flag of SearchResultArtistDto
-     * @param pattern pattern to match artist name against
+     * @param query query to match artist name against
      * @param size search limit per resource (database and lastfm)
      * @return ArtistSearchResponse
      */
     public ArtistSearchResponse searchArtists(final String userEmail,
-                                              final String pattern,
+                                              final String query,
                                               final Optional<Integer> size) {
         Map<ArtistSearcher, Collection<SearchResultArtistDto>> searchResultsPerSource = new HashMap<>();
-        log.info("Searching for artist {}", pattern);
+        log.info("Searching for artist {}", query);
 
         searchers.parallelStream().forEach(
                 searcher -> {
-                    var results = searcher.searchArtist(pattern, size);
+                    var results = searcher.searchArtist(query, size);
                     log.info("Search hits, source `{}`: {}", searcher.id(), results);
                     searchResultsPerSource.put(searcher, results);
                 }
         );
 
         return ArtistSearchResponse.builder()
-                .artists(postProcessSearchResults(userEmail, searchResultsPerSource))
+                .artists(postProcessSearchResults(userEmail, query, searchResultsPerSource))
                 .build();
     }
 
-    List<SearchResultArtistDto> postProcessSearchResults(String userEmail, Map<ArtistSearcher, Collection<SearchResultArtistDto>> perSource) {
+    List<SearchResultArtistDto> postProcessSearchResults(String userEmail, String query, Map<ArtistSearcher, Collection<SearchResultArtistDto>> perSource) {
+        log.info("Post processing search results");
         List<SearchResultArtistDto> rankedResultList = new ArrayList<>();
 
         // Mark followed artists
@@ -85,7 +91,7 @@ public class SearchService {
         }
 
         // rank and merge the rest
-        return ranker.rankSearchResults(perSource, rankedResultList);
+        return ranker.rankSearchResults(query, perSource, rankedResultList);
     }
 
     /**
@@ -97,6 +103,12 @@ public class SearchService {
     private List<SearchResultArtistDto> setAlreadyFollowed(final String userEmail,
                                                            final Collection<SearchResultArtistDto> hibernateHits) {
         var searchingUser = userRepository.findByEmail(userEmail);
+        if (isNull(searchingUser)) {
+            log.error("User not found for email: {}", userEmail);
+            // Return the hits without the followed flag set
+            return new ArrayList<>(hibernateHits);
+        }
+        
         var distinctArtistIds = hibernateHits.stream()
                 .map(SearchResultArtistDto::getId)
                 .toList();
@@ -107,6 +119,10 @@ public class SearchService {
         for (SearchResultArtistDto artistDto : hibernateHits) {
             if (idsOfArtistsFollowedByUser.contains(artistDto.getId())) {
                 artistDto.setFollowedByUser(Boolean.TRUE);
+            }
+            // Set follower count for each artist
+            if (artistDto.getId() != null) {
+                artistDto.setFollowerCount(artistRepository.getFollowerCount(artistDto.getId()));
             }
             list.add(artistDto);
         }

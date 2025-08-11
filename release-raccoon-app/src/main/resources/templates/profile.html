@@ -69,6 +69,12 @@
                     button.innerHTML = 'follow';
 
                     listEl.innerHTML = result.name;
+                    if (result.followerCount !== undefined && result.followerCount !== null) {
+                        let followerBadge = document.createElement("span");
+                        followerBadge.className = "search-result-follower-count";
+                        followerBadge.textContent = result.followerCount + " followers";
+                        listEl.appendChild(followerBadge);
+                    }
                     resultsParent.appendChild(listEl);
                     listEl.appendChild(button);
                 });
@@ -95,7 +101,7 @@
             }).then(result => {
                 console.log('Success:', result);
                 clearTableFilterInput();
-                refreshFollowedArtists();
+                refreshFollowedArtists(0, 10);
             }).catch(error => {
                 console.error('Error:', JSON.stringify(error));
                 e.currentTarget.disabled = false;
@@ -113,7 +119,7 @@
             }).then(result => {
                 console.log('Unfollowed success:', result);
                 clearTableFilterInput();
-                refreshFollowedArtists();
+                refreshFollowedArtists(0, 10);
             }).catch(error => {
                 console.error('Unfollowed error:', JSON.stringify(error));
                 e.currentTarget.disabled = false;
@@ -149,13 +155,28 @@
             document.getElementById('artistSearchBox').value = '';
         }
 
-        async function refreshFollowedArtists() {
-            const followedArtistsResponse = await fetch('/me/followed-artists')
+        async function refreshFollowedArtists(page = null, size = null) {
+            let url = '/me/followed-artists';
+            const params = new URLSearchParams();
+            
+            if (page !== null) params.append('page', page);
+            if (size !== null) params.append('size', size);
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            const followedArtistsResponse = await fetch(url)
                 .then(response => response.json())
                 .then(data => data);
 
             if (followedArtistsResponse.total !== 0) {
                 renderFollowedArtists(followedArtistsResponse.rows);
+                
+                // Add pagination controls if page parameters were provided
+                if (page !== null && size !== null) {
+                    renderFollowedArtistsPaginationControls(followedArtistsResponse.total, page, size);
+                }
             } else {
                 renderNoFollowedArtists();
             }
@@ -193,6 +214,35 @@
                 const button = document.createElement('button');
                 button.textContent = i + 1;
                 button.onclick = function() { refreshOthersFollowedArtists(i+1) };
+                paginationContainer.appendChild(button);
+            }
+        }
+
+        function renderFollowedArtistsPaginationControls(total, currentPageNumber, pageSize) {
+            const totalPages = Math.ceil(total / pageSize);
+            let paginationContainer = document.getElementById("followed-artists-pagination-controls");
+            
+            if (!paginationContainer) {
+                const followedArtistsTableContainer = document.getElementById('artist-table-container');
+                const newPaginationContainer = document.createElement('div');
+                newPaginationContainer.setAttribute('id', 'followed-artists-pagination-controls');
+                followedArtistsTableContainer.appendChild(newPaginationContainer);
+                paginationContainer = newPaginationContainer;
+            }
+
+            paginationContainer.innerHTML = ''; // Clear previous controls
+
+            for (let i = 0; i < totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i + 1;
+                button.onclick = function() { refreshFollowedArtists(i, pageSize) };
+                
+                // Highlight current page
+                if (i === currentPageNumber) {
+                    button.style.backgroundColor = '#49a09d';
+                    button.style.color = 'white';
+                }
+                
                 paginationContainer.appendChild(button);
             }
         }
@@ -274,6 +324,12 @@
 
                 let tdNameEl = document.createElement("td");
                 tdNameEl.innerHTML = artist.name;
+                if (artist.followerCount !== undefined && artist.followerCount !== null) {
+                    let followerBadge = document.createElement("span");
+                    followerBadge.className = "follower-count";
+                    followerBadge.textContent = artist.followerCount + " followers";
+                    tdNameEl.appendChild(followerBadge);
+                }
                 trEl.appendChild(tdNameEl);
 
                 // render lastfm column
@@ -362,6 +418,12 @@
 
                 let tdNameEl = document.createElement("td");
                 tdNameEl.innerHTML = artist.name;
+                if (artist.followerCount !== undefined && artist.followerCount !== null) {
+                    let followerBadge = document.createElement("span");
+                    followerBadge.className = "follower-count";
+                    followerBadge.textContent = artist.followerCount + " followers";
+                    tdNameEl.appendChild(followerBadge);
+                }
                 trEl.appendChild(tdNameEl);
 
                 // render lastfm column
@@ -429,7 +491,7 @@
     </script>
 </head>
 
-<body onload="refreshFollowedArtists();refreshOthersFollowedArtists(currentPage)">
+<body onload="refreshFollowedArtists(0, 10);refreshOthersFollowedArtists(currentPage)">
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">

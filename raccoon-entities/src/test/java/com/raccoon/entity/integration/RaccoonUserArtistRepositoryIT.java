@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import io.quarkus.panache.common.Page;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
@@ -177,6 +178,49 @@ class RaccoonUserArtistRepositoryIT {
         userArtistRepository.deleteAssociation(userId, artistIdNotExistent);
 
         assertEquals(0, userArtistRepository.findAll().stream().count());
+    }
+
+    @Test
+    void findByUserIdSortedByWeight_should_returnPaginatedResults() {
+        var user1Artist1 = stubFactory.stubUserArtist("user1", "artist1");
+        var user1Artist2 = stubFactory.stubUserArtist("user1", "artist2");
+        var user1Artist3 = stubFactory.stubUserArtist("user1", "artist3");
+        user1Artist1.weight = 0.60f;
+        user1Artist2.weight = 0.65f;
+        user1Artist3.weight = 0.70f;
+        userArtistRepository.persist(List.of(user1Artist1, user1Artist2, user1Artist3));
+
+        // Test first page
+        var firstPage = userArtistRepository.findByUserIdSortedByWeight(user1Artist1.getUser().id, Page.of(0, 2));
+        
+        assertEquals(2, firstPage.size());
+        assertEquals("artist3", firstPage.get(0).getArtist().getName()); // Highest weight first
+        assertEquals("artist2", firstPage.get(1).getArtist().getName());
+
+        // Test second page  
+        var secondPage = userArtistRepository.findByUserIdSortedByWeight(user1Artist1.getUser().id, Page.of(1, 2));
+        
+        assertEquals(1, secondPage.size());
+        assertEquals("artist1", secondPage.get(0).getArtist().getName()); // Lowest weight last
+    }
+
+    @Test
+    void countByUserId_should_returnCorrectCount() {
+        var user1Artist1 = stubFactory.stubUserArtist("user1", "artist1");
+        var user1Artist2 = stubFactory.stubUserArtist("user1", "artist2"); 
+        var user2Artist1 = stubFactory.stubUserArtist("user2", "artist1");
+        userArtistRepository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
+
+        long count = userArtistRepository.countByUserId(user1Artist1.getUser().id);
+        
+        assertEquals(2, count);
+    }
+
+    @Test
+    void countByUserId_should_returnZero_when_noResults() {
+        long count = userArtistRepository.countByUserId(999L);
+        
+        assertEquals(0, count);
     }
 
 }

@@ -11,7 +11,10 @@
 - ReleaseScraper implementers should not contain persistence layer dependencies, should create Entities and leave persistence for another anti-corruption layer
 - Database reconciliation/enrichment. Missing Artist fields (SpotifyUri, LastfmUri) should be populated
 - Dependency cleanup: org.apache.maven.plugins:maven-dependency-plugin:analyze-only
-- tailwind.css
+- Artists who are followed should not appear in the recommended lists
+- Follow record label
+- Show follower count
+- Search results that contain the search term should be at top of the list
 
 # Additional Integrations
 

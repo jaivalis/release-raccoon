@@ -66,4 +66,13 @@ public class ArtistRepository implements PanacheRepository<Artist> {
         return new PageRecord<>(page, artists, totalCount);
     }
 
+    public Integer getFollowerCount(Long artistId) {
+        Long count = (Long) entityManager.createQuery(
+                "SELECT COUNT(ua) FROM UserArtist ua WHERE ua.key.artist.id = :artistId"
+        )
+        .setParameter("artistId", artistId)
+        .getSingleResult();
+        return count.intValue();
+    }
+
 }

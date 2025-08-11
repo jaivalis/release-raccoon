@@ -29,4 +29,6 @@ public class ArtistDto {
 
     private String musicbrainzId;
 
+    private Integer followerCount;
+
 }

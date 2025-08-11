@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +52,16 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
     public List<UserArtist> findByUserIdSortedByWeight(final long userId) {
         return find("key.raccoonUser.id = ?1", Sort.by("weight", Sort.Direction.Descending), userId)
                 .stream().toList();
+    }
+
+    public List<UserArtist> findByUserIdSortedByWeight(final long userId, final Page page) {
+        return find("key.raccoonUser.id = ?1", Sort.by("weight", Sort.Direction.Descending), userId)
+                .page(page)
+                .list();
+    }
+
+    public long countByUserId(final long userId) {
+        return count("key.raccoonUser.id = ?1", userId);
     }
 
     public List<UserArtist> findByArtistIds(final Collection<Long> artistIds) {

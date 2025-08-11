@@ -23,15 +23,14 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.security.TestSecurity;
-import io.quarkus.test.security.oidc.Claim;
 import io.quarkus.test.security.oidc.OidcSecurity;
+import io.quarkus.test.security.oidc.UserInfo;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import jakarta.transaction.TransactionManager;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.raccoon.Constants.EMAIL_CLAIM;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,8 +58,8 @@ class ArtistResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "user100@mail.com")
     })
     @Order(1)
     @TestTransaction
@@ -83,8 +82,8 @@ class ArtistResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "user100@mail.com")
     })
     @Order(2)
     @TestTransaction
@@ -122,8 +121,8 @@ class ArtistResourceIT {
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(claims = {
-            @Claim(key = EMAIL_CLAIM, value = "user100@mail.com")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "user100@mail.com")
     })
     @SneakyThrows
     @Order(3)
@@ -164,6 +163,39 @@ class ArtistResourceIT {
                 .hasSize(1)
                 .extracting("name")
                 .doesNotContain(artistToFollow.getName());
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "user100@mail.com")
+    })
+    @Order(4)
+    @TestTransaction
+    void getRecommendedArtists_should_returnArtistsWithFollowerCounts() {
+        List<ArtistDto> artists = given()
+                .contentType(ContentType.JSON)
+                .param("page", "1")
+                .param("size", "100")
+                .when().get("/recommended")
+                .then()
+                .statusCode(SC_OK)
+                .extract()
+                .body().jsonPath().getList("rows", ArtistDto.class);
+
+        assertThat(artists)
+                .isNotEmpty()
+                .allSatisfy(artist -> {
+                    assertThat(artist.getFollowerCount())
+                            .as("Artist %s should have follower count", artist.getName())
+                            .isNotNull()
+                            .isGreaterThanOrEqualTo(0);
+                });
+
+        // At least one artist should have followers based on test data
+        assertThat(artists.stream().mapToInt(ArtistDto::getFollowerCount).sum())
+                .as("Total follower count should be greater than 0")
+                .isGreaterThan(0);
     }
 
 }

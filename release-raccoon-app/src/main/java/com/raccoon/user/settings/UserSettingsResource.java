@@ -3,10 +3,9 @@ package com.raccoon.user.settings;
 import com.raccoon.entity.UserSettings;
 import com.raccoon.user.settings.dto.UserSettingsDto;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.NoCache;
 
-import io.quarkus.oidc.IdToken;
+import io.quarkus.oidc.UserInfo;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -17,27 +16,25 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import static com.raccoon.Constants.EMAIL_CLAIM;
-
 @Path("/me/settings")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserSettingsResource {
 
     private final UserSettingsService userSettingsService;
+    final UserInfo userInfo;
 
     @Inject
-    public UserSettingsResource(final UserSettingsService userSettingsService) {
+    public UserSettingsResource(final UserSettingsService userSettingsService,
+                                final UserInfo userInfo) {
         this.userSettingsService = userSettingsService;
+        this.userInfo = userInfo;
     }
-
-    @IdToken
-    JsonWebToken idToken;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public UserSettingsDto getUserSettings() {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
         return userSettingsService.getUserSettings(email);
     }
 
@@ -46,7 +43,7 @@ public class UserSettingsResource {
     @Produces(MediaType.TEXT_HTML)
     @Transactional
     public Response registrationCallback() {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
 
         return Response.ok(userSettingsService.renderSettingsPage(email))
                 .build();
@@ -54,7 +51,7 @@ public class UserSettingsResource {
 
     @POST
     public void setUserSettings(UserSettings userSettings) {
-        final String email = idToken.getClaim(EMAIL_CLAIM);
+        final String email = userInfo.getEmail();
         userSettingsService.addOrUpdateUserSetting(email, userSettings);
     }
 

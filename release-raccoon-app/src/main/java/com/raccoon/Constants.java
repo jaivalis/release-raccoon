@@ -6,12 +6,6 @@ public class Constants {
         // Hiding constructor
     }
 
-    // Keycloak claims
-    public static final String EMAIL_CLAIM = "email";
-    public static final String USERNAME_CLAIM = "preferred_username";
-    public static final String LASTFM_USERNAME_CLAIM = "lastfm_username";
-    public static final String SPOTIFY_ENABLED_CLAIM = "spotify_enabled";
-
     public static final String RELEASE_SCRAPE_RESPONSE_SUCCESS_TEMPLATE = "Successfully scraped %d releases";
     public static final String RELEASE_SCRAPE_RESPONSE_FAILURE_TEMPLATE = "Failed to scrape new releases. Cause: %s";
 
