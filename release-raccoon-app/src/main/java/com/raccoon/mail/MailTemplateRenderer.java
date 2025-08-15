@@ -33,11 +33,14 @@ class MailTemplateRenderer {
     Template welcomeTemplate;
     RaccoonConfig raccoonConfig;
 
+    final String baseUrl;
+
     @Inject
     public MailTemplateRenderer(final RaccoonConfig raccoonConfig, final Engine engine) {
         this.raccoonConfig = raccoonConfig;
         this.digestTemplate = engine.getTemplate(DIGEST_EMAIL_TEMPLATE_ID);
         this.welcomeTemplate = engine.getTemplate(WELCOME_EMAIL_TEMPLATE_ID);
+        this.baseUrl = removeTrailingSlash(raccoonConfig.baseUrl());
     }
 
     Mail renderDigestMail(final RaccoonUser raccoonUser, List<Release> releases) throws TemplateException {
@@ -52,6 +55,7 @@ class MailTemplateRenderer {
 
             final var htmlBody = digestTemplate
                     .data("contents", contents)
+                    .data("baseUrl", baseUrl)
                     .render();
 
             return Mail.withHtml(to, subject, htmlBody);
@@ -65,7 +69,7 @@ class MailTemplateRenderer {
         var to = raccoonUser.getEmail();
         try {
             final String htmlBody = welcomeTemplate
-                    .data("baseUrl", removeTrailingSlash(raccoonConfig.baseUrl()))
+                    .data("baseUrl", baseUrl)
                     .render();
             return Mail.withHtml(to, WELCOME_EMAIL_SUBJECT, htmlBody);
         } catch (TemplateException e) {
