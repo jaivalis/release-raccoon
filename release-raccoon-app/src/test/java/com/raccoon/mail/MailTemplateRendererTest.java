@@ -54,6 +54,7 @@ class MailTemplateRendererTest {
 
         when(mockEngine.getTemplate(any())).thenReturn(mockTemplate);
         when(mockTemplate.data(anyString(), any())).thenReturn(mockTemplateInstance);
+        when(mockRaccoonConfig.baseUrl()).thenReturn("http://localhost:8080");
 
         renderer = new MailTemplateRenderer(mockRaccoonConfig, mockEngine);
     }
@@ -61,9 +62,10 @@ class MailTemplateRendererTest {
     @Test
     void renderDigestMailSuccess() {
         var email = "email";
-        when(mockTemplate.data(
-                anyString(), any(DigestMailContents.class)
-        )).thenReturn(mockTemplateInstance);
+        when(mockTemplate.data(anyString(), any(DigestMailContents.class)))
+                .thenReturn(mockTemplateInstance);
+        when(mockTemplateInstance.data(anyString(), anyString()))
+                .thenReturn(mockTemplateInstance);
         when(mockRaccoonUser.getEmail()).thenReturn(email);
 
         Mail mail = renderer.renderDigestMail(mockRaccoonUser, emptyList());
@@ -75,9 +77,10 @@ class MailTemplateRendererTest {
     @Test
     void renderDigestMailSuccessSingularSubject() {
         var email = "email";
-        when(mockTemplate.data(
-                anyString(), any(DigestMailContents.class)
-        )).thenReturn(mockTemplateInstance);
+        when(mockTemplate.data(anyString(), any(DigestMailContents.class)))
+                .thenReturn(mockTemplateInstance);
+        when(mockTemplateInstance.data(anyString(), anyString()))
+                .thenReturn(mockTemplateInstance);
         when(mockRaccoonUser.getEmail()).thenReturn(email);
 
         Mail mail = renderer.renderDigestMail(mockRaccoonUser, List.of(new Release()));
@@ -88,9 +91,10 @@ class MailTemplateRendererTest {
     @Test
     void renderDigestMailSuccessPluralSubject() {
         var email = "email";
-        when(mockTemplate.data(
-                anyString(), any(DigestMailContents.class)
-        )).thenReturn(mockTemplateInstance);
+        when(mockTemplate.data(anyString(), any(DigestMailContents.class)))
+                .thenReturn(mockTemplateInstance);
+        when(mockTemplateInstance.data(anyString(), anyString()))
+                .thenReturn(mockTemplateInstance);
         when(mockRaccoonUser.getEmail()).thenReturn(email);
 
         Mail mail = renderer.renderDigestMail(mockRaccoonUser, List.of(new Release(), new Release()));
@@ -100,9 +104,10 @@ class MailTemplateRendererTest {
 
     @Test
     void renderDigestMailFails() {
-        when(mockTemplate.data(
-                anyString(), any(DigestMailContents.class)
-        )).thenReturn(mockTemplateInstance);
+        when(mockTemplate.data(anyString(), any(DigestMailContents.class)))
+                .thenReturn(mockTemplateInstance);
+        when(mockTemplateInstance.data(anyString(), anyString()))
+                .thenReturn(mockTemplateInstance);
         when(mockTemplateInstance.render()).thenThrow(TemplateException.class);
         ArrayList<Release> stub = new ArrayList<>();
 
@@ -113,7 +118,6 @@ class MailTemplateRendererTest {
     void renderWelcomeMailSuccess() {
         var email = "email";
         when(mockRaccoonUser.getEmail()).thenReturn(email);
-        when(mockRaccoonConfig.baseUrl()).thenReturn("http://localhost:8080");
 
         Mail mail = renderer.renderWelcomeMail(mockRaccoonUser);
 
@@ -125,7 +129,6 @@ class MailTemplateRendererTest {
     @Test
     void renderWelcomeMailFails() {
         when(mockTemplateInstance.render()).thenThrow(TemplateException.class);
-        when(mockRaccoonConfig.baseUrl()).thenReturn("http://localhost:8080");
 
         assertThrows(TemplateException.class, () -> renderer.renderWelcomeMail(mockRaccoonUser));
     }
