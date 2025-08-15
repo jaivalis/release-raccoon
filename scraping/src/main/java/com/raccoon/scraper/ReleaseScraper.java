@@ -6,6 +6,9 @@ import com.raccoon.entity.Release;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
 import com.raccoon.entity.repository.ReleaseRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,6 +16,8 @@ import java.util.stream.Collectors;
 import jakarta.transaction.Transactional;
 
 public interface ReleaseScraper<T> {
+
+    Logger log = LoggerFactory.getLogger(ReleaseScraper.class);
 
     default Set<Release> scrapeReleases(Optional<Integer> limit) throws InterruptedException {
         return persistReleases(queryService(limit));
@@ -35,6 +40,13 @@ public interface ReleaseScraper<T> {
                                              Release release,
                                              ReleaseRepository releaseRepository,
                                              ArtistReleaseRepository artistReleaseRepository) {
+        // Truncate name if it exceeds 300 characters
+        if (release.getName() != null && release.getName().length() > 300) {
+            log.warn("Truncating release name from {} to 300 characters: {}", 
+                    release.getName().length(), release.getName());
+            String truncated = release.getName().substring(0, 297) + "...";
+            release.setName(truncated);
+        }
         releaseRepository.persist(release);
         release.setReleases(
                 releaseArtists
