@@ -1,5 +1,6 @@
 package com.raccoon.mail;
 
+import com.raccoon.configuration.RaccoonConfig;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
 import com.raccoon.templatedata.pojo.DigestMailContents;
@@ -44,14 +45,17 @@ class MailTemplateRendererTest {
     Template mockTemplate;
     @Mock
     TemplateInstance mockTemplateInstance;
+    @Mock
+    RaccoonConfig mockRaccoonConfig;
 
     @BeforeEach
     void setUp() {
         openMocks(this);
 
         when(mockEngine.getTemplate(any())).thenReturn(mockTemplate);
+        when(mockTemplate.data(anyString(), any())).thenReturn(mockTemplateInstance);
 
-        renderer = new MailTemplateRenderer(mockEngine);
+        renderer = new MailTemplateRenderer(mockRaccoonConfig, mockEngine);
     }
 
     @Test
@@ -65,7 +69,7 @@ class MailTemplateRendererTest {
         Mail mail = renderer.renderDigestMail(mockRaccoonUser, emptyList());
 
         assertEquals(1, mail.getTo().size());
-        assertEquals(email, mail.getTo().get(0));
+        assertEquals(email, mail.getTo().getFirst());
     }
 
     @Test
@@ -109,17 +113,19 @@ class MailTemplateRendererTest {
     void renderWelcomeMailSuccess() {
         var email = "email";
         when(mockRaccoonUser.getEmail()).thenReturn(email);
+        when(mockRaccoonConfig.baseUrl()).thenReturn("http://localhost:8080");
 
         Mail mail = renderer.renderWelcomeMail(mockRaccoonUser);
 
         assertEquals(1, mail.getTo().size());
-        assertEquals(email, mail.getTo().get(0));
+        assertEquals(email, mail.getTo().getFirst());
         assertEquals(WELCOME_EMAIL_SUBJECT, mail.getSubject());
     }
 
     @Test
     void renderWelcomeMailFails() {
-        when(mockTemplate.render()).thenThrow(TemplateException.class);
+        when(mockTemplateInstance.render()).thenThrow(TemplateException.class);
+        when(mockRaccoonConfig.baseUrl()).thenReturn("http://localhost:8080");
 
         assertThrows(TemplateException.class, () -> renderer.renderWelcomeMail(mockRaccoonUser));
     }

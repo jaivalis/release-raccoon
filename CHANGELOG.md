@@ -6,6 +6,7 @@
 - Feat: Artist follower count
 - Feat: /me/followed-artists pagination
 - Fix: API improvements for integration with UI project
+- Fix: configurable raccoon.baseUrl for inclusion in emails
 
 ## [0.4.7](https://github.com/jaivalis/release-raccoon/compare/0.4.6...0.4.7)
 

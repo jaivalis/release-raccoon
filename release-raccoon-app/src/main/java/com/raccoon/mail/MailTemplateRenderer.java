@@ -1,5 +1,6 @@
 package com.raccoon.mail;
 
+import com.raccoon.configuration.RaccoonConfig;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
 import com.raccoon.templatedata.pojo.DigestMailContents;
@@ -12,6 +13,7 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.raccoon.templatedata.Constants.DIGEST_MAIL_SUBJECT_FORMAT_PLURAL;
@@ -29,9 +31,11 @@ class MailTemplateRenderer {
 
     Template digestTemplate;
     Template welcomeTemplate;
+    RaccoonConfig raccoonConfig;
 
     @Inject
-    public MailTemplateRenderer(final Engine engine) {
+    public MailTemplateRenderer(final RaccoonConfig raccoonConfig, final Engine engine) {
+        this.raccoonConfig = raccoonConfig;
         this.digestTemplate = engine.getTemplate(DIGEST_EMAIL_TEMPLATE_ID);
         this.welcomeTemplate = engine.getTemplate(WELCOME_EMAIL_TEMPLATE_ID);
     }
@@ -60,12 +64,18 @@ class MailTemplateRenderer {
     Mail renderWelcomeMail(final RaccoonUser raccoonUser) throws TemplateException {
         var to = raccoonUser.getEmail();
         try {
-            final String htmlBody = welcomeTemplate.render();
+            final String htmlBody = welcomeTemplate
+                    .data("baseUrl", removeTrailingSlash(raccoonConfig.baseUrl()))
+                    .render();
             return Mail.withHtml(to, WELCOME_EMAIL_SUBJECT, htmlBody);
         } catch (TemplateException e) {
             log.error("Error occurred when rendering welcome mail to {}. Cause: {}", raccoonUser.id, e.getCause(), e);
             throw e;
         }
+    }
+
+    private String removeTrailingSlash(@NotNull String url) {
+        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

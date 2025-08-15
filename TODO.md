@@ -13,8 +13,7 @@
 - Dependency cleanup: org.apache.maven.plugins:maven-dependency-plugin:analyze-only
 - Artists who are followed should not appear in the recommended lists
 - Follow record label
-- Show follower count
-- Search results that contain the search term should be at top of the list
+- release type to include album, single, EP, compilation, other
 
 # Additional Integrations
 
