@@ -1,5 +1,6 @@
 package com.raccoon.mail;
 
+import com.raccoon.configuration.RaccoonConfig;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.Release;
 import com.raccoon.templatedata.pojo.DigestMailContents;
@@ -44,36 +45,42 @@ class MailTemplateRendererTest {
     Template mockTemplate;
     @Mock
     TemplateInstance mockTemplateInstance;
+    @Mock
+    RaccoonConfig mockRaccoonConfig;
 
     @BeforeEach
     void setUp() {
         openMocks(this);
 
         when(mockEngine.getTemplate(any())).thenReturn(mockTemplate);
+        when(mockTemplate.data(anyString(), any())).thenReturn(mockTemplateInstance);
+        when(mockRaccoonConfig.baseUrl()).thenReturn("http://localhost:8080");
 
-        renderer = new MailTemplateRenderer(mockEngine);
+        renderer = new MailTemplateRenderer(mockRaccoonConfig, mockEngine);
     }
 
     @Test
     void renderDigestMailSuccess() {
         var email = "email";
-        when(mockTemplate.data(
-                anyString(), any(DigestMailContents.class)
-        )).thenReturn(mockTemplateInstance);
+        when(mockTemplate.data(anyString(), any(DigestMailContents.class)))
+                .thenReturn(mockTemplateInstance);
+        when(mockTemplateInstance.data(anyString(), anyString()))
+                .thenReturn(mockTemplateInstance);
         when(mockRaccoonUser.getEmail()).thenReturn(email);
 
         Mail mail = renderer.renderDigestMail(mockRaccoonUser, emptyList());
 
         assertEquals(1, mail.getTo().size());
-        assertEquals(email, mail.getTo().get(0));
+        assertEquals(email, mail.getTo().getFirst());
     }
 
     @Test
     void renderDigestMailSuccessSingularSubject() {
         var email = "email";
-        when(mockTemplate.data(
-                anyString(), any(DigestMailContents.class)
-        )).thenReturn(mockTemplateInstance);
+        when(mockTemplate.data(anyString(), any(DigestMailContents.class)))
+                .thenReturn(mockTemplateInstance);
+        when(mockTemplateInstance.data(anyString(), anyString()))
+                .thenReturn(mockTemplateInstance);
         when(mockRaccoonUser.getEmail()).thenReturn(email);
 
         Mail mail = renderer.renderDigestMail(mockRaccoonUser, List.of(new Release()));
@@ -84,9 +91,10 @@ class MailTemplateRendererTest {
     @Test
     void renderDigestMailSuccessPluralSubject() {
         var email = "email";
-        when(mockTemplate.data(
-                anyString(), any(DigestMailContents.class)
-        )).thenReturn(mockTemplateInstance);
+        when(mockTemplate.data(anyString(), any(DigestMailContents.class)))
+                .thenReturn(mockTemplateInstance);
+        when(mockTemplateInstance.data(anyString(), anyString()))
+                .thenReturn(mockTemplateInstance);
         when(mockRaccoonUser.getEmail()).thenReturn(email);
 
         Mail mail = renderer.renderDigestMail(mockRaccoonUser, List.of(new Release(), new Release()));
@@ -96,9 +104,10 @@ class MailTemplateRendererTest {
 
     @Test
     void renderDigestMailFails() {
-        when(mockTemplate.data(
-                anyString(), any(DigestMailContents.class)
-        )).thenReturn(mockTemplateInstance);
+        when(mockTemplate.data(anyString(), any(DigestMailContents.class)))
+                .thenReturn(mockTemplateInstance);
+        when(mockTemplateInstance.data(anyString(), anyString()))
+                .thenReturn(mockTemplateInstance);
         when(mockTemplateInstance.render()).thenThrow(TemplateException.class);
         ArrayList<Release> stub = new ArrayList<>();
 
@@ -113,13 +122,13 @@ class MailTemplateRendererTest {
         Mail mail = renderer.renderWelcomeMail(mockRaccoonUser);
 
         assertEquals(1, mail.getTo().size());
-        assertEquals(email, mail.getTo().get(0));
+        assertEquals(email, mail.getTo().getFirst());
         assertEquals(WELCOME_EMAIL_SUBJECT, mail.getSubject());
     }
 
     @Test
     void renderWelcomeMailFails() {
-        when(mockTemplate.render()).thenThrow(TemplateException.class);
+        when(mockTemplateInstance.render()).thenThrow(TemplateException.class);
 
         assertThrows(TemplateException.class, () -> renderer.renderWelcomeMail(mockRaccoonUser));
     }

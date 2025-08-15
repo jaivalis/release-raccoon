@@ -1,6 +1,7 @@
 <!-- params: -->
 <!--{@java.lang.String title}-->
 <!--{@java.lang.String h1title}-->
+<!--{@java.lang.String baseUrl}-->
 <!-- borrowed from https://github.com/tutsplus/build-an-html-email-template-from-scratch/blob/master/index.html -->
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -155,7 +156,7 @@
         
         <div class="footer">
             <p>&reg; Release Raccoon, 2025</p>
-            <p><a href="https://backend-release-raccoon-71a89de4778a.herokuapp.com/unsubscribe">Unsubscribe</a></p>
+            <p><a href="{baseUrl}/unsubscribe">Unsubscribe</a></p>
         </div>
     </div>
 </body>
