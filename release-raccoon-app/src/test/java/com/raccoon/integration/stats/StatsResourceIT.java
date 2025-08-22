@@ -19,11 +19,11 @@ import static org.hamcrest.Matchers.is;
 @Slf4j
 @QuarkusTest
 @TestHTTPEndpoint(StatsResource.class)
-@TestTransaction
 @TestProfile(value = ArtistResourceDatabaseProfile.class)
 class StatsResourceIT {
 
     @Test
+    @TestTransaction
     void getReleaseCount_should_return_correct_count_when_releases_exist() {
         given()
                 .contentType(ContentType.JSON)
@@ -35,6 +35,7 @@ class StatsResourceIT {
     }
 
     @Test
+    @TestTransaction
     void getArtistCount_should_return_correct_count_when_artists_exist() {
         given()
                 .contentType(ContentType.JSON)
@@ -46,6 +47,7 @@ class StatsResourceIT {
     }
 
     @Test
+    @TestTransaction
     void getAllStats_should_return_both_counts_when_data_exists() {
         given()
                 .contentType(ContentType.JSON)
