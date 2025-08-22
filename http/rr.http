@@ -6,3 +6,7 @@ PUT {{baseUrl}}/release-scrape
 
 ### Notify
 GET {{baseUrl}}/notify-users
+
+### Notify
+GET {{baseUrl}}/stats
+Content-Type: */*

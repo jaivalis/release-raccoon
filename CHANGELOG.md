@@ -5,6 +5,7 @@
 - Feat: Improve search result rankings
 - Feat: Artist follower count
 - Feat: /me/followed-artists pagination
+- Feat: /stats endpoint added
 - Fix: API improvements for integration with UI project
 - Fix: configurable raccoon.baseUrl for inclusion in emails
 
