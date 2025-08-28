@@ -23,36 +23,43 @@
         <tr>
             <th scope="col" class="accented-th">Artist</th>
             <th scope="col" class="accented-th fit">Release Name</th>
-            <th scope="col" class="accented-th fit">Spotify</th>
+            <th scope="col" class="accented-th fit">Type</th>
             <th scope="col" class="accented-th fit">Released on</th>
         </tr>
         </thead>
 
-        {#for release in contents.getReleases()}
+        {#for artistGroup in contents.getArtistReleasesGroups()}
+            {#for release in artistGroup.releases}
             {! Table row per release !}
             <tr>
             <td>
-                {#each release.artists}
-                    {it.name}
-                {/each}
+                {#if release_index == 0}
+                    <strong>{artistGroup.artist.name}</strong>
+                    {#if artistGroup.releases.size() > 1}
+                        <br><small class="text-muted">({artistGroup.releases.size()} releases)</small>
+                    {/if}
+                {/if}
             </td>
 
             <td>
                 {release.name}
             </td>
+            
             <td>
-                {#if release.getSpotifyUriId() != ""}
-                    <a href="https://open.spotify.com/album/{release.getSpotifyUriId()}" class="path-link" target="_blank">
-                        💿
-                        {!<img height="30px" src="images/spotify.icon.svg"/>!}
-                    </a>
-                {/if}
+                <span class="badge badge-secondary">
+                    {#if release.type}
+                        {release.type}
+                    {#else}
+                        Release
+                    {/if}
+                </span>
             </td>
 
             <td>
             {release.releasedOn}
             </td>
             </tr>
+            {/for}
 
         {/for}
         </table>

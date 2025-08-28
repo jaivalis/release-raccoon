@@ -2,12 +2,15 @@
 
 ## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.4.7...jdevelop)
 
+## [0.5.0](https://github.com/jaivalis/release-raccoon/compare/0.4.7...0.5.0)
+
 - Feat: Improve search result rankings
 - Feat: Artist follower count
 - Feat: /me/followed-artists pagination
 - Feat: /stats endpoint added
 - Fix: API improvements for integration with UI project
 - Fix: configurable raccoon.baseUrl for inclusion in emails
+- Fix: Improved digest email
 
 ## [0.4.7](https://github.com/jaivalis/release-raccoon/compare/0.4.6...0.4.7)
 
