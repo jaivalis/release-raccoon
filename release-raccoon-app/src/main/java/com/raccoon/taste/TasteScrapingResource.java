@@ -5,6 +5,7 @@ import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 import com.raccoon.taste.spotify.SpotifyTasteUpdatingService;
+import com.raccoon.taste.spotify.dto.SpotifyAuth;
 
 import org.jboss.resteasy.reactive.RestQuery;
 
@@ -17,15 +18,13 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Utility class to scrape taste. When deployed this service will be invoked into a cron-job.
- */
 @Slf4j
 @Path("/scrape-taste")
 public class TasteScrapingResource {
@@ -60,15 +59,35 @@ public class TasteScrapingResource {
         return updated.getArtists();
     }
 
+    /**
+     * Used when the application runs in WebApp mode.
+     */
     @GET
     @Path("spotify")
     @Produces(MediaType.TEXT_PLAIN)
     @Authenticated
     @Transactional
-    public Response scrapeSpotifyTaste() {
+    public Response scrapeSpotifyTasteWebApp() {
         final String email = userInfo.getEmail();
         var existing = getUser(email);
         return spotifyTasteUpdatingService.scrapeTaste(existing.id);
+    }
+    
+    /**
+     * Used for client-side Spotify authentication.
+     * The UI handles the OAuth flow and sends back the authorization code and state.
+     * @param auth SpotifyAuth containing code and state from client-side OAuth
+     * @return Collection of UserArtists after scraping
+     */
+    @POST
+    @Path("spotify/client-auth")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Authenticated
+    @Transactional
+    public Collection<UserArtist> scrapeSpotifyTasteClientAuth(SpotifyAuth auth) {
+        final String email = userInfo.getEmail();
+        var existing = getUser(email);
+        return spotifyTasteUpdatingService.scrapeTasteWithClientAuth(existing.id, auth.code(), auth.state());
     }
 
     private RaccoonUser getUser(@RestQuery("email") String email) {

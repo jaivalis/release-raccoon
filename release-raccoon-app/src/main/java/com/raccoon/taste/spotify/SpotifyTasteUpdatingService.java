@@ -76,6 +76,55 @@ public class SpotifyTasteUpdatingService implements TasteUpdatingService {
                 .build();
     }
 
+    /**
+     * Handles client-side Spotify authentication where the UI performs the OAuth flow.
+     * 
+     * @param userId the user ID
+     * @param code the authorization code from Spotify OAuth
+     * @param state the state parameter from OAuth (used for verification)
+     * @return Collection of UserArtists after scraping taste data
+     */
+    public Collection<UserArtist> scrapeTasteWithClientAuth(Long userId, String code, String state) {
+        final var existing = userRepository.findByIdOptional(userId);
+        if (existing.isEmpty()) {
+            throw new NotFoundException(String.format("RaccoonUser with id %s not found", userId));
+        }
+        var user = existing.get();
+
+        // Exchange authorization code for access token
+        spotifyUserAuthorizer.requestAuthorization(code);
+
+        // Fetch top artists using the authorized API
+        final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(spotifyUserAuthorizer);
+
+        // Keep track of the artists that might be relevant to get updates from
+        final List<UserArtist> existingArtists = new ArrayList<>();
+
+        user.setArtists(
+                normalizeWeights(spotifyTaste)
+                        .stream()
+                        .map(
+                                pair -> {
+                                    var artist = pair.left;
+                                    var weight = pair.right;
+
+                                    return tasteScrapeArtistWeightPairProcessor
+                                            .delegateProcessArtistWeightPair(
+                                                    user, artist, weight, existingArtists
+                                            );
+                                }
+                        ).collect(Collectors.toSet())
+        );
+        user.setSpotifyEnabled(true);
+        user.setLastSpotifyScrape(LocalDateTime.now());
+
+        userRepository.persist(user);
+
+        notifyForRecentReleases(user, existingArtists);
+
+        return user.getArtists();
+    }
+
     public RaccoonUser updateTaste(final Long userId) {
         Optional<RaccoonUser> existing = userRepository.findByIdOptional(userId);
         if (existing.isEmpty()) {
