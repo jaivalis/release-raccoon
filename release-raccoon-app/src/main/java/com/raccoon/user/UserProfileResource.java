@@ -2,6 +2,7 @@ package com.raccoon.user;
 
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
+import com.raccoon.user.dto.UserProfile;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.reactive.NoCache;
@@ -95,6 +96,16 @@ public class UserProfileResource {
             log.warn("Artist id {} is not a valid long, ignoring unfollow request.", artistId);
         }
         return Response.noContent().build();
+    }
+
+    @GET
+    @Path("/")
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public UserProfile getUserProfile() {
+        final String email = userInfo.getEmail();
+        return userProfileService.getUserProfile(email);
     }
 
     @GET
