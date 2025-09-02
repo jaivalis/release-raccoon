@@ -11,6 +11,7 @@
 - Fix: API improvements for integration with UI project
 - Fix: configurable raccoon.baseUrl for inclusion in emails
 - Fix: Improved digest email
+- Fix: Hide RaccoonUser and Release resources
 
 ## [0.4.7](https://github.com/jaivalis/release-raccoon/compare/0.4.6...0.4.7)
 
