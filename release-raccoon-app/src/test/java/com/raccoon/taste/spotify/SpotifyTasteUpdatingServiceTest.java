@@ -55,7 +55,7 @@ class SpotifyTasteUpdatingServiceTest {
     NotifyService mockNotifyService;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
         service = new SpotifyTasteUpdatingService(
                 mockTasteScrapeArtistWeightPairProcessor,
@@ -67,13 +67,13 @@ class SpotifyTasteUpdatingServiceTest {
     }
 
     @Test
-    void testScrapeTasteUserNotFound() {
+    void scrapeTasteUserNotFound() {
         when(mockUserRepository.findByIdOptional(0L)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> service.scrapeTaste(0L));
     }
 
     @Test
-    void testScrapeTasteRecentlyScraped() {
+    void scrapeTasteRecentlyScraped() {
         RaccoonUser raccoonUser = new RaccoonUser();
         raccoonUser.setSpotifyEnabled(true);
         raccoonUser.setLastSpotifyScrape(LocalDateTime.now());
@@ -85,7 +85,7 @@ class SpotifyTasteUpdatingServiceTest {
     }
 
     @Test
-    void testScrapeTasteShouldRedirect() {
+    void scrapeTasteShouldRedirect() {
         RaccoonUser raccoonUser = new RaccoonUser();
         raccoonUser.setSpotifyEnabled(true);
         raccoonUser.setLastSpotifyScrape(LocalDateTime.MIN);
@@ -98,7 +98,7 @@ class SpotifyTasteUpdatingServiceTest {
 
     @Test
     @DisplayName("RaccoonUser NotFoundException")
-    void testScrapeNotFound() {
+    void scrapeNotFound() {
         when(mockUserRepository.findByIdOptional(any())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> service.updateTaste(100L));
@@ -106,7 +106,7 @@ class SpotifyTasteUpdatingServiceTest {
 
     @Test
     @DisplayName("Scrape should update raccoonUser artists")
-    void testScrape() {
+    void scrape() {
         RaccoonUser raccoonUser = new RaccoonUser();
         raccoonUser.setLastfmUsername("username");
         raccoonUser.setSpotifyEnabled(true);
@@ -117,7 +117,7 @@ class SpotifyTasteUpdatingServiceTest {
         Collection<MutablePair<Artist, Float>> stubTaste = List.of(
                 new MutablePair<>(artist, 100F)
         );
-        when(mockSpotifyScraper.fetchTopArtists(any(SpotifyUserAuthorizer.class))).thenReturn(stubTaste);
+        when(mockSpotifyScraper.fetchTopArtists(any(SpotifyUserAuthorizer.class), any(Optional.class))).thenReturn(stubTaste);
         var userArtist = new UserArtist();
         userArtist.setArtist(artist);
         userArtist.setUser(raccoonUser);

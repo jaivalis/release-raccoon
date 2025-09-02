@@ -95,7 +95,10 @@ public class SpotifyTasteUpdatingService implements TasteUpdatingService {
         spotifyUserAuthorizer.requestAuthorization(code);
 
         // Fetch top artists using the authorized API
-        final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(spotifyUserAuthorizer);
+        final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(
+                spotifyUserAuthorizer,
+                Optional.of(50)
+        );
 
         // Keep track of the artists that might be relevant to get updates from
         final List<UserArtist> existingArtists = new ArrayList<>();
@@ -132,7 +135,10 @@ public class SpotifyTasteUpdatingService implements TasteUpdatingService {
         }
         var user = existing.get();
 
-        final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(spotifyUserAuthorizer);
+        final Collection<MutablePair<Artist, Float>> spotifyTaste = spotifyScraper.fetchTopArtists(
+                spotifyUserAuthorizer,
+                Optional.of(50)
+        );
 
         // Keep track of the artists that might be relevant to get updates from
         // That is the ones that were already in the database.
