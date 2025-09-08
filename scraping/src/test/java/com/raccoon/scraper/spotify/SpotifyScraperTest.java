@@ -35,9 +35,11 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -165,7 +167,27 @@ class SpotifyScraperTest {
         when(authorizer.executeGetUsersTopArtists(anyInt()))
                 .thenThrow(IOException.class);
 
-        assertThat(scraper.fetchTopArtists(authorizer)).isEmpty();
+        assertThat(scraper.fetchTopArtists(authorizer, Optional.empty())).isEmpty();
+    }
+
+    @Test
+    void fetchTopArtists_should_stop_when_limitExceeded() throws IOException, ParseException, SpotifyWebApiException {
+        Paging<se.michaelthelin.spotify.model_objects.specification.Artist> mockPaging = mock(Paging.class);
+        se.michaelthelin.spotify.model_objects.specification.Artist[] mockArtists = new se.michaelthelin.spotify.model_objects.specification.Artist[10];
+        IntStream.range(0, 10).forEach(i -> mockArtists[i] = mock(se.michaelthelin.spotify.model_objects.specification.Artist.class));
+        when(mockPaging.getItems())
+                .thenReturn(mockArtists)
+                .thenReturn(mockArtists)
+                .thenReturn(mockArtists);
+        when(mockPaging.getNext()).thenReturn("next-exists");
+        when(artistFactoryMock.getOrCreateArtist(any())).thenReturn(new Artist());
+        when(authorizer.executeGetUsersTopArtists(anyInt()))
+                .thenReturn(mockPaging)
+                .thenReturn(mockPaging)
+                .thenReturn(mockPaging);
+
+        assertThat(scraper.fetchTopArtists(authorizer, Optional.of(20)))
+                .hasSize(20);
     }
 
     @Test

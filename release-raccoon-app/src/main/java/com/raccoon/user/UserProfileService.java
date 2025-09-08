@@ -14,6 +14,9 @@ import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
 import com.raccoon.user.dto.FollowedArtistsResponse;
+import com.raccoon.user.dto.UserProfile;
+import com.raccoon.user.settings.UserSettingsService;
+import com.raccoon.user.settings.dto.UserSettingsDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +47,7 @@ public class UserProfileService {
     private final ArtistFollowingService artistFollowingService;
     private final ArtistMapper artistMapper;
     private final ArtistRepository artistRepository;
+    private final UserSettingsService userSettingsService;
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
@@ -54,7 +58,8 @@ public class UserProfileService {
                               final Engine engine,
                               final ArtistFollowingService artistFollowingService,
                               final ArtistMapper artistMapper,
-                              final ArtistRepository artistRepository) {
+                              final ArtistRepository artistRepository,
+                              final UserSettingsService userSettingsService) {
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.userArtistRepository = userArtistRepository;
@@ -64,6 +69,7 @@ public class UserProfileService {
         this.artistFollowingService = artistFollowingService;
         this.artistMapper = artistMapper;
         this.artistRepository = artistRepository;
+        this.userSettingsService = userSettingsService;
     }
 
 
@@ -211,4 +217,21 @@ public class UserProfileService {
         return user;
     }
 
+    public UserProfile getUserProfile(String userEmail) {
+        Optional<RaccoonUser> existing = userRepository.findByEmailOptional(userEmail);
+        if (existing.isEmpty()) {
+            log.info("RaccoonUser does not exist.");
+            throw new NotFoundException("RaccoonUser not found");
+        }
+        var user = existing.get();
+
+        UserSettingsDto userSettings = userSettingsService.getUserSettings(userEmail);
+
+        return new UserProfile(
+                user.getId().toString(),
+                Boolean.TRUE.equals(user.getSpotifyEnabled()),
+                user.getLastfmUsername(),
+                userSettings.getUnsubscribed(),
+                userSettings.getNotifyIntervalDays()
+        );    }
 }

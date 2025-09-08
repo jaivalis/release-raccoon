@@ -12,6 +12,7 @@ import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
+import com.raccoon.user.settings.UserSettingsService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,6 +67,8 @@ class RaccoonUserProfileServiceTest {
     ArtistMapper mockArtistMapper;
     @Mock
     ArtistRepository mockArtistRepository;
+    @Mock
+    UserSettingsService mockUserSettingsService;
 
     @BeforeEach
     public void setup() {
@@ -74,7 +77,7 @@ class RaccoonUserProfileServiceTest {
 
         service = new UserProfileService(
                 mockUserRepository, mockUserFactory, mockUserArtistRepository, mockLastfmTasteUpdatingService,
-                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper, mockArtistRepository
+                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper, mockArtistRepository, mockUserSettingsService
         );
     }
 

@@ -14,6 +14,7 @@
 - Artists who are followed should not appear in the recommended lists
 - Follow record label
 - release type to include album, single, EP, compilation, other
+- Sort recommendations by follower count
 
 # Additional Integrations
 

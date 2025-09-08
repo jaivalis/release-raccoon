@@ -2,6 +2,7 @@ package com.raccoon.user;
 
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.user.dto.FollowedArtistsResponse;
+import com.raccoon.user.dto.UserProfile;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.reactive.NoCache;
@@ -9,7 +10,6 @@ import org.jboss.resteasy.reactive.RestQuery;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 
 import io.quarkus.oidc.UserInfo;
@@ -28,6 +28,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Path("/me")
 @Slf4j
@@ -98,6 +101,16 @@ public class UserProfileResource {
     }
 
     @GET
+    @Path("/profile")
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public UserProfile getUserProfile() {
+        final String email = userInfo.getEmail();
+        return userProfileService.getUserProfile(email);
+    }
+
+    @GET
     @Path("/enable-services")
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
@@ -123,9 +136,9 @@ public class UserProfileResource {
     }
 
     private boolean shouldRedirect(String redirectUrl) {
-        log.debug("Should redirect whitelist {}", Objects.isNull(redirectConfig) ? "null" : redirectConfig.whitelistedUrls());
-        return Objects.nonNull(redirectUrl)
-                && Objects.nonNull(redirectConfig.whitelistedUrls())
+        log.debug("Should redirect whitelist {}", isNull(redirectConfig) ? "null" : redirectConfig.whitelistedUrls());
+        return nonNull(redirectUrl)
+                && nonNull(redirectConfig.whitelistedUrls())
                 && redirectConfig.whitelistedUrls().orElse(Collections.emptyList()).contains(redirectUrl);
     }
 

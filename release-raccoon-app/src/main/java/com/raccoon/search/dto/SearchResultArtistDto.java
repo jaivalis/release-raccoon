@@ -53,6 +53,10 @@ public class SearchResultArtistDto {
         if (musicbrainzId == null && other.musicbrainzId != null) {
             musicbrainzId = other.musicbrainzId;
         }
+
+        if (!followedByUser && other.followedByUser) {
+            followedByUser = true;
+        }
     }
 
     @Override

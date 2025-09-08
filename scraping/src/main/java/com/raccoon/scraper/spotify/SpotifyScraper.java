@@ -141,7 +141,9 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
         throw new UnsupportedOperationException("Invoked asynchronously from the Spotify OAuth cycle instead.");
     }
 
-    public Collection<MutablePair<Artist, Float>> fetchTopArtists(final SpotifyUserAuthorizer authorizer) {
+    public Collection<MutablePair<Artist, Float>> fetchTopArtists(final SpotifyUserAuthorizer authorizer, Optional<Integer> limit) {
+        int limitValue = limit.orElse(100);
+        log.info("Fetching top {} artists", limitValue);
         List<MutablePair<Artist, Float>> artists = new ArrayList<>();
         var offset = 0;
         Paging<se.michaelthelin.spotify.model_objects.specification.Artist> response;
@@ -155,7 +157,7 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
                                 ).toList()
                 );
                 offset = response.getOffset() + response.getLimit();
-            } while(response.getNext() != null);
+            } while(response.getNext() != null && artists.size() < limitValue);
         } catch (IOException | ParseException | SpotifyWebApiException e) {
             log.error("Something went wrong when fetching Spotify artists ", e);
         }
