@@ -1,8 +1,8 @@
 INSERT INTO Artist
-    (artistId, name, create_date, spotifyUri)
+    (artistId, name, follower_count, create_date, spotifyUri)
 VALUES
-    (500, 'existed before the scrape', CURRENT_DATE - INTERVAL '7' DAY, 'uri500'),
-    (501, 'also existed before the scrape', CURRENT_DATE - INTERVAL '7' DAY, 'uri501');
+    (500, 'existed before the scrape', 1, CURRENT_DATE - INTERVAL '7' DAY, 'uri500'),
+    (501, 'also existed before the scrape', 1, CURRENT_DATE - INTERVAL '7' DAY, 'uri501');
 
 INSERT INTO Releases
     (releaseId, name, type, releasedOn, spotifyUri)

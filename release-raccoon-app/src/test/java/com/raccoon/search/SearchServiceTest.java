@@ -162,8 +162,8 @@ class SearchServiceTest {
     void searchArtists_should_populateFollowerCount_when_hibernateResults() {
         var pattern = "pattern";
         var size = Optional.of(10);
-        SearchResultArtistDto stubArtist1 = SearchResultArtistDto.builder().name("artist1").id(3L).build();
-        SearchResultArtistDto stubArtist2 = SearchResultArtistDto.builder().name("artist2").id(9L).build();
+        SearchResultArtistDto stubArtist1 = SearchResultArtistDto.builder().name("artist1").id(3L).followerCount(5).build();
+        SearchResultArtistDto stubArtist2 = SearchResultArtistDto.builder().name("artist2").id(9L).followerCount(12).build();
         when(mockHibernateSearcher.searchArtist(pattern, size)).thenReturn(List.of(stubArtist1, stubArtist2));
         when(mockLastfmSearcher.searchArtist(pattern, size)).thenReturn(Collections.emptyList());
 
@@ -172,10 +172,6 @@ class SearchServiceTest {
         when(userRepository.findByEmail(any())).thenReturn(stubUser);
         when(userArtistRepository.findByUserIdAndArtistIds(stubUser.id, List.of(3L, 9L)))
                 .thenReturn(Collections.emptyList());
-        
-        // Mock follower counts
-        when(artistRepository.getFollowerCount(3L)).thenReturn(5);
-        when(artistRepository.getFollowerCount(9L)).thenReturn(12);
 
         ArtistSearchResponse response = service.searchArtists("email", pattern, size);
 

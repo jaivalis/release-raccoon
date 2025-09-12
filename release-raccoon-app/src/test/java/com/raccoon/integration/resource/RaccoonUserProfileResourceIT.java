@@ -14,6 +14,8 @@ import com.raccoon.user.UserProfileResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,7 @@ import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectSpy;
 import io.quarkus.test.security.TestSecurity;
 import io.quarkus.test.security.oidc.OidcSecurity;
 import io.quarkus.test.security.oidc.UserInfo;
@@ -43,6 +46,8 @@ import static org.apache.http.HttpStatus.SC_TEMPORARY_REDIRECT;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
@@ -57,30 +62,21 @@ class RaccoonUserProfileResourceIT {
     MockMailbox mockMailbox;
     @Inject
     UserRepository userRepository;
-    @Inject
+    @InjectSpy
     ArtistRepository artistRepository;
     @Inject
     UserArtistRepository userArtistRepository;
     @Inject
     ArtistReleaseRepository artistReleaseRepository;
 
+    @Captor
+    ArgumentCaptor<Artist> artistCaptor = ArgumentCaptor.forClass(Artist.class);
+
     @Inject
     SmallRyeConfig smallRyeConfig;
 
     @InjectMock
     RedirectConfig redirectConfig;
-
-    @ApplicationScoped
-    @Mock
-    RedirectConfig featuresConfig() {
-        return smallRyeConfig.getConfigMapping(RedirectConfig.class);
-    }
-
-    @BeforeEach
-    @Transactional
-    void setup() {
-        mockMailbox.clear();
-    }
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
@@ -98,6 +94,18 @@ class RaccoonUserProfileResourceIT {
 
         assertThat(mockMailbox.getMailsSentTo("getProfileOnce@gmail.com"))
                 .hasSize(1);
+    }
+
+    @ApplicationScoped
+    @Mock
+    RedirectConfig featuresConfig() {
+        return smallRyeConfig.getConfigMapping(RedirectConfig.class);
+    }
+
+    @BeforeEach
+    @Transactional
+    void setup() {
+        mockMailbox.clear();
     }
 
     @Test
@@ -198,46 +206,8 @@ class RaccoonUserProfileResourceIT {
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
     @OidcSecurity(userinfo = {
-            @UserInfo(key = "email", value = "raccoonUser1@gmail.com")
-    })
-    @TestTransaction
-    @DisplayName("follow should result in UserArtist association")
-    void follow() {
-        // create the raccoonUser
-        given()
-                .contentType(ContentType.JSON)
-                .when().get()
-                .then()
-                .statusCode(SC_OK);
-
-        SearchResultArtistDto searchResultArtistDto = SearchResultArtistDto.builder()
-                .name("new artist")
-                .spotifyUri("new artist spotifyUri")
-                .lastfmUri("new artist lastfmUri")
-                .build();
-        given()
-                .contentType(ContentType.JSON)
-                .with()
-                .body(searchResultArtistDto)
-                .when().post("/follow")
-                .then()
-                .statusCode(SC_NO_CONTENT);
-
-        Long userId = userRepository.findByEmail("raccoonUser1@gmail.com").id;
-        assertThat(userArtistRepository.findByUserId(userId)).hasSize(1);
-        Artist followedArtist = userArtistRepository.findByUserId(userId).get(0).getArtist();
-        assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
-        assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
-        assertThat(followedArtist.getSpotifyUri()).isEqualTo(searchResultArtistDto.getSpotifyUri());
-        assertThat(followedArtist.getLastfmUri()).isEqualTo(searchResultArtistDto.getLastfmUri());
-    }
-
-    @Test
-    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
-    @OidcSecurity(userinfo = {
             @UserInfo(key = "email", value = "raccoonUser@gmail.com")
     })
-    @TestTransaction
     @DisplayName("follow should be idempotent")
     void follow_should_beIdempotent() {
         // create the raccoonUser
@@ -278,6 +248,44 @@ class RaccoonUserProfileResourceIT {
         assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
         assertThat(followedArtist.getSpotifyUri()).isEqualTo(searchResultArtistDto.getSpotifyUri());
         assertThat(followedArtist.getLastfmUri()).isEqualTo(searchResultArtistDto.getLastfmUri());
+        assertThat(followedArtist.getFollowerCount()).isEqualTo(1);
+    }
+
+    @Test
+    @TestSecurity(user = EXISTING_USERNAME, roles = "user")
+    @OidcSecurity(userinfo = {
+            @UserInfo(key = "email", value = "raccoonUser1@gmail.com")
+    })
+    @DisplayName("follow should result in UserArtist association")
+    void follow_should_createUserArtistAssociation() {
+        // create the raccoonUser
+        given()
+                .contentType(ContentType.JSON)
+                .when().get()
+                .then()
+                .statusCode(SC_OK);
+
+        SearchResultArtistDto searchResultArtistDto = SearchResultArtistDto.builder()
+                .name("new artist")
+                .spotifyUri("new artist spotifyUri")
+                .lastfmUri("new artist lastfmUri")
+                .build();
+        given()
+                .contentType(ContentType.JSON)
+                .with()
+                .body(searchResultArtistDto)
+                .when().post("/follow")
+                .then()
+                .statusCode(SC_NO_CONTENT);
+
+        Long userId = userRepository.findByEmail("raccoonUser1@gmail.com").id;
+        assertThat(userArtistRepository.findByUserId(userId)).hasSize(1);
+        Artist followedArtist = userArtistRepository.findByUserId(userId).get(0).getArtist();
+        assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
+        assertThat(followedArtist.getName()).isEqualTo(searchResultArtistDto.getName());
+        assertThat(followedArtist.getSpotifyUri()).isEqualTo(searchResultArtistDto.getSpotifyUri());
+        assertThat(followedArtist.getLastfmUri()).isEqualTo(searchResultArtistDto.getLastfmUri());
+        assertThat(followedArtist.getFollowerCount()).isEqualTo(1);
     }
 
     @Test
@@ -286,7 +294,7 @@ class RaccoonUserProfileResourceIT {
             @UserInfo(key = "email", value = "raccoonUser@gmail.com")
     })
     @DisplayName("DELETE `/me/artist` deletes UserArtist association")
-    void unfollowArtist() {
+    void unfollow_should_reduceFollowerCount() {
         // create the raccoonUser
         given()
                 .contentType(ContentType.JSON)
@@ -294,11 +302,34 @@ class RaccoonUserProfileResourceIT {
                 .then()
                 .statusCode(SC_OK);
 
+        // follow the artist
+        SearchResultArtistDto searchResultArtistDto = SearchResultArtistDto.builder()
+                .name("unfollowArtist-test")
+                .spotifyUri("new artist spotifyUri")
+                .lastfmUri("new artist lastfmUri")
+                .build();
         given()
                 .contentType(ContentType.JSON)
-                .when().delete("/unfollow/1")
+                .with()
+                .body(searchResultArtistDto)
+                .when().post("/follow")
                 .then()
                 .statusCode(SC_NO_CONTENT);
+
+        Artist newArtist = artistRepository.findByNameOptional("unfollowArtist-test").get();
+        var followerCount = newArtist.getFollowerCount();
+
+        // unfollow the artist
+        given()
+                .contentType(ContentType.JSON)
+                .when().delete("/unfollow/" + newArtist.getId())
+                .then()
+                .statusCode(SC_NO_CONTENT);
+
+        // verify follower went down
+        verify(artistRepository, times(2)).persist(artistCaptor.capture());
+        assertThat(artistCaptor.getAllValues().getLast().getFollowerCount())
+                .isEqualTo(followerCount - 1);
     }
 
     @Test
@@ -361,9 +392,11 @@ class RaccoonUserProfileResourceIT {
                 .extract().body().jsonPath().getList("rows", ArtistDto.class);
 
         assertThat(list).hasSize(1);
-        assertEquals(artistDto.getName(), list.get(0).getName());
-        assertEquals(artistDto.getSpotifyUri(), list.get(0).getSpotifyUri());
-        assertEquals(artistDto.getLastfmUri(), list.get(0).getLastfmUri());
+        assertEquals(artistDto.getName(), list.getFirst().getName());
+        assertEquals(artistDto.getSpotifyUri(), list.getFirst().getSpotifyUri());
+        assertEquals(artistDto.getLastfmUri(), list.getFirst().getLastfmUri());
+        assertThat(artistRepository.findById(1L).getFollowerCount())
+                .isEqualTo(1);
     }
 
     @Test

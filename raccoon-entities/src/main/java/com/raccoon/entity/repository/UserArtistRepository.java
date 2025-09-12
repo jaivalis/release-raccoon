@@ -74,8 +74,15 @@ public class UserArtistRepository implements PanacheRepository<UserArtist> {
         return find("key.raccoonUser.id = ?1 and key.artist.id in ?2", userId, artistIds).stream().toList();
     }
 
-    public void deleteAssociation(Long userId, Long artistId) {
-        delete("key.raccoonUser.id = ?1 and key.artist.id = ?2", userId, artistId);
+    /**
+     * Deletes the association between a user and an artist based on their respective IDs.
+     *
+     * @param userId the ID of the user whose association will be deleted
+     * @param artistId the ID of the artist whose association with the user will be deleted
+     * @return the number of rows affected by the deletion query
+     */
+    public long deleteAssociation(Long userId, Long artistId) {
+        return delete("key.raccoonUser.id = ?1 and key.artist.id = ?2", userId, artistId);
     }
 
 }

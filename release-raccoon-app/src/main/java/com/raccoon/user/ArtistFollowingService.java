@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,10 +36,18 @@ public class ArtistFollowingService {
         this.notifyService = notifyService;
     }
 
+    @Transactional
     public void unfollowArtist(final String userEmail, final Long artistId) {
         var user = userRepository.findByEmail(userEmail);
         log.debug("Unfollow artist {} by user {}", artistId, user.getId());
-        userArtistRepository.deleteAssociation(user.id, artistId);
+        long rowsAffected = userArtistRepository.deleteAssociation(user.id, artistId);
+
+        // Update follower count
+        Artist artist = artistRepository.findById(artistId);
+        if (rowsAffected != 0 && artist != null && artist.getFollowerCount() > 0) {
+            artist.removeFollower();
+            artistRepository.persist(artist);
+        }
         log.debug("Unfollowed");
     }
 
@@ -47,6 +56,7 @@ public class ArtistFollowingService {
      * @param userEmail raccoonUser requesting the follow
      * @param artist artist mapped from dto, might need to be persisted
      */
+    @Transactional
     public void followArtist(final String userEmail, final Artist artist) {
         var user = userRepository.findByEmail(userEmail);
         log.info("Follow artist {} by user {}", artist, user.getId());
@@ -60,10 +70,16 @@ public class ArtistFollowingService {
             persisted = byNameOptional.get();
         }
 
+        Optional<UserArtist> existingAssociation = userArtistRepository.findByUserIdArtistIdOptional(user.getId(), persisted.getId());
+        if (existingAssociation.isEmpty()) {
+            // Update follower count
+            persisted.addFollower();
+            artistRepository.persist(persisted);
+        }
+
         log.info("Follow artist {} by user {}", persisted, user.getId());
 
-        var userArtist = userArtistRepository
-                .findByUserIdArtistIdOptional(user.getId(), persisted.getId())
+        var userArtist = existingAssociation
                 .orElseGet(UserArtist::new);
         userArtist.setArtist(persisted);
         userArtist.setUser(user);
