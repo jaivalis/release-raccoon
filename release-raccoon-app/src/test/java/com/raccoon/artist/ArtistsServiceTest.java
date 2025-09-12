@@ -110,6 +110,7 @@ class ArtistsServiceTest {
         
         Artist artist = new Artist();
         artist.id = 5L;
+        artist.setFollowerCount(8);
         List<Artist> artists = List.of(artist);
         
         when(userRepository.findByEmail(any())).thenReturn(new RaccoonUser());
@@ -118,13 +119,14 @@ class ArtistsServiceTest {
         
         ArtistDto expectedDto = new ArtistDto();
         expectedDto.setId(5L);
+        expectedDto.setFollowerCount(8);
         when(artistMapper.toArtistDto(artist)).thenReturn(expectedDto);
-        when(artistRepository.getFollowerCount(5L)).thenReturn(8);
 
         FollowedArtistsResponse response = service.getOtherUsersFollowedArtists(params, email);
 
-        assertThat(response.getRows()).hasSize(1);
-        assertThat(response.getRows().get(0).getFollowerCount()).isEqualTo(8);
-        verify(artistRepository).getFollowerCount(5L);
+        assertThat(response.getRows())
+                .hasSize(1);
+        assertThat(response.getRows().getFirst().getFollowerCount())
+                .isEqualTo(8);
     }
 }

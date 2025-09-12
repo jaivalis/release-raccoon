@@ -37,7 +37,8 @@ import static com.raccoon.entity.Constants.SPOTIFY_ARTIST_URI_PATTERN;
 @Entity
 @Table(indexes = {
         @Index(name = "ArtistSpotifyUri_idx", columnList = "spotifyUri"),
-        @Index(name = "ArtistName_idx", columnList = "name")
+        @Index(name = "ArtistName_idx", columnList = "name"),
+        @Index(name = "ArtistFollowerCount_idx", columnList = "follower_count")
 })
 @Getter
 @Setter
@@ -73,6 +74,10 @@ public class Artist extends PanacheEntityBase implements Serializable {
     @Column
     String musicbrainzId;
 
+    @Column(name = "follower_count", nullable = false)
+    @Builder.Default
+    Integer followerCount = 0;
+
     @ToString.Exclude
     @JsonbTransient
     @OneToMany(mappedBy = "key.artist", cascade = CascadeType.ALL)
@@ -94,6 +99,14 @@ public class Artist extends PanacheEntityBase implements Serializable {
 
         String[] parts = spotifyUri.split(":");
         return parts[parts.length - 1];
+    }
+    
+    public void addFollower() {
+        followerCount++;
+    }
+
+    public void removeFollower() {
+        followerCount--;
     }
 
     @Override

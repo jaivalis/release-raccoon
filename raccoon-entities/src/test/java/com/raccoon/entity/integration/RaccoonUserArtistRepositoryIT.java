@@ -7,7 +7,6 @@ import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -26,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-@WithTestResource(H2DatabaseTestResource.class)
 @TestTransaction
+@WithTestResource(H2DatabaseTestResource.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class RaccoonUserArtistRepositoryIT {
 
@@ -48,12 +47,6 @@ class RaccoonUserArtistRepositoryIT {
     @BeforeEach
     void setup() {
         stubFactory = new UserArtistStubFactory(userArtistRepository, userFactory, userRepository, artistFactory, artistRepository);
-    }
-
-    @AfterEach
-    void tearDown() {
-        userArtistRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     @Test

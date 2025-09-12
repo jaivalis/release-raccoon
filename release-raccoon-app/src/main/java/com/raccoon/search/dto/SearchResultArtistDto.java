@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Artist Entity projection, used for SearchResults (allows for the id to be null)
@@ -39,23 +41,28 @@ public class SearchResultArtistDto {
     @Builder.Default
     private boolean followedByUser = false;
 
-    private Integer followerCount;
+    @Builder.Default
+    private Integer followerCount = 0;
 
     /**
      * Pull nullable fields of other into this
      * @param other Other SearchResultArtistDto to merge from
      */
     public void merge(SearchResultArtistDto other) {
-        if (lastfmUri == null && other.lastfmUri != null) {
+        if (isNull(lastfmUri) && nonNull(other.lastfmUri)) {
             lastfmUri = other.lastfmUri;
         }
 
-        if (musicbrainzId == null && other.musicbrainzId != null) {
+        if (isNull(musicbrainzId) && nonNull(other.musicbrainzId)) {
             musicbrainzId = other.musicbrainzId;
         }
 
         if (!followedByUser && other.followedByUser) {
             followedByUser = true;
+        }
+
+        if (isNull(followerCount) && nonNull(other.followerCount)) {
+            followerCount = other.followerCount;
         }
     }
 

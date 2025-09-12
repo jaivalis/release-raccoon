@@ -172,6 +172,7 @@ public class SpotifyScraper implements ReleaseScraper<AlbumSimplified>, TasteScr
             log.info("Got spotify artist: {}", spotifyArtist.getName());
             var artist = artistFactory.getOrCreateArtist(spotifyArtist.getName());
             artist.setSpotifyUri(spotifyArtist.getUri());
+            artist.addFollower();
             return artist;
         }
         throw new IllegalArgumentException("Got an object type that is not supported.");

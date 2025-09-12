@@ -6,7 +6,6 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
-import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
@@ -66,18 +65,16 @@ class RaccoonUserProfileServiceTest {
     @Mock
     ArtistMapper mockArtistMapper;
     @Mock
-    ArtistRepository mockArtistRepository;
-    @Mock
     UserSettingsService mockUserSettingsService;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
         when(mockEngine.getTemplate(PROFILE_TEMPLATE_ID)).thenReturn(mockTemplate);
 
         service = new UserProfileService(
                 mockUserRepository, mockUserFactory, mockUserArtistRepository, mockLastfmTasteUpdatingService,
-                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper, mockArtistRepository, mockUserSettingsService
+                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper, mockUserSettingsService
         );
     }
 
@@ -233,16 +230,13 @@ class RaccoonUserProfileServiceTest {
         when(mockUserRepository.findByEmail(email)).thenReturn(stubUser);
         var dto = mock(ArtistDto.class);
         when(mockArtistMapper.toArtistDto(stubArtist)).thenReturn(dto);
-        when(mockArtistRepository.getFollowerCount(9L)).thenReturn(3);
 
         final var response = service.getFollowedArtists(email);
 
         assertEquals(1, response.getTotal());
         assertNotNull(response.getRows());
-        assertNotNull(response.getRows().get(0));
-        assertEquals(dto, response.getRows().get(0));
-        verify(mockArtistRepository).getFollowerCount(9L);
-        verify(dto).setFollowerCount(3);
+        assertNotNull(response.getRows().getFirst());
+        assertEquals(dto, response.getRows().getFirst());
     }
 
     @Test
@@ -290,17 +284,14 @@ class RaccoonUserProfileServiceTest {
 
         var dto1 = mock(ArtistDto.class);
         when(mockArtistMapper.toArtistDto(stubArtist1)).thenReturn(dto1);
-        when(mockArtistRepository.getFollowerCount(1L)).thenReturn(5);
 
         final var response = service.getFollowedArtists(email, Optional.of(0), Optional.of(1));
 
         assertEquals(2, response.getTotal()); // Total count
         assertEquals(1, response.getRows().size()); // Page size
-        assertEquals(dto1, response.getRows().get(0));
+        assertEquals(dto1, response.getRows().getFirst());
         verify(mockUserArtistRepository).findByUserIdSortedByWeight(eq(stubUser.id), any());
         verify(mockUserArtistRepository).countByUserId(stubUser.id);
-        verify(mockArtistRepository).getFollowerCount(1L);
-        verify(dto1).setFollowerCount(5);
     }
 
     @Test
@@ -322,17 +313,14 @@ class RaccoonUserProfileServiceTest {
 
         var dto = mock(ArtistDto.class);
         when(mockArtistMapper.toArtistDto(stubArtist)).thenReturn(dto);
-        when(mockArtistRepository.getFollowerCount(9L)).thenReturn(3);
 
         final var response = service.getFollowedArtists(email, Optional.empty(), Optional.empty());
 
         assertEquals(1, response.getTotal());
         assertEquals(1, response.getRows().size());
-        assertEquals(dto, response.getRows().get(0));
+        assertEquals(dto, response.getRows().getFirst());
         verify(mockUserArtistRepository).findByUserIdSortedByWeight(stubUser.id);
         verify(mockUserArtistRepository, never()).countByUserId(anyLong());
-        verify(mockArtistRepository).getFollowerCount(9L);
-        verify(dto).setFollowerCount(3);
     }
 
 }

@@ -1,6 +1,8 @@
 ## ⚙️ All important changes to this project are tracked here:
 
-## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.4.7...jdevelop)
+## [Unreleased](https://github.com/jaivalis/release-raccoon/compare/0.5.0...jdevelop)
+
+- Fix: Artist follower count is persisted
 
 ## [0.5.0](https://github.com/jaivalis/release-raccoon/compare/0.4.7...0.5.0)
 

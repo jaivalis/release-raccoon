@@ -29,6 +29,7 @@ public class ArtistDto {
 
     private String musicbrainzId;
 
-    private Integer followerCount;
+    @Builder.Default
+    private Integer followerCount = 0;
 
 }

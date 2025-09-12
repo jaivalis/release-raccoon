@@ -23,6 +23,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
+@TestTransaction
 @TestProfile(value = NotifyingResourceDatabaseProfile.class)
 class NotifyingResourceIT {
 
@@ -40,7 +41,6 @@ class NotifyingResourceIT {
     }
 
     @Test
-    @TestTransaction
     @DisplayName("Given 1 release from yesterday, notify raccoonUser and unset UserArtist.hasNewRelease")
     void should_notifyUser_and_updateArtistHasNewRelease() {
         given()
