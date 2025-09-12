@@ -7,7 +7,6 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
-import com.raccoon.entity.repository.ArtistRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
@@ -46,7 +45,6 @@ public class UserProfileService {
     private final Template profile;
     private final ArtistFollowingService artistFollowingService;
     private final ArtistMapper artistMapper;
-    private final ArtistRepository artistRepository;
     private final UserSettingsService userSettingsService;
 
     @Inject
@@ -58,7 +56,6 @@ public class UserProfileService {
                               final Engine engine,
                               final ArtistFollowingService artistFollowingService,
                               final ArtistMapper artistMapper,
-                              final ArtistRepository artistRepository,
                               final UserSettingsService userSettingsService) {
         this.userRepository = userRepository;
         this.userFactory = userFactory;
@@ -68,10 +65,8 @@ public class UserProfileService {
         this.profile = engine.getTemplate(PROFILE_TEMPLATE_ID);
         this.artistFollowingService = artistFollowingService;
         this.artistMapper = artistMapper;
-        this.artistRepository = artistRepository;
         this.userSettingsService = userSettingsService;
     }
-
 
     public List<Artist> getUserArtists(final RaccoonUser raccoonUser) {
         return userArtistRepository.findByUserIdSortedByWeight(raccoonUser.id)
@@ -108,7 +103,7 @@ public class UserProfileService {
                     .map(UserArtist::getArtist)
                     .map(artist -> {
                         ArtistDto dto = artistMapper.toArtistDto(artist);
-                        dto.setFollowerCount(artistRepository.getFollowerCount(artist.id));
+                        dto.setFollowerCount(artist.getFollowerCount());
                         return dto;
                     })
                     .toList();
@@ -128,11 +123,7 @@ public class UserProfileService {
         
         List<ArtistDto> rows = pagedUserArtists.stream()
                 .map(UserArtist::getArtist)
-                .map(artist -> {
-                    ArtistDto dto = artistMapper.toArtistDto(artist);
-                    dto.setFollowerCount(artistRepository.getFollowerCount(artist.id));
-                    return dto;
-                })
+                .map(artistMapper::toArtistDto)
                 .toList();
                 
         return FollowedArtistsResponse.builder()
@@ -233,5 +224,6 @@ public class UserProfileService {
                 user.getLastfmUsername(),
                 userSettings.getUnsubscribed(),
                 userSettings.getNotifyIntervalDays()
-        );    }
+        );
+    }
 }

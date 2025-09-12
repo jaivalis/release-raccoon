@@ -5,10 +5,10 @@ VALUES
 
 
 INSERT INTO Artist
-    (artistId, name, musicbrainzId)
+    (artistId, name, musicbrainzId, follower_count)
 VALUES
-    (100, 'existentArtist', '0000000000'),
-    (200, 'another-existent-artist', 'existent-artist-musicbrainzId')
+    (100, 'existentArtist', '0000000000', 1),
+    (200, 'another-existent-artist', 'existent-artist-musicbrainzId', 1)
 ;
 
 

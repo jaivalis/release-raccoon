@@ -12,9 +12,9 @@ VALUES
     (300, 'new-release-to-notify', 'ALBUM', CURRENT_DATE - INTERVAL '1' DAY, 'spotify:album:xxxxx');
 
 INSERT INTO Artist
-    (artistId, name, create_date)
+    (artistId, name, follower_count, create_date)
 VALUES
-    (300, 'existentArtist2', CURRENT_DATE - INTERVAL '1' DAY);
+    (300, 'existentArtist2', 1, CURRENT_DATE - INTERVAL '1' DAY);
 
 INSERT INTO UserArtist
     (user_id, artist_id, hasNewRelease)
@@ -29,9 +29,9 @@ VALUES
 
 
 INSERT INTO Artist
-    (artistId, name, create_date, spotifyUri)
+    (artistId, name, follower_count, create_date, spotifyUri)
 VALUES
-    (400, 'existentArtist4', CURRENT_DATE - INTERVAL '1' DAY, 'uri4');
+    (400, 'existentArtist4', 1,CURRENT_DATE - INTERVAL '1' DAY, 'uri4');
 
 INSERT INTO Releases
     (releaseId, name, type, releasedOn, spotifyUri)

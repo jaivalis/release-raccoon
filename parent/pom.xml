@@ -5,13 +5,13 @@
     <parent>
         <artifactId>release-raccoon</artifactId>
         <groupId>com.raccoon</groupId>
-        <version>0.5.0</version>
+        <version>0.5.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>parent</artifactId>
     <name>parent</name>
 
-    <version>0.5.0</version>
+    <version>0.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -23,7 +23,7 @@
 
         <!-- quarkus -->
         <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.version>3.26.1</quarkus.platform.version>
+        <quarkus.platform.version>3.26.3</quarkus.platform.version>
         <quarkus-logging-sentry.version>2.1.8</quarkus-logging-sentry.version>
 
         <!-- Native image build fixes -->
@@ -35,7 +35,7 @@
         <spotify.client.version>9.3.0</spotify.client.version>
 
         <!-- Observability -->
-        <micrometer-registry-prometheus.version>1.15.3</micrometer-registry-prometheus.version>
+        <micrometer-registry-prometheus.version>1.15.4</micrometer-registry-prometheus.version>
 
         <!-- tests -->
         <testcontainers.version>1.21.3</testcontainers.version>
@@ -48,7 +48,7 @@
         <instancio-core.version>5.5.1</instancio-core.version>
 
         <!-- util -->
-        <lombok.version>1.18.38</lombok.version>
+        <lombok.version>1.18.40</lombok.version>
         <apache.commons.version>3.18.0</apache.commons.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <guava.version>33.4.0-jre</guava.version>
