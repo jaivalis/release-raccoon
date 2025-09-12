@@ -120,10 +120,6 @@ public class SearchService {
             if (idsOfArtistsFollowedByUser.contains(artistDto.getId())) {
                 artistDto.setFollowedByUser(Boolean.TRUE);
             }
-            // Set follower count for each artist
-            if (artistDto.getId() != null) {
-                artistDto.setFollowerCount(artistRepository.getFollowerCount(artistDto.getId()));
-            }
             list.add(artistDto);
         }
         return list;

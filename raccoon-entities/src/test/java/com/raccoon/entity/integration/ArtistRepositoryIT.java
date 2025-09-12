@@ -25,9 +25,9 @@ import jakarta.inject.Inject;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
+@TestTransaction
 @WithTestResource(H2DatabaseTestResource.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@TestTransaction
 class ArtistRepositoryIT {
 
     @Inject
@@ -47,7 +47,13 @@ class ArtistRepositoryIT {
 
     @BeforeEach
     void setup() {
-        stubFactory = new UserArtistStubFactory(userArtistRepository, userFactory, userRepository, artistFactory, artistRepository);
+        stubFactory = new UserArtistStubFactory(
+                userArtistRepository,
+                userFactory,
+                userRepository,
+                artistFactory,
+                artistRepository
+        );
     }
 
     @AfterEach
@@ -72,6 +78,34 @@ class ArtistRepositoryIT {
         assertThat(foundArtists.content())
                 .hasSize(1)
                 .contains(user1Artist2.getArtist());
+    }
+
+    @Test
+    void listDistinctArtistsNotFollowedByUser_should_returnOrderedByFollowerCount() {
+        var user1Artist1 = stubFactory.stubUserArtist("user1@mail.com", "artist1");
+        user1Artist1.getArtist().setFollowerCount(3);
+        var user1Artist2 = stubFactory.stubUserArtist("user1@mail.com", "artist2");
+        user1Artist2.getArtist().setFollowerCount(1);
+        var user3Artist1 = stubFactory.stubUserArtist("user3@mail.com", "artist6");
+        user3Artist1.getArtist().setFollowerCount(6);
+        var user32Artist1 = stubFactory.stubUserArtist("user32@mail.com", "artist32");
+        user32Artist1.getArtist().setFollowerCount(32);
+        var user2Artist1 = stubFactory.stubUserArtist("user2@mail.com", "artist_");
+        userArtistRepository.persist(List.of(user1Artist1, user1Artist2, user2Artist1));
+
+        var foundArtists = artistRepository.distinctArtistsNotFollowedByUser(
+                PageRequest.ofPage(1, 100, true),
+                user2Artist1.getUser().id
+        );
+
+        assertThat(foundArtists.content())
+                .hasSize(4)
+                .containsExactly(
+                        user32Artist1.getArtist(),
+                        user3Artist1.getArtist(),
+                        user1Artist1.getArtist(),
+                        user1Artist2.getArtist()
+                );
     }
 
     @Test

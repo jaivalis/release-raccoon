@@ -14,9 +14,9 @@ VALUES
     (500, 'true', '1');
 
 INSERT INTO Artist
-    (artistId, name)
+    (artistId, name, follower_count)
 VALUES
-    (300, 'existentArtist2');
+    (300, 'existentArtist2', 1);
 
 
 INSERT INTO Releases

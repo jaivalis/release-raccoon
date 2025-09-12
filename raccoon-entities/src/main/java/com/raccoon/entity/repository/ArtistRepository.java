@@ -51,9 +51,19 @@ public class ArtistRepository implements PanacheRepository<Artist> {
 
         PanacheQuery<Artist> query;
         if (artistsFollowedByUser.isEmpty()) {
-            query = find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1", userId);
+            query = find("""
+                    SELECT DISTINCT ua.key.artist FROM UserArtist ua
+                    WHERE ua.key.raccoonUser.id <> ?1
+                    ORDER BY ua.key.artist.followerCount DESC""",
+                    userId);
         } else {
-            query = find("SELECT DISTINCT ua.key.artist FROM UserArtist ua WHERE ua.key.raccoonUser.id <> ?1 and ua.key.artist.id not in ?2", userId, artistsFollowedByUser);
+            query = find("""
+                    SELECT DISTINCT ua.key.artist FROM UserArtist ua
+                    WHERE ua.key.raccoonUser.id <> ?1
+                    AND ua.key.artist.id not in ?2
+                    ORDER BY ua.key.artist.followerCount DESC""",
+                    userId, artistsFollowedByUser
+            );
         }
 
         List<Artist> artists = query.withHint("org.hibernate.cacheable", Boolean.FALSE)
@@ -64,15 +74,6 @@ public class ArtistRepository implements PanacheRepository<Artist> {
         long totalCount = query.count();
 
         return new PageRecord<>(page, artists, totalCount);
-    }
-
-    public Integer getFollowerCount(Long artistId) {
-        Long count = (Long) entityManager.createQuery(
-                "SELECT COUNT(ua) FROM UserArtist ua WHERE ua.key.artist.id = :artistId"
-        )
-        .setParameter("artistId", artistId)
-        .getSingleResult();
-        return count.intValue();
     }
 
 }

@@ -1,9 +1,6 @@
 package com.raccoon.entity.repository;
 
 import com.raccoon.entity.Artist;
-import com.raccoon.entity.RaccoonUser;
-import com.raccoon.entity.UserArtist;
-import com.raccoon.entity.UserArtistPK;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -67,51 +64,6 @@ class ArtistRepositoryTest {
 
         assertThat(artists).hasSize(1);
         assertThat(artists).contains(artist);
-    }
-
-    @Test
-    void getFollowerCount_should_returnZero_when_noFollowers() {
-        var artist = new Artist();
-        artist.setName("test-artist");
-        repository.persist(artist);
-
-        Integer followerCount = repository.getFollowerCount(artist.id);
-
-        assertThat(followerCount).isZero();
-    }
-
-    @Test
-    void getFollowerCount_should_returnCorrectCount_when_artistHasFollowers() {
-        var artist = new Artist();
-        artist.setName("test-artist");
-        repository.persist(artist);
-
-        var user1 = new RaccoonUser();
-        user1.setEmail("user1@test.com");
-        userRepository.persist(user1);
-
-        var user2 = new RaccoonUser();
-        user2.setEmail("user2@test.com");
-        userRepository.persist(user2);
-
-        // Create UserArtist relationships
-        var userArtist1 = new UserArtist();
-        var key1 = new UserArtistPK();
-        key1.setRaccoonUser(user1);
-        key1.setArtist(artist);
-        userArtist1.setKey(key1);
-        userArtist1.persist();
-
-        var userArtist2 = new UserArtist();
-        var key2 = new UserArtistPK();
-        key2.setRaccoonUser(user2);
-        key2.setArtist(artist);
-        userArtist2.setKey(key2);
-        userArtist2.persist();
-
-        Integer followerCount = repository.getFollowerCount(artist.id);
-
-        assertThat(followerCount).isEqualTo(2);
     }
 
 }
