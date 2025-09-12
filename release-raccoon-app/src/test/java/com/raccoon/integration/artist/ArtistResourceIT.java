@@ -171,7 +171,6 @@ class ArtistResourceIT {
             @UserInfo(key = "email", value = "user100@mail.com")
     })
     @Order(4)
-    @TestTransaction
     void getRecommendedArtists_should_returnArtistsWithFollowerCounts() {
         List<ArtistDto> artists = given()
                 .contentType(ContentType.JSON)
