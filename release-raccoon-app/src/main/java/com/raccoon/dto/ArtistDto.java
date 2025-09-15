@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.raccoon.common.StringUtil.isNullOrEmpty;
 
 @Builder
 @AllArgsConstructor
@@ -31,5 +32,13 @@ public class ArtistDto {
 
     @Builder.Default
     private Integer followerCount = 0;
+
+    public String getLastfmUri() {
+        return isNullOrEmpty(lastfmUri) ? formatLastfmUri() : lastfmUri;
+    }
+
+    private String formatLastfmUri() {
+        return String.format("https://www.last.fm/music/%s", name.replaceAll("\\s+", "+"));
+    }
 
 }
