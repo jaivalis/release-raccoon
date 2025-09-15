@@ -92,7 +92,7 @@ heroku logs --app release-raccoon --tail
 - **report-aggregate**: Jacoco coverage aggregation
 
 ### Key Technologies
-- **Framework**: Quarkus 3.24.1
+- **Framework**: Quarkus
 - **Java**: 21
 - **Database**: PostgreSQL with Liquibase migrations
 - **Search**: Elasticsearch via Hibernate Search
@@ -137,19 +137,3 @@ Key environment variables (see `.env.dist`):
 3. Maven
 4. Configure Keycloak realm and generate client secret
 5. Set up Liquibase tables (see dev-guides/local-development.md)
-
-## Code Style Guidelines
-
-- Favor readability and latest Java features
-- Use `isNull(x)` instead of `x == null`
-- Do not include print statements, prefer logs
-- Never log sensitive information
-
-## Testing Guidelines
-
-- All tests should follow the naming convention `<x>_should_<y>_when_<z>` or `<x>_should_<y>_when_<z>_and_<w>`
-- AssertJ should be used for assertions where possible
-- Unit tests use Mockito for mocking
-- Integration tests use Testcontainers for database and external services
-- REST endpoints tested with RestAssured
-- Coverage tracked via Jacoco and reported to SonarCloud
