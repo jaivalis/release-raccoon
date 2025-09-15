@@ -4,6 +4,7 @@
 
 - Fix: Artist follower count is persisted
 - Fix: Return recommended based on follower count
+- Fix: Align recommended-artists pagination on 0 indexing
 
 ## [0.5.0](https://github.com/jaivalis/release-raccoon/compare/0.4.7...0.5.0)
 

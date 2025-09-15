@@ -50,13 +50,13 @@ class ArtistsServiceTest {
     @Test
     void getArtists_should_callRepositoryMethod() {
         var params = new PaginationParams();
-        params.setPage(1);
+        params.setPage(0);
         params.setSize(10);
 
         service.getArtists(params);
 
         verify(artistRepository).listArtistsPaginated(captor.capture());
-        assertThat(captor.getValue().index).isEqualTo(10);
+        assertThat(captor.getValue().index).isZero();
         assertThat(captor.getValue().size).isEqualTo(10);
     }
 
@@ -64,7 +64,7 @@ class ArtistsServiceTest {
     void getOtherUsersFollowedArtists_should_returnEmptyResult_when_nobodyFollowedByOthers() {
         var email = "email";
         var params = new PaginationParams();
-        params.setPage(1);
+        params.setPage(0);
         params.setSize(10);
 
         when(userRepository.findByEmail(any()))
@@ -84,14 +84,14 @@ class ArtistsServiceTest {
     void getOtherUsersFollowedArtists_should_returnExpectedData() {
         var email = "email";
         var params = new PaginationParams();
-        params.setPage(1);
+        params.setPage(0);
         params.setSize(10);
         List<Artist> artists = List.of(new Artist());
         when(userRepository.findByEmail(any())).thenReturn(new RaccoonUser());
         when(artistRepository.distinctArtistsNotFollowedByUser(any(), any()))
                 .thenReturn(new PageRecord<>(PageRequest.ofPage(1, 10, true), artists, artists.size()));
         ArtistDto expectedDto = new ArtistDto();
-        when(artistMapper.toArtistDto(artists.get(0))).thenReturn(expectedDto);
+        when(artistMapper.toArtistDto(artists.getFirst())).thenReturn(expectedDto);
 
         FollowedArtistsResponse response = service.getOtherUsersFollowedArtists(params, email);
 
@@ -105,7 +105,7 @@ class ArtistsServiceTest {
     void getOtherUsersFollowedArtists_should_populateFollowerCount() {
         var email = "email";
         var params = new PaginationParams();
-        params.setPage(1);
+        params.setPage(0);
         params.setSize(10);
         
         Artist artist = new Artist();
