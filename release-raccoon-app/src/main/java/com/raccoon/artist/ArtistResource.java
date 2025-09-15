@@ -39,7 +39,7 @@ public class ArtistResource {
 
     @GET
     @Path("/recommended")
-    public FollowedArtistsResponse getFollowed(@BeanParam PaginationParams pageRequest) {
+    public FollowedArtistsResponse getRecommendedArtists(@BeanParam PaginationParams pageRequest) {
         final String email = userInfo.getEmail();
 
         return artistsService.getOtherUsersFollowedArtists(pageRequest, email);

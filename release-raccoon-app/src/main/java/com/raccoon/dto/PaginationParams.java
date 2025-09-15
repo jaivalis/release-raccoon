@@ -2,6 +2,7 @@ package com.raccoon.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.QueryParam;
 import lombok.Data;
@@ -11,7 +12,7 @@ public class PaginationParams {
 
     @QueryParam("page")
     @DefaultValue("0")
-    @Positive
+    @PositiveOrZero
     private int page;
 
     @QueryParam("size")
