@@ -60,7 +60,7 @@
 
         <!-- plugins -->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-        <surefire-plugin.version>3.5.3</surefire-plugin.version>
+        <surefire-plugin.version>3.5.4</surefire-plugin.version>
         <failsafe-plugin.version>3.5.4</failsafe-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
