@@ -43,7 +43,7 @@ public class ArtistsService {
         var user = userRepository.findByEmail(email);
 
         jakarta.data.page.Page<Artist> followedByOthers = artistRepository.distinctArtistsNotFollowedByUser(
-                PageRequest.ofPage(pageRequest.getPage(), pageRequest.getSize(), true),
+                PageRequest.ofPage(pageRequest.getPage() + 1, pageRequest.getSize(), true),
                 user.getId()
         );
 

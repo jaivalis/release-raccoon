@@ -1,62 +1,62 @@
-# ReleaseRaccoon
-
----
+# ReleaseRaccoon 🦝
 
 ![Github Actions build](https://github.com/jaivalis/release-raccoon/actions/workflows/build-branches.yml/badge.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/jaivalis/release-raccoon/badge.svg)](https://snyk.io/test/github/jaivalis/release-raccoon)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jaivalis_release-raccoon&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jaivalis_release-raccoon)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=jaivalis_release-raccoon&metric=coverage)](https://sonarcloud.io/summary/new_code?id=jaivalis_release-raccoon)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=jaivalis_release-raccoon&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=jaivalis_release-raccoon)
 
-A music release newsletter application powered by quarkus.
+A personalized music release newsletter that keeps you updated with new releases from your favorite artists.
 
-## Local development
+## What is ReleaseRaccoon?
 
-See [guide](dev-guides/local-development.md).
+ReleaseRaccoon is a smart music discovery service that:
+- 🎵 Tracks new releases from artists you follow
+- 📧 Sends personalized digest emails with the latest music
+- ⚡ Built with modern Java technologies for performance and reliability
 
-## Creating a native executable
+## Features
 
-You can create a native executable using:
+- **Personalized Notifications**: Get email digests about new releases from artists you follow
+- **Multi-Source Data**: Aggregates music data from Spotify, Last.fm, and MusicBrainz
+- **Smart Scheduling**: Daily automated checks for new releases
+- **Search & Browse**: Full-text search through artists and releases
 
-```shell script
-./mvnw package -Pnative
-```
+## Getting Started
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container
-using:
+### For Users
 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-./mvnw package -Pnative -pl release-raccoon-app
-```
+1. **Sign Up**: Create an account and authenticate via Keycloak
+2. **Follow Artists**: Search and follow your favorite artists
+3. **Set Preferences**: Configure your notification settings
+4. **Receive Updates**: Get daily email digests about new releases
 
-You can then execute your native executable with: `./target/release.com.raccoon-0.0.1-SNAPSHOT-runner`
+## Technology Stack
 
-If you want to learn more about building native executables, please
-consult https://quarkus.io/guides/maven-tooling.html.
+- **Backend**: Java 21 with Quarkus framework
+- **Database**: PostgreSQL with Liquibase migrations
+- **Search**: Elasticsearch via Hibernate Search
+- **Authentication**: Keycloak OIDC
+- **APIs**: Spotify, Last.fm, MusicBrainz integration
+- **Email**: Automated digest notifications
+- **Testing**: JUnit 5, Testcontainers, RestAssured
 
-# Deploying the image to heroku
-
-Build the project to get the jar
-
-```shell
-./mvnw package -Pnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
-```
-
-> This needs to be run from the project root otherwise the following property (pointing to the resource dir) needs to be configured accordingly in [application.properties](release-raccoon-app/src/main/resources/application.properties):
-> -H:IncludeResources='${PWD}/release-raccoon-app/src/main/resources/META-INF/resources/.\*'
-
-(Login to heroku docker registry if you haven't already), build the docker image, push it to the heroku repository and deploy to heroku:
+## Quick Start
 
 ```shell
-heroku container:login
-cp build/release-raccoon-app-0.0.1-SNAPSHOT-runner ./docker && pushd docker && docker build -f Dockerfile.native -t registry.heroku.com/release-raccoon/web .
-docker push registry.heroku.com/release-raccoon/web
-heroku container:release web --app release-raccoon && popd
+# Clone the repository
+git clone https://github.com/jaivalis/release-raccoon.git
+
+# Start local development environment
+cd release-raccoon
+source release-raccoon-app/.env
+docker compose --env-file ./release-raccoon-app/.env -f docker/docker-compose.yml up -d
+
+# Run the application
+./mvnw compile quarkus:dev -pl release-raccoon-app
 ```
 
-Check the logs for a successful start.
+For detailed setup instructions, see the [Developer Guide](DEVELOPER.md).
 
-```shell
-heroku logs --app release-raccoon --tail
-```
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
