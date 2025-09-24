@@ -1,6 +1,7 @@
 package com.raccoon.dto;
 
 import com.raccoon.entity.Artist;
+import com.raccoon.user.dto.FollowedArtistsRelease;
 
 import java.util.List;
 
@@ -16,5 +17,6 @@ public class ProfileDto {
     private boolean lastfmEnabled;
     private boolean canScrapeSpotify;
     private boolean canScrapeLastfm;
+    private List<FollowedArtistsRelease> recentReleases;
 
 }

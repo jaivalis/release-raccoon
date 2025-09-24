@@ -330,4 +330,51 @@ class ReleaseRepositoryTest {
         assertThat(found).isEmpty();
     }
 
+    @Test
+    void findByArtistsSinceDaysSortedByDateDesc_should_returnReleasesSortedByDateDescending_when_multipleReleasesExist() {
+        // Given: An artist with multiple releases on different dates
+        var artist = new Artist();
+        artist.setName("Test Artist");
+        artistRepository.persist(artist);
+
+        // Create releases with different dates (older to newer)
+        var oldRelease = new Release();
+        oldRelease.setName("Old Release");
+        oldRelease.setReleasedOn(LocalDate.now().minusDays(10));
+        var oldArtistRelease = new ArtistRelease();
+        oldArtistRelease.setArtist(artist);
+        oldArtistRelease.setRelease(oldRelease);
+        oldRelease.setReleases(List.of(oldArtistRelease));
+
+        var middleRelease = new Release();
+        middleRelease.setName("Middle Release");
+        middleRelease.setReleasedOn(LocalDate.now().minusDays(5));
+        var middleArtistRelease = new ArtistRelease();
+        middleArtistRelease.setArtist(artist);
+        middleArtistRelease.setRelease(middleRelease);
+        middleRelease.setReleases(List.of(middleArtistRelease));
+
+        var newRelease = new Release();
+        newRelease.setName("New Release");
+        newRelease.setReleasedOn(LocalDate.now().minusDays(2));
+        var newArtistRelease = new ArtistRelease();
+        newArtistRelease.setArtist(artist);
+        newArtistRelease.setRelease(newRelease);
+        newRelease.setReleases(List.of(newArtistRelease));
+
+        repository.persist(List.of(middleRelease, oldRelease, newRelease));
+
+        List<Release> releases = repository.findByArtistsSinceDaysSortedByDateDesc(List.of(artist), 15);
+
+        // Then: Releases should be returned in descending date order (newest first)
+        assertThat(releases)
+                .hasSize(3)
+                .extracting(Release::getName)
+                .containsExactly("New Release", "Middle Release", "Old Release");
+
+        // Verify dates are in descending order
+        assertThat(releases.get(0).getReleasedOn()).isAfter(releases.get(1).getReleasedOn());
+        assertThat(releases.get(1).getReleasedOn()).isAfter(releases.get(2).getReleasedOn());
+    }
+
 }

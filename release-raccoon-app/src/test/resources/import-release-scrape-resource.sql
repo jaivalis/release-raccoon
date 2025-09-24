@@ -13,9 +13,9 @@ VALUES
 
 
 INSERT INTO Releases
-    (releaseId, name, type)
+    (releaseId, name, type, releasedOn)
 VALUES
-    (100, 'newRelease', 'ALBUM');
+    (100, 'newRelease', 'ALBUM', CURRENT_DATE - INTERVAL '3' DAY);
 
 
 INSERT INTO UserArtist

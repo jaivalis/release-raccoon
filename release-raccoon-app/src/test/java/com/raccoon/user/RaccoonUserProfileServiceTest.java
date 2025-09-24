@@ -6,6 +6,7 @@ import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
+import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
@@ -66,6 +67,8 @@ class RaccoonUserProfileServiceTest {
     ArtistMapper mockArtistMapper;
     @Mock
     UserSettingsService mockUserSettingsService;
+    @Mock
+    ReleaseRepository mockReleaseRepository;
 
     @BeforeEach
     void setup() {
@@ -74,7 +77,8 @@ class RaccoonUserProfileServiceTest {
 
         service = new UserProfileService(
                 mockUserRepository, mockUserFactory, mockUserArtistRepository, mockLastfmTasteUpdatingService,
-                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper, mockUserSettingsService
+                mockMailer, mockEngine, mockArtistFollowingService, mockArtistMapper, mockUserSettingsService,
+                mockReleaseRepository
         );
     }
 
