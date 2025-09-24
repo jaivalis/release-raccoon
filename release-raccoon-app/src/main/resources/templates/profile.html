@@ -577,6 +577,53 @@
         {/if}
     </div>
 
+    {#if contents.recentReleases}
+    <div class="recent-releases">
+        <div class="container">
+            <h2>Recent Releases from Your Artists</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Release</th>
+                            <th>Artist(s)</th>
+                            <th>Type</th>
+                            <th>Release Date</th>
+                            <th>Links</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#for release in contents.recentReleases}
+                        <tr>
+                            <td><strong>{release.name}</strong></td>
+                            <td>
+                                {#for artist in release.artists}
+                                    {artist.name}{#if !artist_hasNext}{#else}, {/if}
+                                {/for}
+                            </td>
+                            <td>{release.type}</td>
+                            <td>{release.releasedOn}</td>
+                            <td>
+                                {#if release.spotifyUri}
+                                <a href="https://open.spotify.com/album/{release.spotifyUri.replace('spotify:album:','')}" target="_blank" class="path-link">
+                                    <img height="20px" src="images/spotify.icon.svg" alt="Spotify"/>
+                                </a>
+                                {/if}
+                                {#if release.musicbrainzId}
+                                <a href="https://musicbrainz.org/release/{release.musicbrainzId}" target="_blank" class="path-link">
+                                    <img height="20px" src="https://musicbrainz.org/static/images/favicons/favicon-16x16.png" alt="MusicBrainz"/>
+                                </a>
+                                {/if}
+                            </td>
+                        </tr>
+                        {/for}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {/if}
+
     <div class="artists">
         <div id="others-followed-artist-table-container" class="container">
             {! Populated using js !}

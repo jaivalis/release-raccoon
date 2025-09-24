@@ -5,13 +5,17 @@ import com.raccoon.dto.ProfileDto;
 import com.raccoon.dto.mapping.ArtistMapper;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.RaccoonUser;
+import com.raccoon.entity.Release;
 import com.raccoon.entity.UserArtist;
 import com.raccoon.entity.factory.UserFactory;
+import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
 import com.raccoon.mail.RaccoonMailer;
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.taste.lastfm.LastfmTasteUpdatingService;
+import com.raccoon.user.dto.FollowedArtistsRelease;
+import com.raccoon.user.dto.FollowedArtistsReleaseResponse;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 import com.raccoon.user.dto.UserProfile;
 import com.raccoon.user.settings.UserSettingsService;
@@ -46,6 +50,7 @@ public class UserProfileService {
     private final ArtistFollowingService artistFollowingService;
     private final ArtistMapper artistMapper;
     private final UserSettingsService userSettingsService;
+    private final ReleaseRepository releaseRepository;
 
     @Inject
     public UserProfileService(final UserRepository userRepository,
@@ -56,7 +61,8 @@ public class UserProfileService {
                               final Engine engine,
                               final ArtistFollowingService artistFollowingService,
                               final ArtistMapper artistMapper,
-                              final UserSettingsService userSettingsService) {
+                              final UserSettingsService userSettingsService,
+                              final ReleaseRepository releaseRepository) {
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.userArtistRepository = userArtistRepository;
@@ -66,6 +72,7 @@ public class UserProfileService {
         this.artistFollowingService = artistFollowingService;
         this.artistMapper = artistMapper;
         this.userSettingsService = userSettingsService;
+        this.releaseRepository = releaseRepository;
     }
 
     public List<Artist> getUserArtists(final RaccoonUser raccoonUser) {
@@ -146,6 +153,7 @@ public class UserProfileService {
                 .lastfmEnabled(lastFmUsername != null)
                 .canScrapeLastfm(canScrapeLastFm)
                 .artistsFollowed(getUserArtists(user))
+                .recentReleases(getFollowedArtistsReleases(userEmail, 14).releases())
                 .build();
         return profile.data(
                 "contents", contents
@@ -225,5 +233,41 @@ public class UserProfileService {
                 userSettings.getUnsubscribed(),
                 userSettings.getNotifyIntervalDays()
         );
+    }
+
+    /**
+     * Get releases from artists the user follows within the specified number of days, sorted by most recent first
+     * @param userEmail the user's email
+     * @param days number of days to look back for releases
+     * @return list of releases from followed artists with artist information, sorted by release date descending
+     */
+    public FollowedArtistsReleaseResponse getFollowedArtistsReleases(final String userEmail, final int days) {
+        var user = userRepository.findByEmail(userEmail);
+
+        List<Artist> followedArtists = user.getArtists()
+                .stream().map(UserArtist::getArtist)
+                .toList();
+
+        if (followedArtists.isEmpty()) {
+            return new FollowedArtistsReleaseResponse(0, List.of());
+        }
+
+        List<Release> releases = releaseRepository.findByArtistsSinceDaysSortedByDateDesc(followedArtists, days);
+
+        var responseReleases = releases.stream()
+                .map(release -> new FollowedArtistsRelease(
+                        release.id,
+                        release.getName(),
+                        release.getType(),
+                        release.getSpotifyUri(),
+                        release.getMusicbrainzId(),
+                        release.getReleasedOn(),
+                        release.getArtists().stream()
+                                .map(artistMapper::toArtistDto)
+                                .toList()
+                ))
+                .toList();
+
+        return new FollowedArtistsReleaseResponse(releases.size(), responseReleases);
     }
 }

@@ -3,10 +3,14 @@ package com.raccoon.integration.resource;
 import com.raccoon.dto.ArtistDto;
 import com.raccoon.entity.Artist;
 import com.raccoon.entity.UserArtist;
+import com.raccoon.entity.factory.ArtistFactory;
+import com.raccoon.entity.factory.UserFactory;
 import com.raccoon.entity.repository.ArtistReleaseRepository;
 import com.raccoon.entity.repository.ArtistRepository;
+import com.raccoon.entity.repository.ReleaseRepository;
 import com.raccoon.entity.repository.UserArtistRepository;
 import com.raccoon.entity.repository.UserRepository;
+import com.raccoon.integration.UserArtistStubFactory;
 import com.raccoon.search.dto.SearchResultArtistDto;
 import com.raccoon.user.RedirectConfig;
 import com.raccoon.user.UserProfileResource;
@@ -77,6 +81,28 @@ class RaccoonUserProfileResourceIT {
 
     @InjectMock
     RedirectConfig redirectConfig;
+    @Inject
+    ReleaseRepository releaseRepository;
+
+    @Inject
+    UserFactory userFactory;
+    @Inject
+    ArtistFactory artistFactory;
+
+    UserArtistStubFactory stubFactory;
+
+    @BeforeEach
+    @Transactional
+    void setup() {
+        mockMailbox.clear();
+        stubFactory = new UserArtistStubFactory(
+                userArtistRepository,
+                userFactory,
+                userRepository,
+                artistFactory,
+                artistRepository
+        );
+    }
 
     @Test
     @TestSecurity(user = EXISTING_USERNAME, roles = "user")
@@ -100,12 +126,6 @@ class RaccoonUserProfileResourceIT {
     @Mock
     RedirectConfig featuresConfig() {
         return smallRyeConfig.getConfigMapping(RedirectConfig.class);
-    }
-
-    @BeforeEach
-    @Transactional
-    void setup() {
-        mockMailbox.clear();
     }
 
     @Test

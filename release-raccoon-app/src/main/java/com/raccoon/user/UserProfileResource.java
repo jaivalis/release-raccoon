@@ -1,6 +1,7 @@
 package com.raccoon.user;
 
 import com.raccoon.search.dto.SearchResultArtistDto;
+import com.raccoon.user.dto.FollowedArtistsReleaseResponse;
 import com.raccoon.user.dto.FollowedArtistsResponse;
 import com.raccoon.user.dto.UserProfile;
 
@@ -133,6 +134,17 @@ public class UserProfileResource {
         final String email = userInfo.getEmail();
 
         return userProfileService.getFollowedArtists(email, page, size);
+    }
+
+    @GET
+    @Path("/followed-artists/releases")
+    @Transactional
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    public FollowedArtistsReleaseResponse getFollowedArtistsReleases(@RestQuery Optional<Integer> days) {
+        final String email = userInfo.getEmail();
+
+        return userProfileService.getFollowedArtistsReleases(email, days.orElse(30));
     }
 
     private boolean shouldRedirect(String redirectUrl) {

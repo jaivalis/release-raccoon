@@ -55,6 +55,23 @@ public class ReleaseRepository implements PanacheRepository<Release> {
     }
 
     /**
+     * Returns all releases by specific artists, released less than {@code days} amount of days ago,
+     * sorted by release date in descending order (most recent first)
+     * @param artists collection of artists to query for
+     * @param days amount of days to limit the search by
+     * @return list of releases sorted by most recent first
+     */
+    public List<Release> findByArtistsSinceDaysSortedByDateDesc(Collection<Artist> artists, int days) {
+        LocalDate leastDate = LocalDate.now().minusDays(days);
+        log.debug("Listing releases by artists since {}, sorted by date descending", leastDate);
+
+        return find("releasedOn > ?1 order by releasedOn desc", leastDate)
+                .stream()
+                .filter(release -> release.isCreditedToArtist(artists))
+                .toList();
+    }
+
+    /**
      * First lookup on SpotifyUri else on combination of albumName, releaseArtists
      * @param spotifyUri release spotifyUri
      * @param albumName release name
