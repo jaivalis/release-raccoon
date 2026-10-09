@@ -46,7 +46,7 @@ jobs:
           
           echo "Building and pushing ${IMAGE} to dockerhub"
 
-          mvn package -DskipTests -Dquarkus.native.container-build=true \
+          mvn -B -ntp package -DskipTests -Dquarkus.native.container-build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.image=${IMAGE} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
   publish:
@@ -92,7 +92,7 @@ jobs:
           
           echo "Building and pushing ${IMAGE} to registry.heroku.com"
           
-          mvn package -DskipTests -Dquarkus.native.container-build=true \
+          mvn -B -ntp package -DskipTests -Dquarkus.native.container-build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.username=${{ secrets.HEROKU_EMAIL }} \
             -Dquarkus.container-image.password=${{ secrets.HEROKU_API_KEY }} \
