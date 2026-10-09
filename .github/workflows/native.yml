@@ -13,7 +13,16 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     steps:
+      - name: Eco CI start-measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: start-measurement
+
       - name: Check out repo
         uses: actions/checkout@v4
         with:
@@ -49,6 +58,22 @@ jobs:
           mvn package -DskipTests -Dquarkus.native.container-build=true \
             -Dquarkus.container-image.push=true \
             -Dquarkus.container-image.image=${IMAGE} '-Dquarkus.jib.labels."org.opencontainers.image.revision"=${{ env.GITHUB_SHA }}'
+
+      - name: Eco CI Native image build & push
+        if: always()
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: get-measurement
+          label: 'Native image build & push'
+
+      - name: Eco CI display-results
+        if: always()
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: display-results
+
   publish:
     name: Deploy
     needs: [build]

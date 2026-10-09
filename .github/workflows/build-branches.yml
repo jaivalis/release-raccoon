@@ -16,7 +16,17 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
     steps:
+      - name: Eco CI start-measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: start-measurement
+
       - name: Check out repo
         uses: actions/checkout@v4
         with:
@@ -55,6 +65,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B -e verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
+      - name: Eco CI Maven verify + Sonar
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: get-measurement
+          label: 'Maven verify + Sonar'
+
       # Docker build
       - name: Dockerhub release-raccoon:latest from jdevelop
         if: ${{ github.actor != 'dependabot[bot]' && github.ref == 'refs/heads/jdevelop' }}
@@ -63,3 +80,19 @@ jobs:
       - name: Dockerhub release-raccoon:snapshot from branch
         if: ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
         run: mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:snapshot '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
+
+      - name: Eco CI Docker image build & push
+        if: always()
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: get-measurement
+          label: 'Docker image build & push'
+
+      - name: Eco CI display-results
+        if: always()
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: display-results
+          pr-comment: ${{ github.event_name == 'pull_request' }}
