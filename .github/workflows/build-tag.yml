@@ -14,7 +14,16 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     steps:
+      - name: Eco CI start-measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: start-measurement
+
       - name: Check out repo
         uses: actions/checkout@v4
         with:
@@ -51,6 +60,13 @@ jobs:
         run: |
           mvn verify -B -Pcoverage
 
+      - name: Eco CI Maven verify
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: get-measurement
+          label: 'Maven verify'
+
       - name: Sonar Analysis
         # see https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
         if: ${{ github.actor != 'dependabot[bot]' }}
@@ -59,6 +75,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B -e verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
 
+      - name: Eco CI Sonar analysis
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: get-measurement
+          label: 'Sonar analysis'
+
       # Docker build
       - name: Dockerhub release-raccoon:${{ github.ref_name }}
         if: ${{ github.actor != 'dependabot[bot]' && github.ref != 'refs/heads/jdevelop' }}
@@ -66,3 +89,18 @@ jobs:
           TAG=${{ github.ref_name }}
           echo "Building registry.hub.docker.com/jaivalis/release-raccoon:${TAG}"
           mvn package -DskipTests -Dquarkus.container-image.push=true -Dquarkus.container-image.image=registry.hub.docker.com/jaivalis/release-raccoon:${TAG} '-Dquarkus.jib.labels."org.opencontainers.image.revision"='${{ env.GITHUB_SHA }}
+
+      - name: Eco CI Docker image build & push
+        if: always()
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: get-measurement
+          label: 'Docker image build & push'
+
+      - name: Eco CI display-results
+        if: always()
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        continue-on-error: true
+        with:
+          task: display-results
